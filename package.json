@@ -34,7 +34,6 @@
     "@babel/preset-env": "^7.1.0",
     "@types/tinycolor": "^1.1.27",
     "@types/tween.js": "^16.9.0",
-    "@vue/devtools": "5.0.0-beta.3",
     "babel-loader": "^8.0.4",
     "babel-traverse": "6.26.0",
     "babel-types": "6.26.0",
