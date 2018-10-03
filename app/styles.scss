@@ -1,0 +1,83 @@
+
+@import './variables';
+
+actionbar {
+    background-color: $dark-color;
+    color:white;
+}
+
+tabview {
+    selected-tab-text-color: $primary-color;
+    android-selected-tab-highlight-color: $primary-color;
+}
+
+
+label,
+htmllabel {
+    white-space: normal;
+}
+
+mdcbutton {
+    color: white;
+    background-color: $primary-color;
+    ripple-color: $dark-color;
+}
+
+.mdi {
+    font-family: 'Material Design Icons';
+}
+
+.themedBack {
+    background-color: $primary-color;
+}
+
+.cloud1 {
+    width: 150;
+    height: 76;
+    animation-name: translateCloud;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-duration: 33s;
+}
+.cloud2 {
+    width: 100;
+    height: 74;
+    animation-name: translateCloud;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-duration: 40s;
+}
+@keyframes translateCloud {
+    from {
+        transform: translate(-260, 0);
+    }
+    to {
+        transform: translate(1000, 0);
+    }
+}
+
+.actionBar {
+    background-color: $dark-color;
+    height: $actionbar-height;
+}
+
+.actionBarButton {
+    @extend .mdi;
+    top: 0;
+    left: 0;
+    width: $actionbar-button-height;
+    height: $actionbar-button-height;
+    font-size: 26;
+    border-radius: $actionbar-button-height / 2;
+    color: #ffffff;
+    ripple-color: #88ffffff;
+    variant: 'text';
+}
+
+.actionBarTitle {
+    font-size: 18;
+    color: white;
+    
+}

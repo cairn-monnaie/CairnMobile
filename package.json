@@ -1,0 +1,70 @@
+{
+  "description": "Cairn Mobile",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "readme": "NativeScript Application",
+  "repository": "<fill-your-repository-here>",
+  "nativescript": {
+    "id": "com.akylas.cairnmobile",
+    "tns-android": {
+      "version": "5.0.0-2018-09-28-195532-01"
+    },
+    "tns-ios": {
+      "version": "4.2.0"
+    }
+  },
+  "scripts": {
+    "pandroid": "cross-var tns build android --bundle --release --keyStorePath $KEYSTORE_PATH --keyStorePassword $KEYSTORE_PASS --keyStoreAlias $KEYSTORE_ALIAS --keyStoreAliasPassword $KEYSTORE_PASS --env.uglify --env.production",
+    "pios": "tns build ios --bundle --release --env.uglify --env.aot --for-device --provision 'Cairn Mobile'"
+  },
+  "dependencies": {
+    "@tweenjs/tween.js": "17.2.0",
+    "nativescript-collectionview": "1.0.6",
+    "nativescript-htmllabel": "1.0.1",
+    "nativescript-material-components": "file:../nativescript-material-components/plugin",
+    "nativescript-fonticon": "~2.0.0",
+    "nativescript-photoviewer": "^1.4.0",
+    "nativescript-vue-devtools": "^1.1.0",
+    "nativescript-vue": "^2.0.0",
+    "tinycolor2": "^1.4.1",
+    "tns-core-modules": "4.2.1",
+    "tns-core-modules-widgets": "4.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@types/tinycolor": "^1.1.27",
+    "@types/tween.js": "^16.9.0",
+    "@vue/devtools": "5.0.0-beta.3",
+    "babel-loader": "^8.0.4",
+    "babel-traverse": "6.26.0",
+    "babel-types": "6.26.0",
+    "babylon": "6.18.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "cross-var": "^1.1.0",
+    "css-hot-loader": "^1.4.2",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.6.1",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "lazy": "1.0.11",
+    "mini-css-extract-plugin": "^0.4.3",
+    "nativescript-dev-webpack": "^0.17.0-2018-09-28-173604-01",
+    "nativescript-vue-template-compiler": "^2.0.0-alpha.3",
+    "nativescript-worker-loader": "~0.9.1",
+    "node-sass": "^4.9.3",
+    "sass-loader": "^7.1.0",
+    "terser-webpack-plugin": "^1.1.0",
+    "tns-platform-declarations": "^4.2.1",
+    "ts-loader": "^5.2.1",
+    "typescript": "^3.1.1",
+    "typescript-eslint-parser": "^19.0.2",
+    "uglifyjs-webpack-plugin": "~2.0.1",
+    "vue": "^2.5.17",
+    "vue-loader": "^15.4.2",
+    "vue-property-decorator": "^7.2.0",
+    "webpack": "^4.20.2",
+    "webpack-bundle-analyzer": "~3.0.2",
+    "webpack-cli": "^3.1.2"
+  }
+}

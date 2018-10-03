@@ -1,0 +1,8 @@
+{
+  "android": {
+    "markingMode": "none"
+  },
+  "main": "main.js",
+  "name": "com.akylas.maisonsaine2",
+  "version": "1.0.0"
+}
