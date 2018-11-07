@@ -19,44 +19,22 @@ htmllabel {
 
 mdcbutton {
     color: white;
-    background-color: $primary-color;
-    ripple-color: $dark-color;
+    // background-color: $primary-color;
+    // ripple-color: $dark-color;
 }
 
 .mdi {
     font-family: 'Material Design Icons';
 }
 
-.themedBack {
-    background-color: $primary-color;
+.cairn {
+    font-family: 'cairn';
 }
 
-.cloud1 {
-    width: 150;
-    height: 76;
-    animation-name: translateCloud;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-duration: 33s;
+.themedBack {
+    background-color: $dark-color;
 }
-.cloud2 {
-    width: 100;
-    height: 74;
-    animation-name: translateCloud;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-duration: 40s;
-}
-@keyframes translateCloud {
-    from {
-        transform: translate(-260, 0);
-    }
-    to {
-        transform: translate(1000, 0);
-    }
-}
+
 
 .actionBar {
     background-color: $dark-color;

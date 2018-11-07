@@ -18,5 +18,5 @@
         }
     },
     "include": ["app/**/*", "references.d.ts"],
-    "exclude": ["node_modules", "platforms"]
+    "exclude": ["node_modules", "platforms", "**/angular"]
 }

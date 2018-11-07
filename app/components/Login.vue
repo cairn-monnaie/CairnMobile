@@ -1,33 +1,25 @@
 <template>
-    <Page ref="page" class="page themedBack" actionBarHidden="true">
+    <Page ref="page" class="page" actionBarHidden="true">
         <FlexboxLayout class="flex">
-            <StackLayout class="form">
-                <Image class="logo" src="res://icon_small" />
+            <StackLayout class="themedBack" width="100%">
+                <Label class="logo cairn" text='' />
                 <Label class="header" text="Cairn Mobile" />
+            </StackLayout>
+            <StackLayout class="form">
+                <MDCTextField class="input" hint="Nom d'utilisateur" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
 
-                <StackLayout class="input-field" marginBottom="25">
-                    <MDCTextField class="input" hint="Email" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email" returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
-                    <StackLayout class="hr-light" />
-                </StackLayout>
+                <MDCTextField ref="password" class="input" hint="Mot de passe" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
 
-                <StackLayout class="input-field" marginBottom="25">
-                    <MDCTextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" fontSize="18" />
-                    <StackLayout class="hr-light" />
-                </StackLayout>
+                <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" hint="Confirmer le mot de passe" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
 
-                <StackLayout v-show="!isLoggingIn" class="input-field">
-                    <MDCTextField ref="confirmPassword" class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done" fontSize="18" />
-                    <StackLayout class="hr-light" />
-                </StackLayout>
-
-                <MDCButton :text="isLoggingIn ? 'Log In' : 'Sign Up'" @tap="submit" />
-                <Label v-show="isLoggingIn" text="Forgot your password?" class="login-label" @tap="forgotPassword" />
+                <MDCButton :text="isLoggingIn ? 'Se connecter' : 'S\'enregistrer'" @tap="submit" :isEnabled="this.canValidate" />
+                <Label v-show="isLoggingIn" text="Mot de passe oublié?" class="login-label" @tap="forgotPassword" />
             </StackLayout>
 
             <HTMLLabel class="login-label sign-up-label" @tap="toggleForm">
                 <FormattedString>
-                    <Span :text="isLoggingIn ? 'Don’t have an account? ' : 'Back to Login'" />
-                    <Span :text="isLoggingIn ? 'Sign up' : ''" class="bold" />
+                    <Span :text="isLoggingIn ? 'Pas de compte? ' : 'Se connecter'" />
+                    <Span :text="isLoggingIn ? 'Créer un compte' : ''" class="bold" />
                 </FormattedString>
             </HTMLLabel>
         </FlexboxLayout>
@@ -35,126 +27,139 @@
 </template>
 
 <script lang="ts">
-import BaseVueComponent from './BaseVueComponent'
-import { Component } from 'vue-property-decorator'
-import { prompt } from 'ui/dialogs'
-import { TextField } from 'ui/text-field'
-import * as userService from '../services/usersService'
-
+import BaseVueComponent from "./BaseVueComponent"
+import { Component } from "vue-property-decorator"
+import { prompt } from "ui/dialogs"
+import { TextField } from "ui/text-field"
+import Vue from "nativescript-vue"
+import App from "./App.vue"
+import { PropertyChangeData } from "tns-core-modules/data/observable"
 
 @Component({})
 export default class Login extends BaseVueComponent {
     isLoggingIn = true
     user = {
-        email: "foo@foo.com",
-        password: "foo",
-        confirmPassword: "foo"
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
     }
-     mounted() {
-        super.mounted();
-        this.page.actionBarHidden = true;
+    usernameError?: string = null
+    mailError?: string = null
+    passwordError?: string = null
+    canValidate = false
+    mounted() {
+        super.mounted()
+        this.page.actionBarHidden = true
     }
     toggleForm() {
-        this.isLoggingIn = !this.isLoggingIn;
+        this.isLoggingIn = !this.isLoggingIn
     }
 
-    submit() {
-        if (!this.user.email || !this.user.password) {
-            this.alert(
-                "Please provide both an email address and password."
-            );
-            return;
-        }
-        if (this.isLoggingIn) {
-            this.login();
+    onInputChange(e: PropertyChangeData, value) {
+        this.checkForm()
+    }
+    validateStringProp(p, minLength = 0) {
+        return !!p && p.length > minLength
+    }
+    checkForm() {
+        if (!this.validateStringProp(this.user.username)) {
+            this.usernameError = "nom d'utilisateur requis"
+            // } else if (!this.validateStringProp(this.user.username)!this.validEmail(this.user.email)) {
+            // this.mailError = "Valid email required."
         } else {
-            this.register();
+            this.usernameError = null
+        }
+
+        if (!this.isLoggingIn && this.user.confirmPassword !== this.user.password) {
+            this.passwordError = "le mot de passe et sa confirmation ne correspondent pas"
+        } else if (!this.validateStringProp(this.user.password)) {
+            this.passwordError = "Mot de passe manquant"
+        } else {
+            this.passwordError = null
+        }
+
+        this.canValidate = !this.mailError && !this.passwordError
+    }
+    validEmail(email) {
+        var re = /^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/
+        return re.test(email)
+    }
+    submit() {
+        if (this.isLoggingIn) {
+            this.login()
+        } else {
+            this.register()
         }
     }
 
     login() {
-        userService
+        this.$authService
             .login(this.user)
             .then(() => {
-                // import('~/components/Home.vue').then(Home =>
-                //     this.$navigateTo(Home.default, {clearHistory: true})
-                // )
-                console.log('about to go home');
-                this.$navigateBack();
+                this.$navigateTo(App, { clearHistory: true })
             })
-            .catch(() => {
-                this.alert("Unfortunately we could not find your account.");
-            });
+            .catch(this.showError)
     }
 
     register() {
-        if (this.user.password != this.user.confirmPassword) {
-            this.alert("Your passwords do not match.");
-            return;
-        }
-
-        userService
+        this.$authService
             .register(this.user)
             .then(() => {
-                this.alert("Your account was successfully created.");
-                this.isLoggingIn = true;
+                this.alert("Votre compte a éteé créé!")
+                this.isLoggingIn = true
             })
-            .catch(() => {
-                this.alert(
-                    "Unfortunately we were unable to create your account."
-                );
-            });
+            .catch(this.showError)
     }
 
     forgotPassword() {
         prompt({
-            title: "Forgot Password",
-            message:
-                "Enter the email address you used to register for APP NAME to reset your password.",
+            title: "Mot de Passe oublié",
+            message: "Entrez votre email",
             inputType: "email",
             defaultText: "",
             okButtonText: "Ok",
             cancelButtonText: "Cancel"
         }).then(data => {
             if (data.result) {
-                userService
+                this.$authService
                     .resetPassword(data.text.trim())
                     .then(() => {
-                        this.alert(
-                            "Your password was successfully reset. Please check your email for instructions on choosing a new password."
-                        );
+                        this.alert("Vous devriez recevoir un mail avec les instructions pour réinitialiser votre mot de passe")
                     })
-                    .catch(() => {
-                        this.alert(
-                            "Unfortunately, an error occurred resetting your password."
-                        );
-                    });
+                    .catch(this.showError)
             }
-        });
+        })
     }
 
     get passwordTF() {
-        return (this.$refs.password as any).nativeView as TextField;
+        return this.getRef("password") as TextField
     }
     get confirmPasswordTF() {
-        return (this.$refs.confirmPassword as any).nativeView as TextField;
+        return this.getRef("confirmPassword") as TextField
     }
 
     focusPassword() {
-        this.passwordTF.focus();
+        this.passwordTF.focus()
     }
     focusConfirmPassword() {
         if (!this.isLoggingIn) {
-            this.confirmPasswordTF.focus();
+            this.confirmPasswordTF.focus()
         }
     }
-
+    showError(err: Error) {
+        return alert({
+            title: "Erreur",
+            okButtonText: "OK",
+            message: err.toString()
+        })
+    }
     alert(message) {
         return alert({
-            title: "APP NAME",
+            // title: "APP NAME",
             okButtonText: "OK",
             message: message
-        });
+        })
     }
 }
 </script>
@@ -173,40 +178,29 @@ export default class Login extends BaseVueComponent {
 }
 
 .logo {
-    margin-bottom: 12;
+    margin-top: 20;
+    margin-top: 10;
+    font-size: 90;
+    color: #fff;
     height: 90;
-    font-weight: bold;
+    width: 90;
 }
 
 .header {
     horizontal-align: center;
     font-size: 25;
     font-weight: 600;
-    margin-bottom: 70;
+    margin-top: 10;
+    margin-bottom: 40;
     text-align: center;
-    color: #ffffff;
-}
-
-.input-field {
-    margin-bottom: 25;
+    color: #fff;
 }
 
 .input {
-    font-size: 18;
+    margin-bottom: 25;
+    width: 90%;
+    /* font-size: 18; */
     placeholder-color: #a8a8a8;
-}
-
-.input-field .input {
-    font-size: 54;
-}
-
-.btn-primary {
-    height: 50;
-    margin: 30 5 15 5;
-    background-color: #d51a1a;
-    border-radius: 5;
-    font-size: 20;
-    font-weight: 600;
 }
 
 .login-label {

@@ -1,24 +1,20 @@
 <template>
-    <Frame ref="frame">
-        <Page ref="page" class="page">
-            <ActionBar title="Home Page" />
-            <StackLayout>
-                <MDCButton text="openMain" @tap="openMain" />
-                <MDCButton text="openIn" @tap="openIn" />
-            </StackLayout>
-        </Page>
-    </Frame>
+    <Page ref="page" class="page">
+        <ActionBar title="Home Page" />
+        <StackLayout>
+            <MDCButton text="openMain" @tap="openMain" />
+            <MDCButton text="openIn" @tap="openIn" />
+        </StackLayout>
+    </Page>
 </template>
 
 <script lang="ts">
-import BaseVueComponent from './BaseVueComponent'
-import { Component } from 'vue-property-decorator'
-import { isAndroid, screen } from 'platform';
-import { ObservableArray } from 'data/observable-array/observable-array';
-import { Color } from "tns-core-modules/ui/page/page";
-import { CustomTransition } from "~/transitions/custom-transition";
-import Login from './Login.vue'
-
+import BasePageComponent from "./BasePageComponent"
+import { Component } from "vue-property-decorator"
+import { isAndroid } from "platform"
+import { CustomTransition } from "~/transitions/custom-transition"
+import { topmost } from "tns-core-modules/ui/frame"
+import Login from "./Login.vue"
 
 const HomePage = {
     template: `
@@ -27,38 +23,29 @@ const HomePage = {
 	<Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
 </Page>
 `
-};
+}
 
 @Component({})
-export default class Home extends BaseVueComponent {
-
+export default class Home extends BasePageComponent {
     constructor() {
-        super();
-
+        super()
     }
     mounted() {
-        super.mounted();
+        super.mounted()
         // console.log('test home page', this.page);
     }
     onNavigatingTo() {
-        if (isAndroid) {
-            const page = this.page;
-            // page.androidStatusBarBackground = null;
-            // page.androidStatusBarBackground = new Color(this.darkColor);
-        }
+        // if (isAndroid) {
+        //     const page = this.page
+        //     // page.androidStatusBarBackground = null;
+        //     // page.androidStatusBarBackground = new Color(this.darkColor);
+        // }
     }
     openMain() {
-        const customTransition = new CustomTransition(300, "easeIn");
-        this.$navigateTo(Login, {
-            // frame: this.$parent.$refs.frame,
-            animated: true,
-            transitionAndroid: { instance: customTransition }
-        })
+        this.$navigateTo(Login, { clearHistory: true })
     }
     openIn() {
-        this.$navigateTo(HomePage as any, {
-            frame: (this.$refs as any).frame
-        } as any)
+        this.navigateTo(HomePage as any)
     }
 }
 </script>
