@@ -1,3 +1,6 @@
+import { Fabric } from 'nativescript-fabric';
+Fabric.init();
+
 import Vue, { registerElement } from "nativescript-vue"
 
 import "./styles.scss"

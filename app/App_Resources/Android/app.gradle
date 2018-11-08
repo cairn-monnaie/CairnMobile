@@ -22,7 +22,10 @@ android {
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"  
-  }  
+  }
+  dexOptions {
+      jumboMode true
+  }
 
   splits {
     abi {

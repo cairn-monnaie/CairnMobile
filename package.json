@@ -17,6 +17,7 @@
     "@teammaestro/nativescript-svg": "^1.0.1",
     "@tweenjs/tween.js": "17.2.0",
     "nativescript-collectionview": "1.0.16",
+    "nativescript-fabric": "^2.0.2",
     "nativescript-fonticon": "~2.0.0",
     "nativescript-htmllabel": "1.0.2",
     "nativescript-localize": "~3.0.6",
