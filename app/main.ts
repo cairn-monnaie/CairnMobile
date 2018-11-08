@@ -1,7 +1,9 @@
-import { Fabric } from 'nativescript-fabric';
-Fabric.init();
+import { Fabric } from "nativescript-fabric"
+Fabric.init()
 
 import Vue, { registerElement } from "nativescript-vue"
+
+require( "nativescript-platform-css" );
 
 import "./styles.scss"
 import { isAndroid, isIOS } from "platform"
@@ -27,6 +29,7 @@ import { primaryColor } from "./variables"
 import { themer } from "~/nativescript-material-components/material"
 if (isIOS) {
     //material theme
+    console.log('setPrimaryColor', primaryColor);
     themer.setPrimaryColor(primaryColor)
 }
 
@@ -78,8 +81,6 @@ Vue.prototype.$ltc = function(s: string, ...args) {
 Vue.prototype.$luc = function(s: string, ...args) {
     return filters.uppercase(localize(s, ...args))
 }
-
-
 Vue.prototype.$showError = function(err: Error) {
     return alert({
         title: this.$ltc("error"),

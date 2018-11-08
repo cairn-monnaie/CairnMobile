@@ -200,8 +200,13 @@ export default class AuthService extends BackendService {
             .request(requestParams)
             .then(response => {
                 if (response.statusCode !== 200) {
+                    
                     try {
                         const jsonReturn = response.content.toJSON();
+                        if (response.statusCode === 401 && jsonReturn.error === 'invalid_grant' ) {
+                            //refresh token
+                            
+                        }
                         return Promise.reject(new HTTPError({
                             statusCode:response.statusCode,
                             errorMessage:jsonReturn.error_description,

@@ -1,29 +1,32 @@
 <template>
     <Page ref="page" class="page" actionBarHidden="true">
-        <StackLayout horizontalAlignment="center">
-            <StackLayout ref="logoView" class="themedBack" height="100%" width="100%" horizontalAlignment="center" verticalAlignment="center">
-                <!-- <Label class="logo cairn" text='' /> -->
-                <!-- <Label class="header" :text="'app.name' | L" /> -->
-                <Image src="res://logo" margin="20 13 0 13" />
+        <ScrollView>
+            <StackLayout horizontalAlignment="center">
+                <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight" verticalAlignment="center">
+                    <!-- <Label class="logo cairn" text='' /> -->
+                    <!-- <Label class="header" :text="'app.name' | L" /> -->
+                    <!-- <StackLayout backgroundColor="red" width="20" height="20"></StackLayout> -->
+                    <Image @tap="animateLogoView" class="logo" src="res://logo" android:margin="20 13 0 13" ios:margin="-40 0 0 0" />
+                </StackLayout>
+                <StackLayout class="form" paddingTop="30">
+                    <MDCTextField class="input" :hint="'username' | L | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
+
+                    <MDCTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
+
+                    <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
+
+                    <MDCButton :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="this.canValidate" />
+                    <Label v-show="isLoggingIn" :text="'forgot_password' | L | titlecase" class="login-label" @tap="forgotPassword" />
+                </StackLayout>
+
+                <HTMLLabel visibility="hidden" class="login-label sign-up-label" @tap="toggleForm">
+                    <FormattedString>
+                        <Span :text="isLoggingIn ? 'no_account' : 'login' | L | titlecase" />
+                        <Span :text="isLoggingIn ? 'register' : '' | L | titlecase" class="bold" />
+                    </FormattedString>
+                </HTMLLabel>
             </StackLayout>
-            <StackLayout class="form" paddingTop="30">
-                <MDCTextField class="input" :hint="'username' | L | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
-
-                <MDCTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
-
-                <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
-
-                <MDCButton :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="this.canValidate" />
-                <Label v-show="isLoggingIn" :text="'forgot_password' | L | titlecase" class="login-label" @tap="forgotPassword" />
-            </StackLayout>
-
-            <HTMLLabel visibility="hidden" class="login-label sign-up-label" @tap="toggleForm">
-                <FormattedString>
-                    <Span :text="isLoggingIn ? 'no_account' : 'login' | L | titlecase" />
-                    <Span :text="isLoggingIn ? 'register' : '' | L | titlecase" class="bold" />
-                </FormattedString>
-            </HTMLLabel>
-        </StackLayout>
+        </ScrollView>
     </Page>
 </template>
 
@@ -36,9 +39,12 @@ import Vue from "nativescript-vue"
 import App from "./App.vue"
 import { PropertyChangeData } from "tns-core-modules/data/observable"
 import { localize } from "nativescript-localize"
-import { TWEEN } from "nativescript-tweenjs"
+import * as Animation from "~/animation"
 import { screenHeightDips } from "../variables"
+import { isIOS, isAndroid } from "tns-core-modules/platform/platform"
 
+
+const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3
 @Component({})
 export default class Login extends BaseVueComponent {
     isLoggingIn = true
@@ -48,6 +54,7 @@ export default class Login extends BaseVueComponent {
         password: "",
         confirmPassword: ""
     }
+    logoViewHeight = logoViewHeight
     usernameError?: string = null
     mailError?: string = null
     passwordError?: string = null
@@ -55,14 +62,19 @@ export default class Login extends BaseVueComponent {
     mounted() {
         super.mounted()
         this.page.actionBarHidden = true
-        setTimeout(() => {
-            const view = this.getRef("logoView")
-            new TWEEN.Tween({ height: screenHeightDips })
-                .to({ height: 200 }, 1000)
-                .easing(TWEEN.Easing.Elastic.InOut)
-                .onUpdate(object => Object.assign(view.style, object))
-                .start()
-        }, 300) //delay for now as the first run is "jumping"
+        console.log("test", logoViewHeight)
+        setTimeout(this.animateLogoView, 300) //delay for now as the first run is "jumping"
+    }
+    animateLogoView() {
+        const view = this.getRef("logoView")
+        new Animation.Animation({ height: logoViewHeight })
+            .to({ height: 200 }, 1000)
+            .easing(Animation.Easing.Elastic.Out)
+            .onUpdate(object => {
+                this.logoViewHeight = object.height
+                // Object.assign(view.style, object)
+            })
+            .start()
     }
     toggleForm() {
         this.isLoggingIn = !this.isLoggingIn
@@ -170,11 +182,10 @@ export default class Login extends BaseVueComponent {
     vertical-align: middle;
 }
 
-.logo {
-    font-size: 90;
-    color: #fff;
-    height: 90;
-    width: 90;
+.logoView {
+    width: 100%;
+    horizontal-align: center;
+    vertical-align: center;
 }
 
 .header {
