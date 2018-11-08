@@ -22,6 +22,7 @@
     "nativescript-localize": "~3.0.6",
     "nativescript-material-components": "file:../nativescript-material-components/plugin_nosource",
     "nativescript-photoviewer": "^1.4.0",
+    "nativescript-tweenjs": "^0.9.0",
     "nativescript-ui-listview": "^3.8.0",
     "nativescript-vue": "^2.0.2",
     "nativescript-vue-devtools": "^1.1.0",

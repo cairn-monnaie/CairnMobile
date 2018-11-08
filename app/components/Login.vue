@@ -36,6 +36,8 @@ import Vue from "nativescript-vue"
 import App from "./App.vue"
 import { PropertyChangeData } from "tns-core-modules/data/observable"
 import { localize } from "nativescript-localize"
+import { TWEEN } from "nativescript-tweenjs"
+import { screenHeightDips } from "../variables"
 
 @Component({})
 export default class Login extends BaseVueComponent {
@@ -53,6 +55,14 @@ export default class Login extends BaseVueComponent {
     mounted() {
         super.mounted()
         this.page.actionBarHidden = true
+        setTimeout(() => {
+            const view = this.getRef("logoView")
+            new TWEEN.Tween({ height: screenHeightDips })
+                .to({ height: 200 }, 1000)
+                .easing(TWEEN.Easing.Elastic.InOut)
+                .onUpdate(object => Object.assign(view.style, object))
+                .start()
+        }, 300) //delay for now as the first run is "jumping"
     }
     toggleForm() {
         this.isLoggingIn = !this.isLoggingIn
