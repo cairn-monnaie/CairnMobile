@@ -20,6 +20,13 @@ Vue.prototype.$authService = authService
 // import CollectionView from "nativescript-collectionview/vue";
 // Vue.use(CollectionView);
 
+import { primaryColor } from "./variables"
+import { themer } from "~/nativescript-material-components/material"
+if (isIOS) {
+    //material theme
+    themer.setPrimaryColor(primaryColor)
+}
+
 registerElement(
     "MDCButton",
     () => require("~/nativescript-material-components/button").Button
