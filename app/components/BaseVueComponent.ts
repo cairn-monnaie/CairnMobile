@@ -1,6 +1,7 @@
 import Vue, { NativeScriptVue } from "nativescript-vue"
 import { Prop } from "vue-property-decorator"
 import { Page, Color } from "tns-core-modules/ui/page/page"
+import { View } from "tns-core-modules/ui/core/view"
 import { isIOS, isAndroid } from "tns-core-modules/platform/platform"
 
 import { primaryColor, actionBarHeight, darkColor } from "../variables"
@@ -17,11 +18,11 @@ export default class BaseVueComponent extends Vue {
     public _darkColor
     public actionBarHeight = actionBarHeight
     get page() {
-        return this.getRef("page")
+        return this.getRef("page") as Page
     }
     getRef(key: string) {
         if (this.$refs[key]) {
-            return this.$refs[key].nativeView
+            return this.$refs[key].nativeView as View
         }
     }
     mounted() {

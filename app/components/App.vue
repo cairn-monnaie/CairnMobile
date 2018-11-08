@@ -1,8 +1,7 @@
 a<template>
     <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true">
-        <ActionBar title="Login Page" />
         <TabView androidTabsPosition="bottom" ref="tabView">
-            <TabViewItem title="Home">
+            <TabViewItem :title="'home' | L | titlecase">
                 <Frame>
                     <Home />
                 </Frame>

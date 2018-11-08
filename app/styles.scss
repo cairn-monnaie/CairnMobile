@@ -1,9 +1,8 @@
-
-@import './variables';
+@import "./variables";
 
 actionbar {
     background-color: $dark-color;
-    color:white;
+    color: white;
 }
 
 tabview {
@@ -11,30 +10,35 @@ tabview {
     android-selected-tab-highlight-color: $primary-color;
 }
 
-
 label,
 htmllabel {
     white-space: normal;
 }
 
+button {
+    color: $primary-color;
+    background-color: transparent;
+    // padding: 4;
+    // margin:4;
+    // ripple-color: $primary-color;
+}
 mdcbutton {
     color: white;
     // background-color: $primary-color;
-    // ripple-color: $dark-color;
+    // ripple-color: $primary-color;
 }
 
 .mdi {
-    font-family: 'Material Design Icons';
+    font-family: "Material Design Icons";
 }
 
 .cairn {
-    font-family: 'cairn';
+    font-family: "cairn";
 }
 
 .themedBack {
     background-color: $dark-color;
 }
-
 
 .actionBar {
     background-color: $dark-color;
@@ -51,11 +55,10 @@ mdcbutton {
     border-radius: $actionbar-button-height / 2;
     color: #ffffff;
     ripple-color: #88ffffff;
-    variant: 'text';
+    variant: "text";
 }
 
 .actionBarTitle {
     font-size: 18;
     color: white;
-    
 }

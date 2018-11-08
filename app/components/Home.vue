@@ -1,6 +1,6 @@
 <template>
     <Page ref="page" class="page">
-        <ActionBar title="Home Page" />
+        <ActionBar :title="'home' | L | titlecase" />
         <StackLayout>
             <MDCButton text="openMain" @tap="openMain" />
             <MDCButton text="openIn" @tap="openIn" />

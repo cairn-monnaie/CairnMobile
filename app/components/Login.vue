@@ -1,28 +1,29 @@
 <template>
     <Page ref="page" class="page" actionBarHidden="true">
-        <FlexboxLayout class="flex">
-            <StackLayout class="themedBack" width="100%">
-                <Label class="logo cairn" text='' />
-                <Label class="header" text="Cairn Mobile" />
+        <StackLayout horizontalAlignment="center">
+            <StackLayout ref="logoView" class="themedBack" height="100%" width="100%" horizontalAlignment="center" verticalAlignment="center">
+                <!-- <Label class="logo cairn" text='' /> -->
+                <!-- <Label class="header" :text="'app.name' | L" /> -->
+                <Image src="res://logo" margin="20 13 0 13" />
             </StackLayout>
-            <StackLayout class="form">
-                <MDCTextField class="input" hint="Nom d'utilisateur" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
+            <StackLayout class="form" paddingTop="30">
+                <MDCTextField class="input" :hint="'username' | L | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
 
-                <MDCTextField ref="password" class="input" hint="Mot de passe" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
+                <MDCTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
 
-                <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" hint="Confirmer le mot de passe" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
+                <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
 
-                <MDCButton :text="isLoggingIn ? 'Se connecter' : 'S\'enregistrer'" @tap="submit" :isEnabled="this.canValidate" />
-                <Label v-show="isLoggingIn" text="Mot de passe oublié?" class="login-label" @tap="forgotPassword" />
+                <MDCButton :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="this.canValidate" />
+                <Label v-show="isLoggingIn" :text="'forgot_password' | L | titlecase" class="login-label" @tap="forgotPassword" />
             </StackLayout>
 
-            <HTMLLabel class="login-label sign-up-label" @tap="toggleForm">
+            <HTMLLabel visibility="hidden" class="login-label sign-up-label" @tap="toggleForm">
                 <FormattedString>
-                    <Span :text="isLoggingIn ? 'Pas de compte? ' : 'Se connecter'" />
-                    <Span :text="isLoggingIn ? 'Créer un compte' : ''" class="bold" />
+                    <Span :text="isLoggingIn ? 'no_account' : 'login' | L | titlecase" />
+                    <Span :text="isLoggingIn ? 'register' : '' | L | titlecase" class="bold" />
                 </FormattedString>
             </HTMLLabel>
-        </FlexboxLayout>
+        </StackLayout>
     </Page>
 </template>
 
@@ -34,6 +35,7 @@ import { TextField } from "ui/text-field"
 import Vue from "nativescript-vue"
 import App from "./App.vue"
 import { PropertyChangeData } from "tns-core-modules/data/observable"
+import { localize } from "nativescript-localize"
 
 @Component({})
 export default class Login extends BaseVueComponent {
@@ -64,7 +66,7 @@ export default class Login extends BaseVueComponent {
     }
     checkForm() {
         if (!this.validateStringProp(this.user.username)) {
-            this.usernameError = "nom d'utilisateur requis"
+            this.usernameError = this.$ltc("username_required")
             // } else if (!this.validateStringProp(this.user.username)!this.validEmail(this.user.email)) {
             // this.mailError = "Valid email required."
         } else {
@@ -72,9 +74,9 @@ export default class Login extends BaseVueComponent {
         }
 
         if (!this.isLoggingIn && this.user.confirmPassword !== this.user.password) {
-            this.passwordError = "le mot de passe et sa confirmation ne correspondent pas"
+            this.passwordError = this.$ltc("passwords_dont_match")
         } else if (!this.validateStringProp(this.user.password)) {
-            this.passwordError = "Mot de passe manquant"
+            this.passwordError = this.$ltc("password_missing")
         } else {
             this.passwordError = null
         }
@@ -99,35 +101,35 @@ export default class Login extends BaseVueComponent {
             .then(() => {
                 this.$navigateTo(App, { clearHistory: true })
             })
-            .catch(this.showError)
+            .catch(this.$showError)
     }
 
     register() {
         this.$authService
             .register(this.user)
             .then(() => {
-                this.alert("Votre compte a éteé créé!")
+                this.$alert("Votre compte a éteé créé!")
                 this.isLoggingIn = true
             })
-            .catch(this.showError)
+            .catch(this.$showError)
     }
 
     forgotPassword() {
         prompt({
-            title: "Mot de Passe oublié",
-            message: "Entrez votre email",
+            title: this.$ltc("forgot_password"),
+            message: this.$ltc("fill_email"),
             inputType: "email",
             defaultText: "",
-            okButtonText: "Ok",
-            cancelButtonText: "Cancel"
+            okButtonText: this.$luc("ok"),
+            cancelButtonText: this.$luc("cancel")
         }).then(data => {
             if (data.result) {
                 this.$authService
                     .resetPassword(data.text.trim())
                     .then(() => {
-                        this.alert("Vous devriez recevoir un mail avec les instructions pour réinitialiser votre mot de passe")
+                        this.$alert(this.$ltc("password_reset_confirmation"))
                     })
-                    .catch(this.showError)
+                    .catch(this.$showError)
             }
         })
     }
@@ -147,29 +149,10 @@ export default class Login extends BaseVueComponent {
             this.confirmPasswordTF.focus()
         }
     }
-    showError(err: Error) {
-        return alert({
-            title: "Erreur",
-            okButtonText: "OK",
-            message: err.toString()
-        })
-    }
-    alert(message) {
-        return alert({
-            // title: "APP NAME",
-            okButtonText: "OK",
-            message: message
-        })
-    }
 }
 </script>
 
 <style scoped>
-.flex {
-    align-items: center;
-    flex-direction: column;
-}
-
 .form {
     margin-left: 30;
     margin-right: 30;
@@ -178,8 +161,6 @@ export default class Login extends BaseVueComponent {
 }
 
 .logo {
-    margin-top: 20;
-    margin-top: 10;
     font-size: 90;
     color: #fff;
     height: 90;
@@ -191,7 +172,6 @@ export default class Login extends BaseVueComponent {
     font-size: 25;
     font-weight: 600;
     margin-top: 10;
-    margin-bottom: 40;
     text-align: center;
     color: #fff;
 }
