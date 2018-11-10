@@ -27,6 +27,7 @@
     "nativescript-material-components": "file:../nativescript-material-components/plugin_nosource",
     "nativescript-photoviewer": "^1.4.0",
     "nativescript-platform-css": "^1.6.6",
+    "nativescript-pulltorefresh": "^2.1.1",
     "nativescript-ui-listview": "^3.8.0",
     "nativescript-vue": "^2.0.2",
     "tinycolor2": "^1.4.1",

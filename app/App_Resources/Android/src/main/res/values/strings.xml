@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="_sprintf_with_numbered_placeholders_1lf5Nr">"format me %2$s one more time %1$s"</string>
+  <string name="_httpError_bfhCj">"${localize(errorMessage)} (${statusCode})"</string>
   <string name="_sprintf_Z2maSUQ">"format me %1$s"</string>
   <string name="_cancel_Z1BLI2P">"annuler"</string>
   <string name="_error_6YorL">"erreur"</string>
   <string name="_ok_Wa">"ok"</string>
   <string name="_password_reset_confirmation_onjRi">"vous allez recevoir un mail avec les instructions pour réinitialiser votre mot de passe"</string>
+  <string name="_invalid_grant_Z10e8E9">"nom d\'utilisateur ou mot de passe incorrect"</string>
   <string name="_fill_email_ZhLGkS">"remplir e-mail"</string>
   <string name="_passwords_dont_match_hyaLC">"les mots de passe ne correspondent pas"</string>
   <string name="_password_missing_Z7lVK7">"mot de passe manquant"</string>

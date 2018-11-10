@@ -8,7 +8,10 @@ require("nativescript-platform-css")
 import "./styles.scss"
 import { isAndroid, isIOS } from "tns-core-modules/platform"
 
-import AuthService, { LoggedoutEvent, LoggedinEvent } from "./services/AuthService"
+import AuthService, {
+    LoggedoutEvent,
+    LoggedinEvent
+} from "./services/AuthService"
 
 export const authService = new AuthService()
 
@@ -34,17 +37,22 @@ authService.on(LoggedoutEvent, () => {
 
 import { primaryColor } from "./variables"
 import { themer } from "~/nativescript-material-components/material"
-import {alert} from "~/nativescript-material-components/dialog"
+import { alert } from "~/nativescript-material-components/dialog"
 if (isIOS) {
     //material theme
     console.log("setPrimaryColor", primaryColor)
     themer.setPrimaryColor(primaryColor)
 }
 
-
 registerElement(
     "MDCButton",
     () => require("~/nativescript-material-components/button").Button
+)
+registerElement(
+    "MDCActivityIndicator",
+    () =>
+        require("~/nativescript-material-components/activityindicator")
+            .ActivityIndicator
 )
 registerElement(
     "CardView",
@@ -64,9 +72,13 @@ registerElement(
         }
     }
 )
+registerElement(
+    "PullToRefresh",
+    () => require("nativescript-pulltorefresh").PullToRefresh
+)
 
-import RadListViewPlugin from 'nativescript-ui-listview/vue';
-Vue.use(RadListViewPlugin);
+import RadListViewPlugin from "nativescript-ui-listview/vue"
+Vue.use(RadListViewPlugin)
 
 import App from "~/components/App.vue"
 import Login from "~/components/Login.vue"
@@ -90,7 +102,6 @@ Vue.filter("currency", function(value: number) {
     return value.toFixed(2).replace(".", ",")
 })
 
-
 Vue.prototype.$isAndroid = isAndroid
 Vue.prototype.$isIOS = isIOS
 const filters = (Vue.prototype.$filters = Vue["options"].filters)
@@ -101,7 +112,7 @@ Vue.prototype.$luc = function(s: string, ...args) {
     return filters.uppercase(localize(s, ...args))
 }
 Vue.prototype.$showError = function(err: Error) {
-    console.log('showError', err, err.toString());
+    console.log("showError", err, err.toString())
     return alert({
         title: Vue.prototype.$ltc("error"),
         okButtonText: Vue.prototype.$ltc("ok"),

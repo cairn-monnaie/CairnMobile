@@ -14,7 +14,10 @@ tabview {
     android-selected-tab-highlight-color: $primary-color;
 }
 
-
+label,
+htmllabel {
+    white-space: normal;
+}
 
 button {
     color: $primary-color;
