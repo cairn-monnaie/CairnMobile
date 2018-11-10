@@ -2,8 +2,26 @@
     <Page ref="page" class="page">
         <ActionBar :title="'home' | L | titlecase" />
         <StackLayout>
-            <MDCButton text="openMain" @tap="openMain" />
-            <MDCButton text="openIn" @tap="openIn" />
+            <GridLayout columns="*,auto,*" rows="*,auto,*">
+                <RadListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent" @itemLoading="onItemLoading">
+                    <v-template>
+                        <StackLayout padding="20" backgroundColor="transparent">
+                            <CardView width="100%" padding="10">
+                                <StackLayout isUserInteractionEnabled="false">
+                                    <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
+                                    <StackLayout orientation="horizontal" paddingTop="20">
+                                        <Label col="0" :text="item.balance | currency" fontSize="50"/>
+                                        <Label col="1" text="cairn" fontSize="17" verticalAlignment="top" paddingTop="5"/>
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </CardView> 
+                        </StackLayout>
+                    </v-template>
+                </RadListView>
+                <ActivityIndicator v-show="loading" row="1" col="1" :busy="loading" class="activity-indicator" />
+            </GridLayout>
+
         </StackLayout>
     </Page>
 </template>
@@ -13,26 +31,47 @@ import BasePageComponent from "./BasePageComponent"
 import { Component } from "vue-property-decorator"
 import { isAndroid } from "platform"
 import { CustomTransition } from "~/transitions/custom-transition"
-import { topmost } from "tns-core-modules/ui/frame"
+import { topmost, Color } from "tns-core-modules/ui/frame"
 import Login from "./Login.vue"
-
-const HomePage = {
-    template: `
-<Page>
-    <ActionBar title="Inner Page" />
-	<Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
-</Page>
-`
-}
+import { ObservableArray } from "tns-core-modules/data/observable-array/observable-array"
 
 @Component({})
 export default class Home extends BasePageComponent {
+    loading = false
+    accounts: any = []
     constructor() {
         super()
     }
     mounted() {
         super.mounted()
-        // console.log('test home page', this.page);
+
+        console.log('test home page', this.loading);
+        this.refresh()
+    }
+    onItemLoading(args){
+        if(this.$isIOS){
+            var newcolor = new Color(0,255,255, 255);
+            args.ios.backgroundView.backgroundColor = newcolor.ios;
+        }
+ 
+    }
+    refresh() {
+        console.log("refreshing")
+        this.loading = true
+        this.$authService.getAccounts().then(r => {
+            console.log("got accounts", r)
+            const accounts = []
+            r.accounts.forEach(a => {
+                accounts.push({
+                    balance: parseFloat(a.status.balance),
+                    id:a.type.id.toString(),
+                    name: a.type.name.toString()
+                })
+            })
+            console.log("got accounts done ", accounts)
+            this.accounts = new ObservableArray(accounts) as any
+            this.loading = false
+        })
     }
     onNavigatingTo() {
         // if (isAndroid) {
@@ -41,11 +80,11 @@ export default class Home extends BasePageComponent {
         //     // page.androidStatusBarBackground = new Color(this.darkColor);
         // }
     }
-    openMain() {
-        this.$navigateTo(Login, { clearHistory: true })
-    }
-    openIn() {
-        this.navigateTo(HomePage as any)
-    }
+    // openMain() {
+    //     this.$navigateTo(Login, { clearHistory: true })
+    // }
+    // openIn() {
+    // this.navigateTo(HomePage as any)
+    // }
 }
 </script>

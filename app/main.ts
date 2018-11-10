@@ -3,12 +3,12 @@ Fabric.init()
 
 import Vue, { registerElement } from "nativescript-vue"
 
-require( "nativescript-platform-css" );
+require("nativescript-platform-css")
 
 import "./styles.scss"
-import { isAndroid, isIOS } from "platform"
+import { isAndroid, isIOS } from "tns-core-modules/platform"
 
-import AuthService from "./services/AuthService"
+import AuthService, { LoggedoutEvent, LoggedinEvent } from "./services/AuthService"
 
 export const authService = new AuthService()
 
@@ -22,20 +22,33 @@ Vue.config["debug"] = TNS_ENV === "development"
 
 Vue.prototype.$authService = authService
 
+authService.on(LoggedinEvent, () => {
+    Vue.prototype.$navigateTo(App, { clearHistory: true })
+})
+authService.on(LoggedoutEvent, () => {
+    Vue.prototype.$navigateTo(Login, { clearHistory: true })
+})
+
 // import CollectionView from "nativescript-collectionview/vue";
 // Vue.use(CollectionView);
 
 import { primaryColor } from "./variables"
 import { themer } from "~/nativescript-material-components/material"
+import {alert} from "~/nativescript-material-components/dialog"
 if (isIOS) {
     //material theme
-    console.log('setPrimaryColor', primaryColor);
+    console.log("setPrimaryColor", primaryColor)
     themer.setPrimaryColor(primaryColor)
 }
+
 
 registerElement(
     "MDCButton",
     () => require("~/nativescript-material-components/button").Button
+)
+registerElement(
+    "CardView",
+    () => require("~/nativescript-material-components/cardview").CardView
 )
 registerElement(
     "HTMLLabel",
@@ -51,7 +64,9 @@ registerElement(
         }
     }
 )
-// registerElement("CardView", () => require('~/nativescript-material-components/cardview').CardView);
+
+import RadListViewPlugin from 'nativescript-ui-listview/vue';
+Vue.use(RadListViewPlugin);
 
 import App from "~/components/App.vue"
 import Login from "~/components/Login.vue"
@@ -71,6 +86,10 @@ Vue.use(VueStringFilter)
 
 import { localize } from "nativescript-localize"
 Vue.filter("L", localize)
+Vue.filter("currency", function(value: number) {
+    return value.toFixed(2).replace(".", ",")
+})
+
 
 Vue.prototype.$isAndroid = isAndroid
 Vue.prototype.$isIOS = isIOS
@@ -82,21 +101,28 @@ Vue.prototype.$luc = function(s: string, ...args) {
     return filters.uppercase(localize(s, ...args))
 }
 Vue.prototype.$showError = function(err: Error) {
+    console.log('showError', err, err.toString());
     return alert({
-        title: this.$ltc("error"),
-        okButtonText: this.$ltc("ok"),
+        title: Vue.prototype.$ltc("error"),
+        okButtonText: Vue.prototype.$ltc("ok"),
         message: err.toString()
     })
 }
 Vue.prototype.$alert = function(message) {
     return alert({
-        okButtonText: this.$ltc("ok"),
+        okButtonText: Vue.prototype.$ltc("ok"),
         message: message
     })
 }
 
+const currentlyLoggedin = authService.isLoggedIn()
+
+if (currentlyLoggedin) {
+    authService.login() // login async to refresh token
+}
+
 new Vue({
     render: h => {
-        return h("frame", [h(authService.isLoggedIn() ? App : Login)])
+        return h("frame", [h(currentlyLoggedin ? App : Login)])
     }
 }).$start()

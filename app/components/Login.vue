@@ -2,13 +2,13 @@
     <Page ref="page" class="page" actionBarHidden="true">
         <ScrollView>
             <StackLayout horizontalAlignment="center">
-                <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight" verticalAlignment="center">
+                <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight">
                     <!-- <Label class="logo cairn" text='' /> -->
                     <!-- <Label class="header" :text="'app.name' | L" /> -->
                     <!-- <StackLayout backgroundColor="red" width="20" height="20"></StackLayout> -->
                     <Image @tap="animateLogoView" class="logo" src="res://logo" android:margin="20 13 0 13" ios:margin="-40 0 0 0" />
                 </StackLayout>
-                <StackLayout class="form" paddingTop="30">
+                <StackLayout class="form">
                     <MDCTextField class="input" :hint="'username' | L | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
 
                     <MDCTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
@@ -61,8 +61,7 @@ export default class Login extends BaseVueComponent {
     canValidate = false
     mounted() {
         super.mounted()
-        this.page.actionBarHidden = true
-        console.log("test", logoViewHeight)
+        // this.page.actionBarHidden = true
         setTimeout(this.animateLogoView, 300) //delay for now as the first run is "jumping"
     }
     animateLogoView() {
@@ -120,9 +119,9 @@ export default class Login extends BaseVueComponent {
     login() {
         this.$authService
             .login(this.user)
-            .then(() => {
-                this.$navigateTo(App, { clearHistory: true })
-            })
+            // .then(() => {
+            //     this.$navigateTo(App, { clearHistory: true })
+            // })
             .catch(this.$showError)
     }
 
@@ -176,10 +175,11 @@ export default class Login extends BaseVueComponent {
 
 <style scoped>
 .form {
+    margin-top: 30;
     margin-left: 30;
     margin-right: 30;
     flex-grow: 2;
-    vertical-align: middle;
+    vertical-align: center;
 }
 
 .logoView {

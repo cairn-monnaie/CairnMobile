@@ -5,15 +5,16 @@ actionbar {
     color: white;
 }
 
+.page {
+    background-color: #F5F7FA;
+}
+
 tabview {
     selected-tab-text-color: $primary-color;
     android-selected-tab-highlight-color: $primary-color;
 }
 
-label,
-htmllabel {
-    white-space: normal;
-}
+
 
 button {
     color: $primary-color;

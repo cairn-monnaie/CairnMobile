@@ -12,10 +12,12 @@
     "password_missing":"mot de passe manquant",
     "passwords_dont_match":"les mots de passe ne correspondent pas",
     "fill_email":"remplir e-mail",
+    "invalid_grant":"nom d'utilisateur ou mot de passe incorrect",
     "password_reset_confirmation":"vous allez recevoir un mail avec les instructions pour réinitialiser votre mot de passe",
     "ok":"ok",
     "error":"erreur",
     "cancel":"annuler",
     "sprintf": "format me %s",
+    "httpError": "${localize(errorMessage)} (${statusCode})",
     "sprintf with numbered placeholders": "format me %2$s one more time %1$s"
   }

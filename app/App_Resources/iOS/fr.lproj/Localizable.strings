@@ -1,9 +1,11 @@
 "_sprintf_with_numbered_placeholders_1lf5Nr" = "format me %2$@ one more time %1$@";
+"_httpError_bfhCj" = "${localize(errorMessage)} (${statusCode})";
 "_sprintf_Z2maSUQ" = "format me %1$@";
 "_cancel_Z1BLI2P" = "annuler";
 "_error_6YorL" = "erreur";
 "_ok_Wa" = "ok";
 "_password_reset_confirmation_onjRi" = "vous allez recevoir un mail avec les instructions pour réinitialiser votre mot de passe";
+"_invalid_grant_Z10e8E9" = "nom d'utilisateur ou mot de passe incorrect";
 "_fill_email_ZhLGkS" = "remplir e-mail";
 "_passwords_dont_match_hyaLC" = "les mots de passe ne correspondent pas";
 "_password_missing_Z7lVK7" = "mot de passe manquant";
