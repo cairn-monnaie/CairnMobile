@@ -1,18 +1,18 @@
 <template>
     <Page ref="page" class="page">
         <ActionBar :title="'home' | L | titlecase" />
-        <StackLayout>
-            <GridLayout columns="*,auto,*" rows="*,auto,*">
+        <GridLayout rows="*,70">
+            <GridLayout row="0" rowSpan="2" columns="*,50,*" rows="*,50,*">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent"  separatorColor="transparent">
+                    <ListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent" separatorColor="transparent">
                         <v-template>
-                            <StackLayout padding="20" backgroundColor="transparent">
-                                <CardView width="100%" padding="10">
-                                    <StackLayout isUserInteractionEnabled="false">
+                            <StackLayout backgroundColor="transparent">
+                                <CardView  margin="20">
+                                    <StackLayout padding="10" isUserInteractionEnabled="false">
                                         <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
                                         <StackLayout orientation="horizontal" paddingTop="20">
-                                            <Label col="0" :text="item.balance | currency" fontSize="50" />
-                                            <Label col="1" text="cairn" fontSize="17" verticalAlignment="top" paddingTop="5" />
+                                            <Label col="0" class="balance" :text="item.balance | currency" />
+                                            <Label col="1" class="currency" text="airn" />
                                         </StackLayout>
                                     </StackLayout>
 
@@ -21,10 +21,14 @@
                         </v-template>
                     </ListView>
                 </PullToRefresh>
-                <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" class="activity-indicator" />
+                <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
             </GridLayout>
-
-        </StackLayout>
+            <DockLayout row="1" width="100%" stretchLastChild="false">
+                <transition name="scale" :duration="200" mode="out-in">
+                    <MDCButton @tap="startDirections" dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading"  />
+                </transition>
+            </DockLayout>
+        </GridLayout>
     </Page>
 </template>
 
@@ -39,7 +43,7 @@ import { ObservableArray } from "tns-core-modules/data/observable-array/observab
 
 @Component({})
 export default class Home extends BasePageComponent {
-    loading = false
+    loading = true
     accounts: any = []
     constructor() {
         super()
@@ -56,9 +60,13 @@ export default class Home extends BasePageComponent {
             args.ios.backgroundView.backgroundColor = newcolor.ios
         }
     }
+    onStackLoaded(args) {
+        console.log('onStackLoaded');
+        args.object.android.setClipChildren(false);
+    }
     refresh(args?) {
         if (args && args.object) {
-            args.object.refreshing = false;
+            args.object.refreshing = false
         }
         console.log("refreshing")
         this.loading = true
@@ -92,3 +100,19 @@ export default class Home extends BasePageComponent {
     // }
 }
 </script>
+<style lang="scss" scoped>
+@import "../styles";
+
+.balance {
+    color: $primary-color;
+    font-size: 50;
+}
+.currency {
+    @extend .cairn;
+    font-size: 17;
+    font-weight: 900;
+    vertical-align: top;
+    padding-top: 5;
+    padding-left: 3;
+}
+</style>

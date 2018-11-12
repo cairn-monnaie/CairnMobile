@@ -19,6 +19,16 @@ NsVueTemplateCompiler.registerElement(
         }
     }
 )
+NsVueTemplateCompiler.registerElement(
+    "TabView",
+    () => require("~/tns-core-modules/ui/tab-view").TabView,
+    {
+        model: {
+            prop: "selectedIndex",
+            event: "selectedIndexChange"
+        }
+    }
+)
 
 const nsWebpack = require("nativescript-dev-webpack")
 const nativescriptTarget = require("nativescript-dev-webpack/nativescript-target")

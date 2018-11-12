@@ -19,6 +19,7 @@
   "dependencies": {
     "@teammaestro/nativescript-svg": "^1.0.1",
     "@tweenjs/tween.js": "^17.2.0",
+    "nativescript-bottom-navigation": "^1.4.3",
     "nativescript-collectionview": "1.0.16",
     "nativescript-fabric": "^2.0.2",
     "nativescript-fonticon": "~2.0.0",

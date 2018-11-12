@@ -1,5 +1,7 @@
-import { Fabric } from "nativescript-fabric"
-Fabric.init()
+const dev = TNS_ENV === "development";
+if (!dev) {
+    require('nativescript-fabric').Fabric.init()
+}
 
 import Vue, { registerElement } from "nativescript-vue"
 
@@ -20,8 +22,8 @@ export const authService = new AuthService()
 // }
 
 // Prints Vue logs when --env.production is *NOT* set while building
-Vue.config.silent = TNS_ENV !== "development"
-Vue.config["debug"] = TNS_ENV === "development"
+Vue.config.silent = !dev
+Vue.config["debug"] = dev
 
 Vue.prototype.$authService = authService
 
@@ -76,6 +78,9 @@ registerElement(
     "PullToRefresh",
     () => require("nativescript-pulltorefresh").PullToRefresh
 )
+
+registerElement('BottomNavigation', () => require('nativescript-bottom-navigation').BottomNavigation);
+registerElement('BottomNavigationTab', () => require('nativescript-bottom-navigation').BottomNavigationTab);
 
 import RadListViewPlugin from "nativescript-ui-listview/vue"
 Vue.use(RadListViewPlugin)

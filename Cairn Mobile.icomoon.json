@@ -6,27 +6,91 @@
   },
   "iconSets": [
     {
+      "selection": [],
+      "id": 1,
+      "metadata": {
+        "name": "Untitled Set 2",
+        "importSize": {
+          "width": 166,
+          "height": 281
+        }
+      },
+      "height": 1024,
+      "prevSize": 32,
+      "icons": [],
+      "invisible": false,
+      "colorThemes": []
+    },
+    {
       "selection": [
+        {
+          "order": 4,
+          "id": 2,
+          "name": "symbol-bold",
+          "prevSize": 32,
+          "code": 59650,
+          "tempChar": ""
+        },
+        {
+          "order": 3,
+          "id": 1,
+          "name": "symbol",
+          "prevSize": 32,
+          "code": 59649,
+          "tempChar": ""
+        },
         {
           "order": 2,
           "id": 0,
           "name": "logo",
           "prevSize": 32,
           "code": 59648,
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 0,
       "metadata": {
         "name": "Untitled Set",
         "importSize": {
-          "width": 249,
-          "height": 290
+          "width": 182,
+          "height": 287
         }
       },
       "height": 1024,
       "prevSize": 32,
       "icons": [
+        {
+          "id": 2,
+          "paths": [
+            "M197.524 984l-172.255-163.812 3.283-611.983 168.211-168.211h242.478l182.236 184.504-71.871 70.163-152.25-154.32h-158.949l-109.646 109.677-2.987 527.397 111.844 106.231h159.902l153.035-151.985 70.392 71.245-181.843 181.089h-241.591z"
+          ],
+          "attrs": [
+            {}
+          ],
+          "width": 647,
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "Asset 1"
+          ]
+        },
+        {
+          "id": 1,
+          "paths": [
+            "M405.567 928h-203.919l-144.936-137.469 3.045-552.912 141.623-141.623h204.297l142.244 144.226-25.313 24.96-131.792-133.656h-174.72l-120.89 120.89-2.875 522.917 123.497 117.135h175.11l131.938-130.988 25.021 25.195-142.329 141.318z"
+          ],
+          "attrs": [
+            {}
+          ],
+          "width": 605,
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "Asset 2"
+          ]
+        },
         {
           "id": 0,
           "paths": [
@@ -65,14 +129,16 @@
         "minorVersion": 0
       },
       "metrics": {
-        "emSize": 1024,
-        "baseline": 6.25,
+        "emSize": 512,
+        "baseline": 20,
         "whitespace": 50
       },
       "embed": false,
       "includeMetadata": true,
       "showSelector": true,
-      "showMetrics": true
+      "showMetrics": true,
+      "cssVars": true,
+      "cssVarsFormat": "scss"
     },
     "imagePref": {
       "prefix": "icon-",
