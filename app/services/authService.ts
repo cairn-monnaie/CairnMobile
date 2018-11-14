@@ -41,6 +41,22 @@ export interface LoginParams {
     username: string
     password: string
 }
+export interface AccountInfo {
+    balance?: number
+    id: string
+    name: string
+}
+export interface Transaction {
+    to: AccountInfo
+    from: AccountInfo
+    nature: string
+    id: string
+    name: string
+    description: string
+    date: string
+    amount: string
+    transactionNumber: string
+}
 
 export interface HttpRequestOptions extends http.HttpRequestOptions {
     queryParams?: {}
@@ -334,10 +350,44 @@ export default class AuthService extends BackendService {
             this.userId = result.current_user_id + ""
         })
     }
-    getAccounts() {
+    getAccounts(): Promise<AccountInfo[]> {
         return this.request({
             url: authority + `/banking/accounts/overview/${this.userId}.json`,
             method: "GET"
+        }).then(r => {
+            return r.accounts.map(a => {
+                return {
+                    balance: parseFloat(a.status.balance),
+                    id: a.id.toString(),
+                    name: a.type.name.toString()
+                } as AccountInfo
+            })
+        })
+    }
+    getAccountHistory(accountId: string): Promise<Transaction[]> {
+        return this.request({
+            url: authority + `/banking/account/operations/${accountId}.json`,
+            method: "GET"
+        }).then(r => {
+            return r.transactions.map(t => {
+                return {
+                    to: {
+                        id: t.type.to.id.toString(),
+                        name: t.type.to.name.toString()
+                    },
+                    from: {
+                        id: t.type.from.id.toString(),
+                        name: t.type.from.name.toString()
+                    },
+                    nature: t.transactionNature.toString(),
+                    id: t.transactionId.toString(),
+                    name: t.type.name.toString(),
+                    description: t.description.toString(),
+                    date: t.date.toString(),
+                    amount: t.amount.toString(),
+                    transactionNumber: t.transactionNumber.toString()
+                }
+            })
         })
     }
     getToken(user: LoginParams) {
@@ -376,7 +426,6 @@ export default class AuthService extends BackendService {
                         object: this
                     })
                 }
-                
             })
             .catch(err => {
                 this.onLoggedOut()

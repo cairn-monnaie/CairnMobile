@@ -12,9 +12,5 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tns.ErrorReportActivity" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="e3b544374f01bd3c88ada0ae17b05988532a65f1"
-        />
     </application>
 </manifest>

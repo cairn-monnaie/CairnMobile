@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>883002471500-r72cjkj1dnaqdr1u0np5qov4me4117av.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.883002471500-r72cjkj1dnaqdr1u0np5qov4me4117av</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD61Lhn2VYIvQNvqHUE0o3B57V2ZQdU8NI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>883002471500</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.akylas.cairnmobile</string>
+	<key>PROJECT_ID</key>
+	<string>cairn-mobile</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cairn-mobile.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:883002471500:ios:32532e5f1114f9f4</string>
+	<key>DATABASE_URL</key>
+	<string>https://cairn-mobile.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,7 +1,7 @@
 <template>
     <Page ref="page" class="page">
-        <ActionBar :title="'profile' | L | titlecase" />
-        <GridLayout rows="*,70">
+        <ActionBar :title="'profile' | L | titlecase"  flat="true"/>
+        <GridLayout rows="*,70" class="pageContent">
             
         </GridLayout>
     </Page>

@@ -1,7 +1,4 @@
-const dev = TNS_ENV === "development";
-if (!dev) {
-    require('nativescript-fabric').Fabric.init()
-}
+const dev = TNS_ENV === "development"
 
 import Vue, { registerElement } from "nativescript-vue"
 
@@ -79,8 +76,19 @@ registerElement(
     () => require("nativescript-pulltorefresh").PullToRefresh
 )
 
-registerElement('BottomNavigation', () => require('nativescript-bottom-navigation').BottomNavigation);
-registerElement('BottomNavigationTab', () => require('nativescript-bottom-navigation').BottomNavigationTab);
+registerElement(
+    "BottomNavigation",
+    () => require("nativescript-bottom-navigation").BottomNavigation
+)
+registerElement(
+    "BottomNavigationTab",
+    () => require("nativescript-bottom-navigation").BottomNavigationTab
+)
+
+registerElement(
+    "PreviousNextView",
+    () => require("nativescript-iqkeyboardmanager").PreviousNextView
+)
 
 import RadListViewPlugin from "nativescript-ui-listview/vue"
 Vue.use(RadListViewPlugin)
@@ -103,8 +111,36 @@ Vue.use(VueStringFilter)
 
 import { localize } from "nativescript-localize"
 Vue.filter("L", localize)
+
+function formatMoney(number, places, thousand, decimal) {
+    number = number || 0
+    places = !isNaN((places = Math.abs(places))) ? places : 2
+    thousand = thousand || ","
+    decimal = decimal || "."
+    const negative = number < 0 ? "-" : ""
+    const i = parseInt((number = Math.abs(+number || 0).toFixed(places)), 10)
+    const iStr = i + ""
+    let j
+    if (iStr.length > 3) {
+        j = j % 3
+    } else {
+        j = 0
+    }
+    return (
+        negative +
+        (j ? iStr.substr(0, j) + thousand : "") +
+        iStr.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) +
+        (places
+            ? decimal +
+              Math.abs(number - i)
+                  .toFixed(places)
+                  .slice(2)
+            : "")
+    )
+}
+
 Vue.filter("currency", function(value: number) {
-    return value.toFixed(2).replace(".", ",")
+    return formatMoney(value, 2, ".", ",")
 })
 
 Vue.prototype.$isAndroid = isAndroid

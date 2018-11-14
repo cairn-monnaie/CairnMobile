@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "883002471500",
+    "firebase_url": "https://cairn-mobile.firebaseio.com",
+    "project_id": "cairn-mobile",
+    "storage_bucket": "cairn-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883002471500:android:32532e5f1114f9f4",
+        "android_client_info": {
+          "package_name": "com.akylas.cairnmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "883002471500-d7pjhp8fcno50larsnntr1vi5vjs0etc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZpo-Yp3EoDye-q16-nSjM3VHKvLNaqFI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

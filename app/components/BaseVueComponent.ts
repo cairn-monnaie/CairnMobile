@@ -1,8 +1,7 @@
 import Vue, { NativeScriptVue } from "nativescript-vue"
 import { Prop } from "vue-property-decorator"
-import { Page, Color } from "tns-core-modules/ui/page/page"
-import { View } from "tns-core-modules/ui/core/view"
-import { isIOS, isAndroid } from "tns-core-modules/platform/platform"
+import { Page } from "tns-core-modules/ui/page/page"
+import { View, Color } from "tns-core-modules/ui/core/view"
 
 import { primaryColor, actionBarHeight, darkColor } from "../variables"
 
@@ -10,8 +9,6 @@ export default class BaseVueComponent extends Vue {
     $refs: {
         page: NativeScriptVue<Page>
     }
-    public isAndroid = isAndroid
-    public isIOS = isIOS
     @Prop({ type: String })
     public _themeColor
     @Prop({ type: String })
@@ -29,15 +26,14 @@ export default class BaseVueComponent extends Vue {
         const page = this.page
         if (this.page) {
             page.backgroundSpanUnderStatusBar = true
-
-            // page.backgroundColor = this.themeColor;
+            page.backgroundColor = this.darkColor
             // page.actionBarHidden = true;
-            // if (isIOS) {
-            // page.statusBarStyle = "dark";
-            // } else {
-            // page.androidStatusBarBackground = null;
-            // page.androidStatusBarBackground = new Color(this.darkColor);
-            // }
+            if (this.$isIOS) {
+                page.statusBarStyle = "light"
+            } else {
+                page.androidStatusBarBackground = null
+                page.androidStatusBarBackground = new Color(this.darkColor)
+            }
             // page.backgroundColor = this.themeColor;
         }
     }

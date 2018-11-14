@@ -1,21 +1,23 @@
 <template>
-    <Page ref="page" class="page">
-        <ActionBar :title="'home' | L | titlecase" />
-        <GridLayout rows="*,70">
+    <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
+        <ActionBar :title="'home' | L | titlecase" flat="true" />
+        <GridLayout rows="*,70" class="pageContent">
             <GridLayout row="0" rowSpan="2" columns="*,50,*" rows="*,50,*">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent" separatorColor="transparent">
+                    <ListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent" separatorColor="transparent" @itemTap="onItemTap">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
-                                <CardView  margin="20">
-                                    <StackLayout padding="10" isUserInteractionEnabled="false">
-                                        <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
-                                        <StackLayout orientation="horizontal" paddingTop="20">
-                                            <Label col="0" class="balance" :text="item.balance | currency" />
-                                            <Label col="1" class="currency" text="airn" />
+                                <CardView margin="20" @onTap="onCardTap(item)">
+                                    <GridLayout padding="10" isUserInteractionEnabled="false" columns="*, auto">
+                                        <StackLayout col="0">
+                                            <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
+                                            <StackLayout orientation="horizontal" paddingTop="20">
+                                                <Label col="0" class="balance" :text="item.balance | currency" />
+                                                <Label col="1" class="currency" text="airn" />
+                                            </StackLayout>
                                         </StackLayout>
-                                    </StackLayout>
-
+                                        <Label col="1" class="mdi" :text="'mdi-arrow-right' | fonticon" fontSize="30" color="gray" />
+                                    </GridLayout>
                                 </CardView>
                             </StackLayout>
                         </v-template>
@@ -25,7 +27,7 @@
             </GridLayout>
             <DockLayout row="1" width="100%" stretchLastChild="false">
                 <transition name="scale" :duration="200" mode="out-in">
-                    <MDCButton @tap="startDirections" dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading"  />
+                    <MDCButton @tap="startDirections" dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
                 </transition>
             </DockLayout>
         </GridLayout>
@@ -38,20 +40,24 @@ import { Component } from "vue-property-decorator"
 import { isAndroid } from "platform"
 import { CustomTransition } from "~/transitions/custom-transition"
 import { topmost, Color } from "tns-core-modules/ui/frame"
+import { ItemEventData } from "tns-core-modules/ui/list-view"
 import Login from "./Login.vue"
+import AccountHistory from "./AccountHistory.vue"
 import { ObservableArray } from "tns-core-modules/data/observable-array/observable-array"
+import { AccountInfo } from "~/services/authService"
 
 @Component({})
 export default class Home extends BasePageComponent {
     loading = true
-    accounts: any = []
+    accounts: ObservableArray<AccountInfo> = new ObservableArray()
     constructor() {
         super()
     }
     mounted() {
         super.mounted()
+    }
 
-        console.log("test home page", this.loading)
+    onNavigatedTo() {
         this.refresh()
     }
     onItemLoading(args) {
@@ -60,9 +66,26 @@ export default class Home extends BasePageComponent {
             args.ios.backgroundView.backgroundColor = newcolor.ios
         }
     }
+    onCardTap(accountInfo: AccountInfo) {
+        console.log("onCardTap", accountInfo)
+        this.navigateTo(AccountHistory, {
+            props: {
+                accountInfo
+            }
+        })
+    }
+    onItemTap(args: ItemEventData) {
+        const accountInfo = this.accounts.getItem(args.index)
+        console.log("onItemTap", args.index, JSON.stringify(accountInfo))
+        this.navigateTo(AccountHistory, {
+            props: {
+                accountInfo
+            }
+        })
+    }
     onStackLoaded(args) {
-        console.log('onStackLoaded');
-        args.object.android.setClipChildren(false);
+        console.log("onStackLoaded")
+        args.object.android.setClipChildren(false)
     }
     refresh(args?) {
         if (args && args.object) {
@@ -70,20 +93,14 @@ export default class Home extends BasePageComponent {
         }
         console.log("refreshing")
         this.loading = true
-        this.$authService.getAccounts().then(r => {
-            console.log("got accounts", r)
-            const accounts = []
-            r.accounts.forEach(a => {
-                accounts.push({
-                    balance: parseFloat(a.status.balance),
-                    id: a.type.id.toString(),
-                    name: a.type.name.toString()
-                })
+        this.$authService
+            .getAccounts()
+            .then(r => {
+                console.log("got accounts", r)
+                this.accounts = new ObservableArray(r) as any
+                this.loading = false
             })
-            console.log("got accounts done ", accounts)
-            this.accounts = new ObservableArray(accounts) as any
-            this.loading = false
-        })
+            .catch(this.$showError)
     }
     onNavigatingTo() {
         // if (isAndroid) {

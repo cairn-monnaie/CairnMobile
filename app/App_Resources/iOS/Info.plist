@@ -46,25 +46,5 @@
     <string>UIStatusBarStyleLightContent</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-    <key>Fabric</key>
-    <dict>
-      <key>APIKey</key>
-      <string>e3b544374f01bd3c88ada0ae17b05988532a65f1</string>
-      <key>Kits</key>
-      <array>
-        <dict>
-          <key>KitInfo</key>
-          <dict/>
-          <key>KitName</key>
-          <string>Answers</string>
-        </dict>
-        <dict>
-          <key>KitInfo</key>
-          <dict/>
-          <key>KitName</key>
-          <string>Crashlytics</string>
-        </dict>
-      </array>
-    </dict>
   </dict>
 </plist>

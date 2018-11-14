@@ -1,6 +1,6 @@
 <template>
     <Page ref="page" class="page" actionBarHidden="true">
-        <ScrollView>
+        <ScrollView class="pageContent">
             <StackLayout horizontalAlignment="center">
                 <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight">
                     <!-- <Label class="logo cairn" text='' /> -->
