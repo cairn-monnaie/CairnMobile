@@ -7,12 +7,12 @@
                     <ListView :items="dataItems" backgroundColor="transparent" separatorColor="transparent" width="100%" height="100%">
                         <v-template>
                             <GridLayout width="100%" rows="*" columns="auto,*,auto" height="60">
-                                <Label col="0" class="mdi" :text="item.nature ==='PAYMENT'?'mdi-arrow-down-bold':'mdi-arrow-up-bold' | fonticon" fontSize="30" :color="item.nature ==='PAYMENT'?'red':'green'" />
+                                <Label col="0" class="mdi" :text="item.nature ==='PAYMENT'?'mdi-arrow-up-bold':'mdi-arrow-down-bold' | fonticon" fontSize="30" :color="item.nature ==='PAYMENT'?'green':'red'" />
                                 <StackLayout col="1">
                                     <Label :text="item.name" fontWeight="bold" fontSize="16" />
                                     <Label :text="item.description" fontWeight="bold" fontSize="14" color="gray" />
                                 </StackLayout>
-                                <Label col="2" :text="item.amount | currency" fontWeight="bold" fontSize="19" :color="item.nature ==='PAYMENT'?'red':'green'" />
+                                <Label col="2" :text="item.amount | currency" fontWeight="bold" fontSize="19" :color="item.nature ==='PAYMENT'?'green':'red'" />
                             </GridLayout>
                         </v-template>
                     </ListView>
