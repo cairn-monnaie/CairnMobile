@@ -28,7 +28,7 @@ import BasePageComponent from "./BasePageComponent"
 import { Component, Prop } from "vue-property-decorator"
 import { isAndroid } from "platform"
 import { CustomTransition } from "~/transitions/custom-transition"
-import { topmost, Color } from "tns-core-modules/ui/frame"
+import { topmost, Color, NavigatedData } from "tns-core-modules/ui/frame"
 import Login from "./Login.vue"
 import { ObservableArray } from "tns-core-modules/data/observable-array/observable-array"
 import { Transaction, AccountInfo } from "~/services/AuthService"
@@ -55,8 +55,10 @@ export default class AccountHistort extends BasePageComponent {
             })
             .catch(this.$showError)
     }
-    onNavigatedTo() {
-        this.refresh()
+    onNavigatedTo(args:NavigatedData) {
+        if (!args.isBackNavigation) {
+            this.refresh()
+        }
     }
     onNavigatingTo() {
         // if (isAndroid) {

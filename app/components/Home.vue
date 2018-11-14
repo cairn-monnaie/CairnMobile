@@ -4,7 +4,7 @@
         <GridLayout rows="*,70" class="pageContent">
             <GridLayout row="0" rowSpan="2" columns="*,50,*" rows="*,50,*">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView col="0" row="0" colSpan="3" rowSpan="3" :items="accounts" backgroundColor="transparent" separatorColor="transparent" @itemTap="onItemTap">
+                    <ListView :items="accounts" backgroundColor="transparent" separatorColor="transparent" @itemTap="onItemTap">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
                                 <CardView margin="20" @onTap="onCardTap(item)">
@@ -27,7 +27,7 @@
             </GridLayout>
             <DockLayout row="1" width="100%" stretchLastChild="false">
                 <transition name="scale" :duration="200" mode="out-in">
-                    <MDCButton @tap="startDirections" dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
+                    <MDCButton dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
                 </transition>
             </DockLayout>
         </GridLayout>
@@ -57,8 +57,10 @@ export default class Home extends BasePageComponent {
         super.mounted()
     }
 
-    onNavigatedTo() {
-        this.refresh()
+    onNavigatedTo(args:NavigatedData) {
+        if (!args.isBackNavigation) {
+            this.refresh()
+        }
     }
     onItemLoading(args) {
         if (this.$isIOS) {
@@ -82,10 +84,6 @@ export default class Home extends BasePageComponent {
                 accountInfo
             }
         })
-    }
-    onStackLoaded(args) {
-        console.log("onStackLoaded")
-        args.object.android.setClipChildren(false)
     }
     refresh(args?) {
         if (args && args.object) {
