@@ -1,10 +1,10 @@
 <template>
     <StackLayout class="actionBar">
         <GridLayout class="actionBarBar" orientation="horizontal" ios:paddingTop="0.001" columns="auto,*">
-            <MDCButton col="0" variant= "text" :visibility="_canGoBack ? 'visible' : 'hidden'" class="actionBarButton" :text="($isIOS? 'mdi-chevron-left' : 'mdi-arrow-left') | fonticon" @tap="onBackButton" />
-            <StackLayout :col="$isIOS && !_canGoBack ? 0 : 1" ios:colSpan="2" verticalAlignment="center">
-                <Label class="actionBarTitle" :textAlignment="$isIOS && !_canGoBack ? 'center' : 'left'" verticalAlignment="center" :text="title | L | titlecase" fontWeight="bold"/>
-                <Label :visibility="!!subtitle ? 'visible' : 'hidden'"  :textAlignment="$isIOS && !_canGoBack ? 'center' : 'left'" class="actionBarSubtitle" verticalAlignment="center" :text="subtitle" />
+            <MDCButton col="0" variant= "text" :visibility="canGoBack ? 'visible' : 'hidden'" class="actionBarButton" :text="($isIOS? 'mdi-chevron-left' : 'mdi-arrow-left') | fonticon" @tap="onBackButton" />
+            <StackLayout :col="$isIOS && !canGoBack ? 0 : 1" ios:colSpan="2" verticalAlignment="center">
+                <Label class="actionBarTitle" :textAlignment="$isIOS && !canGoBack ? 'center' : 'left'" verticalAlignment="center" :text="title | L | titlecase" fontWeight="bold"/>
+                <Label :visibility="!!subtitle ? 'visible' : 'hidden'"  :textAlignment="$isIOS && !canGoBack ? 'center' : 'left'" class="actionBarSubtitle" verticalAlignment="center" :text="subtitle" />
             </StackLayout>
         </GridLayout>
         <slot />
@@ -23,7 +23,8 @@ export default class CActionBar extends Vue {
     @Prop({ default: false })
     public subtitle: string
 
-    public _canGoBack = false
+    @Prop({ default: false })
+    public canGoBack = false
 
     constructor() {
         super()
@@ -53,7 +54,7 @@ export default class CActionBar extends Vue {
             // console.log("actionbar mounted", this.$parent)
             // console.log("topFrame", topFrame && topFrame.canGoBack())
             if (topFrame) {
-                this._canGoBack = topFrame.canGoBack()
+                this.canGoBack = topFrame.canGoBack()
             }
         }, 0)
     }

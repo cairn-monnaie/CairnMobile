@@ -1,7 +1,7 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
         <StackLayout class="pageContent">
-            <CActionBar title="account_history" :subtitle="accountInfo.name">
+            <CActionBar title="account_history" :subtitle="accountInfo.name" canGoBack="true">
                 <StackLayout height="100" verticalAlignment="center" paddingLeft="60">
                     <Label :text="'balance' | L | titlecase" verticalAlignment="center" fontSize="14" color="#88ffffff" />
                     <Label verticalAlignment="center" fontSize="30" color="white">
