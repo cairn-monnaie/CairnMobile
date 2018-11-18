@@ -27,7 +27,7 @@ export default class BaseVueComponent extends Vue {
         if (this.page) {
             page.backgroundSpanUnderStatusBar = true
             page.backgroundColor = this.darkColor
-            // page.actionBarHidden = true;
+            page.actionBarHidden = true;
             if (this.$isIOS) {
                 page.statusBarStyle = "light"
             } else {

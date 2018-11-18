@@ -1,10 +1,10 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
-        <ActionBar :title="'home' | L | titlecase" flat="true" />
-        <GridLayout rows="*,70" class="pageContent">
-            <GridLayout row="0" rowSpan="2" columns="*,50,*" rows="*,50,*">
+        <GridLayout rows="auto,*,70" class="pageContent">
+            <CActionBar row="0" title="home" />
+            <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView :items="accounts" backgroundColor="transparent" separatorColor="transparent" @itemTap="onItemTap">
+                    <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap" @itemLoading="onItemLoading" separatorColor="transparent">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
                                 <CardView margin="20" @onTap="onCardTap(item)">
@@ -12,11 +12,11 @@
                                         <StackLayout col="0">
                                             <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
                                             <StackLayout orientation="horizontal" paddingTop="20">
-                                                <Label col="0" class="balance" :text="item.balance | currency" />
-                                                <Label col="1" class="currency" text="airn" />
+                                                <Label col="0" class="balance" :text="item.balance | currency(false)" />
+                                                <Label col="1" class="currency" text="" />
                                             </StackLayout>
                                         </StackLayout>
-                                        <Label col="1" class="mdi" :text="'mdi-arrow-right' | fonticon" fontSize="30" color="gray" />
+                                        <Label col="1" class="mdi" :text="'mdi-chevron-right' | fonticon" fontSize="30" color="gray" />
                                     </GridLayout>
                                 </CardView>
                             </StackLayout>
@@ -25,7 +25,7 @@
                 </PullToRefresh>
                 <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
             </GridLayout>
-            <DockLayout row="1" width="100%" stretchLastChild="false">
+            <DockLayout row="2" width="100%" stretchLastChild="false">
                 <transition name="scale" :duration="200" mode="out-in">
                     <MDCButton dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
                 </transition>
@@ -39,7 +39,7 @@ import BasePageComponent from "./BasePageComponent"
 import { Component } from "vue-property-decorator"
 import { isAndroid } from "platform"
 import { CustomTransition } from "~/transitions/custom-transition"
-import { topmost, Color } from "tns-core-modules/ui/frame"
+import { topmost, Color, NavigatedData } from "tns-core-modules/ui/frame"
 import { ItemEventData } from "tns-core-modules/ui/list-view"
 import Login from "./Login.vue"
 import AccountHistory from "./AccountHistory.vue"
@@ -57,7 +57,7 @@ export default class Home extends BasePageComponent {
         super.mounted()
     }
 
-    onNavigatedTo(args:NavigatedData) {
+    onNavigatedTo(args: NavigatedData) {
         if (!args.isBackNavigation) {
             this.refresh()
         }
@@ -65,11 +65,13 @@ export default class Home extends BasePageComponent {
     onItemLoading(args) {
         if (this.$isIOS) {
             var newcolor = new Color(0, 255, 255, 255)
-            args.ios.backgroundView.backgroundColor = newcolor.ios
+            if (args.ios.backgroundView) {
+                args.ios.backgroundView.backgroundColor = newcolor.ios
+            }
         }
     }
     onCardTap(accountInfo: AccountInfo) {
-        console.log("onCardTap", accountInfo)
+        // console.log("onCardTap", accountInfo)
         this.navigateTo(AccountHistory, {
             props: {
                 accountInfo
@@ -78,7 +80,7 @@ export default class Home extends BasePageComponent {
     }
     onItemTap(args: ItemEventData) {
         const accountInfo = this.accounts.getItem(args.index)
-        console.log("onItemTap", args.index, JSON.stringify(accountInfo))
+        // console.log("onItemTap", args.index, JSON.stringify(accountInfo))
         this.navigateTo(AccountHistory, {
             props: {
                 accountInfo
@@ -120,11 +122,11 @@ export default class Home extends BasePageComponent {
 
 .balance {
     color: $primary-color;
-    font-size: 50;
+    font-size: 30;
 }
 .currency {
     @extend .cairn;
-    font-size: 17;
+    font-size: 14;
     font-weight: 900;
     vertical-align: top;
     padding-top: 5;

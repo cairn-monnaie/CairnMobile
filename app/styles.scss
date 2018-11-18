@@ -6,17 +6,18 @@ actionbar {
     color: white;
 }
 
+
 .page {
     background-color: $dark-color;
 }
 
 .pageContent {
-    background-color: #F5F7FA;
+    background-color: #f5f7fa;
 }
-
 
 label,
 htmllabel {
+    font-family: 'SF UI Text, Roboto';
     white-space: normal;
 }
 
@@ -43,29 +44,6 @@ mdcbutton {
 
 .themedBack {
     background-color: $dark-color;
-}
-
-.actionBar {
-    background-color: $dark-color;
-    height: $actionbar-height;
-}
-
-.actionBarButton {
-    @extend .mdi;
-    top: 0;
-    left: 0;
-    width: $actionbar-button-height;
-    height: $actionbar-button-height;
-    font-size: 26;
-    border-radius: $actionbar-button-height / 2;
-    color: #ffffff;
-    ripple-color: #88ffffff;
-    variant: "text";
-}
-
-.actionBarTitle {
-    font-size: 18;
-    color: white;
 }
 
 .buttonwhite {
@@ -98,7 +76,7 @@ mdcbutton {
 }
 
 tabview {
-    selected-tab-text-color:white;
+    selected-tab-text-color: white;
     tab-background-color: $dark-color;
-    android-selected-tab-highlight-color:$primary-color;
+    android-selected-tab-highlight-color: $primary-color;
 }

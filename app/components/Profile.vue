@@ -1,60 +1,77 @@
 <template>
-    <Page ref="page" class="page">
-        <ActionBar :title="'profile' | L | titlecase"  flat="true"/>
-        <GridLayout rows="*,70" class="pageContent">
-            
-        </GridLayout>
+    <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
+        <StackLayout class="pageContent">
+            <CActionBar title="profile">
+                <StackLayout verticalAlignment="center">
+                    <GridLayout borderRadius="50" width="100" height="100" borderColor="white" borderWidth="3">
+                        <Label class="mdi" :text="'mdi-account' | fonticon" color="white" fontSize="70" verticalAlignment="center" textAlignment="center" />
+                        <Image :src="userProfile.image" />
+                    </GridLayout>
+                    <Label :text="userProfile.username" paddingTop="15" textAlignment="center" verticalAlignment="center" fontSize="20" color="white" fontWeight="bold" />
+                    <Label :text="userProfile.email" paddingTop="5" paddingBottom="15" textAlignment="center" verticalAlignment="center" fontSize="16" color="#88ffffff" />
+                </StackLayout>
+            </CActionBar>
+            <GridLayout columns="*,50,*" rows="*,50,*">
+                <ScrollView colSpan="3" rowSpan="3">
+                    <StackLayout>
+
+                        <GridLayout columns="auto, *">
+                        <Label col="0" class="mdi" :text="'mdi-map-marker' | fonticon" color="#8F99AA" fontSize="20" verticalAlignment="center" textAlignment="center" padding="16"/>
+                    <StackLayout col="1" padding="10 0 10 0" borderBottomColor="#8F99AA" borderBottomWidth="1">
+                            <Label color="black" fontSize="16" :text="userProfile.street1" />
+                            <Label color="#8F99AA" fontSize="15" :text="userProfile.city + ', ' + userProfile.zipcode " />
+                        </StackLayout>
+                    </GridLayout>
+                    </StackLayout>
+                </ScrollView>
+                <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
+            </GridLayout>
+        </StackLayout>
     </Page>
 </template>
 
 <script lang="ts">
-import BasePageComponent from "./BasePageComponent"
-import { Component } from "vue-property-decorator"
-import { isAndroid } from "platform"
-import { CustomTransition } from "~/transitions/custom-transition"
-import { topmost, Color } from "tns-core-modules/ui/frame"
-import Login from "./Login.vue"
-import { ObservableArray } from "tns-core-modules/data/observable-array/observable-array"
+import BasePageComponent from './BasePageComponent';
+import { Component } from 'vue-property-decorator';
+import { isAndroid } from 'platform';
+import { CustomTransition } from '~/transitions/custom-transition';
+import { topmost, Color, NavigatedData } from 'tns-core-modules/ui/frame';
+import Login from './Login.vue';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
+import { UserProfile } from '~/services/AuthService';
 
 @Component({})
 export default class Profile extends BasePageComponent {
-    loading = false
-    accounts: any = []
+    loading = false;
+    userProfile: UserProfile = {} as any;
+
+
     constructor() {
-        super()
+        super();
+        this.userProfile = this.$authService.userPorfile || ({} as any);
     }
     mounted() {
-        super.mounted()
-        // this.refresh()
+        super.mounted();
     }
 
     refresh(args?) {
-        // if (args && args.object) {
-        //     args.object.refreshing = false
-        // }
-        // console.log("refreshing")
-        // this.loading = true
-        // this.$authService.getAccounts().then(r => {
-        //     console.log("got accounts", r)
-        //     const accounts = []
-        //     r.accounts.forEach(a => {
-        //         accounts.push({
-        //             balance: parseFloat(a.status.balance),
-        //             id: a.type.id.toString(),
-        //             name: a.type.name.toString()
-        //         })
-        //     })
-        //     console.log("got accounts done ", accounts)
-        //     this.accounts = new ObservableArray(accounts) as any
-        //     this.loading = false
-        // })
+        if (args && args.object) {
+            args.object.refreshing = false;
+        }
+        console.log('refreshing');
+        this.loading = true;
+        this.$authService
+            .getUserProfile()
+            .then(r => {
+                this.userProfile = r;
+                this.loading = false;
+            })
+            .catch(this.$showError);
     }
-    onNavigatingTo() {
-        // if (isAndroid) {
-        //     const page = this.page
-        //     // page.androidStatusBarBackground = null;
-        //     // page.androidStatusBarBackground = new Color(this.darkColor);
-        // }
+    onNavigatedTo(args: NavigatedData) {
+        if (!args.isBackNavigation) {
+            this.refresh();
+        }
     }
     // openMain() {
     //     this.$navigateTo(Login, { clearHistory: true })
@@ -65,5 +82,4 @@ export default class Profile extends BasePageComponent {
 }
 </script>
 <style lang="scss" scoped>
-
 </style>

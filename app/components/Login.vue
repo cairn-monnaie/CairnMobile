@@ -1,5 +1,5 @@
 <template>
-    <Page ref="page" class="page" actionBarHidden="true">
+    <Page ref="page" class="page" actionBarHidden  @navigatedTo="onNavigatedTo">
         <ScrollView class="pageContent">
             <StackLayout horizontalAlignment="center">
                 <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight">
@@ -13,9 +13,10 @@
 
                     <MDCTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
 
-                    <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" :error="passwordError" />
+                    <MDCTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
 
-                    <MDCButton :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="this.canValidate" />
+                    <MDCButton v-show="!loading" :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="this.canValidate" />
+                    <MDCActivityIndicator v-show="loading" :busy="loading" width="45" height="45"/>
                     <Label v-show="isLoggingIn" :text="'forgot_password' | L | titlecase" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 
@@ -31,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import BaseVueComponent from "./BaseVueComponent"
+import BasePageComponent from "./BasePageComponent"
 import { Component } from "vue-property-decorator"
 import { prompt } from "ui/dialogs"
 import { TextField } from "ui/text-field"
@@ -42,11 +43,12 @@ import { localize } from "nativescript-localize"
 import * as Animation from "~/animation"
 import { screenHeightDips } from "../variables"
 import { isIOS, isAndroid } from "tns-core-modules/platform/platform"
+import { NavigatedData } from 'tns-core-modules/ui/page/page';
 
 
 const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3
 @Component({})
-export default class Login extends BaseVueComponent {
+export default class Login extends BasePageComponent {
     isLoggingIn = true
     user = {
         username: "",
@@ -59,10 +61,12 @@ export default class Login extends BaseVueComponent {
     mailError?: string = null
     passwordError?: string = null
     canValidate = false
-    mounted() {
-        super.mounted()
-        // this.page.actionBarHidden = true
-        setTimeout(this.animateLogoView, 300) //delay for now as the first run is "jumping"
+
+
+    onNavigatedTo(args:NavigatedData) {
+        if (!args.isBackNavigation) {
+            setTimeout(this.animateLogoView, 300) //delay for now as the first run is "jumping"
+        }
     }
     animateLogoView() {
         const view = this.getRef("logoView")
@@ -117,22 +121,32 @@ export default class Login extends BaseVueComponent {
     }
 
     login() {
-        this.$authService
+        if (!this.canValidate) {
+            return this.$alert("missing_parameters")
+        }
+        this.loading = true
+        return this.$authService
             .login(this.user)
             // .then(() => {
             //     this.$navigateTo(App, { clearHistory: true })
             // })
             .catch(this.$showError)
+            .then(()=>this.loading = false)
     }
 
     register() {
+        if (!this.canValidate) {
+            return this.$alert("missing_parameters")
+        }
+        this.loading = true
         this.$authService
             .register(this.user)
             .then(() => {
-                this.$alert("Votre compte a éteé créé!")
+                this.$alert("account_created")
                 this.isLoggingIn = true
             })
             .catch(this.$showError)
+            .then(()=>this.loading = false)
     }
 
     forgotPassword() {
@@ -168,6 +182,8 @@ export default class Login extends BaseVueComponent {
     focusConfirmPassword() {
         if (!this.isLoggingIn) {
             this.confirmPasswordTF.focus()
+        } else {
+            this.submit();
         }
     }
 }

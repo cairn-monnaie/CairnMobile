@@ -1,13 +1,13 @@
 a<template>
     <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true">
-        <GridLayout rows="*, auto">
-            <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi" @loaded="tabviewLoaded">
+        <GridLayout rows="*, auto" iosOverflowSafeArea="true">
+            <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
                 <TabViewItem :title="'home' | L | titlecase">
                     <Frame>
                         <Home />
                     </Frame>
                 </TabViewItem>
-                <TabViewItem title="Second">
+                <TabViewItem :title="'profile' | L | titlecase ">
                     <Frame>
                         <Profile />
                     </Frame>
