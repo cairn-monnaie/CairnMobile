@@ -1,15 +1,25 @@
+// Add your native dependencies here:
+
+// Uncomment to add recyclerview-v7 dependency
+//dependencies {
+//	compile 'com.android.support:recyclerview-v7:+'
+//}
+
+
+// def userVer = getNpmVersion()
+// def googleVer = getGitVersion()
+
 android { 
+
   defaultConfig {  
+    // versionCode googleVer
     ndk {
       abiFilters.clear()
     }
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"  
-  }
-  dexOptions {
-      jumboMode true
-  }
+  }  
 
   splits {
     abi {
@@ -23,26 +33,38 @@ android {
       reset()
 
       // Specifies a list of ABIs that Gradle should create APKs for.
-      include "armeabi-v7a"//, "arm64-v8a"
+      include 'arm64-v8a', 'armeabi-v7a', 'x86'
       // include "armeabi-v7a"
 
       // Specifies that we do not want to also generate a universal APK that includes all ABIs.
-      universalApk false
+      universalApk true
     }
+  }
+  sourceSets {
+      main {
+          jniLibs.srcDirs = ["$projectDir/libs/jni", "$projectDir/snapshot-build/build/ndk-build/libs"]
+      }
   }
 }
 
-def settingsGradlePath
+project.ext.abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3]
 
-if(project.hasProperty("appResourcesPath")){
-    settingsGradlePath = "$project.appResourcesPath/Android/settings.gradle";
-} else {
-    settingsGradlePath = "$rootDir/../../app/App_Resources/Android/settings.gradle";
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter("ABI"), 0)
+        if (baseAbiVersionCode != null) {
+            output.versionCodeOverride = baseAbiVersionCode * 10000000 + variant.versionCode
+        }
+    }
+}
+// Ignore sourcemaps in release as they will be sent to bugsnap
+android.applicationVariants.all { variant ->
+  if (variant.buildType.name == 'release') {
+      variant.mergeAssets.doLast {
+          println("deleting source map files from variant")
+          delete(fileTree(dir: variant.mergeAssets.outputDir, includes: ['**/*.map']))
+      }
+  }
 }
 
-def settingsGradleFile = new File(settingsGradlePath);
-
-if(settingsGradleFile.exists())
-{
-    apply from: settingsGradleFile;
-}
+apply plugin: 'com.bugsnag.android.gradle'

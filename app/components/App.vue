@@ -1,86 +1,50 @@
-a<template>
-    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true">
-        <GridLayout rows="*, auto" iosOverflowSafeArea="true">
-            <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
-                <TabViewItem :title="'home' | L | titlecase">
-                    <Frame>
-                        <Home />
-                    </Frame>
-                </TabViewItem>
-                <TabViewItem :title="'profile' | L | titlecase ">
-                    <Frame>
-                        <Profile />
-                    </Frame>
-                </TabViewItem>
-            </TabView>
-            <!-- <BottomNavigation ref="bottomNavigation" row="1"  @tabSelected="onBottomNavigationTabSelected">
-                <BottomNavigationTab title="First" icon="logo"></BottomNavigationTab>
-                <BottomNavigationTab title="Second" icon="logo"></BottomNavigationTab>
-            </BottomNavigation> -->
-        </GridLayout>
-    </Page>
+<template>
+    <AppFrame :loggedIn="currentlyLoggedin">
+        <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true">
+            <MultiDrawer ref="drawer" :options="drawerOptions">
+                <GridLayout slot="left" rows="auto, *, auto" height="100%" backgroundColor="white">
+                    <ScrollView row="1" paddingTop="10" @tap="noop">
+                        <StackLayout ref="menu" @tap="noop">
+                            <GridLayout v-for="(item) in menuItems" :key="item.url" height="50" columns="50, *" class="menu" :active="isActiveUrl(item.url)">
+                                <Label col="0" class="menuIcon" :text="('mdi-' + item.icon) | fonticon" verticalAlignment="center" />
+                                <Label col="1" class="menuText" :text="item.title | titlecase" verticalAlignment="center" :active="activatedUrl  === item.url" />
+                                <MDRipple borderRadius="4" col="0" colSpan="2" @tap="onNavItemTap(item.url)" />
+                            </GridLayout>
+                        </StackLayout>
+                    </ScrollView>
+                    <StackLayout row="2" width="100%" padding="10">
+                        <StackLayout class="menuButtons" orientation="horizontal">
+                            <MDButton col="0" variant="flat" :text="'mdi-email' | fonticon" @tap="onTap('sendFeedback')" />
+                            <MDButton col="1" variant="flat" :text="'mdi-bug' | fonticon" @tap="onTap('sendBugReport')" />
+                        </StackLayout>
+                        <StackLayout class="menuInfos">
+                            <Label :text="'App version: ' + (appVersion || '')" />
+                            <!-- <Label :visibility="glassesVersion ? 'visible' : 'collapsed'" :text="'Glasses firmware: ' + glassesVersion" /> -->
+                            <!-- <Label :visibility="glassesSerialNumber ? 'visible' : 'collapsed'" :text="'Glasses Serial Number: ' + glassesSerialNumber" /> -->
+                        </StackLayout>
+                    </StackLayout>
+                </GridLayout>
+                <GridLayout rows="*, auto" iosOverflowSafeArea="true">
+                    <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
+                        <TabViewItem :title="'home' | L | titlecase">
+                            <Frame>
+                                <Home />
+                            </Frame>
+                        </TabViewItem>
+                        <TabViewItem :title="'profile' | L | titlecase ">
+                            <Frame>
+                                <Profile />
+                            </Frame>
+                        </TabViewItem>
+                    </TabView>
+                    <!-- <BottomNavigation ref="bottomNavigation" row="1" @tabSelected="onBottomNavigationTabSelected">
+                        <BottomNavigationTab :title="'home' | L | titlecase" icon="logo" />
+                        <BottomNavigationTab :title="'profile' | L | titlecase " icon="logo" />
+                    </BottomNavigation> -->
+                </GridLayout>
+            </MultiDrawer>
+        </Page>
+    </AppFrame>
 </template>
 
-<script lang="ts">
-import BaseVueComponent from "./BaseVueComponent"
-import Home from "./Home.vue"
-import Login from "./Login.vue"
-import Profile from "./Profile.vue"
-import { Component } from "vue-property-decorator"
-import { Frame } from "ui/frame/frame"
-import { TabView } from "ui/tab-view/tab-view"
-import Vue from "nativescript-vue"
-import { EventData } from "data/observable"
-
-@Component({
-    components: {
-        Home: Home,
-        Profile: Profile
-    }
-})
-export default class App extends BaseVueComponent {
-    selectedTabIndex: number = 0
-    constructor() {
-        super()
-    }
-    mounted() {
-        super.mounted()
-        this.page.actionBarHidden = true
-
-        // setTimeout(
-        //     () =>
-        //         this.$navigateTo(Login, {
-        //             animated: false
-        //         }),
-        //     0
-        // )
-    }
-    // onBottomNavigationTabSelected(e) {
-    //     console.log("onTabSelected", e.newIndex, this.selectedTabIndex)
-    //     this.selectedTabIndex = e.newIndex;
-    // }
-    // tabviewLoaded(args: EventData) {
-    //     var tabview = <any>args.object
-    //     if (this.$isAndroid) {
-    //         var tabViewgrid = tabview._grid
-    //         tabViewgrid.removeViewAt(0)
-    //     } else if (this.$isIOS) {
-    //         tabview._ios.tabBar.hidden = true
-    //     }
-    // }
-    getTabView() {
-        return this.getRef("tabView") as TabView
-    }
-    // getCurrenFrame() {
-    //     const tabView = this.getTabView();
-    //     return tabView.items[tabView.selectedIndex].getViewById('frame');
-    // }
-    onNavigatingTo() {
-        // this.$navigateTo(Login, {
-        //         animated: false
-        //     })
-        // setTimeout(() =>
-        //     this.$navigateBack(), 5000)
-    }
-}
-</script>
+<script lang="ts" src="./App.ts" />

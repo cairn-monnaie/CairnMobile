@@ -1,0 +1,12 @@
+.cairn-full_logo:before {
+  content: "\e903";
+}
+.cairn-currency:before {
+  content: "\e902";
+}
+.cairn-currency_light:before {
+  content: "\e901";
+}
+.cairn-logo:before {
+  content: "\e900";
+}

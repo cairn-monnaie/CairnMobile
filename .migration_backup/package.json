@@ -6,10 +6,10 @@
     "nativescript": {
         "id": "com.akylas.cairnmobile",
         "tns-android": {
-            "version": "6.0.0"
+            "version": "6.0.0-2019-05-16-172644-03"
         },
         "tns-ios": {
-            "version": "6.0.0"
+            "version": "6.0.0-2019-06-10-154118-03"
         }
     },
     "author": "Martin Guillon<martin.guillon@akylas.fr>",
@@ -35,7 +35,7 @@
         "nativescript-extendedinfo": "~1.0.6",
         "nativescript-gesturehandler": "0.0.5",
         "nativescript-gps": "^1.2.12",
-        "nativescript-htmllabel": "1.0.8",
+        "nativescript-htmllabel": "1.0.6",
         "nativescript-https": "^1.0.3",
         "nativescript-iqkeyboardmanager": "^1.5.1",
         "nativescript-localize": "~4.2.0",
@@ -51,7 +51,7 @@
         "nativescript-photoviewer": "^2.1.1",
         "nativescript-pulltorefresh": "^2.3.0",
         "nativescript-toasty": "^2.0.0",
-        "nativescript-ui-listview": "7.0.0",
+        "nativescript-ui-listview": "^6.4.2",
         "nativescript-vue-fab": "^1.0.13",
         "source-map-support": "^0.5.12",
         "tinycolor2": "^1.4.1",

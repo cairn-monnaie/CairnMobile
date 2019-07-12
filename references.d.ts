@@ -8,4 +8,14 @@ declare module "*.vue" {
 }
 declare module "*.scss";
 
+
+declare const gVars: {
+  isIOS: boolean;
+  isAndroid: boolean;
+  CARTO_TOKEN: string;
+  BUGNSAG: string;
+}
+
 declare const TNS_ENV;
+declare const LOG_LEVEL: string;
+declare const TEST_LOGS: string;

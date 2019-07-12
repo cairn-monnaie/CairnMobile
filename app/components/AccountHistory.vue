@@ -34,69 +34,15 @@
                         </v-template>
                     </ListView>
                 </PullToRefresh>
-                <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
+                <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
             </GridLayout>
         </StackLayout>
     </Page>
 </template>
 
-<script lang="ts">
-import BasePageComponent from './BasePageComponent';
-import { Component, Prop } from 'vue-property-decorator';
-import { isAndroid } from 'platform';
-import { CustomTransition } from '~/transitions/custom-transition';
-import { topmost, Color, NavigatedData } from 'tns-core-modules/ui/frame';
-import Login from './Login.vue';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { Transaction, AccountInfo } from '~/services/AuthService';
-
-@Component({})
-export default class AccountHistort extends BasePageComponent {
-    dataItems: ObservableArray<Transaction> = new ObservableArray();
-    @Prop({ required: true })
-    public accountInfo: AccountInfo;
-    constructor() {
-        super();
-    }
-    mounted() {
-        super.mounted();
-    }
-    refresh(args?) {
-        if (args && args.object) {
-            args.object.refreshing = false;
-        }
-        // console.log("refreshing")
-        this.loading = true;
-        this.$authService
-            .getAccountHistory(this.accountInfo.id)
-            .then(r => {
-                this.dataItems = new ObservableArray(r);
-                this.loading = false;
-            })
-            .catch(this.$showError);
-    }
-    onNavigatedTo(args: NavigatedData) {
-        if (!args.isBackNavigation) {
-            this.refresh();
-        }
-    }
-    onNavigatingTo() {
-        // if (isAndroid) {
-        //     const page = this.page
-        //     // page.androidStatusBarBackground = null;
-        //     // page.androidStatusBarBackground = new Color(this.darkColor);
-        // }
-    }
-    // openMain() {
-    //     this.$navigateTo(Login, { clearHistory: true })
-    // }
-    // openIn() {
-    // this.navigateTo(HomePage as any)
-    // }
-}
-</script>
+<script lang="ts" src="./AccountHistory.ts" />
 <style lang="scss" scoped>
-@import '../styles';
+@import '../app';
 
 .historyIcon {
     @extend .mdi;

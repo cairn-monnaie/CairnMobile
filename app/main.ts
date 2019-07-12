@@ -1,185 +1,140 @@
-const dev = TNS_ENV === 'development';
+import Vue from 'nativescript-vue';
+import { knownFolders } from 'tns-core-modules/file-system';
 
-import Vue, { registerElement } from 'nativescript-vue';
+import { getBuildNumber, getVersionName } from 'nativescript-extendedinfo';
+import { cerror, clog, cwarn } from '~/utils/logging';
+import { Client } from 'nativescript-bugsnag';
+import { setMapPosKeys } from 'nativescript-carto/core/core';
+import * as application from 'tns-core-modules/application';
 
-require('nativescript-platform-css');
+setMapPosKeys('lat', 'lon');
 
-import './styles.scss';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
+/* DEV-START */
+const currentApp = knownFolders.currentApp();
+require('source-map-support').install({
+    environment: 'node',
+    handleUncaughtExceptions: false,
+    retrieveSourceMap(source) {
+        const sourceMapPath = source + '.map';
+        const sourceMapRelativePath = sourceMapPath.replace('file://', '').replace(currentApp.path + '/', '');
 
-import AuthService, { LoggedinEvent, LoggedoutEvent } from './services/AuthService';
-
-export const authService = new AuthService();
-
-// if (TNS_ENV !== "production") {
-//   import("nativescript-vue-devtools").then(VueDevtools => Vue.use(VueDevtools));
-// }
-
-// Prints Vue logs when --env.production is *NOT* set while building
-Vue.config.silent = !dev;
-Vue.config['debug'] = dev;
-
-Vue.prototype.$authService = authService;
-
-authService.on(LoggedinEvent, () => {
-    Vue.prototype.$navigateTo(App, { clearHistory: true });
+        return {
+            url: sourceMapRelativePath + '/',
+            map: currentApp.getFile(sourceMapRelativePath).readTextSync()
+        };
+    }
 });
-authService.on(LoggedoutEvent, () => {
-    Vue.prototype.$navigateTo(Login, { clearHistory: true });
-});
+/* DEV-END */
 
-// import CollectionView from "nativescript-collectionview/vue";
-// Vue.use(CollectionView);
+if (TNS_ENV === 'production') {
+    const bugsnag = (Vue.prototype.$bugsnag = new Client());
+    Promise.all([getVersionName(), getBuildNumber()])
+        .then(result => {
+            console.log('did get Versions', result);
+            let fullVersion = result[0];
+            if (!/[0-9]+\.[0-9]+\.[0-9]+/.test(fullVersion)) {
+                fullVersion += '.0';
+            }
+            fullVersion += ` (${result[1]})`;
+            return bugsnag.init({ appVersion: result[0], apiKey: gVars.BUGNSAG, codeBundleId: result[1].toFixed(), automaticallyCollectBreadcrumbs: false, detectAnrs: false });
+        })
+        .then(() => {
+            bugsnag.enableConsoleBreadcrumbs();
+            bugsnag.handleUncaughtErrors();
+            console.log('bugsnag did init');
+        })
+        .catch(err => {
+            console.log('bugsnag  init failed', err);
+        });
+}
+
+import MixinsPlugin from './vue.mixins';
+Vue.use(MixinsPlugin);
+
 
 import { primaryColor } from './variables';
-import { themer } from '~/nativescript-material-components/material';
-import { alert } from '~/nativescript-material-components/dialog';
-if (isIOS) {
-    // material theme
-    console.log('setPrimaryColor', primaryColor);
+import { install, themer } from 'nativescript-material-core';
+import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
+import { install as installGestures } from 'nativescript-gesturehandler';
+if (gVars.isIOS) {
     themer.setPrimaryColor(primaryColor);
 }
+install();
+installBottomSheets();
+installGestures();
 
-import CActionBar from '~/components/CActionBar.vue';
 
-Vue.component('CActionBar', CActionBar);
+import ViewsPlugin from './vue.views';
+Vue.use(ViewsPlugin);
 
-registerElement('MDCButton', () => require('~/nativescript-material-components/button').Button);
-registerElement('MDCActivityIndicator', () => require('~/nativescript-material-components/activityindicator').ActivityIndicator);
-registerElement('CardView', () => require('~/nativescript-material-components/cardview').CardView);
-registerElement('HTMLLabel', () => require('~/nativescript-htmllabel/label').Label);
-registerElement('MDCTextField', () => require('~/nativescript-material-components/textfield').TextField, {
-    model: {
-        prop: 'text',
-        event: 'textChange'
-    }
-});
-registerElement('PullToRefresh', () => require('nativescript-pulltorefresh').PullToRefresh);
 
-registerElement('BottomNavigation', () => require('nativescript-bottom-navigation').BottomNavigation);
-registerElement('BottomNavigationTab', () => require('nativescript-bottom-navigation').BottomNavigationTab);
+let drawerInstance: MultiDrawer;
+export function getDrawerInstance() {
+    return drawerInstance;
+}
+export function setDrawerInstance(instance: MultiDrawer) {
+    drawerInstance = instance;
+}
 
-// registerElement(
-//     "PreviousNextView",
-//     () => require("nativescript-iqkeyboardmanager").PreviousNextView
-// )
 
-import RadListViewPlugin from 'nativescript-ui-listview/vue';
-Vue.use(RadListViewPlugin);
+// importing filters
+import FiltersPlugin from './vue.filters';
+Vue.use(FiltersPlugin);
 
-import App from '~/components/App.vue';
-import Login from '~/components/Login.vue';
+// adding to Vue prototype
+import PrototypePlugin from './vue.prototype';
+Vue.use(PrototypePlugin);
 
-// import { SVGImage } from '@teammaestro/nativescript-svg';
-// registerElement('SVGImage', () => SVGImage);
-
-import { fonticon, TNSFontIcon } from 'nativescript-fonticon';
+import { TNSFontIcon } from 'nativescript-akylas-fonticon';
+// TNSFontIcon.debug = true;
 TNSFontIcon.paths = {
-    mdi: './assets/mdi.css'
+    mdi: './assets/materialdesignicons.min.css',
+    cairn: './assets/cairn.css'
 };
-TNSFontIcon.loadCss();
-Vue.filter('fonticon', fonticon);
+TNSFontIcon.loadCssSync();
 
-import VueStringFilter from 'vue-string-filter/VueStringFilter';
-Vue.use(VueStringFilter);
+// application.on(application.uncaughtErrorEvent, args => {
+//     const error = args.error;
+//     // const nErrror = args.android as java.lang.Exception;
+//     // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
+//     // clog('nErrror', nErrror);
+//     clog('uncaughtErrorEvent', error);
+// });
+// application.on(application.discardedErrorEvent, args => {
+//     const error = args.error;
+//     // const nErrror = args.android as java.lang.Exception;
+//     // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
+//     // clog('nErrror', nErrror);
+//     clog('discardedErrorEvent', error);
+// });
 
-import { localize } from 'nativescript-localize';
-Vue.filter('L', localize);
+// import './app.scss'
 
-import { format, formatRelative } from 'date-fns';
-// import * as enLocale from 'date-fns/locale/en';
-import * as frLocale from 'date-fns/locale/fr';
+// Prints Vue logs when --env.production is *NOT* set while building
+// Vue.config.silent = !DEV_LOG;
+// Vue.config['debug'] = DEV_LOG;
+Vue.config.silent = false;
+Vue.config['debug'] = false;
 
-Vue.filter('date', function(value, formatStr?: string) {
-    if (value) {
-        return format(value, formatStr || '[Today is a] dddd', {
-            locale: frLocale
-        });
-    }
-});
-Vue.filter('dateRelative', function(value, formatStr?: string) {
-    if (value) {
-        return formatRelative(value, Date.now(), {
-            locale: frLocale
-        });
-    }
-});
-
-function formatCurrency(num, showZeroCents = true) {
-    // num = num.toString().replace(/\$|\,/g, '');
-    if (isNaN(num)) {
-        num = 0;
-    }
-    console.log('formatCurrency', num, num ===  Math.abs(num));
-    const sign = num ===  Math.abs(num);
-    num =  Math.abs(num);
-    num = Math.floor(num * 100 + 0.50000000001);
-    let cents: any = num % 100;
-    num = Math.floor(num / 100).toString();
-
-    if (cents < 10) {
-        cents = '0' + cents;
-    }
-    for (let i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
-        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
-    }
-
-    let result = (sign ? '' : '-') + num;
-    if (cents !== '00' || showZeroCents) {
-        result += '.' + cents;
-    }
-
-    return result;
-}
-
-Vue.filter('currency', function(value: number, showZeroCents = true) {
-    return formatCurrency(value, showZeroCents);
-});
-
-// Vue.directive('tkRadialGaugeScales', {
-//     inserted: function(el) {
-//       var scale = el._nativeView
-//       var gauge = el.parentNode._nativeView
-//       if (gauge.scales) {
-//         gauge.scales.push(scale)
-//       } else {
-//         gauge.scales = new observable_array.ObservableArray([scale])
-//       }
-//     }
-//   })
-
-Vue.prototype.$isAndroid = isAndroid;
-Vue.prototype.$isIOS = isIOS;
-const filters = (Vue.prototype.$filters = Vue['options'].filters);
-Vue.prototype.$ltc = function(s: string, ...args) {
-    return filters.titlecase(localize(s, ...args));
-};
-Vue.prototype.$luc = function(s: string, ...args) {
-    return filters.uppercase(localize(s, ...args));
-};
-Vue.prototype.$showError = function(err: Error) {
-    console.log('showError', err, err.toString());
-    return alert({
-        title: Vue.prototype.$ltc('error'),
-        okButtonText: Vue.prototype.$ltc('ok'),
-        message: err.toString()
-    });
-};
-Vue.prototype.$alert = function(message) {
-    return alert({
-        okButtonText: Vue.prototype.$ltc('ok'),
-        message
-    });
+Vue.config.errorHandler = (e, vm, info) => {
+    throw e;
 };
 
-const currentlyLoggedin = authService.isLoggedIn();
+Vue.config.warnHandler = function(msg, vm, trace) {
+    cwarn(msg, trace);
+};
 
-if (currentlyLoggedin) {
-    authService.login(); // login async to refresh token
-}
+/* DEV-START */
+// const VueDevtools = require('nativescript-vue-devtools');
+// Vue.use(VueDevtools
+// , { host: '192.168.1.43' }
+// );
+/* DEV-END */
 
+import App from '~/components/App';
+import MultiDrawer from './components/MultiDrawer';
 new Vue({
     render: h => {
-        return h('frame', [h(currentlyLoggedin ? App : Login)]);
+        return h(App);
     }
 }).$start();

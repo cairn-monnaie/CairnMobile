@@ -1,4 +1,7 @@
+// import * as http from 'tns-core-modules/http';
 import * as http from 'tns-core-modules/http';
+
+type HTTPOptions = http.HttpRequestOptions;
 import BackendService, { objectProperty, stringProperty } from './BackendService';
 // import firebase from 'nativescript-plugin-firebase'
 import { localize } from 'nativescript-localize';
@@ -26,10 +29,10 @@ function evalTemplateString(resource: string, obj: {}) {
     return new Function(...names, `return \`${resource}\`;`)(...vals);
 }
 
-const clientId = '1_5p4cdcuh4hkwgcokwgcwc0ooo0o800kscsksww40gw8cwkw448';
-const clientSecret = '1k4hh9wp7jq8okgss80w8gsso4scowgwgwg4kc4oo0g8844sos';
-const authority = 'https://moncompte.cairn-monnaie.com';
-const tokenEndpoint = '/oauth/v2/token';
+const clientId = '3_2gd9gnkf3pj4g4c0wkkwcsskskcwk40o8c4w8w8gko0o08gcog';
+const clientSecret = '2062ors5k8xwgsk8kw0gg48cg4swg40k8o04ogscg0ww8kc00w';
+const authority = 'https://test.cairn-monnaie.com';
+const tokenEndpoint = '/oauth/tokens';
 
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
@@ -65,7 +68,7 @@ export interface Transaction {
     transactionNumber: string;
 }
 
-export interface HttpRequestOptions extends http.HttpRequestOptions {
+export interface HttpRequestOptions extends HTTPOptions {
     queryParams?: {};
 }
 
@@ -189,6 +192,7 @@ export class CustomError extends Error {
         return JSON.stringify(this.toJSON());
     }
     toString = () => {
+        console.log('customError to string');
         return evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
         // return this.message || this.stack;
@@ -225,14 +229,13 @@ export class NoNetworkError extends CustomError {
 }
 export class HTTPError extends CustomError {
     statusCode: number;
-    errorMessage: string;
-    requestParams: http.HttpRequestOptions;
+    requestParams: HTTPOptions;
     constructor(
         props:
             | {
                 statusCode: number;
-                errorMessage: string;
-                requestParams: http.HttpRequestOptions;
+                message: string;
+                requestParams: HTTPOptions;
             }
             | HTTPError
     ) {
@@ -282,10 +285,11 @@ export default class AuthService extends BackendService {
         console.log('request', requestParams);
 
         return http.request(requestParams).then(response => {
+            // console.log('request response', response);
             if (response.statusCode !== 200) {
                 try {
                     const jsonReturn = JSON.parse(response.content.toString());
-                    console.log('request error', jsonReturn);
+                    // console.log('request error', jsonReturn, response.content);
                     if (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') {
                         // refresh token
                         if (retry === 2) {
@@ -298,13 +302,14 @@ export default class AuthService extends BackendService {
                     return Promise.reject(
                         new HTTPError({
                             statusCode: response.statusCode,
-                            errorMessage: error.error_description || error.message || error.error || error,
+                            message: error.error_description || error.message || error.error || error,
                             requestParams
                         })
                     );
                 } catch (e) {
-                    console.log('request error', response.content.toString());
-                    const match = /<title>(.*)<\/title>/.exec(response.content.toString());
+                    // error result might html
+                    // console.log('request error1', response.content, response.content.toString());
+                    const match = /<title>(.*)\n*<\/title>/.exec(response.content.toString());
                     if (match) {
                         // result = {
                         //     error: {}
@@ -315,7 +320,7 @@ export default class AuthService extends BackendService {
                         return Promise.reject(
                             new HTTPError({
                                 statusCode: response.statusCode,
-                                errorMessage: match[1],
+                                message: match[1],
                                 requestParams
                             })
                         );
@@ -323,7 +328,7 @@ export default class AuthService extends BackendService {
                     return Promise.reject(
                         new HTTPError({
                             statusCode: response.statusCode,
-                            errorMessage: 'HTTP error',
+                            message: 'HTTP error',
                             requestParams
                         })
                     );
@@ -332,30 +337,31 @@ export default class AuthService extends BackendService {
             return response.content.toJSON();
         });
     }
-    getUserId() {
-        return this.request({
-            url: authority + '/api/user.json',
-            method: 'GET'
-        }).then(result => {
-            this.userId = result.current_user_id + '';
-        });
-    }
+    // getUserId() {
+    //     return this.request({
+    //         url: authority + '/user.json',
+    //         method: 'GET'
+    //     }).then(result => {
+    //         this.userId = result.current_user_id + '';
+    //     });
+    // }
     getUserProfile() {
         return this.request({
-            url: authority + `/user/profile/view/${this.userId}.json`,
+            url: authority + `/mobile/users/${this.userId}`,
             method: 'GET'
         }).then(result => {
-            this.userPorfile = result.user;
+            let {creationDate , ...profile} = result
+            this.userPorfile = profile;
+            console.log(JSON.stringify(profile));
             return this.userPorfile;
         });
     }
     getAccounts(): Promise<AccountInfo[]> {
         return this.request({
-            url: authority + `/banking/accounts/overview/${this.userId}.json`,
+            url: authority + `/mobile/accounts.json`,
             method: 'GET'
         }).then(r => {
-            return r.accounts.map(a => {
-                console.log('test', parseFloat(a.status.balance));
+            return r.map(a => {
                 return {
                     balance: parseFloat(a.status.balance),
                     id: a.id.toString(),
@@ -366,7 +372,7 @@ export default class AuthService extends BackendService {
     }
     getAccountHistory(accountId: string): Promise<Transaction[]> {
         return this.request({
-            url: authority + `/banking/account/operations/${accountId}.json`,
+            url: authority + `/mobile/account/operations/${accountId}`,
             method: 'GET'
         }).then(r => {
             return r.transactions.map(t => {
@@ -393,20 +399,23 @@ export default class AuthService extends BackendService {
     getToken(user: LoginParams) {
         return this.request({
             url: authority + tokenEndpoint,
-            method: 'GET',
-            queryParams: {
+            method: 'POST',
+            content: JSON.stringify({
                 client_id: clientId,
                 client_secret: clientSecret,
                 grant_type: 'password',
                 username: user.username,
                 password: user.password
-            }
+            })
         })
             .then(result => {
                 this.token = result.access_token;
+                this.userId = result.user_id + '';
+
             })
             .catch(err => {
                 this.token = undefined;
+                console.error(err);
                 return Promise.reject(err);
             });
     }
@@ -417,7 +426,7 @@ export default class AuthService extends BackendService {
         const wasLoggedin = this.isLoggedIn();
         return this.getToken(user)
 
-            .then(() => this.getUserId())
+            // .then(() => this.getUserId())
             .then(() => {
                 this.loginParams = user;
                 if (!wasLoggedin) {

@@ -6,6 +6,14 @@ actionbar {
     color: white;
 }
 
+label,
+button,
+tabview,
+tabviewitem,
+mdbutton {
+    font-family: Roboto;
+}
+
 
 .page {
     background-color: $dark-color;
@@ -17,7 +25,7 @@ actionbar {
 
 label,
 htmllabel {
-    font-family: 'SF UI Text, Roboto';
+    // font-family: 'SF UI Text, Roboto';
     white-space: normal;
 }
 
@@ -28,12 +36,16 @@ button {
     // margin:4;
     // ripple-color: $primary-color;
 }
-mdcbutton {
+mdbutton {
     color: white;
     // background-color: $primary-color;
     // ripple-color: $primary-color;
 }
 
+mdtextfield {
+    highlight-color: $accent-color;
+    placeholder-color: $accent-color;
+}
 .mdi {
     font-family: "Material Design Icons";
 }
@@ -79,4 +91,35 @@ tabview {
     selected-tab-text-color: white;
     tab-background-color: $dark-color;
     android-selected-tab-highlight-color: $primary-color;
+}
+
+.actionBar {
+    background-color: $dark-color;
+}
+.actionBarBar {
+    height: $actionbar-height;
+}
+
+.actionBarButton {
+    @extend .mdi;
+    width: $actionbar-height;
+    height: $actionbar-height;
+    margin:0;
+    padding:0;
+    font-size: 32;
+    border-radius: $actionbar-height/2;
+    color: #ffffff;
+    ripple-color: #88ffffff;
+}
+
+.actionBarTitle {
+    vertical-alignment:center;
+    font-size: 18;
+    font-weight: bold;
+    color: white;
+}
+
+.actionBarSubtitle {
+    font-size: 13;
+    color: #88ffffff;
 }

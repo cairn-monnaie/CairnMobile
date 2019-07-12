@@ -2,7 +2,6 @@ const WebpackTemplate = require('nativescript-akylas-webpack-template');
 const { readFileSync } = require('fs');
 const { BugsnagSourceMapUploaderPlugin } = require('webpack-bugsnag-plugins');
 const NsVueTemplateCompiler = require('nativescript-vue-template-compiler');
-// returns a new object with the values at each key mapped using mapFn(value)
 
 // temporary hack to support v-model using ns-vue-template-compiler
 // See https://github.com/nativescript-vue/nativescript-vue/issues/371

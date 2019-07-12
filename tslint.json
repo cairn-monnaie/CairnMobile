@@ -18,6 +18,7 @@
                 }
             }
         ],
+        "no-floating-promises": false,
         "interface-name": false,
         "no-reference": false,
         "no-shadowed-variable": false,
@@ -95,6 +96,7 @@
             }
         ],
         "variable-name": [true, "allow-leading-underscore", "ban-keywords"],
-        "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-type"]
+        "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-type"],
+        "vue/no-parsing-error": ["error", { "x-invalid-end-tag": false }]
     }
 }

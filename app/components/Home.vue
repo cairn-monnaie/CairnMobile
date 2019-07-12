@@ -7,7 +7,7 @@
                     <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap" @itemLoading="onItemLoading" separatorColor="transparent">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
-                                <CardView margin="20" @onTap="onCardTap(item)">
+                                <MDCardView margin="20" @onTap="onCardTap(item)">
                                     <GridLayout padding="10" isUserInteractionEnabled="false" columns="*, auto">
                                         <StackLayout col="0">
                                             <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
@@ -18,107 +18,25 @@
                                         </StackLayout>
                                         <Label col="1" class="mdi" :text="'mdi-chevron-right' | fonticon" fontSize="30" color="gray" />
                                     </GridLayout>
-                                </CardView>
+                                </MDCardView>
                             </StackLayout>
                         </v-template>
                     </ListView>
                 </PullToRefresh>
-                <MDCActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
+                <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
             </GridLayout>
             <DockLayout row="2" width="100%" stretchLastChild="false">
                 <transition name="scale" :duration="200" mode="out-in">
-                    <MDCButton dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
+                    <MDButton dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
                 </transition>
             </DockLayout>
         </GridLayout>
     </Page>
 </template>
 
-<script lang="ts">
-import BasePageComponent from "./BasePageComponent"
-import { Component } from "vue-property-decorator"
-import { isAndroid } from "platform"
-import { CustomTransition } from "~/transitions/custom-transition"
-import { topmost, Color, NavigatedData } from "tns-core-modules/ui/frame"
-import { ItemEventData } from "tns-core-modules/ui/list-view"
-import Login from "./Login.vue"
-import AccountHistory from "./AccountHistory.vue"
-import { ObservableArray } from "tns-core-modules/data/observable-array/observable-array"
-import { AccountInfo } from "~/services/authService"
-
-@Component({})
-export default class Home extends BasePageComponent {
-    loading = true
-    accounts: ObservableArray<AccountInfo> = new ObservableArray()
-    constructor() {
-        super()
-    }
-    mounted() {
-        super.mounted()
-    }
-
-    onNavigatedTo(args: NavigatedData) {
-        if (!args.isBackNavigation) {
-            this.refresh()
-        }
-    }
-    onItemLoading(args) {
-        if (this.$isIOS) {
-            var newcolor = new Color(0, 255, 255, 255)
-            if (args.ios.backgroundView) {
-                args.ios.backgroundView.backgroundColor = newcolor.ios
-            }
-        }
-    }
-    onCardTap(accountInfo: AccountInfo) {
-        // console.log("onCardTap", accountInfo)
-        this.navigateTo(AccountHistory, {
-            props: {
-                accountInfo
-            }
-        })
-    }
-    onItemTap(args: ItemEventData) {
-        const accountInfo = this.accounts.getItem(args.index)
-        // console.log("onItemTap", args.index, JSON.stringify(accountInfo))
-        this.navigateTo(AccountHistory, {
-            props: {
-                accountInfo
-            }
-        })
-    }
-    refresh(args?) {
-        if (args && args.object) {
-            args.object.refreshing = false
-        }
-        console.log("refreshing")
-        this.loading = true
-        this.$authService
-            .getAccounts()
-            .then(r => {
-                console.log("got accounts", r)
-                this.accounts = new ObservableArray(r) as any
-                this.loading = false
-            })
-            .catch(this.$showError)
-    }
-    onNavigatingTo() {
-        // if (isAndroid) {
-        //     const page = this.page
-        //     // page.androidStatusBarBackground = null;
-        //     // page.androidStatusBarBackground = new Color(this.darkColor);
-        // }
-    }
-    // openMain() {
-    //     this.$navigateTo(Login, { clearHistory: true })
-    // }
-    // openIn() {
-    // this.navigateTo(HomePage as any)
-    // }
-}
-</script>
+<script lang="ts" src="./Home.ts" />
 <style lang="scss" scoped>
-@import "../styles";
+@import "../app";
 
 .balance {
     color: $primary-color;
