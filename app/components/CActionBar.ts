@@ -5,7 +5,7 @@ import { Frame, topmost } from 'tns-core-modules/ui/frame/frame';
 export default class CActionBar extends Vue {
     @Prop({})
     public title: string;
-    @Prop({ default: false })
+    @Prop({})
     public subtitle: string;
 
     @Prop({ default: false })

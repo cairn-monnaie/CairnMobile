@@ -23,15 +23,7 @@ import * as app from 'application';
 import { compose } from 'nativescript-email';
 import { prompt } from 'nativescript-material-dialogs';
 
-function fromFontIcon(
-    name: string,
-    style,
-    textColor: string ,
-    size: { width: number; height: number },
-    backgroundColor: string  = null,
-    borderWidth: number = 0,
-    borderColor: string  = null
-) {
+function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
     // Prevent application crash when passing size where width or height is set equal to or less than zero, by clipping width and height to a minimum of 1 pixel.
     if (size.width <= 0) {
@@ -49,14 +41,17 @@ function fromFontIcon(
     // stroke width expects a whole number percentage of the font size
     const strokeWidth = fontSize === 0 ? 0 : (-100 * borderWidth) / fontSize;
 
-    const attributedString = NSAttributedString.alloc().initWithStringAttributes(name, NSDictionary.dictionaryWithDictionary({
-        [NSFontAttributeName]: null,
-        [NSForegroundColorAttributeName]: textColor ? new Color(textColor).ios : null,
-        [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
-        [NSParagraphStyleAttributeName]: paragraph,
-        [NSStrokeWidthAttributeName]: strokeWidth,
-        [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
-    } as any));
+    const attributedString = NSAttributedString.alloc().initWithStringAttributes(
+        name,
+        NSDictionary.dictionaryWithDictionary({
+            [NSFontAttributeName]: null,
+            [NSForegroundColorAttributeName]: textColor ? new Color(textColor).ios : null,
+            [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
+            [NSParagraphStyleAttributeName]: paragraph,
+            [NSStrokeWidthAttributeName]: strokeWidth,
+            [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
+        } as any)
+    );
 
     UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
     attributedString.drawInRect(CGRectMake(0, (size.height - fontSize) / 2, size.width, fontSize));
@@ -85,7 +80,10 @@ export interface AppRefs extends BaseVueComponentRefs {
 }
 
 export enum ComponentIds {
-    Login = 'login'
+    Login = 'login',
+    Situation = 'situation',
+    Profile = 'profile',
+    Map = 'map'
 }
 // Settings = 'settings',
 // Pairing = 'pairing',
@@ -128,9 +126,9 @@ export default class App extends BaseVueComponent {
         // [ComponentIds.History]: {
         //     component: History
         // },
-        // [ComponentIds.Pairing]: {
-        //     component: Pairing
-        // },
+        [ComponentIds.Login]: {
+            component: Login
+        }
         // [ComponentIds.Map]: {
         //     component: Map
         // }
@@ -143,11 +141,23 @@ export default class App extends BaseVueComponent {
     get drawer() {
         return this.$refs.drawer && this.$refs.drawer;
     }
-    // get innerFrame() {
-    //     return this.$refs.innerFrame && this.$refs.innerFrame.nativeView;
-    // }
+    get innerFrame() {
+        return this.$refs.innerFrame && this.$refs.innerFrame.nativeView;
+    }
     get menuItems() {
-        const result = [];
+        const result = [{
+            title: 'situation',
+            icon: 'situation',
+            url: ComponentIds.Situation
+        }, {
+            title: 'profile',
+            icon: 'profile',
+            url: ComponentIds.Profile
+        }, {
+            title: 'map',
+            icon: 'map',
+            url: ComponentIds.Map
+        }];
 
         return result;
     }
@@ -169,14 +179,14 @@ export default class App extends BaseVueComponent {
         // this.page.actionBarHidden = true;
         setDrawerInstance(this.drawer);
 
-        if (gVars.isIOS && app.ios.window.safeAreaInsets) {
-            const bottomSafeArea: number = app.ios.window.safeAreaInsets.bottom;
-            if (bottomSafeArea > 0) {
-                app.addCss(`
-                  Button.button-bottom-nav { padding-bottom: ${bottomSafeArea} !important }
-              `);
-            }
-        }
+        // if (gVars.isIOS && app.ios.window.safeAreaInsets) {
+        //     const bottomSafeArea: number = app.ios.window.safeAreaInsets.bottom;
+        //     if (bottomSafeArea > 0) {
+        //         app.addCss(`
+        //           Button.button-bottom-nav { padding-bottom: ${bottomSafeArea} !important }
+        //       `);
+        //     }
+        // }
         // this.activatedUrl = '/pairing';
 
         // this.router.events.subscribe((event: NavigationEnd) => {
@@ -245,26 +255,26 @@ export default class App extends BaseVueComponent {
         this.closeDrawer();
     }
     onMenuIcon() {
-        // const canGoBack = this.canGoBack();
+        const canGoBack = this.canGoBack();
         // const canGoBack = this.innerFrame && this.innerFrame.canGoBack();
 
-        // if (canGoBack) {
-        // return this.navigateBack();
-        // } else {
-        // this.$emit('tapMenuIcon');
-        // const drawer = getDrawerInstance();
-        // if (drawer) {
-        if (this.drawer.isSideOpened()) {
-            this.drawer.close();
+        if (canGoBack) {
+            return this.navigateBack();
         } else {
-            this.drawer.open();
+            this.$emit('tapMenuIcon');
+            // const drawer = getDrawerInstance();
+            // if (drawer) {
+            if (this.drawer.isSideOpened()) {
+                this.drawer.close();
+            } else {
+                this.drawer.open();
+            }
+            // }
         }
-        // }
-        // }
     }
-    // canGoBack() {
-    //     return this.innerFrame && this.innerFrame.canGoBack();
-    // }
+    canGoBack() {
+        return this.innerFrame && this.innerFrame.canGoBack();
+    }
 
     isActiveUrl(id) {
         // this.log('isActiveUrl', id, this.activatedUrl);
@@ -295,27 +305,27 @@ export default class App extends BaseVueComponent {
         this.log('setActivatedUrl', id);
         this.handleSetActivatedUrl(id);
     }
-    // navigateBack(backEntry?) {
-    //     this.innerFrame && this.innerFrame.goBack(backEntry);
-    // }
-    // findNavigationUrlIndex(url) {
-    //     return this.innerFrame.backStack.findIndex(b => b.resolvedPage[navigateUrlProperty] === url);
-    // }
-    // navigateBackToUrl(url) {
-    //     const index = this.findNavigationUrlIndex(url);
-    //     console.log('navigateBackToUrl', url, index);
-    //     if (index === -1) {
-    //         console.log(url, 'not in backstack');
-    //         return;
-    //     }
-    //     this.navigateBack(this.innerFrame.backStack[index]);
-    // }
-    // navigateBackToRoot() {
-    //     const stack = this.innerFrame.backStack;
-    //     if (stack.length > 0) {
-    //         this.innerFrame && this.innerFrame.goBack(stack[0]);
-    //     }
-    // }
+    navigateBack(backEntry?) {
+        this.innerFrame && this.innerFrame.goBack(backEntry);
+    }
+    findNavigationUrlIndex(url) {
+        return this.innerFrame.backStack.findIndex(b => b.resolvedPage[navigateUrlProperty] === url);
+    }
+    navigateBackToUrl(url) {
+        const index = this.findNavigationUrlIndex(url);
+        console.log('navigateBackToUrl', url, index);
+        if (index === -1) {
+            console.log(url, 'not in backstack');
+            return;
+        }
+        this.navigateBack(this.innerFrame.backStack[index]);
+    }
+    navigateBackToRoot() {
+        const stack = this.innerFrame.backStack;
+        if (stack.length > 0) {
+            this.innerFrame && this.innerFrame.goBack(stack[0]);
+        }
+    }
     onNavItemTap(url: string, comp?: any): void {
         this.log('onNavItemTap', url);
         // this.navigateToUrl(url as any);
@@ -393,40 +403,38 @@ export default class App extends BaseVueComponent {
         }
     }
 
-    // navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
-    //     options = options || {};
-    //     // options.transition = options.transition || {
-    //     //     name: 'fade',
-    //     //     duration: 200,
-    //     //     curve: 'easeIn'
-    //     // },
-    //     (options as any).frame = options['frame'] || this.innerFrame.id;
-    //     return super.navigateTo(component, options, cb);
-    // }
-    // navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
-    //     if (this.isActiveUrl(url) || !this.routes[url]) {
-    //         return;
-    //     }
-    //     // options = options || {};
-    //     // options.props = options.props || {};
-    //     // options.props[navigateUrlProperty] = url;
-    //     console.log('navigateToUrl', url);
-    //     const index = this.findNavigationUrlIndex(url);
-    //     if (index === -1) {
-    //         this.navigateTo(this.routes[url].component, options);
-    //     } else {
-    //         this.navigateBackToUrl(url);
-    //     }
-    // }
-    goBackToLogin() {
-        if (this.loadingIndicator) {
-            this.loadingIndicator.hide();
-        }
-        // this.getPairingComponent().then(Pairing => {
-        // this.navigateToUrl(ComponentIds.Login, {
-        //     props: { autoConnect: false },
-        //     clearHistory: true
-        // });
-        // });
+    navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+        options = options || {};
+        // options.transition = options.transition || {
+        //     name: 'fade',
+        //     duration: 200,
+        //     curve: 'easeIn'
+        // },
+        (options as any).frame = options['frame'] || this.innerFrame.id;
+        return super.navigateTo(component, options, cb);
     }
+    navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+        if (this.isActiveUrl(url) || !this.routes[url]) {
+            return;
+        }
+        // options = options || {};
+        // options.props = options.props || {};
+        // options.props[navigateUrlProperty] = url;
+        console.log('navigateToUrl', url);
+        const index = this.findNavigationUrlIndex(url);
+        if (index === -1) {
+            this.navigateTo(this.routes[url].component, options);
+        } else {
+            this.navigateBackToUrl(url);
+        }
+    }
+    // goBackToLogin() {
+    //     if (this.loadingIndicator) {
+    //         this.loadingIndicator.hide();
+    //     }
+    //     this.navigateToUrl(ComponentIds.Login, {
+    //         // props: { autoConnect: false },
+    //         clearHistory: true
+    //     });
+    // }
 }

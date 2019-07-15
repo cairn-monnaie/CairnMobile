@@ -1,8 +1,8 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
-        <GridLayout rows="auto,*,70" class="pageContent">
+        <GridLayout rows="auto,*">
             <CActionBar row="0" title="home" />
-            <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*">
+            <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*" class="pageContent">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
                     <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap" @itemLoading="onItemLoading" separatorColor="transparent">
                         <v-template>
@@ -24,30 +24,16 @@
                     </ListView>
                 </PullToRefresh>
                 <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
-            </GridLayout>
-            <DockLayout row="2" width="100%" stretchLastChild="false">
-                <transition name="scale" :duration="200" mode="out-in">
-                    <MDButton dock="right" class="floating-btn buttonthemed" :text="'mdi-plus' | fonticon" v-show="!loading" />
+                <transition name="fade" duration="100">
+                    <Fab colSpan="3" rowSpan="3" iconClass="mdi" :icon="'mdi-plus' | fonticon" :iconOn="'mdi-close' | fonticon">
+                        <!-- <FabItem :title="$t('select_language') | titlecase" iconClass="mdi" :icon="'mdi-layers' | fonticon" @tap="selectLanguage" /> -->
+                        <!-- <FabItem :title="$t('select_style') | titlecase" iconClass="mdi" :icon="'mdi-layers' | fonticon" @tap="selectStyle" /> -->
+                        <!-- <FabItem :title="$t('offline_packages') | titlecase" iconClass="mdi" :icon="'mdi-earth' | fonticon" @tap="downloadPackages" /> -->
+                    </Fab>
                 </transition>
-            </DockLayout>
+            </GridLayout>
         </GridLayout>
     </Page>
 </template>
 
 <script lang="ts" src="./Home.ts" />
-<style lang="scss" scoped>
-@import "../app";
-
-.balance {
-    color: $primary-color;
-    font-size: 30;
-}
-.currency {
-    @extend .cairn;
-    font-size: 14;
-    font-weight: 900;
-    vertical-align: top;
-    padding-top: 5;
-    padding-left: 3;
-}
-</style>

@@ -90,10 +90,10 @@ export default class BaseVueComponent extends Vue {
             if (gVars.isIOS) {
                 page.backgroundSpanUnderStatusBar = true;
                 page.statusBarStyle = 'light';
-                // page.eachChildView(view => {
-                //     view.style.paddingTop = 0.00001;
-                //     return false;
-                // });
+                page.eachChildView(view => {
+                    view.style.paddingTop = 0.00001;
+                    return false;
+                });
             } else {
                 page.androidStatusBarBackground = null;
                 page.androidStatusBarBackground = new Color(this.darkColor);

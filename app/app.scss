@@ -1,5 +1,6 @@
 @import "./variables";
 @import "./animations";
+@import '../node_modules/nativescript-vue-fab/style.css';
 
 actionbar {
     background-color: $dark-color;
@@ -36,10 +37,10 @@ button {
     // margin:4;
     // ripple-color: $primary-color;
 }
-mdbutton {
+mdbutton[variant=undefined] {
     color: white;
-    // background-color: $primary-color;
-    // ripple-color: $primary-color;
+    background-color: $accent-color;
+    ripple-color: $accent-color-dark;
 }
 
 mdtextfield {
@@ -55,7 +56,7 @@ mdtextfield {
 }
 
 .themedBack {
-    background-color: $dark-color;
+    background-color: $primary-color;
 }
 
 .buttonwhite {
@@ -94,7 +95,8 @@ tabview {
 }
 
 .actionBar {
-    background-color: $dark-color;
+    // margin-top:0.0001;
+    background-color: $primary-color;
 }
 .actionBarBar {
     height: $actionbar-height;
@@ -122,4 +124,102 @@ tabview {
 .actionBarSubtitle {
     font-size: 13;
     color: #88ffffff;
+}
+
+
+.icon-btn {
+    @extend .mdi;
+    background-color: transparent;
+    ripple-color: white;
+    color: white;
+    width: 44;
+    height: 44;
+    font-size: 24;
+    margin: 0;
+    padding: 0;
+}
+
+.label-icon-btn {
+    @extend .mdi;
+    color: $text-color;
+    font-size: 24;
+    margin: 0;
+    padding: 0 4 0 4;
+}
+.menu {
+    background-color: #ffffff;
+    border-radius: 4;
+    margin-left: 10;
+    margin-right: 10;
+}
+
+.menuIcon {
+    @extend .mdi;
+    text-align: center;
+    font-size: 24;
+    color: $accent-color;
+}
+
+.menuText {
+    // font-weight: 400;
+    color: black;
+    font-size: 16;
+}
+
+.menu[active='true'] {
+    background-color: #ececec;
+}
+.menuText[active='true'] {
+    // color: $primary-color;
+}
+
+.menuInfos {
+    padding-left: 25;
+    padding-right: 25;
+}
+.menuInfos label {
+    font-size: 14;
+    horizontal-alignment: left;
+}
+
+.menuButtons {
+    padding-left: 12;
+    padding-right: 12;
+    margin-bottom: 10;
+}
+
+.menu-btn {
+    @extend .icon-btn;
+    border-radius: 22;
+    ripple-color: #b8b7b7;
+    color: $accent-color;
+}
+.menuButtons mdbutton {
+    @extend .menu-btn;
+}
+
+.historyIcon {
+    @extend .mdi;
+    // background-color:#eee;
+    text-align: center;
+    margin-left: 10;
+    margin-right: 10;
+    font-size: 30;
+    width: 40;
+    height: 40;
+    // border-radius: 20;
+}
+
+
+.balance {
+    color: $primary-color;
+    font-size: 30;
+}
+.currency {
+    @extend .cairn;
+    font-size: 14;
+    font-weight: 900;
+    vertical-align: top;
+    padding-top: 5;
+    padding-left: 3;
 }

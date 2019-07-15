@@ -1,6 +1,6 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
-        <StackLayout class="pageContent">
+        <StackLayout>
             <CActionBar title="profile">
                 <StackLayout verticalAlignment="center">
                     <GridLayout borderRadius="50" width="100" height="100" borderColor="white" borderWidth="3">
@@ -11,7 +11,7 @@
                     <Label :text="userProfile.email" paddingTop="5" paddingBottom="15" textAlignment="center" verticalAlignment="center" fontSize="16" color="#88ffffff" />
                 </StackLayout>
             </CActionBar>
-            <GridLayout columns="*,50,*" rows="*,50,*">
+            <GridLayout columns="*,50,*" rows="*,50,*" class="pageContent">
                 <ScrollView colSpan="3" rowSpan="3">
                     <StackLayout>
 

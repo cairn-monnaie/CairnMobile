@@ -1,6 +1,6 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
-        <StackLayout class="pageContent">
+        <StackLayout >
             <CActionBar title="account_history" :subtitle="accountInfo.name" canGoBack="true">
                 <StackLayout height="100" verticalAlignment="center" paddingLeft="60">
                     <Label :text="'balance' | L | titlecase" verticalAlignment="center" fontSize="14" color="#88ffffff" />
@@ -12,7 +12,7 @@
                     </Label>
                 </StackLayout>
             </CActionBar>
-            <GridLayout columns="*,50,*" rows="*,50,*">
+            <GridLayout columns="*,50,*" rows="*,50,*" class="pageContent">
                 <PullToRefresh @refresh="refresh" col="0" row="0" colSpan="3" rowSpan="3">
                     <ListView :items="dataItems" backgroundColor="transparent" separatorColor="transparent">
                         <v-template>
@@ -41,18 +41,3 @@
 </template>
 
 <script lang="ts" src="./AccountHistory.ts" />
-<style lang="scss" scoped>
-@import '../app';
-
-.historyIcon {
-    @extend .mdi;
-    // background-color:#eee;
-    text-align: center;
-    margin-left: 10;
-    margin-right: 10;
-    font-size: 30;
-    width: 40;
-    height: 40;
-    // border-radius: 20;
-}
-</style>

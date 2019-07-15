@@ -6,15 +6,19 @@ import { Color, NavigatedData, topmost } from 'tns-core-modules/ui/frame';
 import Login from './Login';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { UserProfile } from '~/services/AuthService';
+import { ComponentIds } from './App';
 
 @Component({})
 export default class Profile extends BasePageComponent {
+    navigateUrl = ComponentIds.Profile;
     loading = false;
-    userProfile: UserProfile = {} as any;
+    userProfile: UserProfile;
 
     constructor() {
         super();
-        this.userProfile = this.$authService.userPorfile || ({} as any);
+        this.userProfile = this.$authService.userPorfile || ({
+            image: 'https://moncompte.cairn-monnaie.com/bundles/cairnuser/img/usager.png'
+        } as any);
     }
     mounted() {
         super.mounted();

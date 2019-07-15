@@ -9,9 +9,11 @@ import AccountHistory from './AccountHistory';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { AccountInfo } from '~/services/authService';
 import Vue, { NativeScriptVue } from 'nativescript-vue';
+import { ComponentIds } from './App';
 
 @Component({})
 export default class Home extends BasePageComponent {
+    navigateUrl = ComponentIds.Situation;
     loading = true;
     accounts: ObservableArray<AccountInfo> = new ObservableArray();
     constructor() {
@@ -19,6 +21,10 @@ export default class Home extends BasePageComponent {
     }
     mounted() {
         super.mounted();
+    }
+    showError(err) {
+        this.loading = false;
+        this.$showError(err);
     }
 
     onNavigatedTo(args: NavigatedData) {
@@ -51,6 +57,7 @@ export default class Home extends BasePageComponent {
             }
         });
     }
+
     refresh(args?) {
         if (args && args.object) {
             args.object.refreshing = false;
@@ -64,7 +71,7 @@ export default class Home extends BasePageComponent {
                 this.accounts = new ObservableArray(r) as any;
                 this.loading = false;
             })
-            .catch(this.$showError);
+            .catch(this.showError);
     }
     onNavigatingTo() {
         // if (isAndroid) {

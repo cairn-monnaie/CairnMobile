@@ -1,6 +1,7 @@
-$primary-color: #895ecc;
-$accent-color: #895ecc;
-$dark-color: #5e3678;
+$primary-color: #F07254;
+$accent-color: #5F337A;
+$accent-color-dark: rgb(73, 40, 94);
+$dark-color: rgb(163, 78, 59);
 $background-color: #fff;
 $text-color: #262626;
 $text-color-sub: #666666;
@@ -10,6 +11,7 @@ $actionbar-button-height: 40;
 
 :export {
     accentColor: $accent-color;
+    accentColorDark: $accent-color-dark;
     primaryColor: $primary-color;
     darkColor: $dark-color;
     backgroundColor: $background-color;
