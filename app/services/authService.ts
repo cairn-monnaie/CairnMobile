@@ -289,7 +289,7 @@ export default class AuthService extends BackendService {
             if (response.statusCode !== 200) {
                 try {
                     const jsonReturn = JSON.parse(response.content.toString());
-                    // console.log('request error', jsonReturn, response.content);
+                    console.log('request error', jsonReturn, response.content);
                     if (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') {
                         // refresh token
                         if (retry === 2) {
@@ -350,7 +350,7 @@ export default class AuthService extends BackendService {
             url: authority + `/mobile/users/${this.userId}`,
             method: 'GET'
         }).then(result => {
-            let {creationDate , ...profile} = result
+            const { creationDate, ...profile } = result;
             this.userPorfile = profile;
             console.log(JSON.stringify(profile));
             return this.userPorfile;
@@ -371,9 +371,23 @@ export default class AuthService extends BackendService {
         });
     }
     getAccountHistory(accountId: string): Promise<Transaction[]> {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setMonth(endDate.getMonth() - 2);
         return this.request({
             url: authority + `/mobile/account/operations/${accountId}`,
-            method: 'GET'
+            content: JSON.stringify({
+                begin: startDate.toISOString(),
+                end: endDate.toISOString(),
+                // minAmount: '',
+                // maxAmount: '',
+                // keywords: '',
+                types: {
+                    '0': 'DEPOSIT'
+                },
+                orderBy: 'ASC'
+            }),
+            method: 'POST'
         }).then(r => {
             return r.transactions.map(t => {
                 return {
@@ -411,7 +425,6 @@ export default class AuthService extends BackendService {
             .then(result => {
                 this.token = result.access_token;
                 this.userId = result.user_id + '';
-
             })
             .catch(err => {
                 this.token = undefined;
@@ -424,22 +437,24 @@ export default class AuthService extends BackendService {
             return Promise.reject('missing_login_params');
         }
         const wasLoggedin = this.isLoggedIn();
-        return this.getToken(user)
+        return (
+            this.getToken(user)
 
-            // .then(() => this.getUserId())
-            .then(() => {
-                this.loginParams = user;
-                if (!wasLoggedin) {
-                    this.notify({
-                        eventName: LoggedinEvent,
-                        object: this
-                    });
-                }
-            })
-            .catch(err => {
-                this.onLoggedOut();
-                return Promise.reject(err);
-            });
+                // .then(() => this.getUserId())
+                .then(() => {
+                    this.loginParams = user;
+                    if (!wasLoggedin) {
+                        this.notify({
+                            eventName: LoggedinEvent,
+                            object: this
+                        });
+                    }
+                })
+                .catch(err => {
+                    this.onLoggedOut();
+                    return Promise.reject(err);
+                })
+        );
     }
 
     onLoggedOut() {
