@@ -39,6 +39,8 @@ const Plugin = {
 
         Vue.use(VueStringFilter);
 
+        Vue.filter('concat', (value, ln) => `${value} ${ln}`);
+        Vue.filter('preconcat', (value, ln) => `${ln} ${value}`);
         Vue.filter('L', localize);
 
         Vue.filter('currency', function(value: number, showZeroCents = true) {

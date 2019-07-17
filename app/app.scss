@@ -15,6 +15,9 @@ mdbutton {
     font-family: Roboto;
 }
 
+mdactivityindicator {
+    color: $primary-color;
+}
 
 .page {
     background-color: $dark-color;
@@ -37,7 +40,7 @@ button {
     // margin:4;
     // ripple-color: $primary-color;
 }
-mdbutton[variant=undefined] {
+mdbutton[variant=contained] {
     color: white;
     background-color: $accent-color;
     ripple-color: $accent-color-dark;
@@ -48,7 +51,7 @@ mdtextfield {
     placeholder-color: $accent-color;
 }
 .mdi {
-    font-family: "Material Design Icons";
+    font-family: 'Material Design Icons', 'MaterialDesignIcons', 'materialdesignicons-webfont';
 }
 
 .cairn {
@@ -97,9 +100,9 @@ tabview {
 .actionBar {
     // margin-top:0.0001;
     background-color: $primary-color;
+    height: $actionbar-height;
 }
 .actionBarBar {
-    height: $actionbar-height;
 }
 
 .actionBarButton {
@@ -212,7 +215,7 @@ tabview {
 
 
 .balance {
-    color: $primary-color;
+    color: $accent-color;
     font-size: 30;
 }
 .currency {

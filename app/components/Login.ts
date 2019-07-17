@@ -3,7 +3,7 @@ import BasePageComponent from './BasePageComponent';
 import { prompt } from 'ui/dialogs';
 import { TextField } from 'ui/text-field';
 import Vue from 'nativescript-vue';
-import App from './App';
+import App, { ComponentIds } from './App';
 import { Component } from 'vue-property-decorator';
 import { localize } from 'nativescript-localize';
 import * as Animation from '~/animation';
@@ -14,6 +14,7 @@ import { NavigatedData } from 'tns-core-modules/ui/page/page';
 const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3;
 @Component({})
 export default class Login extends BasePageComponent {
+    navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
         username: 'gjanssens',
@@ -26,7 +27,12 @@ export default class Login extends BasePageComponent {
     mailError?: string = null;
     passwordError?: string = null;
     canLoginOrRegister = false;
-
+    destroyed() {
+        super.destroyed();
+    }
+    mounted() {
+        super.mounted();
+    }
     onLoaded(args: NavigatedData) {
         this.checkForm();
         if (!args.isBackNavigation) {
@@ -43,6 +49,20 @@ export default class Login extends BasePageComponent {
                 // Object.assign(view.style, object)
             })
             .start();
+    }
+    animateLogoViewOut() {
+        // const view = this.getRef('logoView');
+        return new Promise(resolve => {
+            new Animation.Animation({ height: 200 })
+                .to({ height: 68 }, 1000)
+                .easing(Animation.Easing.Elastic.Out)
+                .onComplete(resolve)
+                .onUpdate(object => {
+                    this.logoViewHeight = object.height;
+                    // Object.assign(view.style, object)
+                })
+                .start();
+        });
     }
     toggleForm() {
         this.isLoggingIn = !this.isLoggingIn;
@@ -90,17 +110,22 @@ export default class Login extends BasePageComponent {
             return this.$alert('missing_parameters');
         }
         this.loading = true;
+        this.animateLogoViewOut();
         return (
             this.$authService
                 .login(this.user)
                 // .then(() => {
                 //     this.$navigateTo(App, { clearHistory: true })
                 // })
-                .catch(this.$showError)
-                .then(() => (this.loading = false))
+                .catch(err => {
+                    this.animateLogoView();
+                    this.$showError(err);
+                })
+                .then(() => {
+                    // this.loading = false;
+                })
         );
     }
-
     register() {
         if (!this.canLoginOrRegister) {
             return this.$alert('missing_parameters');

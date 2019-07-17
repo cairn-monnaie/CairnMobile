@@ -9,4 +9,10 @@ export default class BasePageComponent extends BaseVueComponent {
         (options as any).frame = topmost().id;
         return this.$navigateTo(component, options, cb);
     }
+    destroyed() {
+        super.destroyed();
+    }
+    mounted() {
+        super.mounted();
+    }
 }

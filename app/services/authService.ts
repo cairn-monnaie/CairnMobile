@@ -5,6 +5,7 @@ type HTTPOptions = http.HttpRequestOptions;
 import BackendService, { objectProperty, stringProperty } from './BackendService';
 // import firebase from 'nativescript-plugin-firebase'
 import { localize } from 'nativescript-localize';
+import dayjs from 'dayjs';
 
 // function evalMessageInContext(message: string, data) {
 //     console.log('evalMessageInContext', message, this);
@@ -24,6 +25,9 @@ import { localize } from 'nativescript-localize';
 //     return new Function(...names, `return \`${str}\`;`)(...vals);
 //   }
 function evalTemplateString(resource: string, obj: {}) {
+    if (!obj) {
+        return resource;
+    }
     const names = Object.keys(obj);
     const vals = Object.keys(obj).map(key => obj[key]);
     return new Function(...names, `return \`${resource}\`;`)(...vals);
@@ -56,16 +60,41 @@ export interface AccountInfo {
     id: string;
     name: string;
 }
+
+export enum TransactionType {
+    TRANSACTION_EXECUTED = 1, // virement exécuté)
+    TRANSACTION_SCHEDULED, // virement programmé, en attente )
+    CONVERSION_BDC, // conversion physique)
+    CONVERSION_HELLOASSO, // conversion par virement helloasso)
+    DEPOSIT, // dépôt)
+    WITHDRAWAL, // retrait)
+    SCHEDULED_FAILED, // virement programmé échoué)
+    SMS_PAYMENT, // paiement par SMS)
+    ONLINE_PAYMENT // achat en ligne)
+}
 export interface Transaction {
-    to: AccountInfo;
-    from: AccountInfo;
-    nature: string;
-    id: string;
-    name: string;
+    credit: boolean;
+    smsPayment: boolean;
+    id: number;
+    type: TransactionType;
+    paymentID: string;
+    submissionDate: number;
+    creditorame: string;
     description: string;
-    date: string;
-    amount: string;
-    transactionNumber: string;
+    reason: string;
+    amount: number;
+    fromAccountNumber: string;
+    toAccountNumber: string;
+    creditor: {
+        name: string;
+        id: number;
+    };
+    creditorName: string;
+    debitor: {
+        name: string;
+        id: number;
+    };
+    debitorName: string;
 }
 
 export interface HttpRequestOptions extends HTTPOptions {
@@ -192,8 +221,10 @@ export class CustomError extends Error {
         return JSON.stringify(this.toJSON());
     }
     toString = () => {
-        console.log('customError to string');
-        return evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
+        console.log('customError to string', this.message, this.assignedLocalData, localize);
+        const result = evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
+        console.log('customError to string2', result);
+        return result
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
         // return this.message || this.stack;
     }
@@ -289,7 +320,7 @@ export default class AuthService extends BackendService {
             if (response.statusCode !== 200) {
                 try {
                     const jsonReturn = JSON.parse(response.content.toString());
-                    console.log('request error', jsonReturn, response.content);
+                    console.log('request error', response.statusCode, jsonReturn, response.content);
                     if (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') {
                         // refresh token
                         if (retry === 2) {
@@ -301,7 +332,7 @@ export default class AuthService extends BackendService {
                     const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
                     return Promise.reject(
                         new HTTPError({
-                            statusCode: response.statusCode,
+                            statusCode: error.code || response.statusCode,
                             message: error.error_description || error.message || error.error || error,
                             requestParams
                         })
@@ -371,14 +402,13 @@ export default class AuthService extends BackendService {
         });
     }
     getAccountHistory(accountId: string): Promise<Transaction[]> {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setMonth(endDate.getMonth() - 2);
         return this.request({
             url: authority + `/mobile/account/operations/${accountId}`,
             content: JSON.stringify({
-                begin: startDate.toISOString(),
-                end: endDate.toISOString(),
+                begin: dayjs()
+                    .subtract(2, 'month')
+                    .format('YYYY-MM-DD'),
+                end: dayjs().format('YYYY-MM-DD'),
                 // minAmount: '',
                 // maxAmount: '',
                 // keywords: '',
@@ -389,24 +419,12 @@ export default class AuthService extends BackendService {
             }),
             method: 'POST'
         }).then(r => {
-            return r.transactions.map(t => {
-                return {
-                    to: {
-                        id: t.type.to.id.toString(),
-                        name: t.type.to.name.toString()
-                    },
-                    from: {
-                        id: t.type.from.id.toString(),
-                        name: t.type.from.name.toString()
-                    },
-                    nature: t.transactionNature.toString(),
-                    id: t.transactionId.toString(),
-                    name: t.type.name.toString(),
-                    description: t.description.toString(),
-                    date: t.date.toString(),
-                    amount: parseFloat(t.amount),
-                    transactionNumber: t.transactionNumber.toString()
-                };
+            return r.map(t => {
+                t.submissionDate = t.submissionDate.timestamp * 1000;
+                t.executionDate = t.executionDate.timestamp * 1000;
+                t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
+                console.log(t);
+                return t as Transaction;
             });
         });
     }

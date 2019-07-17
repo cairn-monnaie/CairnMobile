@@ -79,11 +79,11 @@ export default class BaseVueComponent extends Vue {
         }
     }
     mounted() {
-        this.log('mounted', this.nativeView, this['navigateUrl']);
         if (this.nativeView && this['navigateUrl']) {
             this.nativeView['navigateUrl'] = this['navigateUrl'];
         }
         const page = this.page;
+        this.log('mounted', this.nativeView, this['navigateUrl'], !!page);
         if (page) {
             // clog(this.constructor.name, 'mounted', page)
             page.actionBarHidden = true;

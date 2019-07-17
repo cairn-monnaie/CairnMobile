@@ -20,6 +20,9 @@ export default class Profile extends BasePageComponent {
             image: 'https://moncompte.cairn-monnaie.com/bundles/cairnuser/img/usager.png'
         } as any);
     }
+    destroyed() {
+        super.destroyed();
+    }
     mounted() {
         super.mounted();
     }

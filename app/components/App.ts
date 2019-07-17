@@ -17,6 +17,7 @@ import Home from './Home';
 import MultiDrawer, { OptionsType } from './MultiDrawer';
 import Profile from './Profile';
 import Login from './Login';
+// import Map from './Map';
 import AppFrame from './AppFrame';
 import { LoggedinEvent, LoggedoutEvent } from '~/services/AuthService';
 import * as app from 'application';
@@ -94,6 +95,7 @@ export const navigateUrlProperty = 'navigateUrl';
 @Component({
     components: {
         Home,
+        Login,
         Profile,
         MultiDrawer,
         AppFrame
@@ -101,41 +103,69 @@ export const navigateUrlProperty = 'navigateUrl';
 })
 export default class App extends BaseVueComponent {
     $refs: AppRefs;
-    drawerOptions: OptionsType = {
-        // top: {
-        //     height: '100%',
-        //     animation: {
-        //         openDuration: 150,
-        //         closeDuration: 150
-        //     },
-        //     swipeOpenTriggerHeight: 30,
-        //     swipeOpenTriggerMinDrag: 20,
-        //     swipeCloseTriggerMinDrag: 30
-        // }
-        left: {
-            swipeOpenTriggerWidth: 5
+    // drawerOptions: OptionsType = {
+    //     // top: {
+    //     //     height: '100%',
+    //     //     animation: {
+    //     //         openDuration: 150,
+    //     //         closeDuration: 150
+    //     //     },
+    //     //     swipeOpenTriggerHeight: 30,
+    //     //     swipeOpenTriggerMinDrag: 20,
+    //     //     swipeCloseTriggerMinDrag: 30
+    //     // }
+    //     left: {
+    //         swipeOpenTriggerWidth: 5
+    //     }
+    // };
+
+    get drawerOptions() {
+        console.log('drawerOptions', this.currentlyLoggedIn);
+        if (this.currentlyLoggedIn) {
+            return {
+                // top: {
+                //     height: '100%',
+                //     animation: {
+                //         openDuration: 150,
+                //         closeDuration: 150
+                //     },
+                //     swipeOpenTriggerHeight: 30,
+                //     swipeOpenTriggerMinDrag: 20,
+                //     swipeCloseTriggerMinDrag: 30
+                // }
+                left: {
+                    swipeOpenTriggerWidth: 10
+                }
+            }
+        } else {
+            return {
+                left: {
+                    swipeOpenTriggerWidth: 0
+                }
+            };
         }
-    };
+    }
     protected routes: { [k: string]: { component: typeof Vue } } = {
-        // [ComponentIds.Activity]: {
-        //     component: Home
-        // },
+        [ComponentIds.Situation]: {
+            component: Home
+        },
         // [ComponentIds.Settings]: {
         //     component: Settings
         // },
-        // [ComponentIds.History]: {
-        //     component: History
-        // },
+        [ComponentIds.Profile]: {
+            component: Profile
+        },
         [ComponentIds.Login]: {
             component: Login
-        }
+        },
         // [ComponentIds.Map]: {
         //     component: Map
         // }
     };
     selectedTabIndex: number = 0;
     public activatedUrl = '';
-    public currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
+    public loggedInOnStart = Vue.prototype.$authService.isLoggedIn();
+    public currentlyLoggedIn = Vue.prototype.$authService.isLoggedIn();
 
     public appVersion: string;
     get drawer() {
@@ -145,26 +175,31 @@ export default class App extends BaseVueComponent {
         return this.$refs.innerFrame && this.$refs.innerFrame.nativeView;
     }
     get menuItems() {
-        const result = [{
-            title: 'situation',
-            icon: 'situation',
-            url: ComponentIds.Situation
-        }, {
-            title: 'profile',
-            icon: 'profile',
-            url: ComponentIds.Profile
-        }, {
-            title: 'map',
-            icon: 'map',
-            url: ComponentIds.Map
-        }];
+        const result = [
+            {
+                title: 'situation',
+                icon: 'bank',
+                url: ComponentIds.Situation
+            },
+            {
+                title: 'profile',
+                icon: 'account',
+                url: ComponentIds.Profile
+            },
+            {
+                title: 'map',
+                icon: 'map',
+                url: ComponentIds.Map
+            }
+        ];
 
         return result;
     }
 
     constructor() {
         super();
-        const currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
+        this.log('loggedInOnStart', this.loggedInOnStart)
+        // this.currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
         this.$setAppComponent(this);
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
     }
@@ -194,17 +229,22 @@ export default class App extends BaseVueComponent {
         //         this.activatedUrl = event.urlAfterRedirects;
         //     }
         // });
-        // this.innerFrame.on(Page.navigatingToEvent, this.onPageNavigation, this);
+        this.innerFrame.on(Page.navigatingToEvent, this.onPageNavigation, this);
 
         const authService = Vue.prototype.$authService;
 
         authService.on(LoggedinEvent, () => {
-            this.currentlyLoggedin = true;
-            // Vue.prototype.$navigateTo(App, { clearHistory: true });
+            this.currentlyLoggedIn = true;
+            console.log('LoggedinEvent');
+            this.navigateToUrl(ComponentIds.Situation, {
+                // props: { autoConnect: false },
+                clearHistory: true
+            });
         });
         authService.on(LoggedoutEvent, () => {
-            this.currentlyLoggedin = false;
-            // Vue.prototype.$navigateTo(Login, { clearHistory: true });
+            this.currentlyLoggedIn = false;
+            console.log('LoggedoutEvent');
+            this.goBackToLogin();
         });
     }
     // onBottomNavigationTabSelected(e) {
@@ -400,6 +440,9 @@ export default class App extends BaseVueComponent {
                     }
                 });
                 break;
+                case 'logout':{
+                    this.$authService.logout();
+                }
         }
     }
 
@@ -414,6 +457,7 @@ export default class App extends BaseVueComponent {
         return super.navigateTo(component, options, cb);
     }
     navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+        console.log('navigateToUrl', url, this.activatedUrl, this.routes[url]);
         if (this.isActiveUrl(url) || !this.routes[url]) {
             return;
         }
@@ -428,13 +472,13 @@ export default class App extends BaseVueComponent {
             this.navigateBackToUrl(url);
         }
     }
-    // goBackToLogin() {
-    //     if (this.loadingIndicator) {
-    //         this.loadingIndicator.hide();
-    //     }
-    //     this.navigateToUrl(ComponentIds.Login, {
-    //         // props: { autoConnect: false },
-    //         clearHistory: true
-    //     });
-    // }
+    goBackToLogin() {
+        if (this.loadingIndicator) {
+            this.loadingIndicator.hide();
+        }
+        this.navigateToUrl(ComponentIds.Login, {
+            // props: { autoConnect: false },
+            clearHistory: true
+        });
+    }
 }

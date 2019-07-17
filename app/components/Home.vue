@@ -1,7 +1,7 @@
 <template>
     <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
         <GridLayout rows="auto,*">
-            <CActionBar row="0" title="home" />
+            <CActionBar row="0" showMenuIcon="true"/>
             <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*" class="pageContent">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
                     <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap" @itemLoading="onItemLoading" separatorColor="transparent">
@@ -26,7 +26,7 @@
                 <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
                 <transition name="fade" duration="100">
                     <Fab colSpan="3" rowSpan="3" iconClass="mdi" :icon="'mdi-plus' | fonticon" :iconOn="'mdi-close' | fonticon">
-                        <!-- <FabItem :title="$t('select_language') | titlecase" iconClass="mdi" :icon="'mdi-layers' | fonticon" @tap="selectLanguage" /> -->
+                        <FabItem :title="$t('transfer') | titlecase" iconClass="mdi" :icon="'mdi-bank-transfer' | fonticon"/>
                         <!-- <FabItem :title="$t('select_style') | titlecase" iconClass="mdi" :icon="'mdi-layers' | fonticon" @tap="selectStyle" /> -->
                         <!-- <FabItem :title="$t('offline_packages') | titlecase" iconClass="mdi" :icon="'mdi-earth' | fonticon" @tap="downloadPackages" /> -->
                     </Fab>

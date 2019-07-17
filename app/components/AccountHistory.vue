@@ -1,8 +1,9 @@
 <template>
-    <Page ref="page" class="page" @navigatedTo="onNavigatedTo">
-        <StackLayout >
-            <CActionBar title="account_history" :subtitle="accountInfo.name" canGoBack="true">
-                <StackLayout height="100" verticalAlignment="center" paddingLeft="60">
+    <Page ref="page" class="page" @loaded="onLoaded">
+        <StackLayout>
+            <CActionBar title="account_history" :subtitle="accountInfo.name" />
+            <GridLayout columns="*,50,*" rows="auto,*,50,*" class="pageContent">
+                <StackLayout height="100" row="0" colSpan="3" verticalAlignment="top" paddingLeft="60" :backgroundColor="themeColor">
                     <Label :text="'balance' | L | titlecase" verticalAlignment="center" fontSize="14" color="#88ffffff" />
                     <Label verticalAlignment="center" fontSize="30" color="white">
                         <FormattedString>
@@ -11,30 +12,28 @@
                         </FormattedString>
                     </Label>
                 </StackLayout>
-            </CActionBar>
-            <GridLayout columns="*,50,*" rows="*,50,*" class="pageContent">
-                <PullToRefresh @refresh="refresh" col="0" row="0" colSpan="3" rowSpan="3">
-                    <ListView :items="dataItems" backgroundColor="transparent" separatorColor="transparent">
+                <PullToRefresh @refresh="refresh" col="0" row="1" colSpan="3" rowSpan="2">
+                    <ListView :items="dataItems" backgroundColor="transparent" separatorColor="transparent" rowHeight="80">
                         <v-template>
-                            <GridLayout width="100%" columns="*,auto" rows="auto,1">
+                            <GridLayout width="100%" columns="*,auto" rows="auto,*" padding="16" borderBottomWidth="1" borderBottomColor="lightgray">
                                 <!-- <Label col="0" class="historyIcon" :text="item.nature ==='PAYMENT'?'mdi-trending-up':'mdi-trending-down' | fonticon" :color="item.nature ==='PAYMENT'?'#8BB844':'#FC5457'" /> -->
-                                <StackLayout col="0" margin="16 0 10 16">
-                                    <Label :text="item.name"  fontSize="16" lineHeight="7" />
-                                    <HTMLLabel fontSize="14" color="#6F6F6F" lineHeight="2" maxLines="3" whiteSpace="nowrap" padding="0 0 0 -4">
-                                        <Span fontWeight="bold" :text="item.nature ==='PAYMENT'? item.from.name : item.to.name" color="black"></Span>
-                                        <Span :text="' - ' +  item.description"></Span>
-                                    </HTMLLabel>
-                                </StackLayout>
-                                <DockLayout rowSpan="2" col="1" margin="16 16 10 0">
-                                    <Label dock="top" :text="item.date | dateRelative" fontSize="14" color="#6F6F6F" />
-                                    <Label dock="bottom" horizontalAlignment="right" verticalAlignment="bottom" fontWeight="bold" :text="item.amount | currency" fontSize="16" :color="item.nature ==='PAYMENT'?'#8BB844':'#FC5457'" />
-                                </DockLayout>
-                                <StackLayout colSpan="2" row="1" marginLeft="16" backgroundColor="lightgray" />
+                                <!-- <StackLayout col="0" margin="16 0 10 16"> -->
+                                <Label verticalAlignment="top" row="1" :text="item.reason" fontSize="14" lineHeight="7" />
+                                <HTMLLabel verticalAlignment="top" row="0" fontSize="14" color="#6F6F6F" lineHeight="2" maxLines="3" whiteSpace="nowrap">
+                                    <Span fontWeight="bold" :text="item.credit ? item.debitorName : item.creditorName" color="black"></Span>
+                                    <Span :text="' - ' +  item.description"></Span>
+                                </HTMLLabel>
+                                <!-- </StackLayout> -->
+                                <!-- <DockLayout rowSpan="2" col="1" margin="16 16 10 0"> -->
+                                <Label col="1" row="0" verticalAlignment="bottom" :text="item.submissionDate | dateRelative" fontSize="14" color="#6F6F6F" />
+                                <Label col="1" row="1" horizontalAlignment="right" verticalAlignment="bottom" fontWeight="bold" :text=" item.amount | currency | preconcat '+'  " fontSize="16" :color="item.credit ? accentColor : '#FC5457'" />
+                                <!-- </DockLayout> -->
+                                <!-- <StackLayout colSpan="2" row="2"  marginLeft="16" backgroundColor="lightgray" /> -->
                             </GridLayout>
                         </v-template>
                     </ListView>
                 </PullToRefresh>
-                <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
+                <MDActivityIndicator v-show="loading" row="2" col="1" :busy="loading" />
             </GridLayout>
         </StackLayout>
     </Page>

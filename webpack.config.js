@@ -72,6 +72,7 @@ module.exports = env => {
             targetArchs: ['arm', 'arm64', 'ia32']
         },
         alias: {
+            'nativescript-pulltorefresh': 'nativescript-akylas-pulltorefresh',
             'nativescript-vue': 'nativescript-akylas-vue',
             vue: 'nativescript-vue'
         },

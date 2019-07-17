@@ -47,12 +47,12 @@ const Plugin = {
             return filters.uppercase(localize(s, ...args));
         };
         Vue.prototype.$showError = function(err: Error) {
-            clog('showError', err, Object.keys(err), err.toString(), err['stack']);
+            // clog('showError', err, Object.keys(err), err.toString(), err['stack']);
             const message = typeof err === 'string' ? err : err.message || err.toString();
             const label = new HTMLLabel();
             label.style.padding = 20;
             // label.style.backgroundColor = new Color(255, 255,0,0);
-            label.style.fontSize = 11;
+            label.style.fontSize = 13;
             label.html = `<span style="color:rgb(138,138,138)">${message.trim()}</span>`;
             return alert({
                 title: Vue.prototype.$ltc('error'),

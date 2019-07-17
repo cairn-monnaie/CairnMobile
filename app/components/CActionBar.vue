@@ -1,14 +1,17 @@
 <template>
-    <StackLayout class="actionBar">
-        <GridLayout class="actionBarBar" orientation="horizontal" ios:paddingTop="0.001" columns="auto,*">
-            <MDButton col="0" variant= "text" :visibility="canGoBack ? 'visible' : 'hidden'" class="actionBarButton" :text="($isIOS? 'mdi-chevron-left' : 'mdi-arrow-left') | fonticon" @tap="onBackButton" />
-            <StackLayout :col="$isIOS && !canGoBack ? 0 : 1" ios:colSpan="2" verticalAlignment="center">
-                <Label class="actionBarTitle" :textAlignment="$isIOS && !canGoBack ? 'center' : 'left'" verticalAlignment="center" :text="title | L | titlecase" fontWeight="bold"/>
-                <Label :visibility="!!subtitle ? 'visible' : 'hidden'"  :textAlignment="$isIOS && !canGoBack ? 'center' : 'left'" class="actionBarSubtitle" verticalAlignment="center" :text="subtitle" />
+        <GridLayout class="actionBar" columns="auto,*, auto" paddingLeft="5" paddingRight="5">
+            <StackLayout col="1" colSpan="3" verticalAlignment="center">
+                <Label class="actionBarTitle" :visibility="!!title ? 'visible' : 'hidden'" textAlignment="left" :text="title || '' | L | uppercase" />
+                <Label :visibility="!!subtitle ? 'visible' : 'collapse'" textAlignment="left" class="actionBarSubtitle" :text="subtitle" />
+            </StackLayout>
+            <!-- <Image col="1"  v-if="!title" src="~/assets/microoled_logo.png" height="40%" horizontalAlignment="left" marginLeft="10"/> -->
+            <Label col="0" colSpan="2"  v-if="!!showLogo && !title" class="cairn" fontSize="70" color="white" :text="'cairn-full_logo' | fonticon" verticalAlignment="center" horizontalAlignment="center" marginLeft="6"/>
+            <MDButton col="0" variant="flat" :visibility="menuIconVisibility" class="icon-btn" :text="menuIcon | fonticon" @tap="onMenuIcon" />
+            <StackLayout col="2" orientation="horizontal">
+                <slot />
             </StackLayout>
         </GridLayout>
-        <slot />
-    </StackLayout>
 </template>
 
- <script lang="ts" src="./CActionBar.ts" />
+ <script lang="ts" src="./CActionBar.ts"/>
+

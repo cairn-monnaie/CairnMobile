@@ -113,7 +113,7 @@ TNSFontIcon.loadCssSync();
 // Prints Vue logs when --env.production is *NOT* set while building
 // Vue.config.silent = !DEV_LOG;
 // Vue.config['debug'] = DEV_LOG;
-Vue.config.silent = false;
+Vue.config.silent = true;
 Vue.config['debug'] = false;
 
 Vue.config.errorHandler = (e, vm, info) => {

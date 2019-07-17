@@ -14,8 +14,8 @@ export default class AccountHistory extends BasePageComponent {
     @Prop({  })
     public accountInfo: AccountInfo;
 
-    constructor() {
-        super();
+    destroyed() {
+        super.destroyed();
     }
     mounted() {
         super.mounted();
@@ -34,7 +34,7 @@ export default class AccountHistory extends BasePageComponent {
             })
             .catch(this.$showError);
     }
-    onNavigatedTo(args: NavigatedData) {
+    onLoaded(args: NavigatedData) {
         if (!args.isBackNavigation) {
             this.refresh();
         }

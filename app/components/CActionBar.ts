@@ -1,49 +1,58 @@
-import { Component, Prop } from 'vue-property-decorator';
 import Vue from 'nativescript-vue';
-import { Frame, topmost } from 'tns-core-modules/ui/frame/frame';
+import { Frame, topmost } from 'tns-core-modules/ui/frame';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import BaseVueComponent from './BaseVueComponent';
+
 @Component({})
-export default class CActionBar extends Vue {
-    @Prop({})
+export default class ActionBar extends BaseVueComponent {
+    @Prop({
+        default: null
+    })
     public title: string;
-    @Prop({})
+
+    @Prop({ default: null })
     public subtitle: string;
 
     @Prop({ default: false })
+    public showMenuIcon: boolean;
+
+    // @Prop({ default: false })
     public canGoBack = false;
 
-    constructor() {
-        super();
-    }
-    _findParentFrame() {
-        let frame: any = topmost();
-        if (!frame) {
-            frame = this.$parent;
-            while (frame && frame.$parent && frame.$options.name !== 'Frame') {
-                frame = frame.$parent;
-            }
-            // console.log("_findParentFrame1", frame["nativeView"])
-            // console.log("_findParentFrame2", frame && frame.$options.name)
-            // console.log("_findParentFrame3", topmost())
 
-            if (frame && frame.$options.name === 'Frame') {
-                return frame['nativeView'] as Frame;
-            }
-            return undefined;
-        } else {
-            return frame;
+    @Prop({ default: true })
+    public showLogo: boolean;
+
+    get menuIcon() {
+        if (this.canGoBack) {
+            return this.$isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
         }
+        return 'mdi-menu';
     }
+    get menuIconVisible() {
+        return this.canGoBack || this.showMenuIcon;
+    }
+    get menuIconVisibility() {
+        return this.menuIconVisible ? 'visible' : 'collapsed';
+    }
+
     mounted() {
+        // this.battery = this.glassesBattery;
         setTimeout(() => {
-            const topFrame = this._findParentFrame();
-            // console.log("actionbar mounted", this.$parent)
-            // console.log("topFrame", topFrame && topFrame.canGoBack())
-            if (topFrame) {
-                this.canGoBack = topFrame.canGoBack();
-            }
+            this.canGoBack = this.$getAppComponent().canGoBack();
+            // const topFrame = this._findParentFrame();
+            //     this.log('actionbar mounted', topFrame, topFrame.canGoBack(), topFrame.backStack);
+            //     // clog("topFrame", topFrame && topFrame.canGoBack())
+            //     if (topFrame) {
+            //         this.canGoBack = topFrame.canGoBack();
+            //     }
         }, 0);
     }
-    onBackButton() {
-        return this.$navigateBack();
+    onMenuIcon() {
+        // if (this.canGoBack) {
+        //     this.$navigateBack();
+        // } else {
+        this.$getAppComponent().onMenuIcon();
+        // }
     }
 }
