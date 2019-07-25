@@ -1,19 +1,19 @@
-import BasePageComponent from './BasePageComponent';
-import { Component } from 'vue-property-decorator';
-import { isAndroid } from 'platform';
-import { CustomTransition } from '~/transitions/custom-transition';
-import { Color, NavigatedData, topmost } from 'tns-core-modules/ui/frame';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
-import Login from './Login';
-import AccountHistory from './AccountHistory';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { AccountInfo } from '~/services/authService';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
+import { Color, NavigatedData } from 'tns-core-modules/ui/frame';
+import { ItemEventData } from 'tns-core-modules/ui/list-view';
+import { Component } from 'vue-property-decorator';
+import { AccountInfo, User } from '~/services/authService';
+import AccountHistory from './AccountHistory';
 import { ComponentIds } from './App';
+import BasePageComponent from './BasePageComponent';
+import TransferWindow from './TransferWindow';
+import UserPicker from './UserPicker';
+import { showSnack } from 'nativescript-material-snackbar';
 
 @Component({})
 export default class Home extends BasePageComponent {
     navigateUrl = ComponentIds.Situation;
+    amountError: string = null;
     loading = true;
     accounts: ObservableArray<AccountInfo> = new ObservableArray();
     constructor() {
@@ -24,7 +24,7 @@ export default class Home extends BasePageComponent {
     }
     showError(err) {
         this.loading = false;
-        this.$showError(err);
+        super.showError(err);
     }
 
     onNavigatedTo(args: NavigatedData) {
@@ -62,12 +62,12 @@ export default class Home extends BasePageComponent {
         if (args && args.object) {
             args.object.refreshing = false;
         }
-        console.log('refreshing');
+        // console.log('refreshing');
         this.loading = true;
         this.$authService
             .getAccounts()
             .then(r => {
-                console.log('got accounts', r);
+                // console.log('got accounts', r);
                 this.accounts = new ObservableArray(r) as any;
                 this.loading = false;
             })
@@ -86,4 +86,24 @@ export default class Home extends BasePageComponent {
     // openIn() {
     // this.navigateTo(HomePage as any)
     // }
+    openTransferWindow() {
+        this.navigateTo(TransferWindow, {
+            // fullscreen: true
+        });
+    }
+    addBeneficiary() {
+        this.$showModal(UserPicker)
+            .then((r: User) => {
+                if (r) {
+                    this.showLoading('working');
+                    return this.$authService.addBeneficiary(r.email).then(() => {
+                        this.hideLoading();
+                        showSnack({
+                            message: this.$t('beneficiary_added', r.name)
+                        });
+                    });
+                }
+            })
+            .catch(this.showError);
+    }
 }

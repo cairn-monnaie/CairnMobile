@@ -2,7 +2,7 @@ import { fonticon } from 'nativescript-akylas-fonticon';
 import { localize } from 'nativescript-localize';
 import VueStringFilter from 'vue-string-filter/VueStringFilter';
 import { GeoLocation } from 'nativescript-gps';
-import { convertTime, formatValueToUnit, UNITS } from '~/helpers/formatter';
+import { convertTime, formatAddress, formatValueToUnit, UNITS } from '~/helpers/formatter';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 dayjs.extend(relativeTime);
@@ -12,7 +12,7 @@ function formatCurrency(num, showZeroCents = true) {
     if (isNaN(num)) {
         num = 0;
     }
-    console.log('formatCurrency', num, num === Math.abs(num));
+    // console.log('formatCurrency', num, num === Math.abs(num));
     const sign = num === Math.abs(num);
     num = Math.abs(num);
     num = Math.floor(num * 100 + 0.50000000001);
@@ -54,6 +54,11 @@ const Plugin = {
             //         locale: frLocale
             //     });
             // }
+        });
+        Vue.filter('address', function(value) {
+            if (value) {
+                return formatAddress(value);
+            }
         });
         Vue.filter('dateRelative', function(value, formatStr?: string) {
             return dayjs(value).fromNow();

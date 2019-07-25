@@ -1,6 +1,4 @@
-import Vue from 'nativescript-vue';
-import { Frame, topmost } from 'tns-core-modules/ui/frame';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 
 @Component({})
@@ -16,21 +14,26 @@ export default class ActionBar extends BaseVueComponent {
     @Prop({ default: false })
     public showMenuIcon: boolean;
 
+    @Prop({ default: false })
+    public modalWindow: boolean;
+
     // @Prop({ default: false })
     public canGoBack = false;
-
 
     @Prop({ default: true })
     public showLogo: boolean;
 
     get menuIcon() {
+        if (this.modalWindow) {
+            return 'mdi-close';
+        }
         if (this.canGoBack) {
-            return this.$isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
+            return gVars.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
         }
         return 'mdi-menu';
     }
     get menuIconVisible() {
-        return this.canGoBack || this.showMenuIcon;
+        return this.modalWindow || this.canGoBack || this.showMenuIcon;
     }
     get menuIconVisibility() {
         return this.menuIconVisible ? 'visible' : 'collapsed';
@@ -49,6 +52,10 @@ export default class ActionBar extends BaseVueComponent {
         }, 0);
     }
     onMenuIcon() {
+        // if (this.modalWindow) {
+        //     this.$modal.close();
+        //     return;
+        // }
         // if (this.canGoBack) {
         //     this.$navigateBack();
         // } else {

@@ -17,9 +17,10 @@ import Home from './Home';
 import MultiDrawer, { OptionsType } from './MultiDrawer';
 import Profile from './Profile';
 import Login from './Login';
+import Beneficiaries from './Beneficiaries';
 // import Map from './Map';
 import AppFrame from './AppFrame';
-import { LoggedinEvent, LoggedoutEvent } from '~/services/AuthService';
+import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/authService';
 import * as app from 'application';
 import { compose } from 'nativescript-email';
 import { prompt } from 'nativescript-material-dialogs';
@@ -84,7 +85,9 @@ export enum ComponentIds {
     Login = 'login',
     Situation = 'situation',
     Profile = 'profile',
-    Map = 'map'
+    Transfer = 'transfer',
+    Map = 'map',
+    Beneficiaries = 'beneficiaries'
 }
 // Settings = 'settings',
 // Pairing = 'pairing',
@@ -136,7 +139,7 @@ export default class App extends BaseVueComponent {
                 left: {
                     swipeOpenTriggerWidth: 10
                 }
-            }
+            };
         } else {
             return {
                 left: {
@@ -158,6 +161,9 @@ export default class App extends BaseVueComponent {
         [ComponentIds.Login]: {
             component: Login
         },
+        [ComponentIds.Beneficiaries]: {
+            component: Beneficiaries
+        }
         // [ComponentIds.Map]: {
         //     component: Map
         // }
@@ -168,6 +174,7 @@ export default class App extends BaseVueComponent {
     public currentlyLoggedIn = Vue.prototype.$authService.isLoggedIn();
 
     public appVersion: string;
+    public userProfile: UserProfile = null;
     get drawer() {
         return this.$refs.drawer && this.$refs.drawer;
     }
@@ -187,6 +194,11 @@ export default class App extends BaseVueComponent {
                 url: ComponentIds.Profile
             },
             {
+                title: 'beneficiaries',
+                icon: 'account-group',
+                url: ComponentIds.Beneficiaries
+            },
+            {
                 title: 'map',
                 icon: 'map',
                 url: ComponentIds.Map
@@ -198,9 +210,10 @@ export default class App extends BaseVueComponent {
 
     constructor() {
         super();
-        this.log('loggedInOnStart', this.loggedInOnStart)
+        this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
         // this.currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
         this.$setAppComponent(this);
+        this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
     }
     onLoaded() {
@@ -233,9 +246,10 @@ export default class App extends BaseVueComponent {
 
         const authService = Vue.prototype.$authService;
 
-        authService.on(LoggedinEvent, () => {
+        authService.on(LoggedinEvent, e => {
             this.currentlyLoggedIn = true;
-            console.log('LoggedinEvent');
+            this.userProfile = e.data;
+            console.log('LoggedinEvent', e.data);
             this.navigateToUrl(ComponentIds.Situation, {
                 // props: { autoConnect: false },
                 clearHistory: true
@@ -348,6 +362,12 @@ export default class App extends BaseVueComponent {
     navigateBack(backEntry?) {
         this.innerFrame && this.innerFrame.goBack(backEntry);
     }
+
+    navigateBackIfUrl(url) {
+        if (this.isActiveUrl(url)) {
+            this.navigateBack();
+        }
+    }
     findNavigationUrlIndex(url) {
         return this.innerFrame.backStack.findIndex(b => b.resolvedPage[navigateUrlProperty] === url);
     }
@@ -368,7 +388,7 @@ export default class App extends BaseVueComponent {
     }
     onNavItemTap(url: string, comp?: any): void {
         this.log('onNavItemTap', url);
-        // this.navigateToUrl(url as any);
+        this.navigateToUrl(url as any);
         // });
     }
     onTap(command: string) {
@@ -409,7 +429,7 @@ export default class App extends BaseVueComponent {
                             mimeType: 'application/json'
                         }
                     ]
-                }).catch(this.$showError);
+                }).catch(this.showError);
                 break;
             case 'sendBugReport':
                 prompt({
@@ -436,13 +456,13 @@ export default class App extends BaseVueComponent {
                             .then(() => {
                                 this.$alert('bug_report_sent');
                             })
-                            .catch(this.$showError);
+                            .catch(this.showError);
                     }
                 });
                 break;
-                case 'logout':{
-                    this.$authService.logout();
-                }
+            case 'logout': {
+                this.$authService.logout();
+            }
         }
     }
 
@@ -457,13 +477,14 @@ export default class App extends BaseVueComponent {
         return super.navigateTo(component, options, cb);
     }
     navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
-        console.log('navigateToUrl', url, this.activatedUrl, this.routes[url]);
         if (this.isActiveUrl(url) || !this.routes[url]) {
             return;
         }
         // options = options || {};
         // options.props = options.props || {};
         // options.props[navigateUrlProperty] = url;
+
+        this.closeDrawer();
         console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {

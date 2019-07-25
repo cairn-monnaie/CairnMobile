@@ -9,11 +9,17 @@ import BottomSheetPlugin from 'nativescript-material-bottomsheet/vue';
 import CartoPlugin from 'nativescript-carto/vue';
 import CollectionViewPlugin from 'nativescript-collectionview/vue';
 import FabPlugin from 'nativescript-vue-fab';
+import ImagePlugin from 'nativescript-image/vue';
 import CActionBar from '~/components/CActionBar';
+import ListItem from '~/components/ListItem';
+import EditableListItem from '~/components/EditableListItem';
 const Plugin = {
     install(Vue) {
         Vue.component('CActionBar', CActionBar);
+        Vue.component('ListItem', ListItem);
+        Vue.component('EditableListItem', EditableListItem);
         Vue.use(ActivityIndicatorPlugin);
+        Vue.use(ImagePlugin);
         Vue.use(ButtonPlugin);
         Vue.use(CardViewPlugin);
         Vue.use(ProgressPlugin);

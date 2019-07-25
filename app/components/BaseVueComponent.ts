@@ -66,13 +66,20 @@ export default class BaseVueComponent extends Vue {
         }
         return this.loadingIndicator;
     }
+    showLoadingStartTime: number = null;
     showLoading(msg: string) {
         const loadingIndicator = this.getLoadingIndicator();
         this.log('showLoading', msg, !!this.loadingIndicator);
         loadingIndicator.label.text = localize(msg) + '...';
+        this.showLoadingStartTime = Date.now();
         loadingIndicator.show();
     }
     hideLoading() {
+        const delta = this.showLoadingStartTime ? Date.now() - this.showLoadingStartTime : -1;
+        if (delta >= 0 && delta < 1000) {
+            setTimeout(() => this.hideLoading(), 1000 - delta);
+            return;
+        }
         this.log('hideLoading', !!this.loadingIndicator);
         if (this.loadingIndicator) {
             this.loadingIndicator.hide();
@@ -83,9 +90,9 @@ export default class BaseVueComponent extends Vue {
             this.nativeView['navigateUrl'] = this['navigateUrl'];
         }
         const page = this.page;
-        this.log('mounted', this.nativeView, this['navigateUrl'], !!page);
+        // this.log('mounted', this.nativeView, this['navigateUrl'], !!page);
         if (page) {
-            // clog(this.constructor.name, 'mounted', page)
+            clog(this.constructor.name, 'mounted', page);
             page.actionBarHidden = true;
             if (gVars.isIOS) {
                 page.backgroundSpanUnderStatusBar = true;
@@ -119,6 +126,11 @@ export default class BaseVueComponent extends Vue {
         return this.$navigateTo(component, options, cb);
     }
     showError(err: Error | string) {
+        const delta = this.showLoadingStartTime ? Date.now() - this.showLoadingStartTime : -1;
+        if (delta >= 0 && delta < 1000) {
+            setTimeout(() => this.showError(err), 1000 - delta);
+            return;
+        }
         this.hideLoading();
         this.$showError(err);
     }

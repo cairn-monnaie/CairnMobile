@@ -1,15 +1,13 @@
+import { prompt } from 'nativescript-material-dialogs';
+import { TextField } from 'nativescript-material-textfield';
 import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import BasePageComponent from './BasePageComponent';
-import { prompt } from 'ui/dialogs';
-import { TextField } from 'ui/text-field';
-import Vue from 'nativescript-vue';
-import App, { ComponentIds } from './App';
+import { isAndroid } from 'tns-core-modules/platform/platform';
+import { NavigatedData } from 'tns-core-modules/ui/page/page';
 import { Component } from 'vue-property-decorator';
-import { localize } from 'nativescript-localize';
 import * as Animation from '~/animation';
 import { screenHeightDips } from '../variables';
-import { isAndroid, isIOS } from 'tns-core-modules/platform/platform';
-import { NavigatedData } from 'tns-core-modules/ui/page/page';
+import { ComponentIds } from './App';
+import BasePageComponent from './BasePageComponent';
 
 const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3;
 @Component({})
@@ -17,7 +15,7 @@ export default class Login extends BasePageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: 'gjanssens',
+        username: 'epicerie_sol',
         email: '',
         password: '@@bbccdd',
         confirmPassword: ''
@@ -119,7 +117,7 @@ export default class Login extends BasePageComponent {
                 // })
                 .catch(err => {
                     this.animateLogoView();
-                    this.$showError(err);
+                    this.showError(err);
                 })
                 .then(() => {
                     // this.loading = false;
@@ -137,7 +135,7 @@ export default class Login extends BasePageComponent {
                 this.$alert('account_created');
                 this.isLoggingIn = true;
             })
-            .catch(this.$showError)
+            .catch(this.showError)
             .then(() => (this.loading = false));
     }
 
@@ -156,7 +154,7 @@ export default class Login extends BasePageComponent {
                     .then(() => {
                         this.$alert(this.$ltc('password_reset_confirmation'));
                     })
-                    .catch(this.$showError);
+                    .catch(this.showError);
             }
         });
     }
@@ -169,11 +167,11 @@ export default class Login extends BasePageComponent {
     }
 
     focusPassword() {
-        this.passwordTF.focus();
+        this.passwordTF.requestFocus();
     }
     focusConfirmPassword() {
         if (!this.isLoggingIn) {
-            this.confirmPasswordTF.focus();
+            this.confirmPasswordTF.requestFocus();
         } else {
             this.submit();
         }

@@ -1,24 +1,20 @@
-import BasePageComponent from './BasePageComponent';
+import { NavigatedData } from 'tns-core-modules/ui/frame';
 import { Component } from 'vue-property-decorator';
-import { isAndroid } from 'platform';
-import { CustomTransition } from '~/transitions/custom-transition';
-import { Color, NavigatedData, topmost } from 'tns-core-modules/ui/frame';
-import Login from './Login';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { UserProfile } from '~/services/AuthService';
+import { UserProfile } from '~/services/authService';
 import { ComponentIds } from './App';
+import BasePageComponent from './BasePageComponent';
 
 @Component({})
 export default class Profile extends BasePageComponent {
     navigateUrl = ComponentIds.Profile;
     loading = false;
-    userProfile: UserProfile;
+    editable = false;
+    canSave = false;
+    userProfile: UserProfile = null;
 
     constructor() {
         super();
-        this.userProfile = this.$authService.userPorfile || ({
-            image: 'https://moncompte.cairn-monnaie.com/bundles/cairnuser/img/usager.png'
-        } as any);
+        this.userProfile = this.$authService.userProfile;
     }
     destroyed() {
         super.destroyed();
@@ -26,7 +22,9 @@ export default class Profile extends BasePageComponent {
     mounted() {
         super.mounted();
     }
-
+    switchEditable() {
+        this.editable = !this.editable;
+    }
     refresh(args?) {
         if (args && args.object) {
             args.object.refreshing = false;
@@ -37,14 +35,16 @@ export default class Profile extends BasePageComponent {
             .getUserProfile()
             .then(r => {
                 this.userProfile = r;
-                this.loading = false;
             })
-            .catch(this.$showError);
+            .catch(this.showError)
+            .then(r => {
+                this.loading = false;
+            });
     }
     onNavigatedTo(args: NavigatedData) {
-        if (!args.isBackNavigation) {
-            this.refresh();
-        }
+        // if (!args.isBackNavigation) {
+        //     this.refresh();
+        // }
     }
     // openMain() {
     //     this.$navigateTo(Login, { clearHistory: true })
@@ -52,4 +52,10 @@ export default class Profile extends BasePageComponent {
     // openIn() {
     // this.navigateTo(HomePage as any)
     // }
+    deletePhoneNumber(phone: string) {
+        this.log('deletePhoneNumber', phone);
+    }
+    onTextChange(key: string, value: string) {
+        this.log('onTextChange', key, value);
+    }
 }

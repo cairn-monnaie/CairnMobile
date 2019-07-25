@@ -3,9 +3,6 @@
         <ScrollView class="pageContent">
             <StackLayout horizontalAlignment="center">
                 <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight">
-                    <!-- <Label class="logo cairn" text='' /> -->
-                    <!-- <Label class="header" :text="'app.name' | L" /> -->
-                    <!-- <StackLayout backgroundColor="red" width="20" height="20"></StackLayout> -->
                     <Label @tap="animateLogoView" width="100%" textAlignment="center" class="cairn" :text="'cairn-full_logo' | fonticon" color="white" :fontSize="Math.min(logoViewHeight, 200)"/>
                 </StackLayout>
                 <StackLayout class="form">

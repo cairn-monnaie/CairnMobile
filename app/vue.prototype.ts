@@ -6,27 +6,34 @@ import App from '~/components/App';
 import Login from '~/components/Login';
 import { clog } from './utils/logging';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import AuthService, { LoggedinEvent, LoggedoutEvent } from '~/services/AuthService';
+import AuthService, { LoggedinEvent, LoggedoutEvent } from '~/services/authService';
 import { alert } from 'nativescript-material-dialogs';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
+import * as imageModule from 'nativescript-image';
 
 const Plugin = {
     install(Vue) {
         const authService = new AuthService();
 
         Vue.prototype.$authService = authService;
+        application.on(application.launchEvent, () => {
+            imageModule.initialize({ isDownsampleEnabled: true });
+        });
 
-        if (gVars.isAndroid) {
-            application.on(application.launchEvent, () => {
-                // bgService.start();
-                // networkService.start();
-            });
-        } else {
-            // bgService.start();
-            // networkService.start();
-        }
+        application.on(application.exitEvent, args => {
+            imageModule.shutDown();
+        });
+        // if (gVars.isAndroid) {
+        //     application.on(application.launchEvent, () => {
+        //         // bgService.start();
+        //         // networkService.start();
+        //     });
+        // } else {
+        //     // bgService.start();
+        //     // networkService.start();
+        // }
         let appComponent: App;
         Vue.prototype.$setAppComponent = function(comp: App) {
             appComponent = comp;

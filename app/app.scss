@@ -7,6 +7,10 @@ actionbar {
     color: white;
 }
 
+label {
+    color: $text-color
+}
+
 label,
 button,
 tabview,
@@ -17,6 +21,10 @@ mdbutton {
 
 mdactivityindicator {
     color: $primary-color;
+}
+
+mdripple {
+    ripple-color: $primary-color;
 }
 
 .page {
@@ -64,12 +72,12 @@ mdtextfield {
 
 .buttonwhite {
     background-color: white;
-    color: $primary-color;
-    ripple-color: $primary-color;
+    color: $accent-color;
+    ripple-color: $accent-color;
 }
 
 .buttonthemed {
-    background-color: $primary-color;
+    background-color: $accent-color;
     color: white;
     ripple-color: white;
 }
@@ -137,9 +145,15 @@ tabview {
     color: white;
     width: 44;
     height: 44;
+    border-radius: 22;
     font-size: 24;
     margin: 0;
     padding: 0;
+}
+.icon-themed-btn {
+    @extend .icon-btn;
+    ripple-color: $accent-color;
+    color: $accent-color;
 }
 
 .label-icon-btn {
@@ -150,30 +164,34 @@ tabview {
     padding: 0 4 0 4;
 }
 .menu {
+    height:48;
     background-color: #ffffff;
     border-radius: 4;
-    margin-left: 10;
-    margin-right: 10;
+    margin: 4 9 4 9;
 }
 
 .menuIcon {
     @extend .mdi;
+    color:#757575;
     text-align: center;
     font-size: 24;
-    color: $accent-color;
+}
+.menuIcon[active='true'] {
+    color: $primary-color;
 }
 
 .menuText {
-    // font-weight: 400;
-    color: black;
-    font-size: 16;
+    font-weight: 500;
+    color: #000000;
+    paddingLeft:20;
+    font-size: 14;
 }
 
 .menu[active='true'] {
-    background-color: #ececec;
+    background-color: $primary-color-semi;
 }
 .menuText[active='true'] {
-    // color: $primary-color;
+    color: $primary-color;
 }
 
 .menuInfos {
@@ -194,8 +212,8 @@ tabview {
 .menu-btn {
     @extend .icon-btn;
     border-radius: 22;
-    ripple-color: #b8b7b7;
-    color: $accent-color;
+    ripple-color: $primary-color;
+    color: $primary-color;
 }
 .menuButtons mdbutton {
     @extend .menu-btn;
@@ -220,9 +238,17 @@ tabview {
 }
 .currency {
     @extend .cairn;
-    font-size: 14;
-    font-weight: 900;
+    font-size: 30;
     vertical-align: top;
-    padding-top: 5;
-    padding-left: 3;
+}
+
+
+.listRightIcon {
+    @extend .mdi;
+    color: $accent-color;
+    font-size: 26;
+    font-weight: bold;
+    vertical-alignment: center;
+    text-align: center;
+    padding-bottom: -5;
 }

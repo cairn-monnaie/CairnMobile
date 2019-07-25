@@ -42,6 +42,7 @@ export const objectProperty = (target: Object, key: string | symbol) => {
     const innerKey = "_" + actualkey
 
     const savedValue = getString(actualkey)
+    console.log(actualkey, savedValue);
     target[innerKey] = savedValue !== undefined ? JSON.parse(savedValue) : undefined
 
     // property getter

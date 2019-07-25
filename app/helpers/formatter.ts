@@ -1,6 +1,7 @@
 import * as Platform from 'platform';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import { Address } from '~/services/authService';
 dayjs.extend(LocalizedFormat);
 // const dayjs: (...args) => Dayjs = require('dayjs');
 const Duration = require('duration');
@@ -90,4 +91,8 @@ export function formatValueToUnit(value: any, unit: UNITS, options?: { prefix?: 
         result = options.prefix + result;
     }
     return result;
+}
+
+export function formatAddress(address: Address) {
+    return `${address.street1} ${address.zipCity.name}`;
 }

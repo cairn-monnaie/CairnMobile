@@ -2,7 +2,7 @@
 import * as http from 'tns-core-modules/http';
 
 type HTTPOptions = http.HttpRequestOptions;
-import BackendService, { objectProperty, stringProperty } from './BackendService';
+import BackendService, { numberProperty, objectProperty, stringProperty } from './BackendService';
 // import firebase from 'nativescript-plugin-firebase'
 import { localize } from 'nativescript-localize';
 import dayjs from 'dayjs';
@@ -41,24 +41,129 @@ const tokenEndpoint = '/oauth/tokens';
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 
+export class User {
+    // webPushSubscriptions: string[] = null;
+    phoneNumbers: string[] = null;
+    // adherent: true = null;
+    // admin: false = null;
+    mainICC: string = null;
+    name: string = null;
+    creationDate: number = null; // timestamp
+    address: Address = null;
+    description: string = null;
+    image: string = null;
+    // identityDocument: {
+    //     id: number;
+    //     webPath: string;
+    // } = null;
+    firstname: string = null;
+    id: number = null;
+    username: string = null;
+    email: string = null;
+    roles: Roles[] = null;
+    enabled: boolean = null;
+    groups: string[] = null;
+    groupNames: string[] = null;
+}
+
+const UserKeys = Object.getOwnPropertyNames(new User());
+
+function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+    const ret: any = {};
+    keys.forEach(key => {
+        ret[key] = obj[key];
+    });
+    return ret;
+}
+
+function cleanupUser(user: any) {
+    const result = pick(user, UserKeys);
+
+    if (result.creationDate) {
+        result.creationDate = result.creationDate.timestamp;
+    }
+    if (result.image) {
+        result.image = `${authority}/${result.image.webPath}`;
+    }
+    if (result.address) {
+        result.address = {
+            street1: result.address.street1,
+            street2: result.address.street2,
+            latitude: result.address.latitude,
+            longitude: result.address.longitude,
+            zipCity: {
+                zipCode: result.address.zipCity.zipCode,
+                city: result.address.zipCity.city,
+                name: result.address.zipCity.name
+            }
+        };
+    }
+    return result as User;
+}
+
 export interface LoginParams {
     username: string;
     password: string;
 }
-export interface UserProfile {
-    name: string;
-    username: string;
-    email: string;
+
+export enum Roles {
+    PRO = 'ROLE_PPRO',
+    PERSON = 'ROLE_PERSON',
+    USER = 'ROLE_USER'
+}
+export interface Address {
+    id: number;
     street1: string;
     street2: string;
-    zipcode: string;
-    city: string;
-    image: string;
+    latitude: number;
+    longitude: number;
+    zipCity: {
+        id: number;
+        zipCode: string;
+        city: string;
+        name: string;
+    };
 }
 export interface AccountInfo {
     balance?: number;
     id: string;
     name: string;
+}
+
+export interface UserProfile extends User {}
+
+export interface Benificiary {
+    autocompleteLabel: string;
+    id: number;
+    ICC: string;
+    user: User;
+}
+
+export interface TransactionConfirmation {
+    confirmation_url: string;
+    operation: {
+        smsPayment: boolean;
+        id: number;
+        type: number;
+        paymentID: number;
+        submissionDate: number;
+        executionDate: number;
+        description: string;
+        reason: string;
+        amount: number;
+        fromAccountNumber: string;
+        toAccountNumber: string;
+        creditor: {
+            name: string;
+            id: number;
+        };
+        creditorName: string;
+        debitor: {
+            name: string;
+            id: number;
+        };
+        debitorName: string;
+    };
 }
 
 export enum TransactionType {
@@ -221,10 +326,10 @@ export class CustomError extends Error {
         return JSON.stringify(this.toJSON());
     }
     toString = () => {
-        console.log('customError to string', this.message, this.assignedLocalData, localize);
+        // console.log('customError to string', this.message, this.assignedLocalData, localize);
         const result = evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
-        console.log('customError to string2', result);
-        return result
+        // console.log('customError to string2', result);
+        return result;
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
         // return this.message || this.stack;
     }
@@ -284,8 +389,8 @@ export class HTTPError extends CustomError {
 
 export default class AuthService extends BackendService {
     @stringProperty token: string;
-    @stringProperty userId: string;
-    @objectProperty userPorfile: UserProfile;
+    @numberProperty userId: number;
+    @objectProperty userProfile: UserProfile;
     @objectProperty loginParams: LoginParams;
 
     getMessage() {
@@ -316,16 +421,28 @@ export default class AuthService extends BackendService {
         console.log('request', requestParams);
 
         return http.request(requestParams).then(response => {
-            // console.log('request response', response);
-            if (response.statusCode !== 200) {
+            console.log('request response', response.statusCode, Math.round(response.statusCode / 100));
+            if (Math.round(response.statusCode / 100) !== 2) {
                 try {
-                    const jsonReturn = JSON.parse(response.content.toString());
+                    const jsonReturn = JSON.parse(response.content.toString().replace('=>', ':'));
                     console.log('request error', response.statusCode, jsonReturn, response.content);
-                    if (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') {
+
+                    if (
+                        (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
+                        (response.statusCode === 400 &&
+                            jsonReturn.error &&
+                            jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
+                    ) {
                         // refresh token
                         if (retry === 2) {
                             this.logout();
-                            return Promise.reject('invalid_grant');
+                            return Promise.reject(
+                                new HTTPError({
+                                    statusCode: 401,
+                                    message: 'not_authorized',
+                                    requestParams
+                                })
+                            );
                         }
                         return this.getToken(this.loginParams).then(() => this.request(requestParams, retry++));
                     }
@@ -333,13 +450,13 @@ export default class AuthService extends BackendService {
                     return Promise.reject(
                         new HTTPError({
                             statusCode: error.code || response.statusCode,
-                            message: error.error_description || error.message || error.error || error,
+                            message: error.error_description || error.form || error.message || error.error || error,
                             requestParams
                         })
                     );
                 } catch (e) {
                     // error result might html
-                    // console.log('request error1', response.content, response.content.toString());
+                    console.log('request error1', response.content.toString());
                     const match = /<title>(.*)\n*<\/title>/.exec(response.content.toString());
                     if (match) {
                         // result = {
@@ -348,6 +465,7 @@ export default class AuthService extends BackendService {
                         // if (match[1] === 'Invalid Access Token') {
                         //     result.error.code = 'INVALID_TOKEN';
                         // }
+
                         return Promise.reject(
                             new HTTPError({
                                 statusCode: response.statusCode,
@@ -376,15 +494,16 @@ export default class AuthService extends BackendService {
     //         this.userId = result.current_user_id + '';
     //     });
     // }
+    isProUser() {
+        return this.userProfile.roles.indexOf(Roles.PRO) !== -1;
+    }
     getUserProfile() {
         return this.request({
             url: authority + `/mobile/users/${this.userId}`,
             method: 'GET'
         }).then(result => {
-            const { creationDate, ...profile } = result;
-            this.userPorfile = profile;
-            console.log(JSON.stringify(profile));
-            return this.userPorfile;
+            this.userProfile = cleanupUser(result);
+            return this.userProfile;
         });
     }
     getAccounts(): Promise<AccountInfo[]> {
@@ -395,10 +514,61 @@ export default class AuthService extends BackendService {
             return r.map(a => {
                 return {
                     balance: parseFloat(a.status.balance),
-                    id: a.id.toString(),
+                    id: a.number.toString(),
                     name: a.type.name.toString()
                 } as AccountInfo;
             });
+        });
+    }
+    getBenificiaries(): Promise<Benificiary[]> {
+        return this.request({
+            url: authority + `/mobile/beneficiaries`,
+            method: 'GET'
+        }).then(r => {
+            return r.map(b => {
+                b.user = cleanupUser(b.user);
+                return b;
+            });
+        });
+    }
+    getUsers(): Promise<User[]> {
+        return this.request({
+            url: authority + `/mobile/users`,
+            method: 'POST'
+        }).then(r => {
+            return r.map(cleanupUser);
+        });
+    }
+    addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
+        return this.request({
+            url: authority + '/mobile/beneficiaries',
+            method: 'POST',
+            content: JSON.stringify({
+                cairn_user: cairn_user_email
+            })
+        });
+    }
+    createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
+        return this.request({
+            url: authority + '/mobile/transaction/request/new-unique.json',
+            method: 'POST',
+            content: JSON.stringify({
+                fromAccount: account.id,
+                toAccount: user.email,
+                amount: amount + '',
+                executionDate: dayjs().format('YYYY-MM-DD'),
+                reason,
+                description
+            })
+        });
+    }
+    confirmOperation(oprationId, code: string) {
+        return this.request({
+            url: authority + `/transaction/confirm/${oprationId}.json`,
+            method: 'POST',
+            content: JSON.stringify({
+                save: 'true'
+            })
         });
     }
     getAccountHistory(accountId: string): Promise<Transaction[]> {
@@ -423,7 +593,6 @@ export default class AuthService extends BackendService {
                 t.submissionDate = t.submissionDate.timestamp * 1000;
                 t.executionDate = t.executionDate.timestamp * 1000;
                 t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
-                console.log(t);
                 return t as Transaction;
             });
         });
@@ -442,7 +611,7 @@ export default class AuthService extends BackendService {
         })
             .then(result => {
                 this.token = result.access_token;
-                this.userId = result.user_id + '';
+                this.userId = result.user_id;
             })
             .catch(err => {
                 this.token = undefined;
@@ -455,24 +624,23 @@ export default class AuthService extends BackendService {
             return Promise.reject('missing_login_params');
         }
         const wasLoggedin = this.isLoggedIn();
-        return (
-            this.getToken(user)
+        return this.getToken(user)
 
-                // .then(() => this.getUserId())
-                .then(() => {
-                    this.loginParams = user;
-                    if (!wasLoggedin) {
-                        this.notify({
-                            eventName: LoggedinEvent,
-                            object: this
-                        });
-                    }
-                })
-                .catch(err => {
-                    this.onLoggedOut();
-                    return Promise.reject(err);
-                })
-        );
+            .then(() => this.getUserProfile())
+            .then(() => {
+                this.loginParams = user;
+                if (!wasLoggedin) {
+                    this.notify({
+                        eventName: LoggedinEvent,
+                        object: this,
+                        data: this.userProfile
+                    });
+                }
+            })
+            .catch(err => {
+                this.onLoggedOut();
+                return Promise.reject(err);
+            });
     }
 
     onLoggedOut() {

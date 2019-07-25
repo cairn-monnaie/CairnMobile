@@ -1,11 +1,8 @@
-import BasePageComponent from './BasePageComponent';
-import { Component, Prop } from 'vue-property-decorator';
-import { isAndroid } from 'platform';
-import { CustomTransition } from '~/transitions/custom-transition';
-import { Color, NavigatedData, topmost } from 'tns-core-modules/ui/frame';
-import Login from './Login';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { AccountInfo, Transaction } from '~/services/AuthService';
+import { NavigatedData } from 'tns-core-modules/ui/frame';
+import { Component, Prop } from 'vue-property-decorator';
+import { AccountInfo, Transaction } from '~/services/authService';
+import BasePageComponent from './BasePageComponent';
 
 @Component({})
 export default class AccountHistory extends BasePageComponent {
@@ -32,7 +29,7 @@ export default class AccountHistory extends BasePageComponent {
                 this.dataItems = new ObservableArray(r);
                 this.loading = false;
             })
-            .catch(this.$showError);
+            .catch(this.showError);
     }
     onLoaded(args: NavigatedData) {
         if (!args.isBackNavigation) {

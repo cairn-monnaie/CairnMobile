@@ -51,22 +51,19 @@ if (TNS_ENV === 'production') {
 import MixinsPlugin from './vue.mixins';
 Vue.use(MixinsPlugin);
 
-
-import { primaryColor } from './variables';
+import { accentColor, primaryColor } from './variables';
 import { install, themer } from 'nativescript-material-core';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
-import { install as installGestures } from 'nativescript-gesturehandler';
+// import { install as installGestures } from 'nativescript-gesturehandler';
 if (gVars.isIOS) {
-    themer.setPrimaryColor(primaryColor);
+    themer.setPrimaryColor(accentColor);
 }
 install();
 installBottomSheets();
-installGestures();
-
+// installGestures();
 
 import ViewsPlugin from './vue.views';
 Vue.use(ViewsPlugin);
-
 
 let drawerInstance: MultiDrawer;
 export function getDrawerInstance() {
@@ -75,7 +72,6 @@ export function getDrawerInstance() {
 export function setDrawerInstance(instance: MultiDrawer) {
     drawerInstance = instance;
 }
-
 
 // importing filters
 import FiltersPlugin from './vue.filters';
@@ -130,6 +126,7 @@ Vue.config.warnHandler = function(msg, vm, trace) {
 // , { host: '192.168.1.43' }
 // );
 /* DEV-END */
+
 
 import App from '~/components/App';
 import MultiDrawer from './components/MultiDrawer';
