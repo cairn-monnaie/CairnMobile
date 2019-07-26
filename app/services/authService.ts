@@ -40,6 +40,11 @@ const tokenEndpoint = '/oauth/tokens';
 
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
+export const AccountInfoEvent = 'accountinfo';
+
+export interface AccountInfoEventData extends EventData {
+    data: AccountInfo[];
+}
 
 export class User {
     // webPushSubscriptions: string[] = null;
@@ -511,13 +516,20 @@ export default class AuthService extends BackendService {
             url: authority + `/mobile/accounts.json`,
             method: 'GET'
         }).then(r => {
-            return r.map(a => {
+            const result = r.map(a => {
                 return {
                     balance: parseFloat(a.status.balance),
-                    id: a.number.toString(),
+                    number: a.number.toString(),
+                    id: a.id.toString(),
                     name: a.type.name.toString()
                 } as AccountInfo;
-            });
+            }) as AccountInfo[];
+            this.notify({
+                eventName: AccountInfoEvent,
+                object: this,
+                data: result
+            } as AccountInfoEventData);
+            return result;
         });
     }
     getBenificiaries(): Promise<Benificiary[]> {

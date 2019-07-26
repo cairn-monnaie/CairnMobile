@@ -1,9 +1,9 @@
+import AccountHistory from './AccountHistory';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { Color, NavigatedData } from 'tns-core-modules/ui/frame';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Component } from 'vue-property-decorator';
-import { AccountInfo, User } from '~/services/authService';
-import AccountHistory from './AccountHistory';
+import { AccountInfo, AccountInfoEvent, AccountInfoEventData, User } from '~/services/authService';
+import { Color, NavigatedData } from 'tns-core-modules/ui/frame';
 import { ComponentIds } from './App';
 import BasePageComponent from './BasePageComponent';
 import TransferWindow from './TransferWindow';
@@ -21,6 +21,11 @@ export default class Home extends BasePageComponent {
     }
     mounted() {
         super.mounted();
+        this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
+    }
+    destroyed() {
+        super.destroyed();
+        this.$authService.off(AccountInfoEvent, this.onAccountsData, this);
     }
     showError(err) {
         this.loading = false;
@@ -34,8 +39,8 @@ export default class Home extends BasePageComponent {
     }
     onItemLoading(args) {
         if (this.$isIOS) {
-            const newcolor = new Color(0, 255, 255, 255);
             if (args.ios.backgroundView) {
+                const newcolor = new Color(0, 255, 255, 255);
                 args.ios.backgroundView.backgroundColor = newcolor.ios;
             }
         }
@@ -58,20 +63,17 @@ export default class Home extends BasePageComponent {
         });
     }
 
+    onAccountsData(e: AccountInfoEventData) {
+        this.accounts = new ObservableArray(e.data) as any;
+        this.loading = false;
+    }
     refresh(args?) {
         if (args && args.object) {
             args.object.refreshing = false;
         }
         // console.log('refreshing');
         this.loading = true;
-        this.$authService
-            .getAccounts()
-            .then(r => {
-                // console.log('got accounts', r);
-                this.accounts = new ObservableArray(r) as any;
-                this.loading = false;
-            })
-            .catch(this.showError);
+        this.$authService.getAccounts().catch(err => this.showError(err));
     }
     onNavigatingTo() {
         // if (isAndroid) {
