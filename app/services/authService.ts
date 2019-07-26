@@ -3,9 +3,14 @@ import * as http from 'tns-core-modules/http';
 
 type HTTPOptions = http.HttpRequestOptions;
 import BackendService, { numberProperty, objectProperty, stringProperty } from './BackendService';
+import { EventData } from 'tns-core-modules/data/observable';
 // import firebase from 'nativescript-plugin-firebase'
 import { localize } from 'nativescript-localize';
 import dayjs from 'dayjs';
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // function evalMessageInContext(message: string, data) {
 //     console.log('evalMessageInContext', message, this);
@@ -132,6 +137,7 @@ export interface Address {
 export interface AccountInfo {
     balance?: number;
     id: string;
+    number: string;
     name: string;
 }
 
@@ -424,72 +430,67 @@ export default class AuthService extends BackendService {
             requestParams.headers['Authorization'] = 'Bearer ' + this.token;
         }
         console.log('request', requestParams);
+        const requestStartTime = Date.now();
+        return http
+            .request(requestParams)
+            .then(response => {
+                console.log('request response', response.statusCode, Math.round(response.statusCode / 100));
+                if (Math.round(response.statusCode / 100) !== 2) {
+                    const responseStr = response.content.toString().replace('=>', ':');
+                    try {
+                        const jsonReturn = JSON.parse(responseStr);
+                        console.log('request error', response.statusCode, jsonReturn, response.content);
 
-        return http.request(requestParams).then(response => {
-            console.log('request response', response.statusCode, Math.round(response.statusCode / 100));
-            if (Math.round(response.statusCode / 100) !== 2) {
-                try {
-                    const jsonReturn = JSON.parse(response.content.toString().replace('=>', ':'));
-                    console.log('request error', response.statusCode, jsonReturn, response.content);
-
-                    if (
-                        (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
-                        (response.statusCode === 400 &&
-                            jsonReturn.error &&
-                            jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
-                    ) {
-                        // refresh token
-                        if (retry === 2) {
-                            this.logout();
-                            return Promise.reject(
-                                new HTTPError({
-                                    statusCode: 401,
-                                    message: 'not_authorized',
-                                    requestParams
-                                })
-                            );
+                        if (
+                            (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
+                            (response.statusCode === 400 &&
+                                jsonReturn.error &&
+                                jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
+                        ) {
+                            // refresh token
+                            if (retry === 2) {
+                                this.logout();
+                                return Promise.reject(
+                                    new HTTPError({
+                                        statusCode: 401,
+                                        message: 'not_authorized',
+                                        requestParams
+                                    })
+                                );
+                            }
+                            return this.getToken(this.loginParams).then(() => this.request(requestParams, retry++));
                         }
-                        return this.getToken(this.loginParams).then(() => this.request(requestParams, retry++));
-                    }
-                    const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                    return Promise.reject(
-                        new HTTPError({
-                            statusCode: error.code || response.statusCode,
-                            message: error.error_description || error.form || error.message || error.error || error,
-                            requestParams
-                        })
-                    );
-                } catch (e) {
-                    // error result might html
-                    console.log('request error1', response.content.toString());
-                    const match = /<title>(.*)\n*<\/title>/.exec(response.content.toString());
-                    if (match) {
-                        // result = {
-                        //     error: {}
-                        // }
-                        // if (match[1] === 'Invalid Access Token') {
-                        //     result.error.code = 'INVALID_TOKEN';
-                        // }
-
+                        const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
+                        return Promise.reject(
+                            new HTTPError({
+                                statusCode: error.code || response.statusCode,
+                                message: error.error_description || error.form || error.message || error.error || error,
+                                requestParams
+                            })
+                        );
+                    } catch (e) {
+                        // error result might html
+                        const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
+                        console.log('request error1', responseStr, match);
                         return Promise.reject(
                             new HTTPError({
                                 statusCode: response.statusCode,
-                                message: match[1],
+                                message: match ? match[1] : 'HTTP error',
                                 requestParams
                             })
                         );
                     }
-                    return Promise.reject(
-                        new HTTPError({
-                            statusCode: response.statusCode,
-                            message: 'HTTP error',
-                            requestParams
-                        })
-                    );
                 }
-            }
-            return response.content.toJSON();
-        });
+                return response.content.toJSON();
+            })
+            .catch(err => {
+                const delta = Date.now() - requestStartTime;
+                if (delta >= 0 && delta < 500) {
+                    return timeout(delta).then(() => Promise.reject(err));
+                } else {
+                    return Promise.reject(err);
+                }
+            });
     }
     // getUserId() {
     //     return this.request({
@@ -565,7 +566,7 @@ export default class AuthService extends BackendService {
             url: authority + '/mobile/transaction/request/new-unique.json',
             method: 'POST',
             content: JSON.stringify({
-                fromAccount: account.id,
+                fromAccount: account.number,
                 toAccount: user.email,
                 amount: amount + '',
                 executionDate: dayjs().format('YYYY-MM-DD'),
@@ -576,16 +577,20 @@ export default class AuthService extends BackendService {
     }
     confirmOperation(oprationId, code: string) {
         return this.request({
-            url: authority + `/transaction/confirm/${oprationId}.json`,
+            url: authority + `/mobile/transaction/confirm/${oprationId}.json`,
             method: 'POST',
             content: JSON.stringify({
                 save: 'true'
             })
+        }).then(r => {
+            // we need to refresh accounts
+            this.getAccounts();
+            return r;
         });
     }
-    getAccountHistory(accountId: string): Promise<Transaction[]> {
+    getAccountHistory(account: AccountInfo): Promise<Transaction[]> {
         return this.request({
-            url: authority + `/mobile/account/operations/${accountId}`,
+            url: authority + `/mobile/account/operations/${account.id}`,
             content: JSON.stringify({
                 begin: dayjs()
                     .subtract(2, 'month')
