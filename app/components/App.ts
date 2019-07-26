@@ -429,7 +429,7 @@ export default class App extends BaseVueComponent {
                             mimeType: 'application/json'
                         }
                     ]
-                }).catch(this.showError);
+                }).catch(err => this.showError(err));
                 break;
             case 'sendBugReport':
                 prompt({

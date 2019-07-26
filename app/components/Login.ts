@@ -135,7 +135,7 @@ export default class Login extends BasePageComponent {
                 this.$alert('account_created');
                 this.isLoggingIn = true;
             })
-            .catch(this.showError)
+            .catch(err => this.showError(err))
             .then(() => (this.loading = false));
     }
 
@@ -154,7 +154,7 @@ export default class Login extends BasePageComponent {
                     .then(() => {
                         this.$alert(this.$ltc('password_reset_confirmation'));
                     })
-                    .catch(this.showError);
+                    .catch(err => this.showError(err));
             }
         });
     }

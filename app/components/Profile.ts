@@ -36,7 +36,7 @@ export default class Profile extends BasePageComponent {
             .then(r => {
                 this.userProfile = r;
             })
-            .catch(this.showError)
+            .catch(err => this.showError(err))
             .then(r => {
                 this.loading = false;
             });

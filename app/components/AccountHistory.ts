@@ -24,12 +24,12 @@ export default class AccountHistory extends BasePageComponent {
         // console.log("refreshing")
         this.loading = true;
         this.$authService
-            .getAccountHistory(this.accountInfo.id)
+            .getAccountHistory(this.accountInfo)
             .then(r => {
                 this.dataItems = new ObservableArray(r);
                 this.loading = false;
             })
-            .catch(this.showError);
+            .catch(err => this.showError(err));
     }
     onLoaded(args: NavigatedData) {
         if (!args.isBackNavigation) {

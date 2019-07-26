@@ -104,6 +104,6 @@ export default class Home extends BasePageComponent {
                     });
                 }
             })
-            .catch(this.showError);
+            .catch(err => this.showError(err));
     }
 }

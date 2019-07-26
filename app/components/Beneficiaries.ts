@@ -26,7 +26,7 @@ export default class Beneficiaries extends BasePageComponent {
                 this.dataItems = r.map(b => b.user);
                 this.loading = false;
             })
-            .catch(this.showError);
+            .catch(err => this.showError(err));
     }
     onLoaded(args: NavigatedData) {
         this.refresh();

@@ -100,7 +100,7 @@ export default class TransferWindow extends BasePageComponent {
             .then(r => {
                 this.refreshing = false;
             })
-            .catch(this.showError);
+            .catch(err => this.showError(err));
         // this.$authService
         //     .getAccounts()
         //     .then(r => {
@@ -115,11 +115,12 @@ export default class TransferWindow extends BasePageComponent {
     }
     close() {
         this.$getAppComponent().navigateBackIfUrl(this.navigateUrl);
+        //     .catch(err => this.showError(err));
     }
     submit() {
         if (!this.reason) {
-            this.reasonError = 'reason_required';
-            this.showError(this.$t(this.reasonError));
+            this.reasonError = this.$t('reason_required');
+            this.showError(this.reasonError);
         }
         this.$authService
             .createTransaction(this.account, this.recipient, this.amount, this.reason, this.description)
@@ -130,6 +131,8 @@ export default class TransferWindow extends BasePageComponent {
                     hintText: this.$t('confirmation_code'),
                     title: this.$t('confirmation'),
                     message: this.$t('confirmation_code_description')
+                    okButtonText: this.$t('confirm'),
+                    cancelButtonText: this.$t('cancel')
                 }).then(result => {
                     if (result && result.text && result.text.length > 0) {
                         return this.$authService.confirmOperation(r.operation.id, result.text).then(() => {
@@ -143,7 +146,7 @@ export default class TransferWindow extends BasePageComponent {
                     }
                 });
             })
-            .catch(this.showError);
+            .catch(err => this.showError(err));
     }
     selectAccount() {}
     selectRecipient() {
