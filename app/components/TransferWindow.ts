@@ -111,10 +111,6 @@ export default class TransferWindow extends BasePageComponent {
         //         }
         //         this.refreshing = false;
         //     })
-        //     .catch(this.showError);
-    }
-    close() {
-        this.$getAppComponent().navigateBackIfUrl(this.navigateUrl);
         //     .catch(err => this.showError(err));
     }
     submit() {
@@ -130,7 +126,7 @@ export default class TransferWindow extends BasePageComponent {
                     cancelable: false,
                     hintText: this.$t('confirmation_code'),
                     title: this.$t('confirmation'),
-                    message: this.$t('confirmation_code_description')
+                    message: this.$t('confirmation_code_description'),
                     okButtonText: this.$t('confirm'),
                     cancelButtonText: this.$t('cancel')
                 }).then(result => {

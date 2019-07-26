@@ -3,6 +3,7 @@ import { VueConstructor } from 'vue';
 import BaseVueComponent from './BaseVueComponent';
 
 export default class BasePageComponent extends BaseVueComponent {
+    navigateUrl;
     loading = false;
     navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
         options = options || {};
@@ -18,5 +19,8 @@ export default class BasePageComponent extends BaseVueComponent {
     showError(err: Error | string) {
         this.loading = false;
         super.showError(err);
+    }
+    close() {
+        this.$getAppComponent().navigateBackIfUrl(this.navigateUrl);
     }
 }
