@@ -88,7 +88,7 @@ export default class UserPicker extends BasePageComponent {
                 //     return accumulator;
                 // }, items);
             })
-            .catch(this.showError)
+            .catch(err => this.showError(err))
             .then(res => {
                 this.loading = false;
                 console.log(items);
