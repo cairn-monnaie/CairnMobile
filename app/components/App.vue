@@ -39,20 +39,20 @@
 
             <!-- <GridLayout rows="*, auto" iosOverflowSafeArea="true">
                     <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
-                        <TabViewItem :title="'home' | L | titlecase">
+                        <TabViewItem :title="$t('home') | titlecase">
                             <Frame>
                                 <Home />
                             </Frame>
                         </TabViewItem>
-                        <TabViewItem :title="'profile' | L | titlecase ">
+                        <TabViewItem :title="$t('profile') | titlecase ">
                             <Frame>
                                 <Profile />
                             </Frame>
                         </TabViewItem>
                     </TabView>
                     <!-- <BottomNavigation ref="bottomNavigation" row="1" @tabSelected="onBottomNavigationTabSelected">
-                        <BottomNavigationTab :title="'home' | L | titlecase" icon="logo" />
-                        <BottomNavigationTab :title="'profile' | L | titlecase " icon="logo" />
+                        <BottomNavigationTab :title="$t('home') | titlecase" icon="logo" />
+                        <BottomNavigationTab :title="$t('profile') | titlecase " icon="logo" />
                     </BottomNavigation> -->
             </GridLayout> -->
         </MultiDrawer>

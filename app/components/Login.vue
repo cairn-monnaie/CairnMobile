@@ -6,21 +6,21 @@
                     <Label @tap="animateLogoView" width="100%" textAlignment="center" class="cairn" :text="'cairn-full_logo' | fonticon" color="white" :fontSize="Math.min(logoViewHeight, 200)"/>
                 </StackLayout>
                 <StackLayout class="form">
-                    <MDTextField class="input" :hint="'username' | L | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
+                    <MDTextField class="input" :hint="$t('username') | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
 
-                    <MDTextField ref="password" class="input" :hint="'password' | L | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
+                    <MDTextField ref="password" class="input" :hint="$t('password') | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
 
-                    <MDTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="'confirm_password' | L | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
+                    <MDTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="$t('confirm_password') | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
 
-                    <MDButton v-show="!loading" :text="isLoggingIn ? 'login' : 'register' | L | titlecase" @tap="submit" :isEnabled="canLoginOrRegister" />
+                    <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | titlecase" @tap="submit" :isEnabled="canLoginOrRegister" />
                     <MDActivityIndicator v-show="loading" :busy="loading" width="45" height="45" />
-                    <Label v-show="isLoggingIn" :text="'forgot_password' | L | titlecase" class="login-label" @tap="forgotPassword" />
+                    <Label v-show="isLoggingIn" :text="$t('forgot_password') | titlecase" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 
                 <HTMLLabel visibility="hidden" class="login-label sign-up-label" @tap="toggleForm">
                     <FormattedString>
-                        <Span :text="isLoggingIn ? 'no_account' : 'login' | L | titlecase" />
-                        <Span :text="isLoggingIn ? 'register' : '' | L | titlecase" class="bold" />
+                        <Span :text="(isLoggingIn ? $t('no_account') : $t('login'))| titlecase" />
+                        <Span :text="isLoggingIn ? $t('register') : '' | titlecase" class="bold" />
                     </FormattedString>
                 </HTMLLabel>
             </StackLayout>

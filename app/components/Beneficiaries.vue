@@ -1,7 +1,7 @@
 <template>
     <Page ref="page" class="page" @loaded="onLoaded">
         <StackLayout>
-            <CActionBar title="beneficiaries" />
+            <CActionBar :title="$t('beneficiaries')" />
             <GridLayout class="pageContent">
                 
                 <PullToRefresh @refresh="refresh" col="0" row="1" colSpan="3" rowSpan="2">

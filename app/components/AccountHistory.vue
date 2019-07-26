@@ -1,10 +1,10 @@
 <template>
     <Page ref="page" class="page" @loaded="onLoaded">
         <StackLayout>
-            <CActionBar title="account_history" :subtitle="accountInfo.name" />
+            <CActionBar :title="$t('account_history')" :subtitle="accountInfo.name" />
             <GridLayout columns="*,50,*" rows="auto,*,50,*" class="pageContent">
                 <StackLayout height="100" row="0" colSpan="3" verticalAlignment="top" paddingLeft="50" :backgroundColor="themeColor">
-                    <Label :text="'balance' | L | titlecase" verticalAlignment="center" fontSize="14" color="#88ffffff" />
+                    <Label :text="$t('balance') | titlecase" verticalAlignment="center" fontSize="14" color="#88ffffff" />
                     <Label verticalAlignment="center" fontSize="30" color="white">
                         <FormattedString>
                             <Span :text="accountInfo.balance | currency"></Span>

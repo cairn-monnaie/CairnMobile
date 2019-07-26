@@ -11,7 +11,7 @@ export default class OptionPicker extends Vue {
     public options: Array<{ name: string; checked: boolean }>;
 
     // public height = '100%';
-    @Prop({ default: 'pick options' })
+    @Prop({ default: Vue.prototype.$t('pick_options') })
     title: string;
     public constructor() {
         super();

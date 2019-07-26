@@ -12,18 +12,18 @@
                 <PullToRefresh @refresh="refresh" row="1" colSpan="3" rowSpan="3">
                     <ScrollView>
                         <StackLayout v-if="editable">
-                            <EditableListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="'description' | L" @textChange="onTextChange($event.value, 'description')"/>
-                            <EditableListItem leftIcon="mdi-email" :title="userProfile.email" :overText="'email' | L"  @textChange="onTextChange($event.value, 'email')"/>
-                            <EditableListItem v-for="(phone) in userProfile.phoneNumbers" leftIcon="mdi-phone" rightButton="mdi-delete" :title="phone" :overText="'phone' | L" @rightTap="deletePhoneNumber(phone)" />
-                            <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="'street' | L"   @textChange="onTextChange($event.value, 'address.street1')"/>
-                            <EditableListItem :title="userProfile.address.zipCity.city" :overText="'city' | L"   @textChange="onTextChange($event.value, 'address.zipCity.city')"/>
-                            <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="'zipcode' | L"   @textChange="onTextChange($event.value, 'address.zipCity.zipCode')"/>
+                            <EditableListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" @textChange="onTextChange($event.value, 'description')"/>
+                            <EditableListItem leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')"  @textChange="onTextChange($event.value, 'email')"/>
+                            <EditableListItem v-for="(phone) in userProfile.phoneNumbers" leftIcon="mdi-phone" rightButton="mdi-delete" :title="phone" :overText="$t('phone')" @rightTap="deletePhoneNumber(phone)" />
+                            <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="$t('street')"   @textChange="onTextChange($event.value, 'address.street1')"/>
+                            <EditableListItem :title="userProfile.address.zipCity.city" :overText="$t('city')"   @textChange="onTextChange($event.value, 'address.zipCity.city')"/>
+                            <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="$t('zipcode')"   @textChange="onTextChange($event.value, 'address.zipCity.zipCode')"/>
                         </StackLayout>
                         <StackLayout v-else>
-                            <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="'description' | L" />
-                            <ListItem leftIcon="mdi-email" :title="userProfile.email" :overText="'email' | L" />
-                            <ListItem v-for="(phone) in userProfile.phoneNumbers" leftIcon="mdi-phone" :title="phone" :overText="'phone' | L" />
-                            <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="'address' | L" />
+                            <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" />
+                            <ListItem leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" />
+                            <ListItem v-for="(phone) in userProfile.phoneNumbers" leftIcon="mdi-phone" :title="phone" :overText="$t('phone')" />
+                            <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="$t('address')" />
                         </StackLayout>
                     </ScrollView>
 

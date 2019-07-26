@@ -4,7 +4,7 @@
             <CActionBar row="0" showMenuIcon="true" />
             <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*" class="pageContent">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap" @itemLoading="onItemLoading" separatorColor="transparent">
+                    <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
                                 <MDCardView margin="20" @onTap="onCardTap(item)">
@@ -30,8 +30,6 @@
                     <Fab colSpan="3" rowSpan="3" iconClass="mdi" :icon="'mdi-plus' | fonticon" :iconOn="'mdi-close' | fonticon">
                         <FabItem :title="$t('transfer') | titlecase" iconClass="mdi" :icon="'mdi-bank-transfer' | fonticon" @tap="openTransferWindow" />
                         <FabItem :title="$t('add_beneficiary') | titlecase" iconClass="mdi" :icon="'mdi-account-plus' | fonticon" @tap="addBeneficiary" />
-                        <!-- <FabItem :title="$t('select_style') | titlecase" iconClass="mdi" :icon="'mdi-layers' | fonticon" @tap="selectStyle" /> -->
-                        <!-- <FabItem :title="$t('offline_packages') | titlecase" iconClass="mdi" :icon="'mdi-earth' | fonticon" @tap="downloadPackages" /> -->
                     </Fab>
                 </transition>
             </GridLayout>
