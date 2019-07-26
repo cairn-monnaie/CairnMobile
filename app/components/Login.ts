@@ -15,7 +15,7 @@ export default class Login extends BasePageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: 'epicerie_sol',
+        username: 'gjanssens',
         email: '',
         password: '@@bbccdd',
         confirmPassword: ''
