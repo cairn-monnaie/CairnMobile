@@ -456,7 +456,7 @@ export default class App extends BaseVueComponent {
                             .then(() => {
                                 this.$alert('bug_report_sent');
                             })
-                            .catch(this.showError);
+                            .catch(err => this.showError(err));
                     }
                 });
                 break;
