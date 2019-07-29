@@ -8,7 +8,7 @@ import BasePageComponent from './BasePageComponent';
 export default class AccountHistory extends BasePageComponent {
     dataItems: ObservableArray<Transaction> = new ObservableArray();
 
-    @Prop({  })
+    @Prop({})
     public accountInfo: AccountInfo;
 
     destroyed() {
@@ -26,6 +26,7 @@ export default class AccountHistory extends BasePageComponent {
         this.$authService
             .getAccountHistory(this.accountInfo)
             .then(r => {
+                this.log(r);
                 this.dataItems = new ObservableArray(r);
                 this.loading = false;
             })

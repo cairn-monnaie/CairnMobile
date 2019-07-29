@@ -4,26 +4,22 @@
             <CActionBar row="0" showMenuIcon="true" />
             <GridLayout row="1" rowSpan="2" columns="*,50,*" rows="*,50,*" class="pageContent">
                 <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
-                    <ListView :items="accounts" backgroundColor="transparent" @itemTap="onItemTap">
+                    <CollectionView :items="accounts" @itemTap="onItemTap" rowHeight="180">
                         <v-template>
                             <StackLayout backgroundColor="transparent">
                                 <MDCardView margin="20" @onTap="onCardTap(item)">
-                                    <GridLayout padding="10" isUserInteractionEnabled="false" columns="*, auto">
-                                        <StackLayout col="0">
-                                            <Label :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
-                                            <StackLayout orientation="horizontal" paddingTop="20">
-                                                <Label col="0" class="balance" :text="item.balance | currency(false)">
-                                                    <Span :text="item.balance | currency(false)" />
-                                                    <Span class="cairn" :text="'cairn-currency' | fonticon" />
-                                                </Label>
-                                            </StackLayout>
-                                        </StackLayout>
-                                        <Label col="1" class="mdi" :text="'mdi-chevron-right' | fonticon" fontSize="30" color="gray" />
+                                    <GridLayout padding="10" isUserInteractionEnabled="false" columns="*, auto" rows="auto, *">
+                                            <Label row="0" :text="item.name | titlecase" fontWeight="bold" fontSize="18" />
+                                            <Label row="1" class="balance" :text="item.balance | currency(false)" paddingTop="20">
+                                                <Span :text="item.balance | currency(false)" />
+                                                <Span class="cairn" :text="'cairn-currency' | fonticon" />
+                                            </Label>
+                                        <Label col="1" rowSpan="2" class="mdi" :text="'mdi-chevron-right' | fonticon" fontSize="30" color="gray" verticalAlignment="center" />
                                     </GridLayout>
                                 </MDCardView>
                             </StackLayout>
                         </v-template>
-                    </ListView>
+                    </CollectionView>
                 </PullToRefresh>
                 <MDActivityIndicator v-show="loading" row="1" col="1" :busy="loading" />
                 <transition name="fade" duration="100">

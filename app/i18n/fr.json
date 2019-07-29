@@ -48,5 +48,6 @@
   "choose_account": "Choix du compte",
   "choose_recipient": "choix du destinataire",
   "reason": "motif",
-  "recipient": "destinataire"
+  "recipient": "destinataire",
+  "no_network": "pas de connexion internet"
 }

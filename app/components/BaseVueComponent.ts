@@ -92,7 +92,6 @@ export default class BaseVueComponent extends Vue {
         const page = this.page;
         // this.log('mounted', this.nativeView, this['navigateUrl'], !!page);
         if (page) {
-            clog(this.constructor.name, 'mounted', page);
             page.actionBarHidden = true;
             if (gVars.isIOS) {
                 page.backgroundSpanUnderStatusBar = true;

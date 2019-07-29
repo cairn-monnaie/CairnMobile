@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="no_network">"pas de connexion internet"</string>
+  <string name="recipient">"destinataire"</string>
+  <string name="reason">"motif"</string>
+  <string name="choose_recipient">"choix du destinataire"</string>
+  <string name="choose_account">"Choix du compte"</string>
+  <string name="amount">"montant"</string>
+  <string name="account">"compte"</string>
+  <string name="beneficiaries">"bénéficiaires"</string>
+  <string name="account_history">"historique du compte"</string>
+  <string name="balance">"balance"</string>
+  <string name="profile">"profile"</string>
+  <string name="beneficiary_added">"bénéficiaire enregistré"</string>
+  <string name="transfer">"effectuer un virement"</string>
+  <string name="add_beneficiary">"ajouter un bénéficiaire"</string>
+  <string name="pick_options">"choisissez une option"</string>
+  <string name="saved_beneficiary">"bénéficiaire enregistré"</string>
+  <string name="amount_required">"un montant est nécessaire"</string>
+  <string name="confirm">"confirmer"</string>
+  <string name="confirmation">"confirmation"</string>
+  <string name="confirmation_code">"code de confirmation"</string>
+  <string name="confirmation_code_description">"entrez le code de confirmation en utilisant votre carte de sécurité"</string>
+  <string name="reason_required">"un motif est nécessaire"</string>
+  <string name="transaction_done">"la transaction a été effectuée avec succés"</string>
+  <string name="address">"adresse"</string>
+  <string name="city">"ville"</string>
+  <string name="description">"description"</string>
+  <string name="email">"email"</string>
+  <string name="phone">"téléphone"</string>
+  <string name="street">"rue"</string>
+  <string name="zipcode">"code postal"</string>
   <string name="send">"envoyer"</string>
-  <string name="_sprintf_with_numbered_placeholders_1lf5Nr">"format me %2$s one more time %1$s"</string>
   <string name="httpError">"${localize(errorMessage)} (${statusCode})"</string>
   <string name="sprintf">"format me %1$s"</string>
   <string name="cancel">"annuler"</string>

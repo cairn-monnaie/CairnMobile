@@ -94,7 +94,7 @@ export default class Home extends BasePageComponent {
         });
     }
     addBeneficiary() {
-        this.$showModal(UserPicker)
+        this.$showModal(UserPicker, { fullscreen: true })
             .then((r: User) => {
                 if (r) {
                     this.showLoading('working');

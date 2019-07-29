@@ -16,6 +16,7 @@ import * as imageModule from 'nativescript-image';
 const Plugin = {
     install(Vue) {
         const authService = new AuthService();
+        authService.start();
 
         Vue.prototype.$authService = authService;
         application.on(application.launchEvent, () => {

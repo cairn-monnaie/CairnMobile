@@ -30,7 +30,7 @@
                 </PullToRefresh>
                 <MDActivityIndicator v-show="loading" row="2" col="1" :busy="loading" />
             </GridLayout>
-            <CActionBar zIndex="10" row="0" showMenuIcon="true" backgroundColor="transparent" :showLogo="false">
+            <CActionBar elevation="0" row="0" showMenuIcon="true" backgroundColor="transparent" :showLogo="false">
                 <MDButton variant="flat" v-show="canSave" class="icon-btn" :text="'mdi-content-save' | fonticon" @tap="switchEditable()" />
                 <MDButton variant="flat" class="icon-btn" :text="editable? 'mdi-close-circle' : 'mdi-pencil' | fonticon" @tap="switchEditable()" />
             </CActionBar>

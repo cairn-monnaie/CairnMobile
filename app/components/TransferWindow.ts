@@ -149,7 +149,8 @@ export default class TransferWindow extends BasePageComponent {
         this.$showModal(UserPicker, {
             props: {
                 beneficiaries: this.benificiaries
-            }
+            },
+            fullscreen: true
         }).then(r => {
             this.log('close', 'TransferRecipientPicker', r);
             if (r) {

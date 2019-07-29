@@ -1,5 +1,6 @@
 {
   "android": {
+    "maxLogcatObjectSize": 2048,
     "markingMode": "none"
   },
   "main": "main.js",

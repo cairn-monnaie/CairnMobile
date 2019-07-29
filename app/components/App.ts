@@ -16,6 +16,7 @@ import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
 import Home from './Home';
 import MultiDrawer, { OptionsType } from './MultiDrawer';
 import Profile from './Profile';
+import Map from './Map';
 import Login from './Login';
 import Beneficiaries from './Beneficiaries';
 // import Map from './Map';
@@ -137,7 +138,7 @@ export default class App extends BaseVueComponent {
                 //     swipeCloseTriggerMinDrag: 30
                 // }
                 left: {
-                    swipeOpenTriggerWidth: 10
+                    swipeOpenTriggerWidth: 20
                 }
             };
         } else {
@@ -163,10 +164,10 @@ export default class App extends BaseVueComponent {
         },
         [ComponentIds.Beneficiaries]: {
             component: Beneficiaries
+        },
+        [ComponentIds.Map]: {
+            component: Map
         }
-        // [ComponentIds.Map]: {
-        //     component: Map
-        // }
     };
     selectedTabIndex: number = 0;
     public activatedUrl = '';
@@ -289,7 +290,7 @@ export default class App extends BaseVueComponent {
         //     this.$navigateBack(), 5000)
     }
     onPageNavigation(event) {
-        this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
+        // this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
         this.closeDrawer();
         this.setActivatedUrl(event.entry.resolvedPage[navigateUrlProperty]);
     }
@@ -356,7 +357,7 @@ export default class App extends BaseVueComponent {
             return;
         }
         this.activatedUrl = id;
-        this.log('setActivatedUrl', id);
+        // this.log('setActivatedUrl', id);
         this.handleSetActivatedUrl(id);
     }
     navigateBack(backEntry?) {
@@ -387,7 +388,7 @@ export default class App extends BaseVueComponent {
         }
     }
     onNavItemTap(url: string, comp?: any): void {
-        this.log('onNavItemTap', url);
+        // this.log('onNavItemTap', url);
         this.navigateToUrl(url as any);
         // });
     }
@@ -485,7 +486,7 @@ export default class App extends BaseVueComponent {
         // options.props[navigateUrlProperty] = url;
 
         this.closeDrawer();
-        console.log('navigateToUrl', url);
+        // console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
             this.navigateTo(this.routes[url].component, options);

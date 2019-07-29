@@ -3,7 +3,7 @@
         <MultiDrawer ref="drawer" :options="drawerOptions">
             <GridLayout slot="left" rows="auto, *, auto" height="100%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="150" padding="15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,10,*,*" columns="50,*" marginBottom="10">
-                    <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="25" textAlignment="center" :text="'mdi-account' | fonticon" v-show="!userProfile.image" />
+                    <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" :text="'mdi-account' | fonticon" v-show="!userProfile.image" />
                     <Image :src="userProfile.image" v-show="!!userProfile.image" />
                     <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />

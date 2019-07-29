@@ -2,6 +2,19 @@
 @import "./animations";
 @import '../node_modules/nativescript-vue-fab/style.css';
 
+
+
+.lato {
+    font-family: 'Lato Regular', 'res/lato';
+}
+.mdi {
+    font-family: 'Material Design Icons', 'MaterialDesignIcons', 'materialdesignicons-webfont';
+}
+
+.cairn {
+    font-family: "cairn";
+}
+
 actionbar {
     background-color: $dark-color;
     color: white;
@@ -12,11 +25,12 @@ label {
 }
 
 label,
+htmllabel,
 button,
 tabview,
 tabviewitem,
 mdbutton {
-    font-family: Roboto;
+    @extend .lato;
 }
 
 mdactivityindicator {
@@ -48,22 +62,23 @@ button {
     // margin:4;
     // ripple-color: $primary-color;
 }
+mdbutton {
+    border-radius: 2;
+
+}
 mdbutton[variant=contained] {
     color: white;
     background-color: $accent-color;
     ripple-color: $accent-color-dark;
 }
 
+mdtextfield[variant=filled] {
+    background-color:#15000000;
+}
+
 mdtextfield {
     highlight-color: $accent-color;
     placeholder-color: $accent-color;
-}
-.mdi {
-    font-family: 'Material Design Icons', 'MaterialDesignIcons', 'materialdesignicons-webfont';
-}
-
-.cairn {
-    font-family: "cairn";
 }
 
 .themedBack {
@@ -85,12 +100,12 @@ mdtextfield {
 .floating-btn {
     @extend .mdi, .buttonwhite;
     // color: $primary-color;
-    font-size: 32;
+    font-size: 24;
     padding: 0;
     margin: 0;
-    width: 56;
-    height: 56;
-    border-radius: 28;
+    width: 54;
+    height: 54;
+    border-radius: 27;
 }
 
 .botom-nav {

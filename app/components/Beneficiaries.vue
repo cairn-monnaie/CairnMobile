@@ -11,7 +11,7 @@
                         </v-template>
                     </CollectionView>
                 </PullToRefresh>
-                <MDActivityIndicator v-show="loading" row="2" col="1" :busy="loading" />
+                <MDActivityIndicator v-show="loading" row="2" col="1" :busy="loading" horizontalAlignment="center" verticalAlignment="center"/>
             </GridLayout>
         </StackLayout>
     </Page>

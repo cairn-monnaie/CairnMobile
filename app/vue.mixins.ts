@@ -45,7 +45,7 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
 
 class FrameWithEvents extends NSFrame {
     _updateBackstack(entry: BackstackEntry, navigationType) {
-        console.log('_updateBackstack', !!entry);
+        // console.log('_updateBackstack', !!entry);
         const isBack = navigationType === 'back';
         // super._onNavigatingTo(backstackEntry, isBack);
         this.notify({

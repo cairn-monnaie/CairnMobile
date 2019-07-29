@@ -7,7 +7,7 @@ import { Client } from 'nativescript-bugsnag';
 import { setMapPosKeys } from 'nativescript-carto/core/core';
 import * as application from 'tns-core-modules/application';
 
-setMapPosKeys('lat', 'lon');
+// setMapPosKeys('lat', 'lon');
 
 /* DEV-START */
 const currentApp = knownFolders.currentApp();
@@ -54,13 +54,13 @@ Vue.use(MixinsPlugin);
 import { accentColor, primaryColor } from './variables';
 import { install, themer } from 'nativescript-material-core';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
-// import { install as installGestures } from 'nativescript-gesturehandler';
+import { install as installGestures } from 'nativescript-gesturehandler';
 if (gVars.isIOS) {
     themer.setPrimaryColor(accentColor);
 }
 install();
 installBottomSheets();
-// installGestures();
+installGestures();
 
 import ViewsPlugin from './vue.views';
 Vue.use(ViewsPlugin);
@@ -89,20 +89,20 @@ TNSFontIcon.paths = {
 };
 TNSFontIcon.loadCssSync();
 
-// application.on(application.uncaughtErrorEvent, args => {
-//     const error = args.error;
-//     // const nErrror = args.android as java.lang.Exception;
-//     // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
-//     // clog('nErrror', nErrror);
-//     clog('uncaughtErrorEvent', error);
-// });
-// application.on(application.discardedErrorEvent, args => {
-//     const error = args.error;
-//     // const nErrror = args.android as java.lang.Exception;
-//     // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
-//     // clog('nErrror', nErrror);
-//     clog('discardedErrorEvent', error);
-// });
+application.on(application.uncaughtErrorEvent, args => {
+    const error = args.error;
+    // const nErrror = args.android as java.lang.Exception;
+    // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
+    // clog('nErrror', nErrror);
+    clog('uncaughtErrorEvent', error);
+});
+application.on(application.discardedErrorEvent, args => {
+    const error = args.error;
+    // const nErrror = args.android as java.lang.Exception;
+    // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
+    // clog('nErrror', nErrror);
+    clog('discardedErrorEvent', error);
+});
 
 // import './app.scss'
 

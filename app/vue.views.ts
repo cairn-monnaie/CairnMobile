@@ -1,3 +1,5 @@
+import { Label as HTMLLabel } from 'nativescript-htmllabel'; // require first to get Font res loading override
+
 import ActivityIndicatorPlugin from 'nativescript-material-activityindicator/vue';
 import ButtonPlugin from 'nativescript-material-button/vue';
 import CardViewPlugin from 'nativescript-material-cardview/vue';
@@ -31,7 +33,7 @@ const Plugin = {
         Vue.use(FabPlugin);
         Vue.use(CollectionViewPlugin);
 
-        Vue.registerElement('HTMLLabel', () => require('nativescript-htmllabel').Label);
+        Vue.registerElement('Label', () => HTMLLabel);
         Vue.registerElement('PullToRefresh', () => require('nativescript-pulltorefresh').PullToRefresh);
         // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
     }
