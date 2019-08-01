@@ -1,11 +1,11 @@
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { NavigatedData } from 'tns-core-modules/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
-import { AccountInfo, Transaction } from '~/services/authService';
-import BasePageComponent from './BasePageComponent';
+import { AccountInfo, Transaction } from '~/services/AuthService';
+import PageComponent from './PageComponent';
 
 @Component({})
-export default class AccountHistory extends BasePageComponent {
+export default class AccountHistory extends PageComponent {
     dataItems: ObservableArray<Transaction> = new ObservableArray();
 
     @Prop({})

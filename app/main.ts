@@ -65,6 +65,7 @@ installGestures();
 import ViewsPlugin from './vue.views';
 Vue.use(ViewsPlugin);
 
+import MultiDrawer from './components/MultiDrawer';
 let drawerInstance: MultiDrawer;
 export function getDrawerInstance() {
     return drawerInstance;
@@ -89,20 +90,8 @@ TNSFontIcon.paths = {
 };
 TNSFontIcon.loadCssSync();
 
-application.on(application.uncaughtErrorEvent, args => {
-    const error = args.error;
-    // const nErrror = args.android as java.lang.Exception;
-    // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
-    // clog('nErrror', nErrror);
-    clog('uncaughtErrorEvent', error);
-});
-application.on(application.discardedErrorEvent, args => {
-    const error = args.error;
-    // const nErrror = args.android as java.lang.Exception;
-    // clog('onNativeError', error, Object.keys(args), Object.keys(error), error.message, error.stackTrace);
-    // clog('nErrror', nErrror);
-    clog('discardedErrorEvent', error);
-});
+application.on(application.uncaughtErrorEvent, args => clog('uncaughtErrorEvent', args.error));
+application.on(application.discardedErrorEvent, args => clog('discardedErrorEvent', args.error));
 
 // import './app.scss'
 
@@ -127,9 +116,7 @@ Vue.config.warnHandler = function(msg, vm, trace) {
 // );
 /* DEV-END */
 
-
 import App from '~/components/App';
-import MultiDrawer from './components/MultiDrawer';
 new Vue({
     render: h => {
         return h(App);

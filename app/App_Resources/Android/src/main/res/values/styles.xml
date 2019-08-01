@@ -5,9 +5,10 @@
     <style name="LaunchScreenThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="toolbarStyle">@style/NativeScriptToolbarStyle</item>
 
-        <item name="colorPrimary">@color/ns_primaryDark</item>
+        <item name="colorPrimary">@color/ns_primary</item>
         <item name="colorPrimaryDark">@color/ns_primaryDark</item>
-        <item name="colorAccent">@color/ns_primaryDark</item>
+        <item name="colorSecondary">@color/ns_secondary</item>
+        <item name="colorAccent">@color/ns_accent</item>
         <item name="android:statusBarColor">@color/ns_primaryDark</item>
 
         <item name="android:windowBackground">@drawable/splash_screen</item>
@@ -27,6 +28,7 @@
 
         <item name="colorPrimary">@color/ns_primary</item>
         <item name="colorPrimaryDark">@color/ns_primaryDark</item>
+        <item name="colorSecondary">@color/ns_secondary</item>
         <item name="colorAccent">@color/ns_accent</item>
 
     </style>

@@ -1,3 +1,6 @@
+"gps_not_authorized" = "activez le GPS et autorisez «eCairn» à l'utiliser pour vous localiser";
+"gps_not_enabled" = "activez le GPS pour permettre à «eCairn» de vous localiser";
+"no_network" = "pas de connexion internet";
 "recipient" = "destinataire";
 "reason" = "motif";
 "choose_recipient" = "choix du destinataire";
@@ -47,4 +50,4 @@
 "password" = "mot de passe";
 "username" = "utilisateur";
 "home" = "accueil";
-"_app_name_1k3Sbz" = "Cairn Mobile";
+"_app_name_1k3Sbz" = "eCairn";

@@ -5,30 +5,30 @@ import BaseVueComponent from '~/components/BaseVueComponent';
     inheritAttrs: false
 })
 export default class ListItem extends BaseVueComponent {
-    @Prop({})
+    @Prop({ type: String })
     title: string;
-    @Prop({ default: 1 })
+    @Prop({ default: 1, type: Number })
     sizeFactor: number;
-    @Prop({})
+    @Prop({ type: String })
     subtitle: string;
-    @Prop({})
+    @Prop({ type: String })
     overText: string;
-    @Prop({})
+    @Prop({ type: String })
     date: string;
-    @Prop({})
+    @Prop({ type: String })
     rightIcon: string;
-    @Prop({})
+    @Prop({ type: String })
     rightButton: string;
-    @Prop({})
+    @Prop({ type: String })
     leftIcon: string;
-    @Prop({})
+    @Prop({ type: String })
     avatar: string;
-    @Prop({ default: true })
+    @Prop({ default: true, type: Boolean })
     showBottomLine: boolean;
 
-    @Prop({ default: '#5C5C5C' })
+    @Prop({ default: '#5C5C5C', type: String })
     overlineColor: string;
-    @Prop({ default: '#676767' })
+    @Prop({ default: '#676767', type: String })
     subtitleColor: string;
 
     @Watch('avatar')
@@ -38,7 +38,7 @@ export default class ListItem extends BaseVueComponent {
     }
 
     get showAvatar() {
-        console.log('showAvatar', !!this.avatar);
+        // console.log('showAvatar', !!this.avatar);
         return !!this.avatar;
     }
 

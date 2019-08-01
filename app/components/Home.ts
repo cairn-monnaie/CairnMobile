@@ -2,34 +2,31 @@ import AccountHistory from './AccountHistory';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Component } from 'vue-property-decorator';
-import { AccountInfo, AccountInfoEvent, AccountInfoEventData, User } from '~/services/authService';
+import { AccountInfo, AccountInfoEvent, AccountInfoEventData, User } from '~/services/AuthService';
 import { Color, NavigatedData } from 'tns-core-modules/ui/frame';
 import { ComponentIds } from './App';
-import BasePageComponent from './BasePageComponent';
+import PageComponent from './PageComponent';
 import TransferWindow from './TransferWindow';
 import UserPicker from './UserPicker';
 import { showSnack } from 'nativescript-material-snackbar';
 
 @Component({})
-export default class Home extends BasePageComponent {
+export default class Home extends PageComponent {
     navigateUrl = ComponentIds.Situation;
     amountError: string = null;
-    loading = true;
     accounts: ObservableArray<AccountInfo> = new ObservableArray();
     constructor() {
         super();
+        // this.showMenuIcon = true;
     }
     mounted() {
         super.mounted();
+        // this.$on('navigatedTo', this.onNavigatedTo)
         this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
     }
     destroyed() {
         super.destroyed();
         this.$authService.off(AccountInfoEvent, this.onAccountsData, this);
-    }
-    showError(err) {
-        this.loading = false;
-        super.showError(err);
     }
 
     onNavigatedTo(args: NavigatedData) {
@@ -73,7 +70,9 @@ export default class Home extends BasePageComponent {
         }
         // console.log('refreshing');
         this.loading = true;
-        this.$authService.getAccounts().catch(err => this.showError(err));
+        setTimeout(() => {
+            this.$authService.getAccounts().catch(err => this.showError(err));
+        }, 1000);
     }
     onNavigatingTo() {
         // if (isAndroid) {
@@ -90,6 +89,9 @@ export default class Home extends BasePageComponent {
     // }
     openTransferWindow() {
         this.navigateTo(TransferWindow, {
+            props: {
+                modal: true
+            }
             // fullscreen: true
         });
     }

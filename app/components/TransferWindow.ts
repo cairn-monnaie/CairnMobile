@@ -1,15 +1,15 @@
 import { PropertyChangeData } from 'tns-core-modules/data/observable';
 import { Component } from 'vue-property-decorator';
 import { alert, prompt } from 'nativescript-material-dialogs';
-import { AccountInfo, Benificiary, User } from '~/services/authService';
-import BasePageComponent from './BasePageComponent';
+import { AccountInfo, Benificiary, User } from '~/services/AuthService';
+import PageComponent from './PageComponent';
 import UserPicker from './UserPicker';
 import { ComponentIds } from './App';
 import { TextField } from 'nativescript-material-textfield';
 import { showSnack } from 'nativescript-material-snackbar';
 
 @Component({})
-export default class TransferWindow extends BasePageComponent {
+export default class TransferWindow extends PageComponent {
     navigateUrl = ComponentIds.Transfer;
     reason: string = null;
     description: string = null;

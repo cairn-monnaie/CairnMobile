@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "skipLibCheck": true,
         "target": "es5",
         "module": "esnext",
         "moduleResolution": "node",
@@ -15,11 +16,12 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitUseStrict": true,
+        "jsx": "preserve",
         "lib": ["es6", "dom", "es2015.iterable"],
         "baseUrl": ".",
         "paths": {
             "nativescript-vue": ["./node_modules/nativescript-akylas-vue"],
-            "nativescript-pulltorefresh": ["./node_modules/nativescript-akylas-pulltorefresh"],
+            "nativescript-pulltorefresh":   ["./node_modules/nativescript-akylas-pulltorefresh"],
             "~/*": ["app/*"],
             "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
         }

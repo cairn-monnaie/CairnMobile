@@ -1,29 +1,30 @@
 <template>
-    <Page ref="page" class="page" actionBarHidden @loaded="onLoaded">
-        <ScrollView class="pageContent">
+    <CairnPage  @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight" @actionBarTitleTap="animateLogoView">
+        <!-- <Label  slot="actionBar"  width="100%" textAlignment="center" class="cairn" :text="'cairn-full_logo' | fonticon" color="white" :fontSize="Math.min(logoViewHeight, 200)" /> -->
+        <ScrollView>
             <StackLayout horizontalAlignment="center">
-                <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" :height="logoViewHeight">
-                    <Label @tap="animateLogoView" width="100%" textAlignment="center" class="cairn" :text="'cairn-full_logo' | fonticon" color="white" :fontSize="Math.min(logoViewHeight, 200)" />
-                </StackLayout>
+                <!-- <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" > -->
+                    
+                <!-- </StackLayout> -->
                 <StackLayout class="form">
-                    <MDTextField class="input" :hint="$t('username') | titlecase" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
+                    <MDTextField class="input" :hint="$t('username') | capitalize" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
 
-                    <MDTextField ref="password" class="input" :hint="$t('password') | titlecase" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
+                    <MDTextField ref="password" class="input" :hint="$t('password') | capitalize" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
 
-                    <MDTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="$t('confirm_password') | titlecase" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
+                    <MDTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="$t('confirm_password') | capitalize" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
 
-                    <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | titlecase" @tap="submit" :isEnabled="canLoginOrRegister" />
-                    <MDActivityIndicator v-show="loading" :busy="loading" width="45" height="45" />
-                    <Label v-show="isLoggingIn" :text="$t('forgot_password') | titlecase" class="login-label" @tap="forgotPassword" />
+                    <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
+                    <!-- <MDActivityIndicator v-show="loading" busy width="45" height="45" /> -->
+                    <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">
-                    <Span :text="(isLoggingIn ? $t('no_account') : $t('login'))| titlecase" />
-                    <Span :text="isLoggingIn ? $t('register') : '' | titlecase" class="bold" />
+                    <Span :text="(isLoggingIn ? $t('no_account') : $t('login'))| capitalize" />
+                    <Span :text="isLoggingIn ? $t('register') : '' | capitalize" class="bold" />
                 </Label>
             </StackLayout>
         </ScrollView>
-    </Page>
+    </CairnPage>
 </template>
 
 <script lang="ts" src="./Login.ts" />

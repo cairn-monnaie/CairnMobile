@@ -4,6 +4,7 @@
     "markingMode": "none"
   },
   "main": "main.js",
+  "profiling": "none",
   "name": "com.akylas.cairnmobile",
   "version": "1.0.0"
 }

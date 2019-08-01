@@ -6,7 +6,6 @@ import Vue from 'nativescript-vue';
 import { GestureHandlerStateEvent, GestureHandlerTouchEvent, GestureState, GestureStateEventData, GestureTouchEventData, HandlerType, Manager, PanGestureHandler } from 'nativescript-gesturehandler';
 import { View } from 'tns-core-modules/ui/page/page';
 import { CollectionView } from 'nativescript-collectionview';
-import { RadCartesianChart } from 'nativescript-ui-chart';
 export const NATIVE_GESTURE_TAG = 4;
 
 @Component({})
@@ -39,11 +38,9 @@ export default class BottomSheetBase extends BaseVueComponent {
     holder: BottomSheetHolder;
     panGestureHandler: PanGestureHandler;
     get listView() {
-        return this.$refs['listView'] && this.$refs['listView'].nativeView as CollectionView;
+        return this.$refs['listView'] && (this.$refs['listView'].nativeView as CollectionView);
     }
-    get graphView() {
-        return this.$refs['graphView'] &&  this.$refs['graphView'].nativeView as RadCartesianChart;
-    }
+
     mounted() {
         super.mounted();
 

@@ -130,7 +130,11 @@ export default class BottomSheetHolder extends BaseVueComponent {
         return this.$refs['scrollingView'].nativeView as View;
     }
     get translationMaxOffset() {
-        return this.peekerSteps.slice(-1)[0];
+        if (this.peekerSteps.length > 1) {
+            return this.peekerSteps.slice(-1)[0];
+        }
+        return this.peekerSteps[0];
+
     }
     onLayoutChange() {
         this.viewHeight = layout.toDeviceIndependentPixels(this.nativeView.getMeasuredHeight());

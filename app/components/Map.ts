@@ -1,22 +1,18 @@
-import { Color } from 'tns-core-modules/ui/page';
-import MapComponent from './MapComponent';
-import BaseVueComponent from '~/components/BaseVueComponent';
-import { GeoHandler, Session, SessionEventData, SessionUpdatedEvent } from '~/handlers/GeoHandler';
-import { Component } from 'vue-property-decorator';
-import { clog } from '~/utils/logging';
-import { ComponentIds } from './App';
 import { throttle } from 'helpful-decorators';
-import { CartoMap } from 'nativescript-carto/ui/ui';
-import { ClickType, fromNativeMapPos, MapBounds, MapPos } from 'nativescript-carto/core/core';
+import { ClickType, MapBounds, MapPos } from 'nativescript-carto/core/core';
 import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources/datasource';
 import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
-import { GeoJSONGeometryReader } from 'nativescript-carto/geometry/geojsonreader';
+import { CartoMap } from 'nativescript-carto/ui/ui';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles/vectortiles';
-const GeoJSON = require('geojson');
 import * as appSettings from 'tns-core-modules/application-settings';
-import { User } from '~/services/authService';
-import MapBottomSheet from './MapBottomSheet';
+import { Component } from 'vue-property-decorator';
+import PageComponent from '~/components/PageComponent';
+import { User } from '~/services/AuthService';
+import { ComponentIds } from './App';
 import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
+import MapBottomSheet from './MapBottomSheet';
+import MapComponent from './MapComponent';
+const GeoJSON = require('geojson');
 
 @Component({
     components: {
@@ -25,9 +21,8 @@ import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomShe
         BottomSheetHolder
     }
 })
-export default class Map extends BaseVueComponent {
+export default class Map extends PageComponent {
     navigateUrl = ComponentIds.Map;
-    loading = false;
     _cartoMap: CartoMap;
     _localVectorDataSource: GeoJSONVectorTileDataSource;
     localVectorLayer: VectorTileLayer;

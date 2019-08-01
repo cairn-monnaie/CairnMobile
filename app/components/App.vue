@@ -1,5 +1,7 @@
 <template>
-    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" backgroundColor="yellow">
+    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true">
+        <StatusBar ios:barStyle="light" :barColor="darkColor" />
+        <NavigationBar :barColor="themeColor" />
         <MultiDrawer ref="drawer" :options="drawerOptions">
             <GridLayout slot="left" rows="auto, *, auto" height="100%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="150" padding="15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,10,*,*" columns="50,*" marginBottom="10">
@@ -10,10 +12,9 @@
                 </GridLayout>
                 <ScrollView row="1" paddingTop="10" @tap="noop">
                     <StackLayout ref="menu" @tap="noop">
-                        <GridLayout v-for="(item) in menuItems" :key="item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)">
+                        <GridLayout v-for="(item) in menuItems" :key="item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)"  @tap="onNavItemTap(item.url)">
                             <Label col="0" class="menuIcon" :text="('mdi-' + item.icon) | fonticon" verticalAlignment="center" :active="activatedUrl  === item.url" />
-                            <Label col="1" class="menuText" :text="item.title | titlecase" verticalAlignment="center" :active="activatedUrl  === item.url" />
-                            <MDRipple borderRadius="4" col="0" colSpan="2" @tap="onNavItemTap(item.url)" />
+                            <Label col="1" class="menuText" :text="item.title | capitalize" verticalAlignment="center" :active="activatedUrl  === item.url" />
                         </GridLayout>
                     </StackLayout>
                 </ScrollView>
@@ -30,7 +31,7 @@
                     </StackLayout>
                 </StackLayout>
             </GridLayout>
-            <StackLayout class="page" iosOverflowSafeArea="false">
+            <StackLayout iosOverflowSafeArea="false">
                 <Frame ref="innerFrame">
                     <Home v-if="loggedInOnStart" />
                     <Login v-else />
@@ -39,20 +40,20 @@
 
             <!-- <GridLayout rows="*, auto" iosOverflowSafeArea="true">
                     <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
-                        <TabViewItem :title="$t('home') | titlecase">
+                        <TabViewItem :title="$t('home') | capitalize">
                             <Frame>
                                 <Home />
                             </Frame>
                         </TabViewItem>
-                        <TabViewItem :title="$t('profile') | titlecase ">
+                        <TabViewItem :title="$t('profile') | capitalize ">
                             <Frame>
                                 <Profile />
                             </Frame>
                         </TabViewItem>
                     </TabView>
                     <!-- <BottomNavigation ref="bottomNavigation" row="1" @tabSelected="onBottomNavigationTabSelected">
-                        <BottomNavigationTab :title="$t('home') | titlecase" icon="logo" />
-                        <BottomNavigationTab :title="$t('profile') | titlecase " icon="logo" />
+                        <BottomNavigationTab :title="$t('home') | capitalize" icon="logo" />
+                        <BottomNavigationTab :title="$t('profile') | capitalize " icon="logo" />
                     </BottomNavigation> -->
             </GridLayout> -->
         </MultiDrawer>

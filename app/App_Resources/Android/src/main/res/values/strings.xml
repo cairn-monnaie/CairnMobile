@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="delete_phone">"supprimer le téléphone %1$s ?"</string>
+  <string name="delete">"supprimer"</string>
+  <string name="add">"ajouter"</string>
+  <string name="add_phone">"ajouter un téléphone"</string>
+  <string name="gps_not_authorized">"activez le GPS et autorisez «eCairn» à l\'utiliser pour vous localiser"</string>
+  <string name="gps_not_enabled">"activez le GPS pour permettre à «eCairn» de vous localiser"</string>
   <string name="no_network">"pas de connexion internet"</string>
   <string name="recipient">"destinataire"</string>
   <string name="reason">"motif"</string>
@@ -50,7 +56,7 @@
   <string name="password">"mot de passe"</string>
   <string name="username">"utilisateur"</string>
   <string name="home">"accueil"</string>
-  <string name="_app_name_1k3Sbz">"Cairn Mobile"</string>
-  <string name="app_name">"Cairn Mobile"</string>
-  <string name="title_activity_kimera">"Cairn Mobile"</string>
+  <string name="_app_name_1k3Sbz">"eCairn"</string>
+  <string name="app_name">"eCairn"</string>
+  <string name="title_activity_kimera">"eCairn"</string>
 </resources>

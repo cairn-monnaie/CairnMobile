@@ -1,5 +1,5 @@
 import Vue from "vue"
-import AuthService from "~/services/authService"
+import AuthService from "~/services/AuthService"
 import { ToastDuration, ToastPosition } from 'nativescript-toasty';
 import { Client } from 'nativescript-bugsnag';
 import App from '~/components/App';
@@ -14,8 +14,8 @@ declare module "vue/types/vue" {
         $isAndroid: boolean
         $isIOS: boolean
         $t: (s: string, ...args) => string;
-        $ltc: (s: string, ...args) => string
-        $luc: (s: string, ...args) => string
+        $tc: (s: string, ...args) => string
+        $tu: (s: string, ...args) => string
         $filters: {
             titleclase(s: string): string
             uppercase(s: string): string

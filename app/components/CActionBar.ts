@@ -1,26 +1,31 @@
 import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
+import { actionBarHeight } from '~/variables';
 
 @Component({})
 export default class ActionBar extends BaseVueComponent {
     @Prop({
-        default: null
+        default: null,
+        type: String
     })
     public title: string;
 
-    @Prop({ default: null })
+    @Prop({ default: actionBarHeight, type: Number })
+    public height: number;
+
+    @Prop({ default: null, type: String })
     public subtitle: string;
 
-    @Prop({ default: false })
+    @Prop({ default: false, type: Boolean })
     public showMenuIcon: boolean;
 
-    @Prop({ default: false })
+    @Prop({ default: false, type: Boolean })
     public modalWindow: boolean;
 
     // @Prop({ default: false })
     public canGoBack = false;
 
-    @Prop({ default: true })
+    @Prop({ default: true, type: Boolean })
     public showLogo: boolean;
 
     get menuIcon() {
@@ -35,31 +40,13 @@ export default class ActionBar extends BaseVueComponent {
     get menuIconVisible() {
         return this.modalWindow || this.canGoBack || this.showMenuIcon;
     }
-    get menuIconVisibility() {
-        return this.menuIconVisible ? 'visible' : 'collapsed';
-    }
 
     mounted() {
-        // this.battery = this.glassesBattery;
         setTimeout(() => {
             this.canGoBack = this.$getAppComponent().canGoBack();
-            // const topFrame = this._findParentFrame();
-            //     this.log('actionbar mounted', topFrame, topFrame.canGoBack(), topFrame.backStack);
-            //     // clog("topFrame", topFrame && topFrame.canGoBack())
-            //     if (topFrame) {
-            //         this.canGoBack = topFrame.canGoBack();
-            //     }
         }, 0);
     }
     onMenuIcon() {
-        // if (this.modalWindow) {
-        //     this.$modal.close();
-        //     return;
-        // }
-        // if (this.canGoBack) {
-        //     this.$navigateBack();
-        // } else {
         this.$getAppComponent().onMenuIcon();
-        // }
     }
 }

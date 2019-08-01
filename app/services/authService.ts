@@ -3,6 +3,9 @@ import { EventData } from 'tns-core-modules/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
+import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
+import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import mergeOptions from 'merge-options';
 
 const clientId = '3_2gd9gnkf3pj4g4c0wkkwcsskskcwk40o8c4w8w8gko0o08gcog';
 const clientSecret = '2062ors5k8xwgsk8kw0gg48cg4swg40k8o04ogscg0ww8kc00w';
@@ -12,9 +15,13 @@ const tokenEndpoint = '/oauth/tokens';
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 export const AccountInfoEvent = 'accountinfo';
+export const UserProfileEvent = 'userprofile';
 
 export interface AccountInfoEventData extends EventData {
     data: AccountInfo[];
+}
+export interface UserProfileEventData extends EventData {
+    data: UserProfile;
 }
 
 export class User {
@@ -109,6 +116,10 @@ export interface AccountInfo {
 
 export interface UserProfile extends User {}
 
+export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
+    image?: ImageAsset;
+}
+
 export interface Benificiary {
     autocompleteLabel: string;
     id: number;
@@ -179,6 +190,63 @@ export interface Transaction {
     debitorName: string;
 }
 
+function getImageData(asset: ImageAsset): Promise<any> {
+    return new Promise((resolve, reject) => {
+        asset.getImageAsync((image, error) => {
+            if (error) {
+                return reject(error);
+            }
+            let imageData: any;
+            if (image) {
+                if (image.ios) {
+                    imageData = UIImagePNGRepresentation(image);
+                } else {
+                    // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
+                    const bitmapImage: android.graphics.Bitmap = image;
+                    const stream = new java.io.ByteArrayOutputStream();
+                    bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
+                    const byteArray = stream.toByteArray();
+                    bitmapImage.recycle();
+
+                    imageData = byteArray;
+                }
+            }
+            resolve(imageData);
+        });
+    });
+}
+function flatten(arr) {
+    return arr.reduce(function(flat, toFlatten) {
+        return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+    }, []);
+}
+function getFormData(actualData, prefix?: string) {
+    return Promise.all(
+        Object.keys(actualData).map(k => {
+            const value = actualData[k];
+            if (!!value) {
+                if (value instanceof ImageAsset) {
+                    return getImageData(value).then(data => ({
+                        data,
+                        contentType: 'image/jpeg',
+                        fileName: 'image.jpeg',
+                        parameterName: `fos_user_profile_form[${k}][file]`
+                    }));
+                } else if (typeof value === 'object') {
+                    return getFormData(value, `${prefix || ''}[${k}]`);
+                } else {
+                    return Promise.resolve({
+                        data: value.toString(),
+                        parameterName: `fos_user_profile_form${prefix || ''}[${k}]`
+                    });
+                }
+            }
+
+            return Promise.resolve(null);
+        })
+    ).then(result => flatten(result));
+}
+
 export default class AuthService extends NetworkService {
     @numberProperty userId: number;
     @objectProperty userProfile: UserProfile;
@@ -225,8 +293,54 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         }).then(result => {
             this.userProfile = cleanupUser(result);
+            this.notify({
+                eventName: UserProfileEvent,
+                object: this,
+                data: this.userProfile
+            } as UserProfileEventData);
             return this.userProfile;
         });
+    }
+    updateUserProfile(data: UpdateUserProfile): Promise<any> {
+        if (!data) {
+            return Promise.resolve();
+        }
+        const currentData = pick(this.userProfile as any, ['address', 'name', 'image', 'description', 'email']);
+        if (currentData.address) {
+            currentData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
+            if (currentData.address.zipCity) {
+                currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
+            }
+        }
+        const actualData = mergeOptions(currentData, data);
+
+        return getFormData(actualData).then(params =>
+            this.requestMultipart({
+                url: authority + `/mobile/users/profile`,
+                multipartParams: params.filter(s => !!s),
+                method: 'POST'
+            })
+        );
+    }
+    addPhone(phoneNumber: string) {
+        return this.request({
+            url: authority + `/mobile/phones.json`,
+            method: 'POST',
+            content: JSON.stringify({
+                phoneNumber,
+                paymentEnabled: false
+            })
+        }).then(() => this.getUserProfile());
+    }
+    deletePhone(phoneNumber: string) {
+        return this.request({
+            url: authority + `/mobile/phones/${this.userId}.json`,
+            method: 'DELETE',
+            content: JSON.stringify({
+                phoneNumber,
+                paymentEnabled: false
+            })
+        }).then(() => this.getUserProfile());
     }
     getAccounts(): Promise<AccountInfo[]> {
         return this.request({
@@ -236,9 +350,10 @@ export default class AuthService extends NetworkService {
             const result = r.map(a => {
                 return {
                     balance: parseFloat(a.status.balance),
-                    number: a.number.toString(),
-                    id: a.id.toString(),
-                    name: a.type.name.toString()
+                    creditLimit: parseFloat(a.status.creditLimit),
+                    number: a.number,
+                    id: a.id,
+                    name: a.type.name
                 } as AccountInfo;
             }) as AccountInfo[];
             this.notify({
@@ -381,7 +496,7 @@ export default class AuthService extends NetworkService {
                         eventName: LoggedinEvent,
                         object: this,
                         data: this.userProfile
-                    });
+                    } as UserProfileEventData);
                 }
             })
             .catch(err => {

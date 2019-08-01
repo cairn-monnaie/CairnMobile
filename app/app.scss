@@ -1,8 +1,6 @@
-@import "./variables";
-@import "./animations";
+@import './variables';
+@import './animations';
 @import '../node_modules/nativescript-vue-fab/style.css';
-
-
 
 .lato {
     font-family: 'Lato Regular', 'res/lato';
@@ -12,7 +10,7 @@
 }
 
 .cairn {
-    font-family: "cairn";
+    font-family: 'cairn';
 }
 
 actionbar {
@@ -20,8 +18,9 @@ actionbar {
     color: white;
 }
 
+htmllabel,
 label {
-    color: $text-color
+    color: $text-color;
 }
 
 label,
@@ -46,6 +45,7 @@ mdripple {
 }
 
 .pageContent {
+    // z-index:1;
     background-color: #f5f7fa;
 }
 
@@ -64,21 +64,28 @@ button {
 }
 mdbutton {
     border-radius: 2;
-
 }
-mdbutton[variant=contained] {
+mdbutton[variant='contained'] {
     color: white;
     background-color: $accent-color;
     ripple-color: $accent-color-dark;
 }
 
-mdtextfield[variant=filled] {
-    background-color:#15000000;
+mdtextfield[variant='filled'] {
+    background-color: #15000000;
 }
 
 mdtextfield {
     highlight-color: $accent-color;
     placeholder-color: $accent-color;
+}
+
+.cardView {
+    border-radius: 2;
+    elevation: 1;
+    dynamic-elevation-offset: 5;
+    ripple-color: $primary-color;
+    background-color: white;
 }
 
 .themedBack {
@@ -121,19 +128,16 @@ tabview {
 }
 
 .actionBar {
-    // margin-top:0.0001;
+    elevation: 1;
     background-color: $primary-color;
-    height: $actionbar-height;
-}
-.actionBarBar {
 }
 
 .actionBarButton {
     @extend .mdi;
     width: $actionbar-height;
     height: $actionbar-height;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
     font-size: 32;
     border-radius: $actionbar-height/2;
     color: #ffffff;
@@ -141,7 +145,7 @@ tabview {
 }
 
 .actionBarTitle {
-    vertical-alignment:center;
+    vertical-alignment: center;
     font-size: 18;
     font-weight: bold;
     color: white;
@@ -151,7 +155,6 @@ tabview {
     font-size: 13;
     color: #88ffffff;
 }
-
 
 .icon-btn {
     @extend .mdi;
@@ -179,15 +182,16 @@ tabview {
     padding: 0 4 0 4;
 }
 .menu {
-    height:48;
+    height: 48;
     background-color: #ffffff;
     border-radius: 4;
     margin: 4 9 4 9;
+    ripple-color: $primary-color;
 }
 
 .menuIcon {
     @extend .mdi;
-    color:#757575;
+    color: #757575;
     text-align: center;
     font-size: 24;
 }
@@ -198,7 +202,7 @@ tabview {
 .menuText {
     font-weight: 500;
     color: #000000;
-    paddingLeft:20;
+    paddingleft: 20;
     font-size: 14;
 }
 
@@ -246,7 +250,6 @@ tabview {
     // border-radius: 20;
 }
 
-
 .balance {
     color: $accent-color;
     font-size: 30;
@@ -256,7 +259,6 @@ tabview {
     font-size: 30;
     vertical-align: top;
 }
-
 
 .listRightIcon {
     @extend .mdi;

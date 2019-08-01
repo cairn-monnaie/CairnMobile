@@ -4,6 +4,7 @@ import * as http from 'tns-core-modules/http';
 import { clog } from '~/utils/logging';
 import { localize } from 'nativescript-localize';
 import { stringProperty } from './BackendService';
+import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -24,6 +25,7 @@ export interface NetworkConnectionStateEventData extends EventData {
 
 export interface HttpRequestOptions extends HTTPOptions {
     queryParams?: {};
+    multipartParams?;
 }
 
 function evalTemplateString(resource: string, obj: {}) {
@@ -260,7 +262,26 @@ export class NetworkService extends Observable {
         this.connectionType = newConnectionType;
     }
 
-    handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {}
+    handleRequestRetry(requestParams: HttpRequestOptions, retry = 0): Promise<any | never> {
+        return Promise.reject(
+            new HTTPError({
+                statusCode: 401,
+                message: 'HTTP error',
+                requestParams
+            })
+        );
+    }
+
+    getRequestHeaders(requestParams?: HttpRequestOptions) {
+        const headers = (requestParams && requestParams.headers) || {};
+        if (!headers['Content-Type']) {
+            headers['Content-Type'] = 'application/json';
+        }
+        if (this.token) {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return headers;
+    }
     request(requestParams: HttpRequestOptions, retry = 0) {
         if (!this.connected) {
             return Promise.reject(new NoNetworkError());
@@ -269,58 +290,80 @@ export class NetworkService extends Observable {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
-        // if (!requestParams.method) {
-        //     requestParams.method = "GET";
-        // }
-        requestParams.headers = requestParams.headers || {};
-        if (!requestParams.headers['Content-Type']) {
-            requestParams.headers['Content-Type'] = 'application/json';
-        }
-        if (this.token) {
-            requestParams.headers['Authorization'] = 'Bearer ' + this.token;
-        }
+        requestParams.headers = this.getRequestHeaders(requestParams);
+
         console.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http
-            .request(requestParams)
-            .then(response => {
-                console.log('request response', response.statusCode, Math.round(response.statusCode / 100));
-                if (Math.round(response.statusCode / 100) !== 2) {
-                    const responseStr = response.content.toString().replace('=>', ':');
-                    try {
-                        const jsonReturn = JSON.parse(responseStr);
-                        console.log('request error', response.statusCode, jsonReturn, response.content);
+        return http.request(requestParams).then(response => {
+            return this.handleRequestResponse(response, requestParams, requestStartTime, retry);
+        });
+    }
 
+    requestMultipart(requestParams: HttpRequestOptions, retry = 0) {
+        console.log('requestMultipart', requestParams);
+        const requestStartTime = Date.now();
+        return new TNSHttpFormData()
+            .post(requestParams.url, requestParams.multipartParams, {
+                headers: this.getRequestHeaders(requestParams)
+            })
+            .then(response => {
+                return this.handleRequestResponse(response, requestParams, requestStartTime, retry);
+            });
+    }
+
+    handleRequestResponse(response: http.HttpResponse | TNSHttpFormDataResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
+        const statusCode = response.statusCode;
+        return Promise.resolve()
+            .then(() => {
+                const content = response['content'] ? response['content'].toString() : response['body'];
+                const isJSON = typeof content === 'object';
+                console.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
+                if (Math.round(statusCode / 100) !== 2) {
+                    let jsonReturn;
+                    if (isJSON) {
+                        jsonReturn = content;
+                    } else {
+                        const responseStr = content.replace('=>', ':');
+                        try {
+                            jsonReturn = JSON.parse(responseStr);
+                        } catch (err) {
+                            // error result might html
+                            const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
+                            console.log('request error1', responseStr, match);
+                            return Promise.reject(
+                                new HTTPError({
+                                    statusCode,
+                                    message: match ? match[1] : 'HTTP error',
+                                    requestParams
+                                })
+                            );
+                        }
+                    }
+                    console.log('test error response', jsonReturn);
+                    if (jsonReturn) {
+                        console.log('request error', statusCode, jsonReturn.error);
+                        if (Array.isArray(jsonReturn)) {
+                            jsonReturn = jsonReturn[0];
+                        }
                         if (
-                            (response.statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
-                            (response.statusCode === 400 &&
+                            (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
+                            (statusCode === 400 &&
                                 jsonReturn.error &&
                                 jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
                         ) {
-                            this.handleRequestRetry(requestParams, retry);
+                            return this.handleRequestRetry(requestParams, retry);
                         }
                         const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
                         return Promise.reject(
                             new HTTPError({
-                                statusCode: error.code || response.statusCode,
+                                statusCode: error.code || statusCode,
                                 message: error.error_description || error.form || error.message || error.error || error,
-                                requestParams
-                            })
-                        );
-                    } catch (e) {
-                        // error result might html
-                        const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
-                        console.log('request error1', responseStr, match);
-                        return Promise.reject(
-                            new HTTPError({
-                                statusCode: response.statusCode,
-                                message: match ? match[1] : 'HTTP error',
                                 requestParams
                             })
                         );
                     }
                 }
-                return response.content.toJSON();
+                return isJSON ? content : response['content'].toJSON();
             })
             .catch(err => {
                 const delta = Date.now() - requestStartTime;

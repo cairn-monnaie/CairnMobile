@@ -1,14 +1,14 @@
 import { TextField } from 'nativescript-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
-import { Benificiary, User } from '~/services/authService';
-import BasePageComponent from './BasePageComponent';
+import { Benificiary, User } from '~/services/AuthService';
+import PageComponent from './PageComponent';
 
 interface Recipient extends User {
     isBeneficiary?: boolean;
 }
 
 @Component({})
-export default class UserPicker extends BasePageComponent {
+export default class UserPicker extends PageComponent {
     @Prop() beneficiaries: Benificiary[];
 
     dataItems: Recipient[] = [];
@@ -48,7 +48,6 @@ export default class UserPicker extends BasePageComponent {
         // }
     }
     searchAsTypeTimer;
-    loading = false;
     onBlur(e) {
         this.log('onBlur');
         this.hasFocus = false;

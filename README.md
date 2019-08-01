@@ -1,4 +1,4 @@
-# Cairn Mobile
+# eCairn
 
 > A native application built with NativeScript-Vue
 

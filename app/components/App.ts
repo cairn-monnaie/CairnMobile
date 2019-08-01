@@ -1,5 +1,5 @@
+import { setDrawerInstance } from '~/main';
 import * as EInfo from 'nativescript-extendedinfo';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
 import { device, screen } from 'tns-core-modules/platform';
 import { NavigationEntry } from 'tns-core-modules/ui/frame';
 import { Color } from 'tns-core-modules/color';
@@ -11,7 +11,7 @@ import { Frame } from 'tns-core-modules/ui/frame/frame';
 import { TabView } from 'tns-core-modules/ui/tab-view/tab-view';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
-import { setDrawerInstance } from '~/main';
+import Vue, { NativeScriptVue } from 'nativescript-vue';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
 import Home from './Home';
 import MultiDrawer, { OptionsType } from './MultiDrawer';
@@ -21,10 +21,11 @@ import Login from './Login';
 import Beneficiaries from './Beneficiaries';
 // import Map from './Map';
 import AppFrame from './AppFrame';
-import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/authService';
+import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import * as app from 'application';
 import { compose } from 'nativescript-email';
 import { prompt } from 'nativescript-material-dialogs';
+import { screenHeightDips, screenWidthDips } from '~/variables';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
@@ -124,7 +125,6 @@ export default class App extends BaseVueComponent {
     // };
 
     get drawerOptions() {
-        console.log('drawerOptions', this.currentlyLoggedIn);
         if (this.currentlyLoggedIn) {
             return {
                 // top: {
@@ -290,7 +290,7 @@ export default class App extends BaseVueComponent {
         //     this.$navigateBack(), 5000)
     }
     onPageNavigation(event) {
-        // this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
+        this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
         this.closeDrawer();
         this.setActivatedUrl(event.entry.resolvedPage[navigateUrlProperty]);
     }
@@ -332,7 +332,7 @@ export default class App extends BaseVueComponent {
     }
 
     isActiveUrl(id) {
-        // this.log('isActiveUrl', id, this.activatedUrl);
+        this.log('isActiveUrl', id, this.activatedUrl);
         return this.activatedUrl === id;
     }
 
@@ -416,8 +416,8 @@ export default class App extends BaseVueComponent {
                                             uuid: device.uuid
                                         },
                                         screen: {
-                                            widthDIPs: screen.mainScreen.widthDIPs,
-                                            heightDIPs: screen.mainScreen.heightDIPs,
+                                            widthDIPs: screenWidthDips,
+                                            heightDIPs: screenHeightDips,
                                             widthPixels: screen.mainScreen.widthPixels,
                                             heightPixels: screen.mainScreen.heightPixels,
                                             scale: screen.mainScreen.scale
@@ -434,14 +434,14 @@ export default class App extends BaseVueComponent {
                 break;
             case 'sendBugReport':
                 prompt({
-                    message: this.$ltc('send_bug_report'),
+                    message: this.$tc('send_bug_report'),
                     okButtonText: this.$t('send'),
                     cancelButtonText: this.$t('cancel'),
                     autoFocus: true,
                     textFieldProperties: {
                         marginLeft: 10,
                         marginRight: 10,
-                        hint: this.$ltc('please_describe_error')
+                        hint: this.$tc('please_describe_error')
                     }
                 } as any).then(result => {
                     if (result.result && this.$bugsnag) {
@@ -469,11 +469,11 @@ export default class App extends BaseVueComponent {
 
     navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
         options = options || {};
-        // options.transition = options.transition || {
-        //     name: 'fade',
-        //     duration: 200,
-        //     curve: 'easeIn'
-        // },
+        options.transition = options.transition || {
+            name: 'fade',
+            duration: 200,
+            curve: 'easeIn'
+        };
         (options as any).frame = options['frame'] || this.innerFrame.id;
         return super.navigateTo(component, options, cb);
     }

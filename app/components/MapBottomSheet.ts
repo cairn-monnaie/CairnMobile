@@ -6,7 +6,7 @@ import { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolde
 import * as app from 'application';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
 import { View } from 'tns-core-modules/ui/core/view';
-import { User } from '~/services/authService';
+import { User } from '~/services/AuthService';
 
 function getViewTop(view: View) {
     if (gVars.isAndroid) {

@@ -7,11 +7,11 @@ import { Component } from 'vue-property-decorator';
 import * as Animation from '~/animation';
 import { screenHeightDips } from '../variables';
 import { ComponentIds } from './App';
-import BasePageComponent from './BasePageComponent';
+import PageComponent from './PageComponent';
 
 const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3;
 @Component({})
-export default class Login extends BasePageComponent {
+export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
@@ -74,7 +74,7 @@ export default class Login extends BasePageComponent {
     }
     checkForm() {
         if (!this.validateStringProp(this.user.username)) {
-            this.usernameError = this.$ltc('username_required');
+            this.usernameError = this.$tc('username_required');
             // } else if (!this.validateStringProp(this.user.username)!this.validEmail(this.user.email)) {
             // this.mailError = "Valid email required."
         } else {
@@ -82,9 +82,9 @@ export default class Login extends BasePageComponent {
         }
 
         if (!this.isLoggingIn && this.user.confirmPassword !== this.user.password) {
-            this.passwordError = this.$ltc('passwords_dont_match');
+            this.passwordError = this.$tc('passwords_dont_match');
         } else if (!this.validateStringProp(this.user.password)) {
-            this.passwordError = this.$ltc('password_missing');
+            this.passwordError = this.$tc('password_missing');
         } else {
             this.passwordError = null;
         }
@@ -109,20 +109,10 @@ export default class Login extends BasePageComponent {
         }
         this.loading = true;
         this.animateLogoViewOut();
-        return (
-            this.$authService
-                .login(this.user)
-                // .then(() => {
-                //     this.$navigateTo(App, { clearHistory: true })
-                // })
-                .catch(err => {
-                    this.animateLogoView();
-                    this.showError(err);
-                })
-                .then(() => {
-                    // this.loading = false;
-                })
-        );
+        return this.$authService.login(this.user).catch(err => {
+            this.animateLogoView();
+            this.showError(err);
+        });
     }
     register() {
         if (!this.canLoginOrRegister) {
@@ -134,25 +124,26 @@ export default class Login extends BasePageComponent {
             .then(() => {
                 this.$alert('account_created');
                 this.isLoggingIn = true;
+                this.loading = false;
             })
-            .catch(err => this.showError(err))
-            .then(() => (this.loading = false));
+            .catch(err => this.showError(err));
     }
 
     forgotPassword() {
         prompt({
-            title: this.$ltc('forgot_password'),
-            message: this.$ltc('fill_email'),
+            autoFocus: true,
+            title: this.$tc('forgot_password'),
+            message: this.$tc('fill_email'),
             inputType: 'email',
             defaultText: '',
-            okButtonText: this.$luc('ok'),
-            cancelButtonText: this.$luc('cancel')
+            okButtonText: this.$tu('ok'),
+            cancelButtonText: this.$tu('cancel')
         }).then(data => {
             if (data.result) {
                 this.$authService
                     .resetPassword(data.text.trim())
                     .then(() => {
-                        this.$alert(this.$ltc('password_reset_confirmation'));
+                        this.$alert(this.$tc('password_reset_confirmation'));
                     })
                     .catch(err => this.showError(err));
             }

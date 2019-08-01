@@ -1,5 +1,5 @@
 {
-  "app.name": "Cairn Mobile",
+  "app.name": "eCairn",
   "home": "accueil",
   "username": "utilisateur",
   "password": "mot de passe",
@@ -49,5 +49,11 @@
   "choose_recipient": "choix du destinataire",
   "reason": "motif",
   "recipient": "destinataire",
-  "no_network": "pas de connexion internet"
+  "no_network": "pas de connexion internet",
+  "gps_not_enabled": "activez le GPS pour permettre à «eCairn» de vous localiser",
+  "gps_not_authorized": "activez le GPS et autorisez «eCairn» à l'utiliser pour vous localiser",
+  "add_phone": "ajouter un téléphone",
+  "add": "ajouter",
+  "delete": "supprimer",
+  "delete_phone": "supprimer le téléphone %s ?"
 }

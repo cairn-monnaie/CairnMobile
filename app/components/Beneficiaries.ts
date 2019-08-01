@@ -1,11 +1,11 @@
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { NavigatedData } from 'tns-core-modules/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
-import { AccountInfo, Benificiary, Transaction, User } from '~/services/authService';
-import BasePageComponent from './BasePageComponent';
+import { AccountInfo, Benificiary, Transaction, User } from '~/services/AuthService';
+import PageComponent from './PageComponent';
 
 @Component({})
-export default class Beneficiaries extends BasePageComponent {
+export default class Beneficiaries extends PageComponent {
     dataItems: User[] = [];
 
     destroyed() {

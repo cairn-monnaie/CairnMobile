@@ -1,7 +1,7 @@
 import * as Platform from 'platform';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import { Address } from '~/services/authService';
+import { Address } from '~/services/AuthService';
 dayjs.extend(LocalizedFormat);
 // const dayjs: (...args) => Dayjs = require('dayjs');
 const Duration = require('duration');

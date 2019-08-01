@@ -77,7 +77,14 @@ module.exports = env => {
             vue: 'nativescript-vue'
         },
         copyPlugin: [{ from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf', to: 'fonts' }, { from: '../node_modules/@mdi/font/css/materialdesignicons.min.css', to: 'assets' }],
-        definePlugin: defines
+        definePlugin: defines,
+        terserOptions: {
+            terserOptions: {
+                keep_fnames: false,
+                keep_classnames: false,
+                mangle: { toplevel: true, keep_fnames: false, keep_classnames: false }
+            }
+        }
     });
 
     config.module.rules.push({

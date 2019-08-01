@@ -1,3 +1,5 @@
+import { installMixins } from 'nativescript-material-core';
+installMixins();
 import { Label as HTMLLabel } from 'nativescript-htmllabel'; // require first to get Font res loading override
 
 import ActivityIndicatorPlugin from 'nativescript-material-activityindicator/vue';
@@ -12,14 +14,17 @@ import CartoPlugin from 'nativescript-carto/vue';
 import CollectionViewPlugin from 'nativescript-collectionview/vue';
 import FabPlugin from 'nativescript-vue-fab';
 import ImagePlugin from 'nativescript-image/vue';
+import SystemUIPlugin from 'nativescript-systemui/vue';
 import CActionBar from '~/components/CActionBar';
 import ListItem from '~/components/ListItem';
 import EditableListItem from '~/components/EditableListItem';
+import CairnPage from '~/components/CairnPage';
 const Plugin = {
     install(Vue) {
         Vue.component('CActionBar', CActionBar);
         Vue.component('ListItem', ListItem);
         Vue.component('EditableListItem', EditableListItem);
+        Vue.component('CairnPage', CairnPage);
         Vue.use(ActivityIndicatorPlugin);
         Vue.use(ImagePlugin);
         Vue.use(ButtonPlugin);
@@ -32,6 +37,7 @@ const Plugin = {
         Vue.use(CartoPlugin);
         Vue.use(FabPlugin);
         Vue.use(CollectionViewPlugin);
+        Vue.use(SystemUIPlugin);
 
         Vue.registerElement('Label', () => HTMLLabel);
         Vue.registerElement('PullToRefresh', () => require('nativescript-pulltorefresh').PullToRefresh);

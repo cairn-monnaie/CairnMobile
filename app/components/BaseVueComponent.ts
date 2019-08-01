@@ -31,12 +31,9 @@ export default class BaseVueComponent extends Vue {
     public darkColor;
     @Prop({ type: String, default: accentColor })
     public accentColor;
-    public actionBarHeight = actionBarHeight;
+    // public actionBarHeight = actionBarHeight;
     needsRoundedWatchesHandle = false;
     debug = false;
-    get page() {
-        return this.getRef('page') as Page;
-    }
     getRef(key: string) {
         if (this.$refs[key]) {
             return this.$refs[key].nativeView as View;
@@ -85,38 +82,7 @@ export default class BaseVueComponent extends Vue {
             this.loadingIndicator.hide();
         }
     }
-    mounted() {
-        if (this.nativeView && this['navigateUrl']) {
-            this.nativeView['navigateUrl'] = this['navigateUrl'];
-        }
-        const page = this.page;
-        // this.log('mounted', this.nativeView, this['navigateUrl'], !!page);
-        if (page) {
-            page.actionBarHidden = true;
-            if (gVars.isIOS) {
-                page.backgroundSpanUnderStatusBar = true;
-                page.statusBarStyle = 'light';
-                page.eachChildView(view => {
-                    view.style.paddingTop = 0.00001;
-                    return false;
-                });
-            } else {
-                page.androidStatusBarBackground = null;
-                page.androidStatusBarBackground = new Color(this.darkColor);
-            }
-            page.backgroundColor = this.darkColor;
-            // page.backgroundColor = this.themeColor;
-            // page.on(Page.navigatingToEvent, () => {
-
-            // });
-
-            // page.on(Page.navigatingFromEvent, (data: NavigatedData) => {
-            //     if (data.isBackNavigation) {
-            //         this.$getAppComponent().onNavigatingFrom();
-            //     }
-            // });
-        }
-    }
+    mounted() {}
     destroyed() {}
 
     navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
