@@ -31,12 +31,10 @@
                     </StackLayout>
                 </StackLayout>
             </GridLayout>
-            <StackLayout iosOverflowSafeArea="false">
                 <Frame ref="innerFrame">
                     <Home v-if="loggedInOnStart" />
                     <Login v-else />
                 </Frame>
-            </StackLayout>
 
             <!-- <GridLayout rows="*, auto" iosOverflowSafeArea="true">
                     <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">

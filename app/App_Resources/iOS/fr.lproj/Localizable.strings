@@ -1,3 +1,8 @@
+"sms_received" = "received \"%1$@\" from %2$@";
+"delete_phone" = "supprimer le téléphone %1$@ ?";
+"delete" = "supprimer";
+"add" = "ajouter";
+"add_phone" = "ajouter un téléphone";
 "gps_not_authorized" = "activez le GPS et autorisez «eCairn» à l'utiliser pour vous localiser";
 "gps_not_enabled" = "activez le GPS pour permettre à «eCairn» de vous localiser";
 "no_network" = "pas de connexion internet";

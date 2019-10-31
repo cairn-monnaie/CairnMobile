@@ -19,6 +19,7 @@ import CActionBar from '~/components/CActionBar';
 import ListItem from '~/components/ListItem';
 import EditableListItem from '~/components/EditableListItem';
 import CairnPage from '~/components/CairnPage';
+
 const Plugin = {
     install(Vue) {
         Vue.component('CActionBar', CActionBar);
@@ -40,7 +41,7 @@ const Plugin = {
         Vue.use(SystemUIPlugin);
 
         Vue.registerElement('Label', () => HTMLLabel);
-        Vue.registerElement('PullToRefresh', () => require('nativescript-pulltorefresh').PullToRefresh);
+        Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
         // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
     }
 };

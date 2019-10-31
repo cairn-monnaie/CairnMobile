@@ -1,38 +1,11 @@
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { fonticon } from 'nativescript-akylas-fonticon';
 import { localize } from 'nativescript-localize';
 import VueStringFilter from 'vue-string-filter/VueStringFilter';
-import { GeoLocation } from 'nativescript-gps';
-import { convertTime, formatAddress, formatValueToUnit, UNITS } from '~/helpers/formatter';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import dayjs from 'dayjs';
+import { convertTime, formatAddress, formatCurrency } from '~/helpers/formatter';
 dayjs.extend(relativeTime);
 
-function formatCurrency(num, showZeroCents = true) {
-    // num = num.toString().replace(/\$|\,/g, '');
-    if (isNaN(num)) {
-        num = 0;
-    }
-    // console.log('formatCurrency', num, num === Math.abs(num));
-    const sign = num === Math.abs(num);
-    num = Math.abs(num);
-    num = Math.floor(num * 100 + 0.50000000001);
-    let cents: any = num % 100;
-    num = Math.floor(num / 100).toString();
-
-    if (cents < 10) {
-        cents = '0' + cents;
-    }
-    for (let i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
-        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
-    }
-
-    let result = (sign ? '' : '-') + num;
-    if (cents !== '00' || showZeroCents) {
-        result += '.' + cents;
-    }
-
-    return result;
-}
 const Plugin = {
     install(Vue) {
         Vue.filter('fonticon', fonticon);

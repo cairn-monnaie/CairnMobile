@@ -5,16 +5,16 @@
             <slot />
         </ContentView>
 
-        <Label v-show="backdropVisible" :col="computedLayout.main.col" ref="backDrop" iosOverflowSafeArea="true" opacity="0" :backgroundColor="optionsInternal.backdropColor" @pan="onBackDropPan" @tap="close()" />
+        <Label v-show="backdropVisible" :col="computedLayout.main.col" ref="backDrop" iosOverflowSafeArea opacity="0" :backgroundColor="optionsInternal.backdropColor" @pan="onBackDropPan" @tap="close()" />
 
-        <template v-for="side in computedSidesEnabled" isPassThroughParentEnabled="true">
+        <template v-for="side in computedSidesEnabled" isPassThroughParentEnabled>
             <!-- Drawer Content -->
             <GridLayout @layoutChanged="onDrawerLayoutChange(side)" :col="computedLayout[side].col" :key="side" @tap="noop" @pan="onDrawerPan(side, $event)" :ref="`${side}Drawer`" :style="computedDrawerStyle(side)">
                 <slot :name="side" />
             </GridLayout>
             <!-- Open Trigger -->
             <Label v-show="computedShowSwipeOpenTrigger(side)" v-bind="computedSwipeOpenTriggerProperties(side)" @pan="onOpenTriggerPan(side, $event)" 
-                isPassThroughParentEnabled="true" :col="computedLayout[side].col" :key="`${side}Trigger`" v-if="!optionsInternal[side].fixed" />
+                isPassThroughParentEnabled :col="computedLayout[side].col" :key="`${side}Trigger`" v-if="!optionsInternal[side].fixed" />
         </template>
     </GridLayout>
 </template>

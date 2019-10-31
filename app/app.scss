@@ -3,10 +3,10 @@
 @import '../node_modules/nativescript-vue-fab/style.css';
 
 .lato {
-    font-family: 'Lato Regular', 'res/lato';
+    font-family: 'Lato', 'Lato Regular', 'res/lato';
 }
 .mdi {
-    font-family: 'Material Design Icons', 'MaterialDesignIcons', 'materialdesignicons-webfont';
+    font-family: 'Material Design Icons', 'materialdesignicons-webfont';
 }
 
 .cairn {
@@ -80,11 +80,36 @@ mdtextfield {
     placeholder-color: $accent-color;
 }
 
+.fab-item-title {
+    background-color: #444;
+    vertical-text-alignment: middle;
+    border-radius: 6;
+    color: white;
+}
+
+.fab-button,
+.fab-item {
+    background-color: $accent-color;
+    ripple-color: $accent-color-dark;
+}
+.fab-icon,
+.fab-item {
+    color: white;
+}
+.fab-backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
 .cardView {
     border-radius: 2;
-    elevation: 1;
+    elevation: 2;
     dynamic-elevation-offset: 5;
     ripple-color: $primary-color;
+    background-color: white;
+}
+.flatCardView {
+    border-radius: 2;
+    elevation: 2;
     background-color: white;
 }
 
@@ -95,13 +120,13 @@ mdtextfield {
 .buttonwhite {
     background-color: white;
     color: $accent-color;
-    ripple-color: $accent-color;
+    ripple-color: $accent-color-dark;
 }
 
 .buttonthemed {
     background-color: $accent-color;
     color: white;
-    ripple-color: white;
+    ripple-color: $accent-color-dark;
 }
 
 .floating-btn {

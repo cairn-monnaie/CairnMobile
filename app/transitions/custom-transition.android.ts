@@ -1,7 +1,7 @@
 import {
   Transition,
   AndroidTransitionType
-} from "tns-core-modules/ui/transition";
+} from "@nativescript/core/ui/transition";
 export class CustomTransition extends Transition {
   public createAndroidAnimator(
     transitionType: string

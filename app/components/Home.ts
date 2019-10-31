@@ -1,9 +1,9 @@
 import AccountHistory from './AccountHistory';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
+import { ObservableArray } from '@nativescript/core/data/observable-array/observable-array';
+import { ItemEventData } from '@nativescript/core/ui/list-view';
 import { Component } from 'vue-property-decorator';
 import { AccountInfo, AccountInfoEvent, AccountInfoEventData, User } from '~/services/AuthService';
-import { Color, NavigatedData } from 'tns-core-modules/ui/frame';
+import { Color, NavigatedData } from '@nativescript/core/ui/frame';
 import { ComponentIds } from './App';
 import PageComponent from './PageComponent';
 import TransferWindow from './TransferWindow';
@@ -71,7 +71,7 @@ export default class Home extends PageComponent {
         // console.log('refreshing');
         this.loading = true;
         setTimeout(() => {
-            this.$authService.getAccounts().catch(err => this.showError(err));
+            this.$authService.getAccounts().catch(this.showError);
         }, 1000);
     }
     onNavigatingTo() {
@@ -98,6 +98,7 @@ export default class Home extends PageComponent {
     addBeneficiary() {
         this.$showModal(UserPicker, { fullscreen: true })
             .then((r: User) => {
+                console.log('addBeneficiary done');
                 if (r) {
                     this.showLoading('working');
                     return this.$authService.addBeneficiary(r.email).then(() => {
@@ -108,6 +109,6 @@ export default class Home extends PageComponent {
                     });
                 }
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
 }

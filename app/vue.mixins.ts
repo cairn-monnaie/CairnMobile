@@ -1,9 +1,9 @@
 import { clog } from '~/utils/logging';
-import { BackstackEntry, Frame as NSFrame } from 'tns-core-modules/ui/frame';
-import { Page } from 'tns-core-modules/ui/page';
+import { BackstackEntry, Frame as NSFrame } from '@nativescript/core/ui/frame';
+import { Page } from '@nativescript/core/ui/page';
 import { navigateUrlProperty } from './components/App';
 
-declare module 'tns-core-modules/ui/frame' {
+declare module '@nativescript/core/ui/frame' {
     interface Frame {
         _onNavigatingTo(backstackEntry: BackstackEntry, isBack: boolean);
     }
@@ -61,7 +61,7 @@ class FrameWithEvents extends NSFrame {
 const Plugin = {
     install(Vue) {
         clog('installing view mixins');
-        const NSFrame = require('tns-core-modules/ui/frame').Frame;
+        const NSFrame = require('@nativescript/core/ui/frame').Frame;
         applyMixins(NSFrame, [FrameWithEvents]);
     }
 };

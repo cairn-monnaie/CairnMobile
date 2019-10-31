@@ -1,4 +1,4 @@
-import { Transition } from "tns-core-modules/ui/transition";
+import { Transition } from "@nativescript/core/ui/transition";
 
 export class CustomTransition extends Transition {
     public animateIOSTransition(containerView: UIView, fromView: UIView, toView: UIView, operation: UINavigationControllerOperation, completion: (finished: boolean) => void): void {

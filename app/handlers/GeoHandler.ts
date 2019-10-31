@@ -1,8 +1,8 @@
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { android as androidApp, ApplicationEventData, exitEvent, launchEvent, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from 'tns-core-modules/application';
-import { Accuracy } from 'tns-core-modules/ui/enums/enums';
-import { isAndroid } from 'platform';
+import { EventData, Observable } from '@nativescript/core/data/observable';
+import * as appSettings from '@nativescript/core/application-settings';
+import { android as androidApp, ApplicationEventData, exitEvent, launchEvent, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from '@nativescript/core/application';
+import { Accuracy } from '@nativescript/core/ui/enums/enums';
+import { isAndroid } from '@nativescript/core/platform';
 import { confirm } from 'nativescript-material-dialogs';
 import { localize } from 'nativescript-localize';
 import { clog, DEV_LOG } from '~/utils/logging';
@@ -476,7 +476,7 @@ export class GeoHandler extends Observable {
             if (TEST_LOGS) {
                 this.log(
                     'onNewLoc',
-                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.latitude.toFixed(2)},${loc.longitude.toFixed(2)}, ${loc.timestamp.toLocaleTimeString()}, ${shouldNotif}, ${this
+                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.latitude.toFixed(2)},${loc.longitude.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${this
                         .currentSession.currentSpeed && this.currentSession.currentSpeed.toFixed(1)}, ${deltaDistance}, ${deltaTime}, ${deltaAlt}`
                 );
             }

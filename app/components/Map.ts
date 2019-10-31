@@ -4,7 +4,7 @@ import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources/data
 import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
 import { CartoMap } from 'nativescript-carto/ui/ui';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles/vectortiles';
-import * as appSettings from 'tns-core-modules/application-settings';
+import * as appSettings from '@nativescript/core/application-settings';
 import { Component } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
 import { User } from '~/services/AuthService';
@@ -178,7 +178,7 @@ export default class Map extends PageComponent {
 
                 this.loading = false;
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     selectItem(item: User) {
         this.log('selectItem', item);

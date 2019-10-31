@@ -1,4 +1,4 @@
-import { NavigatedData } from 'tns-core-modules/ui/frame';
+import { NavigatedData } from '@nativescript/core/ui/frame';
 import { Component } from 'vue-property-decorator';
 import { UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
 import { ComponentIds } from './App';
@@ -57,7 +57,7 @@ export default class Profile extends PageComponent {
         }
         console.log('refreshing');
         this.loading = true;
-        this.$authService.getUserProfile().catch(err => this.showError(err));
+        this.$authService.getUserProfile().catch(this.showError);
     }
     saveProfile() {
         this.loading = true;
@@ -68,7 +68,7 @@ export default class Profile extends PageComponent {
                 this.loading = false;
                 this.updateUserProfile = null;
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     onNavigatedTo(args: NavigatedData) {
         // if (!args.isBackNavigation) {
@@ -95,7 +95,7 @@ export default class Profile extends PageComponent {
                     return this.$authService.deletePhone(phoneNumber);
                 }
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     addPhoneNumber() {
         prompt({
@@ -113,7 +113,7 @@ export default class Profile extends PageComponent {
                     return this.$authService.addPhone(r.text);
                 }
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     onTextChange(key: string, value: string) {
         this.log('onTextChange', key, value);
@@ -137,6 +137,6 @@ export default class Profile extends PageComponent {
                     console.log('got image', selection[0]);
                 }
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
 }

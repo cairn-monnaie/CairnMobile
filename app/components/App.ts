@@ -1,31 +1,34 @@
-import { setDrawerInstance } from '~/main';
+import { compose } from 'nativescript-email';
 import * as EInfo from 'nativescript-extendedinfo';
-import { device, screen } from 'tns-core-modules/platform';
-import { NavigationEntry } from 'tns-core-modules/ui/frame';
-import { Color } from 'tns-core-modules/color';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { Page } from 'tns-core-modules/ui/page';
-import { GC } from 'tns-core-modules/utils/utils';
-import { Frame } from 'tns-core-modules/ui/frame/frame';
-import { TabView } from 'tns-core-modules/ui/tab-view/tab-view';
+import { prompt } from 'nativescript-material-dialogs';
+import Vue, { NativeScriptVue } from 'nativescript-vue';
+import { Color } from '@nativescript/core/color';
+import { device, screen } from '@nativescript/core/platform';
+import { NavigationEntry } from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame/frame';
+import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
+import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
+import { Page } from '@nativescript/core/ui/page';
+import { TabView } from '@nativescript/core/ui/tab-view/tab-view';
+import { GC } from '@nativescript/core/utils/utils';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
-import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
-import Home from './Home';
-import MultiDrawer, { OptionsType } from './MultiDrawer';
-import Profile from './Profile';
-import Map from './Map';
-import Login from './Login';
-import Beneficiaries from './Beneficiaries';
+import { setDrawerInstance } from '~/main';
+import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
+import { screenHeightDips, screenWidthDips } from '~/variables';
+import * as perms from 'nativescript-perms';
+import * as application from '@nativescript/core/application';
 // import Map from './Map';
 import AppFrame from './AppFrame';
-import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
-import * as app from 'application';
-import { compose } from 'nativescript-email';
-import { prompt } from 'nativescript-material-dialogs';
-import { screenHeightDips, screenWidthDips } from '~/variables';
+import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
+import Beneficiaries from './Beneficiaries';
+import Home from './Home';
+import Login from './Login';
+import Map from './Map';
+import MultiDrawer from './MultiDrawer';
+import Profile from './Profile';
+import { showSnack } from 'nativescript-material-snackbar';
+import { Vibrate } from 'nativescript-vibrate';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
@@ -127,6 +130,7 @@ export default class App extends BaseVueComponent {
     get drawerOptions() {
         if (this.currentlyLoggedIn) {
             return {
+                // debug:true,
                 // top: {
                 //     height: '100%',
                 //     animation: {
@@ -222,9 +226,68 @@ export default class App extends BaseVueComponent {
     }
     destroyed() {
         super.destroyed();
+        if (gVars.isAndroid) {
+            application.android.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
+            if (this.mMessageReceiver) {
+                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).unregisterReceiver(this.mMessageReceiver);
+                this.mMessageReceiver = null;
+            }
+        }
     }
+    mMessageReceiver: android.content.BroadcastReceiver;
     mounted(): void {
         super.mounted();
+        if (gVars.isAndroid) {
+            if (gVars.isAndroid) {
+                perms
+                    .request('receiveSms')
+                    .then(() => {
+                        // class BroadcastReceiver extends android.content.BroadcastReceiver {
+                        //     private _onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void;
+
+                        //     constructor(onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void) {
+                        //         super();
+                        //         this._onReceiveCallback = onReceiveCallback;
+
+                        //         return global.__native(this);
+                        //     }
+
+                        //     public onReceive(context: android.content.Context, intent: android.content.Intent) {
+                        //         console.log('onReceive', intent.getAction());
+                        //         if (this._onReceiveCallback) {
+                        //             this._onReceiveCallback(context, intent);
+                        //         }
+                        //     }
+                        // }
+                        // this.mMessageReceiver = new BroadcastReceiver((context: android.content.Context, intent: android.content.Intent) => {
+                        //     const msg = intent.getStringExtra('message');
+                        //     const sender = intent.getStringExtra('sender');
+                        //     this.log('messageReceived', msg, sender);
+                        //     showSnack({
+                        //         message: this.$t('sms_received', msg, sender)
+                        //     });
+                        // });
+                        // console.log('registerReceiver', 'com.akylas.cairnmobile.SMS_RECEIVED');
+                        // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).registerReceiver(
+                        //     this.mMessageReceiver,
+                        //     new globalAndroid.content.IntentFilter('com.akylas.cairnmobile.SMS_RECEIVED')
+                        // );
+                        application.android.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
+                            const msg = intent.getStringExtra('message');
+                            const sender = intent.getStringExtra('sender');
+                            // this.log('messageReceived', msg, sender);
+                            // this.$authService.fakeSMSPayment(sender, msg).then(() => {
+                            showSnack({
+                                message: this.$t('sms_received', msg, sender)
+                            });
+                            new Vibrate().vibrate(1000);
+
+                            // });
+                        });
+                    })
+                    .catch(this.showError);
+            }
+        }
         // this.page.actionBarHidden = true;
         setDrawerInstance(this.drawer);
 
@@ -262,6 +325,13 @@ export default class App extends BaseVueComponent {
             this.goBackToLogin();
         });
     }
+    // onAppResume(args: ApplicationEventData) {
+    //     this.appPaused = false;
+    // }
+    // onAppPause(args: ApplicationEventData) {
+    //     this.appPaused = true;
+    // }
+
     // onBottomNavigationTabSelected(e) {
     //     console.log("onTabSelected", e.newIndex, this.selectedTabIndex)
     //     this.selectedTabIndex = e.newIndex;
@@ -430,7 +500,7 @@ export default class App extends BaseVueComponent {
                             mimeType: 'application/json'
                         }
                     ]
-                }).catch(err => this.showError(err));
+                }).catch(this.showError);
                 break;
             case 'sendBugReport':
                 prompt({
@@ -457,7 +527,7 @@ export default class App extends BaseVueComponent {
                             .then(() => {
                                 this.$alert('bug_report_sent');
                             })
-                            .catch(err => this.showError(err));
+                            .catch(this.showError);
                     }
                 });
                 break;

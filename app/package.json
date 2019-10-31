@@ -1,10 +1,10 @@
 {
   "android": {
-    "maxLogcatObjectSize": 2048,
-    "markingMode": "none"
+      "maxLogcatObjectSize": 2048,
+      "markingMode": "none",
+      "v8Flags": "--expose_gc"
   },
+  "discardUncaughtJsExceptions":false,
   "main": "main.js",
-  "profiling": "none",
-  "name": "com.akylas.cairnmobile",
-  "version": "1.0.0"
+  "profiling": "none"
 }

@@ -1,12 +1,12 @@
 import { prompt } from 'nativescript-material-dialogs';
 import { TextField } from 'nativescript-material-textfield';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import { isAndroid } from 'tns-core-modules/platform/platform';
-import { NavigatedData } from 'tns-core-modules/ui/page/page';
+import { PropertyChangeData } from '@nativescript/core/data/observable';
+import { isAndroid } from '@nativescript/core/platform/platform';
+import { NavigatedData } from '@nativescript/core/ui/page/page';
 import { Component } from 'vue-property-decorator';
-import * as Animation from '~/animation';
 import { screenHeightDips } from '../variables';
 import { ComponentIds } from './App';
+import { TWEEN } from 'nativescript-tween';
 import PageComponent from './PageComponent';
 
 const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3;
@@ -39,9 +39,9 @@ export default class Login extends PageComponent {
     }
     animateLogoView() {
         // const view = this.getRef('logoView');
-        new Animation.Animation({ height: logoViewHeight })
+        new TWEEN.Tween({ height: logoViewHeight })
             .to({ height: 200 }, 1000)
-            .easing(Animation.Easing.Elastic.Out)
+            .easing(TWEEN.Easing.Elastic.Out)
             .onUpdate(object => {
                 this.logoViewHeight = object.height;
                 // Object.assign(view.style, object)
@@ -51,9 +51,9 @@ export default class Login extends PageComponent {
     animateLogoViewOut() {
         // const view = this.getRef('logoView');
         return new Promise(resolve => {
-            new Animation.Animation({ height: 200 })
+            new TWEEN.Tween({ height: 200 }) // ratio 2.94
                 .to({ height: 68 }, 1000)
-                .easing(Animation.Easing.Elastic.Out)
+                .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
                 .onUpdate(object => {
                     this.logoViewHeight = object.height;
@@ -126,7 +126,7 @@ export default class Login extends PageComponent {
                 this.isLoggingIn = true;
                 this.loading = false;
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
 
     forgotPassword() {
@@ -145,7 +145,7 @@ export default class Login extends PageComponent {
                     .then(() => {
                         this.$alert(this.$tc('password_reset_confirmation'));
                     })
-                    .catch(err => this.showError(err));
+                    .catch(this.showError);
             }
         });
     }

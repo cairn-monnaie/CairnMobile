@@ -1,10 +1,10 @@
-import { layout } from 'tns-core-modules/utils/utils';
+import { layout } from '@nativescript/core/utils/utils';
 import mergeOptions from 'merge-options';
 import { Component, Model, Prop, Watch } from 'vue-property-decorator';
 import Vue, { NativeScriptVue } from 'nativescript-vue';
-import { View } from 'tns-core-modules/ui/core/view';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
-import { Label } from 'tns-core-modules/ui/label/label';
+import { View } from '@nativescript/core/ui/core/view';
+import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout/grid-layout';
+import { Label } from '@nativescript/core/ui/label/label';
 
 const DEFAULT_ANIM_DURATION = 200;
 const DEFAULT_TRIGGER_WIDTH = 30;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="sms_received">"received \"%1$s\" from %2$s"</string>
   <string name="delete_phone">"supprimer le téléphone %1$s ?"</string>
   <string name="delete">"supprimer"</string>
   <string name="add">"ajouter"</string>

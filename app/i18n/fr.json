@@ -55,5 +55,6 @@
   "add_phone": "ajouter un téléphone",
   "add": "ajouter",
   "delete": "supprimer",
-  "delete_phone": "supprimer le téléphone %s ?"
+  "delete_phone": "supprimer le téléphone %s ?",
+  "sms_received": "received \"%1$s\" from %2$s"
 }

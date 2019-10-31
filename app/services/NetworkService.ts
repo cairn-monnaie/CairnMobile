@@ -1,6 +1,6 @@
-import * as connectivity from 'tns-core-modules/connectivity';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import * as http from 'tns-core-modules/http';
+import * as connectivity from '@nativescript/core/connectivity';
+import { EventData, Observable } from '@nativescript/core/data/observable';
+import * as http from '@nativescript/core/http';
 import { clog } from '~/utils/logging';
 import { localize } from 'nativescript-localize';
 import { stringProperty } from './BackendService';
@@ -79,9 +79,9 @@ export function queryString(params, location) {
                 delete obj[key];
             } else {
                 if (typeof value === 'object') {
-                    obj[key] = JSON.stringify(value);
+                    obj[key] = encodeURIComponent(JSON.stringify(value));
                 } else {
-                    obj[key] = value;
+                    obj[key] = encodeURIComponent(value);
                 }
             }
         }
@@ -140,7 +140,7 @@ export class CustomError extends Error {
             res[key] = this.assignedLocalData[key];
         }
         return res;
-    }
+    };
 
     toJSON = () => {
         const error = {
@@ -152,10 +152,10 @@ export class CustomError extends Error {
             }
         });
         return error;
-    }
+    };
     toData = () => {
         return JSON.stringify(this.toJSON());
-    }
+    };
     toString = () => {
         // console.log('customError to string', this.message, this.assignedLocalData, localize);
         const result = evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
@@ -163,7 +163,7 @@ export class CustomError extends Error {
         return result;
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
         // return this.message || this.stack;
-    }
+    };
 
     getMessage() {}
 }
@@ -200,10 +200,10 @@ export class HTTPError extends CustomError {
     constructor(
         props:
             | {
-                statusCode: number;
-                message: string;
-                requestParams: HTTPOptions;
-            }
+                  statusCode: number;
+                  message: string;
+                  requestParams: HTTPOptions;
+              }
             | HTTPError
     ) {
         super(
@@ -260,7 +260,7 @@ export class NetworkService extends Observable {
     }
     onConnectionStateChange = (newConnectionType: connectivity.connectionType) => {
         this.connectionType = newConnectionType;
-    }
+    };
 
     handleRequestRetry(requestParams: HttpRequestOptions, retry = 0): Promise<any | never> {
         return Promise.reject(
@@ -363,7 +363,15 @@ export class NetworkService extends Observable {
                         );
                     }
                 }
-                return isJSON ? content : response['content'].toJSON();
+                if (isJSON) {
+                    return content;
+                }
+                try {
+                    return response['content'].toJSON();
+                } catch (e) {
+                    // console.log('failed to parse result to JSON', e);
+                    return response['content'];
+                }
             })
             .catch(err => {
                 const delta = Date.now() - requestStartTime;

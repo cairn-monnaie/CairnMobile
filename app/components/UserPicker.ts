@@ -33,6 +33,7 @@ export default class UserPicker extends PageComponent {
         this.textField.requestFocus();
     }
     close() {
+        this.log('close');
         this.$modal.close();
     }
 
@@ -87,7 +88,7 @@ export default class UserPicker extends PageComponent {
                 //     return accumulator;
                 // }, items);
             })
-            .catch(err => this.showError(err))
+            .catch(this.showError)
             .then(res => {
                 this.loading = false;
                 this.dataItems = items;

@@ -1,5 +1,5 @@
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { NavigatedData } from 'tns-core-modules/ui/frame';
+import { ObservableArray } from '@nativescript/core/data/observable-array/observable-array';
+import { NavigatedData } from '@nativescript/core/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
 import { AccountInfo, Transaction } from '~/services/AuthService';
 import PageComponent from './PageComponent';
@@ -30,7 +30,7 @@ export default class AccountHistory extends PageComponent {
                 this.dataItems = new ObservableArray(r);
                 this.loading = false;
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     onLoaded(args: NavigatedData) {
         if (!args.isBackNavigation) {

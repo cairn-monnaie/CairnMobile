@@ -1,14 +1,14 @@
 import { numberProperty, objectProperty } from './BackendService';
-import { EventData } from 'tns-core-modules/data/observable';
+import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
-import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import { ImageAsset } from '@nativescript/core/image-asset/image-asset';
 import mergeOptions from 'merge-options';
 
-const clientId = '3_2gd9gnkf3pj4g4c0wkkwcsskskcwk40o8c4w8w8gko0o08gcog';
-const clientSecret = '2062ors5k8xwgsk8kw0gg48cg4swg40k8o04ogscg0ww8kc00w';
+const clientId = '1_hn56osm3wkoosc44ko8ocok084ggcwg04ks0c0so8osoks00o';
+const clientSecret = 'j2jd6u6eq348gcgwo4s4ockw8w448o00kg8k00kkw0go8g480';
 const authority = 'https://test.cairn-monnaie.com';
 const tokenEndpoint = '/oauth/tokens';
 
@@ -459,6 +459,17 @@ export default class AuthService extends NetworkService {
             });
         });
     }
+    fakeSMSPayment(sender: string, message: string) {
+        return this.request({
+            url: `${authority}/sms/reception`,
+            method: 'GET',
+            queryParams: {
+                originator: 'blabalcairn',
+                recipient: sender,
+                message
+            }
+        });
+    }
     getToken(user: LoginParams) {
         return this.request({
             url: authority + tokenEndpoint,
@@ -538,4 +549,12 @@ export default class AuthService extends NetworkService {
         // backendService.token = "";
         // return firebase.logout();
     }
+}
+
+let authService: AuthService;
+export function getAuthInstance() {
+    if (!authService) {
+        authService = new AuthService();
+    }
+    return authService;
 }

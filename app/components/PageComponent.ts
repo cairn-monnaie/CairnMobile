@@ -1,9 +1,10 @@
 import { Component } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 import CairnPage from './CairnPage';
-import { NavigationEntry, topmost } from 'tns-core-modules/ui/frame';
-import { Page } from 'tns-core-modules/ui/page';
+import { NavigationEntry, topmost } from '@nativescript/core/ui/frame';
+import { Page } from '@nativescript/core/ui/page';
 import { VueConstructor } from 'vue';
+import { bind } from 'helpful-decorators';
 
 @Component({})
 export default class PageComponent extends BaseVueComponent {
@@ -35,6 +36,7 @@ export default class PageComponent extends BaseVueComponent {
     destroyed() {
         super.destroyed();
     }
+    @bind
     showError(err: Error | string) {
         this.loading = false;
         super.showError(err);

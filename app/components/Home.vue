@@ -17,7 +17,7 @@
                     </v-template>
                 </CollectionView>
             </PullToRefresh>
-            <Fab colSpan="3" rowSpan="3" iconClass="mdi" :icon="'mdi-plus' | fonticon" :iconOn="'mdi-close' | fonticon">
+            <Fab colSpan="3" rowSpan="3" iconClass="mdi" :icon="'mdi-plus' | fonticon" :iconOn="'mdi-close' | fonticon" :backgroundColor="accentColor" color="white">
                 <FabItem :title="$t('transfer') | capitalize" iconClass="mdi" :icon="'mdi-bank-transfer' | fonticon" @tap="openTransferWindow" />
                 <FabItem :title="$t('add_beneficiary') | capitalize" iconClass="mdi" :icon="'mdi-account-plus' | fonticon" @tap="addBeneficiary" />
             </Fab>

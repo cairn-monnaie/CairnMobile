@@ -1,11 +1,14 @@
-import { getBoolean, getNumber, getString, remove, setBoolean, setNumber, setString } from 'tns-core-modules/application-settings';
-import { Observable } from 'tns-core-modules/data/observable';
+// import { getBoolean, getNumber, getString, remove, setBoolean, setNumber, setString } from '@nativescript/core/application-settings';
+import { Observable } from '@nativescript/core/data/observable';
+import { SecureStorage } from 'nativescript-secure-storage';
+
+const secureStorage = new SecureStorage();
 
 export const stringProperty = (target: Object, key: string | symbol) => {
     // property value
     const actualkey = key.toString();
     const innerKey = '_' + actualkey;
-    target[innerKey] = getString(actualkey);
+    target[innerKey] = secureStorage.getSync({ key: actualkey });
 
     // property getter
     const getter = function() {
@@ -16,9 +19,9 @@ export const stringProperty = (target: Object, key: string | symbol) => {
     const setter = function(newVal) {
         this[innerKey] = newVal;
         if (newVal === undefined) {
-            return remove(innerKey);
+            return secureStorage.removeSync({ key: actualkey });
         }
-        setString(actualkey, newVal);
+        return secureStorage.setSync({ key: actualkey, value: newVal });
     };
     // Create new property with getter and setter
     Object.defineProperty(target, key, {
@@ -33,7 +36,7 @@ export const objectProperty = (target: Object, key: string | symbol) => {
     const actualkey = key.toString();
     const innerKey = '_' + actualkey;
 
-    const savedValue = getString(actualkey);
+    const savedValue = secureStorage.getSync({ key: actualkey });
     target[innerKey] = savedValue !== undefined ? JSON.parse(savedValue) : undefined;
 
     // property getter
@@ -45,9 +48,9 @@ export const objectProperty = (target: Object, key: string | symbol) => {
     const setter = function(newVal) {
         this[innerKey] = newVal;
         if (newVal === undefined) {
-            return remove(innerKey);
+            return secureStorage.removeSync({ key: actualkey });
         }
-        setString(actualkey, JSON.stringify(newVal));
+        return secureStorage.setSync({ key: actualkey, value: JSON.stringify(newVal) });
     };
     // Create new property with getter and setter
     Object.defineProperty(target, key, {
@@ -61,7 +64,7 @@ export const booleanProperty = (target: Object, key: string | symbol) => {
     // property value
     const actualkey = key.toString();
     const innerKey = '_' + actualkey;
-    target[innerKey] = getBoolean(actualkey);
+    target[innerKey] = !!parseInt(secureStorage.getSync({ key: actualkey }), 2);
 
     // property getter
     const getter = function() {
@@ -72,9 +75,9 @@ export const booleanProperty = (target: Object, key: string | symbol) => {
     const setter = function(newVal) {
         this[innerKey] = newVal;
         if (newVal === undefined) {
-            return remove(innerKey);
+            return secureStorage.removeSync({ key: actualkey });
         }
-        setBoolean(actualkey, newVal);
+        return secureStorage.setSync({ key: actualkey, value: newVal ? '1' : '0' });
     };
     // Create new property with getter and setter
     Object.defineProperty(target, key, {
@@ -88,7 +91,7 @@ export const numberProperty = (target: Object, key: string | symbol) => {
     // property value
     const actualkey = key.toString();
     const innerKey = '_' + actualkey;
-    target[innerKey] = getNumber(actualkey);
+    target[innerKey] = parseFloat(secureStorage.getSync({ key: actualkey }));
 
     // property getter
     const getter = function() {
@@ -99,9 +102,9 @@ export const numberProperty = (target: Object, key: string | symbol) => {
     const setter = function(newVal) {
         this[innerKey] = newVal;
         if (newVal === undefined) {
-            return remove(innerKey);
+            return secureStorage.removeSync({ key: actualkey });
         }
-        setNumber(actualkey, newVal);
+        return secureStorage.setSync({ key: actualkey, value: newVal + '' });
     };
     // Create new property with getter and setter
     Object.defineProperty(target, key, {

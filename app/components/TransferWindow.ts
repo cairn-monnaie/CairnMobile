@@ -1,4 +1,4 @@
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
+import { PropertyChangeData } from '@nativescript/core/data/observable';
 import { Component } from 'vue-property-decorator';
 import { alert, prompt } from 'nativescript-material-dialogs';
 import { AccountInfo, Benificiary, User } from '~/services/AuthService';
@@ -100,7 +100,7 @@ export default class TransferWindow extends PageComponent {
             .then(r => {
                 this.refreshing = false;
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
         // this.$authService
         //     .getAccounts()
         //     .then(r => {
@@ -111,7 +111,7 @@ export default class TransferWindow extends PageComponent {
         //         }
         //         this.refreshing = false;
         //     })
-        //     .catch(err => this.showError(err));
+        //     .catch(this.showError);
     }
     submit() {
         if (!this.reason) {
@@ -142,7 +142,7 @@ export default class TransferWindow extends PageComponent {
                     }
                 });
             })
-            .catch(err => this.showError(err));
+            .catch(this.showError);
     }
     selectAccount() {}
     selectRecipient() {

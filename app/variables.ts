@@ -1,5 +1,5 @@
 import { locals as ILocals } from '~/variables.scss';
-import { screen } from 'tns-core-modules/platform';
+import { screen } from '@nativescript/core/platform';
 let locals: typeof ILocals;
 
 locals = require('./variables.scss').locals;

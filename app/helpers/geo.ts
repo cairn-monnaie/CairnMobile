@@ -1,5 +1,5 @@
 import { MapBounds, MapPos, ScreenBounds } from 'nativescript-carto/core/core';
-import { ScreenMetrics } from 'tns-core-modules/platform/platform';
+import { ScreenMetrics } from '@nativescript/core/platform/platform';
 
 const TO_RAD = Math.PI / 180;
 const TO_DEG = 180 / Math.PI;
@@ -72,4 +72,24 @@ export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; h
     const lngZoom = zoom(mapDim.width, worldDim, lngFraction);
 
     return Math.min(Math.min(latZoom, lngZoom), zoomMax);
+}
+
+
+export function getBounds(sourceLocs: MapPos[]) {
+    const northeast = {
+        latitude: -Infinity,
+        longitude: -Infinity
+    };
+    const southwest = {
+        latitude: Infinity,
+        longitude: Infinity
+    };
+    sourceLocs.forEach(l => {
+        northeast.latitude = Math.max(l.latitude, northeast.latitude);
+        southwest.latitude = Math.min(l.latitude, southwest.latitude);
+        northeast.longitude = Math.max(l.longitude, northeast.longitude);
+        southwest.longitude = Math.min(l.longitude, southwest.longitude);
+    });
+    console.log('getBounds', northeast, southwest)
+    return new MapBounds(northeast, southwest);
 }

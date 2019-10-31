@@ -3,9 +3,9 @@ import { convertDuration } from '~/helpers/formatter';
 import BaseVueComponent from './BaseVueComponent';
 import BottomSheetBase from './BottomSheet/BottomSheetBase';
 import { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
-import * as app from 'application';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
-import { View } from 'tns-core-modules/ui/core/view';
+import * as app from '@nativescript/core/application';
+import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout/grid-layout';
+import { View } from '@nativescript/core/ui/core/view';
 import { User } from '~/services/AuthService';
 
 function getViewTop(view: View) {

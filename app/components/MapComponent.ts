@@ -9,15 +9,15 @@ import { CartoMap } from 'nativescript-carto/ui/ui';
 import { Line, LineEndType, LineJointType, LineStyleBuilder } from 'nativescript-carto/vectorelements/line';
 import { MapPosVector, toNativeScreenPos } from 'nativescript-carto/core/core';
 import { Polygon, PolygonStyleBuilder } from 'nativescript-carto/vectorelements/polygon';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { Folder, knownFolders, path } from 'tns-core-modules/file-system';
-import { Color } from 'tns-core-modules/color/color';
+import * as appSettings from '@nativescript/core/application-settings';
+import { Folder, knownFolders, path } from '@nativescript/core/file-system';
+import { Color } from '@nativescript/core/color/color';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import * as Animation from '~/animation';
+import { TWEEN } from 'nativescript-tween';
 import { GeoHandler, GeoLocation, Session, UserLocationdEvent, UserLocationdEventData } from '~/handlers/GeoHandler';
 import BaseVueComponent from './BaseVueComponent';
 import { getBoundsZoomLevel, getCenter } from '~/helpers/geo';
-import { screen } from 'tns-core-modules/platform';
+import { screen } from '@nativescript/core/platform';
 
 const LOCATION_ANIMATION_DURATION = 300;
 
@@ -215,9 +215,9 @@ export default class MapComponent extends BaseVueComponent {
         // console.log('updateUserLocation', position, this.userFollow);
         if (this.userMarker) {
             const currentLocation = { latitude: this.lastUserLocation.latitude, longitude: this.lastUserLocation.longitude, horizontalAccuracy: this.lastUserLocation.horizontalAccuracy };
-            new Animation.Animation(currentLocation)
+            new TWEEN.Tween(currentLocation)
                 .to({ latitude: position.latitude, longitude: position.longitude, horizontalAccuracy: position.horizontalAccuracy }, LOCATION_ANIMATION_DURATION)
-                .easing(Animation.Easing.Quadratic.Out)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(newPos => {
                     this.userBackMarker.position = newPos;
                     this.userMarker.position = newPos;

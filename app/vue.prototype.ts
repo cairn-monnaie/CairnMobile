@@ -1,18 +1,18 @@
-import * as application from 'application';
+import * as application from '@nativescript/core/application';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import * as imageModule from 'nativescript-image';
 import localize from 'nativescript-localize';
-import { alert } from 'nativescript-material-dialogs';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { device, screen } from 'tns-core-modules/platform';
+import { device, screen } from '@nativescript/core/platform';
 import App from '~/components/App';
-import AuthService from '~/services/AuthService';
+import AuthService, { getAuthInstance } from '~/services/AuthService';
 import { clog } from './utils/logging';
 import { screenHeightDips, screenWidthDips } from './variables';
+import { alert, confirm } from 'nativescript-material-dialogs';
 
 const Plugin = {
     install(Vue) {
-        const authService = new AuthService();
+        const authService = getAuthInstance();
         authService.start();
 
         Vue.prototype.$authService = authService;
@@ -46,16 +46,24 @@ const Plugin = {
         Vue.prototype.$isAndroid = gVars.isAndroid;
         Vue.prototype.$isIOS = gVars.isIOS;
         const filters = (Vue.prototype.$filters = Vue['options'].filters);
-        Vue.prototype.$t = localize;
-        Vue.prototype.$tc = function(s: string, ...args) {
+        Vue.prototype.$t = function(s: string, ...args): string {
+            return localize(s, ...args);
+        };
+
+        function $tc(s: string, ...args): string {
             return filters.capitalize(localize(s, ...args));
-        };
-        Vue.prototype.$tt = function(s: string, ...args) {
+        }
+        Vue.prototype.$tc = $tc;
+
+        function $tt(s: string, ...args): string {
             return filters.titlecase(localize(s, ...args));
-        };
-        Vue.prototype.$tu = function(s: string, ...args) {
+        }
+        Vue.prototype.$tt = $tt;
+
+        function $tu(s: string, ...args) {
             return filters.uppercase(localize(s, ...args));
-        };
+        }
+        Vue.prototype.$tu = $tu;
         Vue.prototype.$showError = function(err: Error) {
             clog('showError', err, err.constructor.name, Object.keys(err), Object.getOwnPropertyNames(err));
             const message = typeof err === 'string' ? err : err.message || err.toString();
@@ -64,10 +72,23 @@ const Plugin = {
             // label.style.backgroundColor = new Color(255, 255,0,0);
             label.style.fontSize = 13;
             label.html = `<span style="color:rgb(138,138,138)">${Vue.prototype.$tc(message.trim())}</span>`;
-            return alert({
+            return confirm({
                 title: Vue.prototype.$tc('error'),
-                okButtonText: Vue.prototype.$tc('ok'),
-                view: label
+                view: label,
+                okButtonText: $tc('send_bug_report'),
+                cancelButtonText: $tc('cancel'),
+                message
+            }).then(result => {
+                if (result && this.$bugsnag) {
+                    this.$bugsnag
+                        .notify({
+                            error: err
+                        })
+                        .then(() => {
+                            this.$alert(this.$t('bug_report_sent'));
+                        })
+                        .catch(this.$showError);
+                }
             });
         };
         Vue.prototype.$showToast = function(text: string, duration?: ToastDuration, position?: ToastPosition) {
