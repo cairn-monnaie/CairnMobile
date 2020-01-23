@@ -32,8 +32,15 @@
   <string name="transaction_done">"la transaction a été effectuée avec succés"</string>
   <string name="address">"adresse"</string>
   <string name="city">"ville"</string>
+  <string name="bug_report_sent">"rapport de bug envoyé"</string>
+  <string name="description_required">"une description est requise"</string>
+  <string name="non_valid_email">"email non valide"</string>
   <string name="description">"description"</string>
   <string name="email">"email"</string>
+  <string name="email_required">"un email valide est requis"</string>
+  <string name="please_describe_error">"veuillez décrire l\'erreur"</string>
+  <string name="send_bug_report_desc">"entrez un mail et une description du bug rencontré"</string>
+  <string name="send_bug_report">"envoyer le rapport de bug"</string>
   <string name="phone">"téléphone"</string>
   <string name="street">"rue"</string>
   <string name="zipcode">"code postal"</string>

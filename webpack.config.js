@@ -8,13 +8,13 @@ const NsVueTemplateCompiler = require('nativescript-vue-template-compiler');
 
 // temporary hack to support v-model using ns-vue-template-compiler
 // See https://github.com/nativescript-vue/nativescript-vue/issues/371
-NsVueTemplateCompiler.registerElement('MDTextField', () => require('nativescript-material-components/textfield').TextField, {
+NsVueTemplateCompiler.registerElement('MDTextField', () => require('nativescript-material-textfield').TextField, {
     model: {
         prop: 'text',
         event: 'textChange'
     }
 });
-NsVueTemplateCompiler.registerElement('MDSlider', () => require('nativescript-material-components/slider').Slider, {
+NsVueTemplateCompiler.registerElement('MDSlider', () => require('nativescript-material-slider').Slider, {
     model: {
         prop: 'value',
         event: 'valueChange'
@@ -23,7 +23,7 @@ NsVueTemplateCompiler.registerElement('MDSlider', () => require('nativescript-ma
 
 module.exports = env => {
     const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
-    let appComponents = [];
+    const appComponents = [];
     if (platform === 'android') {
         appComponents.push(resolve(__dirname, 'app/receivers/SmsReceiver'));
     }
@@ -46,7 +46,7 @@ module.exports = env => {
 
     const config = WebpackTemplate(env, {
         projectRoot: __dirname,
-        appComponents: appComponents,
+        appComponents,
         snapshotPlugin: {
             useLibs: true,
             targetArchs: ['arm', 'arm64', 'ia32']
@@ -77,29 +77,15 @@ module.exports = env => {
             appVersion = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleShortVersionString<\/key>[\s\n]*<string>(.*?)<\/string>/)[1];
             buildNumber = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleVersion<\/key>[\s\n]*<string>([0-9]*)<\/string>/)[1];
         }
-        // if (buildNumber) {
-        //     appVersion += ` (${buildNumber})`
-        // }
-        // if (!/[0-9]+\.[0-9]+\.[0-9]+/.test(appVersion)) {
-        //     appVersion += '.0';
-        // }
+        if (buildNumber) {
+            appVersion += `.${buildNumber}`;
+        }
+        appVersion += `${platform === 'android' ? 1 : 0}`;
         console.log('appVersion', appVersion, buildNumber);
-        // config.plugins.push(
-        //     new BugsnagBuildReporterPlugin(
-        //         {
-        //             apiKey: '767d861562cf9edbb3a9cb1a54d23fb8',
-        //             appVersion: appVersion
-        //         },
-        //         {
-        //             /* opts */
-        //         }
-        //     )
-        // );
         config.plugins.push(
             new BugsnagSourceMapUploaderPlugin({
                 apiKey: BUGSNAG_KEY,
                 appVersion,
-                codeBundleId: buildNumber,
                 overwrite: true,
                 publicPath: '.'
             })

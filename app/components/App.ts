@@ -1,7 +1,4 @@
-import { compose } from 'nativescript-email';
-import * as EInfo from 'nativescript-extendedinfo';
-import { prompt } from 'nativescript-material-dialogs';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
+import * as application from '@nativescript/core/application';
 import { Color } from '@nativescript/core/color';
 import { device, screen } from '@nativescript/core/platform';
 import { NavigationEntry } from '@nativescript/core/ui/frame';
@@ -11,13 +8,19 @@ import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
 import { Page } from '@nativescript/core/ui/page';
 import { TabView } from '@nativescript/core/ui/tab-view/tab-view';
 import { GC } from '@nativescript/core/utils/utils';
+import { compose } from 'nativescript-email';
+import * as EInfo from 'nativescript-extendedinfo';
+import { login } from 'nativescript-material-dialogs';
+import { showSnack } from 'nativescript-material-snackbar';
+import { TextField } from 'nativescript-material-textfield';
+import * as perms from 'nativescript-perms';
+import { Vibrate } from 'nativescript-vibrate';
+import Vue, { NativeScriptVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { setDrawerInstance } from '~/main';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import { screenHeightDips, screenWidthDips } from '~/variables';
-import * as perms from 'nativescript-perms';
-import * as application from '@nativescript/core/application';
 // import Map from './Map';
 import AppFrame from './AppFrame';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
@@ -27,8 +30,6 @@ import Login from './Login';
 import Map from './Map';
 import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
-import { showSnack } from 'nativescript-material-snackbar';
-import { Vibrate } from 'nativescript-vibrate';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
@@ -99,6 +100,8 @@ export enum ComponentIds {
 // History = 'history',
 // Map = 'map'
 export const navigateUrlProperty = 'navigateUrl';
+
+const mailRegexp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
 @Component({
     components: {
@@ -312,7 +315,16 @@ export default class App extends BaseVueComponent {
 
         authService.on(LoggedinEvent, e => {
             this.currentlyLoggedIn = true;
-            this.userProfile = e.data;
+            const profile = (this.userProfile = e.data as UserProfile);
+            this.$bugsnag.addToTab('profile', 'name', profile.name);
+            this.$bugsnag.addToTab('profile', 'email', profile.email);
+            this.$bugsnag.addToTab('profile', 'username', profile.username);
+            this.$bugsnag.addToTab('profile', 'firstname', profile.firstname);
+            this.$bugsnag.addToTab('profile', 'id', profile.id);
+            this.$bugsnag.addToTab('profile', 'phoneNumbers', profile.phoneNumbers);
+            this.$bugsnag.addToTab('profile', 'roles', profile.roles);
+            this.$bugsnag.addToTab('profile', 'address', profile.address);
+            this.$bugsnag.addToTab('profile', 'description', profile.description);
             console.log('LoggedinEvent', e.data);
             this.navigateToUrl(ComponentIds.Situation, {
                 // props: { autoConnect: false },
@@ -320,6 +332,7 @@ export default class App extends BaseVueComponent {
             });
         });
         authService.on(LoggedoutEvent, () => {
+            this.$bugsnag.clearTab('profile');
             this.currentlyLoggedIn = false;
             console.log('LoggedoutEvent');
             this.goBackToLogin();
@@ -503,31 +516,72 @@ export default class App extends BaseVueComponent {
                 }).catch(this.showError);
                 break;
             case 'sendBugReport':
-                prompt({
-                    message: this.$tc('send_bug_report'),
+                login({
+                    title: this.$tc('send_bug_report'),
+                    message: this.$tc('send_bug_report_desc'),
                     okButtonText: this.$t('send'),
                     cancelButtonText: this.$t('cancel'),
                     autoFocus: true,
-                    textFieldProperties: {
+                    usernameTextFieldProperties: {
                         marginLeft: 10,
                         marginRight: 10,
-                        hint: this.$tc('please_describe_error')
+                        autocapitalizationType: 'none',
+                        keyboardType: 'email',
+                        autocorrect: false,
+                        error: this.$tc('email_required'),
+                        hint: this.$tc('email')
+                    },
+                    passwordTextFieldProperties: {
+                        marginLeft: 10,
+                        marginRight: 10,
+                        error: this.$tc('please_describe_error'),
+                        secure: false,
+                        hint: this.$tc('description')
+                    },
+                    beforeShow: (options, usernameTextField: TextField, passwordTextField: TextField) => {
+                        usernameTextField.on('textChange', (e: any) => {
+                            const text = e.value;
+                            if (!text) {
+                                usernameTextField.error = this.$tc('email_required');
+                            } else if (!mailRegexp.test(text)) {
+                                usernameTextField.error = this.$tc('non_valid_email');
+                            } else {
+                                usernameTextField.error = null;
+                            }
+                        });
+                        passwordTextField.on('textChange', (e: any) => {
+                            const text = e.value;
+                            if (!text) {
+                                passwordTextField.error = this.$tc('description_required');
+                            } else {
+                                passwordTextField.error = null;
+                            }
+                        });
                     }
-                } as any).then(result => {
+                }).then(result => {
                     if (result.result && this.$bugsnag) {
+                        if (!result.userName || !mailRegexp.test(result.userName)) {
+                            this.showError(new Error(this.$tc('email_required')));
+                            return;
+                        }
+                        if (!result.password || result.password.length === 0) {
+                            this.showError(new Error(this.$tc('description_required')));
+                            return;
+                        }
                         this.$bugsnag
                             .notify({
                                 error: new Error('bug_report_error'),
                                 metadata: {
                                     report: {
-                                        message: result.text
+                                        email: result.userName,
+                                        message: result.password
                                     }
                                 }
                             })
                             .then(() => {
-                                this.$alert('bug_report_sent');
+                                this.$alert(this.$t('bug_report_sent'));
                             })
-                            .catch(this.showError);
+                            .catch(this.$showError);
                     }
                 });
                 break;

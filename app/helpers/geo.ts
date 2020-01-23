@@ -1,4 +1,4 @@
-import { MapBounds, MapPos, ScreenBounds } from 'nativescript-carto/core/core';
+import { MapBounds, MapPos, ScreenBounds } from 'nativescript-carto/core';
 import { ScreenMetrics } from '@nativescript/core/platform/platform';
 
 const TO_RAD = Math.PI / 180;
@@ -20,7 +20,7 @@ export function getCenter(...coords: MapPos[]) {
     let X = 0.0;
     let Y = 0.0;
     let Z = 0.0;
-    let lat, lon, hyp, coord;
+    let lat, lon, coord;
 
     for (let i = 0, l = coords.length; i < l; ++i) {
         coord = coords[i];
@@ -38,12 +38,12 @@ export function getCenter(...coords: MapPos[]) {
     Z = Z / nb_coords;
 
     lon = Math.atan2(Y, X);
-    hyp = Math.sqrt(X * X + Y * Y);
+    const hyp = Math.sqrt(X * X + Y * Y);
     lat = Math.atan2(Z, hyp);
 
     return {
-        latitude: (lat * TO_DEG),
-        longitude: (lon * TO_DEG)
+        latitude: lat * TO_DEG,
+        longitude: lon * TO_DEG
     } as MapPos;
 }
 
@@ -74,7 +74,6 @@ export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; h
     return Math.min(Math.min(latZoom, lngZoom), zoomMax);
 }
 
-
 export function getBounds(sourceLocs: MapPos[]) {
     const northeast = {
         latitude: -Infinity,
@@ -90,6 +89,6 @@ export function getBounds(sourceLocs: MapPos[]) {
         northeast.longitude = Math.max(l.longitude, northeast.longitude);
         southwest.longitude = Math.min(l.longitude, southwest.longitude);
     });
-    console.log('getBounds', northeast, southwest)
+    console.log('getBounds', northeast, southwest);
     return new MapBounds(northeast, southwest);
 }

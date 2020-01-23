@@ -88,6 +88,7 @@ export default class BaseVueComponent extends Vue {
     }
     @bind
     showError(err: Error | string) {
+        this.log('showError', err);
         this.showErrorInternal(err);
     }
     showErrorInternal(err: Error | string) {

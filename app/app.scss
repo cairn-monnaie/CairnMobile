@@ -1,6 +1,6 @@
 @import './variables';
 @import './animations';
-@import '../node_modules/nativescript-vue-fab/style.css';
+@import '~nativescript-vue-fab/style';
 
 .lato {
     font-family: 'Lato', 'Lato Regular', 'res/lato';
@@ -46,6 +46,7 @@ mdripple {
 
 .pageContent {
     // z-index:1;
+    // padding-top:$actionbar-height;
     background-color: #f5f7fa;
 }
 

@@ -10,7 +10,7 @@ import Vue from 'nativescript-vue';
 // );
 /* DEV-END */
 import App from '~/components/App';
-import { cwarn } from '~/utils/logging';
+import { DEV_LOG, cwarn } from '~/utils/logging';
 import MultiDrawer from './components/MultiDrawer';
 import { accentColor } from './variables';
 // importing filters
@@ -20,49 +20,30 @@ import MixinsPlugin from './vue.mixins';
 import PrototypePlugin from './vue.prototype';
 import ViewsPlugin from './vue.views';
 
-
 // setMapPosKeys('lat', 'lon');
 
-/* SOURCEMAP-START */
-console.log('installing sourcemap support');
-const currentApp = require('@nativescript/core/file-system').knownFolders.currentApp();
-process.cwd = function() {
-    return '';
-};
-require('source-map-support').install({
-    environment: 'node',
-    handleUncaughtExceptions: false,
-    retrieveSourceMap(source) {
-        console.log('retrieveSourceMap', source);
-        const sourceMapPath = source + '.map';
-        const appPath = currentApp.path;
-        let sourceMapRelativePath = sourceMapPath
-            // .replace('file:///', '')
-            .replace('file://', '')
-            .replace(appPath + '/', '')
-            .replace(appPath + '/', '');
-        if (sourceMapRelativePath.startsWith('app/')) {
-            sourceMapRelativePath = sourceMapRelativePath.slice(4);
-        }
-        return {
-            url: sourceMapRelativePath,
-            map: currentApp.getFile(sourceMapRelativePath).readTextSync()
-        };
-    }
-});
-/* SOURCEMAP-END */
-
 if (PRODUCTION) {
-    const bugsnag = (Vue.prototype.$bugsnag = new (require('nativescript-bugsnag')).Client());
+    const bugsnag = (Vue.prototype.$bugsnag = new (require('nativescript-bugsnag').Client)());
     Promise.all([getVersionName(), getBuildNumber()])
         .then(result => {
             console.log('did get Versions', result);
-            let fullVersion = result[0];
-            if (!/[0-9]+\.[0-9]+\.[0-9]+/.test(fullVersion)) {
-                fullVersion += '.0';
-            }
-            fullVersion += ` (${result[1]})`;
-            return bugsnag.init({ appVersion: result[0], apiKey: gVars.BUGSNAG_KEY, codeBundleId: result[1].toFixed(), automaticallyCollectBreadcrumbs: false, detectAnrs: false });
+
+            return bugsnag.init({
+                apiKey: gVars.BUGSNAG_KEY,
+                appVersion: `${result[0]}.${result[1]}${gVars.isAndroid ? 1 : 0}`,
+                automaticallyCollectBreadcrumbs: false,
+                detectAnrs: false,
+                releaseStage: TNS_ENV
+            });
+
+            // return bugsnag.init({
+            //     appVersion: result[0],
+            //     apiKey: gVars.BUGSNAG_KEY,
+            //     codeBundleId: result[1].toFixed(),
+            //     automaticallyCollectBreadcrumbs: false,
+            //     detectAnrs: false,
+            //     releaseStage: TNS_ENV
+            // });
         })
         .then(() => {
             bugsnag.enableConsoleBreadcrumbs();
@@ -111,10 +92,10 @@ TNSFontIcon.loadCssSync();
 // import './app.scss'
 
 // Prints Vue logs when --env.production is *NOT* set while building
-// Vue.config.silent = !DEV_LOG;
-// Vue.config['debug'] = DEV_LOG;
-Vue.config.silent = true;
-Vue.config['debug'] = false;
+Vue.config.silent = !DEV_LOG;
+Vue.config['debug'] = DEV_LOG;
+// Vue.config.silent = true;
+// Vue.config['debug'] = false;
 
 function throwVueError(err) {
     Vue.prototype.$showError(err);
@@ -126,14 +107,12 @@ Vue.config.errorHandler = (e, vm, info) => {
         console.log('[Vue]', `[${info}]`, e);
         setTimeout(() => throwVueError(e), 0);
     }
-};;
+};
 
 Vue.config.warnHandler = function(msg, vm, trace) {
     cwarn(msg, trace);
 };
 
 new Vue({
-    render: h => {
-        return h(App);
-    }
+    render: h => h(App)
 }).$start();

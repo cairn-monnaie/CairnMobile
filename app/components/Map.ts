@@ -1,9 +1,9 @@
 import { throttle } from 'helpful-decorators';
-import { ClickType, MapBounds, MapPos } from 'nativescript-carto/core/core';
-import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources/datasource';
+import { ClickType, MapBounds, MapPos } from 'nativescript-carto/core';
+import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
 import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
-import { CartoMap } from 'nativescript-carto/ui/ui';
-import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles/vectortiles';
+import { CartoMap } from 'nativescript-carto/ui';
+import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import * as appSettings from '@nativescript/core/application-settings';
 import { Component } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
@@ -97,7 +97,7 @@ export default class Map extends PageComponent {
         this.saveSettings();
         const map = e.object as CartoMap;
         const currentBounds = new MapBounds(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
-        console.log('onMapStable', this.currentBounds, currentBounds);
+        // console.log('onMapStable', this.currentBounds, currentBounds);
         if (!this.currentBounds || !currentBounds.equals(this.currentBounds)) {
             this.currentBounds = currentBounds;
             this.refresh(currentBounds);
@@ -124,7 +124,7 @@ export default class Map extends PageComponent {
                 decoder: new MBVectorTileDecoder({
                     style: 'voyager',
                     liveReload: TNS_ENV !== 'production',
-                    dirPath: `~/assets/styles/cairn`
+                    dirPath: '~/assets/styles/cairn'
                 })
             });
 

@@ -10,7 +10,8 @@ import { confirm, prompt } from 'nativescript-material-dialogs';
 @Component({})
 export default class Profile extends PageComponent {
     navigateUrl = ComponentIds.Profile;
-    editable = false;
+    editing = false;
+    editable = true;
     // canSave = false;
     userProfile: UserProfile = null;
     updateUserProfile: UpdateUserProfile = null;
@@ -30,7 +31,9 @@ export default class Profile extends PageComponent {
 
     constructor() {
         super();
-        this.userProfile = this.$authService.userProfile;
+        if (!this.userProfile) {
+            this.userProfile = this.$authService.userProfile;
+        }
     }
     destroyed() {
         super.destroyed();
@@ -45,9 +48,9 @@ export default class Profile extends PageComponent {
         this.userProfile = event.data;
         this.image = this.userProfile.image;
     }
-    switchEditable() {
-        this.editable = !this.editable;
-        if (!this.editable) {
+    switchEditing() {
+        this.editing = !this.editing;
+        if (!this.editing) {
             this.updateUserProfile = null;
         }
     }
@@ -64,7 +67,7 @@ export default class Profile extends PageComponent {
         this.$authService
             .updateUserProfile(this.updateUserProfile)
             .then(result => {
-                this.editable = false;
+                this.editing = false;
                 this.loading = false;
                 this.updateUserProfile = null;
             })
@@ -115,7 +118,7 @@ export default class Profile extends PageComponent {
             })
             .catch(this.showError);
     }
-    onTextChange(key: string, value: string) {
+    onTextChange(value: string, key: string) {
         this.log('onTextChange', key, value);
         this.updateUserProfile = this.updateUserProfile || {};
         this.updateUserProfile[key] = value;

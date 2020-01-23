@@ -1,8 +1,6 @@
 import { locals as ILocals } from '~/variables.scss';
 import { screen } from '@nativescript/core/platform';
-let locals: typeof ILocals;
-
-locals = require('./variables.scss').locals;
+const locals: typeof ILocals = require('./variables.scss').locals;
 
 export const primaryColor: string = locals.primaryColor;
 export const accentColor: string = locals.accentColor;

@@ -5,6 +5,7 @@ import { clog } from '~/utils/logging';
 import { localize } from 'nativescript-localize';
 import { stringProperty } from './BackendService';
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
+import { BaseError } from 'make-error';
 
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,7 +40,7 @@ function evalTemplateString(resource: string, obj: {}) {
 
 export function queryString(params, location) {
     const obj = {};
-    let i, parts, len, key, value;
+    let i, len, key, value;
 
     if (typeof params === 'string') {
         value = location.match(new RegExp('[?&]' + params + '=?([^&]*)[&#$]?'));
@@ -49,7 +50,7 @@ export function queryString(params, location) {
     const locSplit = location.split(/[?&]/);
     // _params[0] is the url
 
-    parts = [];
+    const parts = [];
     for (i = 0, len = locSplit.length; i < len; i++) {
         const theParts = locSplit[i].split('=');
         if (!theParts[0]) {
@@ -93,7 +94,7 @@ export function queryString(params, location) {
     return parts.splice(0, 2).join('?') + (parts.length > 0 ? '&' + parts.join('&') : '');
 }
 
-export class CustomError extends Error {
+export class CustomError extends BaseError {
     customErrorConstructorName: string;
     isCustomError = true;
     assignedLocalData: any;
@@ -134,15 +135,15 @@ export class CustomError extends Error {
         }
     }
 
-    localData = () => {
+    localData() {
         const res = {};
         for (const key in this.assignedLocalData) {
             res[key] = this.assignedLocalData[key];
         }
         return res;
-    };
+    }
 
-    toJSON = () => {
+    toJSON() {
         const error = {
             message: this.message
         };
@@ -152,18 +153,18 @@ export class CustomError extends Error {
             }
         });
         return error;
-    };
-    toData = () => {
+    }
+    toData() {
         return JSON.stringify(this.toJSON());
-    };
-    toString = () => {
+    }
+    toString() {
         // console.log('customError to string', this.message, this.assignedLocalData, localize);
         const result = evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
         // console.log('customError to string2', result);
         return result;
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
         // return this.message || this.stack;
-    };
+    }
 
     getMessage() {}
 }
@@ -194,18 +195,15 @@ export class NoNetworkError extends CustomError {
         );
     }
 }
+export interface HTTPErrorProps {
+    statusCode: number;
+    message: string;
+    requestParams: HTTPOptions;
+}
 export class HTTPError extends CustomError {
     statusCode: number;
     requestParams: HTTPOptions;
-    constructor(
-        props:
-            | {
-                  statusCode: number;
-                  message: string;
-                  requestParams: HTTPOptions;
-              }
-            | HTTPError
-    ) {
+    constructor(props: HTTPErrorProps | HTTPError) {
         super(
             Object.assign(
                 {
@@ -249,27 +247,28 @@ export class NetworkService extends Observable {
     }
     constructor() {
         super();
-        clog('creating NetworkHandler Handler');
+        this.log('creating NetworkHandler Handler');
+    }
+    log(...args) {
+        clog(`[${this.constructor.name}]`, ...args);
     }
     start() {
-        connectivity.startMonitoring(this.onConnectionStateChange);
+        connectivity.startMonitoring(this.onConnectionStateChange.bind(this));
         this.connectionType = connectivity.getConnectionType();
     }
     stop() {
         connectivity.stopMonitoring();
     }
-    onConnectionStateChange = (newConnectionType: connectivity.connectionType) => {
+    onConnectionStateChange(newConnectionType: connectivity.connectionType) {
         this.connectionType = newConnectionType;
-    };
+    }
 
-    handleRequestRetry(requestParams: HttpRequestOptions, retry = 0): Promise<any | never> {
-        return Promise.reject(
-            new HTTPError({
-                statusCode: 401,
-                message: 'HTTP error',
-                requestParams
-            })
-        );
+    async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
+        throw new HTTPError({
+            statusCode: 401,
+            message: 'HTTP error',
+            requestParams
+        });
     }
 
     getRequestHeaders(requestParams?: HttpRequestOptions) {
@@ -284,7 +283,7 @@ export class NetworkService extends Observable {
     }
     request(requestParams: HttpRequestOptions, retry = 0) {
         if (!this.connected) {
-            return Promise.reject(new NoNetworkError());
+            throw new NoNetworkError();
         }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
@@ -292,94 +291,87 @@ export class NetworkService extends Observable {
         }
         requestParams.headers = this.getRequestHeaders(requestParams);
 
-        console.log('request', requestParams);
+        this.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http.request(requestParams).then(response => {
-            return this.handleRequestResponse(response, requestParams, requestStartTime, retry);
-        });
+        return http.request(requestParams).then(response => this.handleRequestResponse(response, requestParams, requestStartTime, retry));
     }
 
     requestMultipart(requestParams: HttpRequestOptions, retry = 0) {
-        console.log('requestMultipart', requestParams);
+        this.log('requestMultipart', requestParams);
         const requestStartTime = Date.now();
         return new TNSHttpFormData()
             .post(requestParams.url, requestParams.multipartParams, {
                 headers: this.getRequestHeaders(requestParams)
             })
-            .then(response => {
-                return this.handleRequestResponse(response, requestParams, requestStartTime, retry);
-            });
+            .then(response => this.handleRequestResponse(response, requestParams, requestStartTime, retry));
     }
 
-    handleRequestResponse(response: http.HttpResponse | TNSHttpFormDataResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
+    async handleRequestResponse(response: http.HttpResponse | TNSHttpFormDataResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
-        return Promise.resolve()
-            .then(() => {
-                const content = response['content'] ? response['content'].toString() : response['body'];
-                const isJSON = typeof content === 'object';
-                console.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
-                if (Math.round(statusCode / 100) !== 2) {
-                    let jsonReturn;
-                    if (isJSON) {
-                        jsonReturn = content;
-                    } else {
-                        const responseStr = content.replace('=>', ':');
-                        try {
-                            jsonReturn = JSON.parse(responseStr);
-                        } catch (err) {
-                            // error result might html
-                            const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
-                            console.log('request error1', responseStr, match);
-                            return Promise.reject(
-                                new HTTPError({
-                                    statusCode,
-                                    message: match ? match[1] : 'HTTP error',
-                                    requestParams
-                                })
-                            );
-                        }
-                    }
-                    console.log('test error response', jsonReturn);
-                    if (jsonReturn) {
-                        console.log('request error', statusCode, jsonReturn.error);
-                        if (Array.isArray(jsonReturn)) {
-                            jsonReturn = jsonReturn[0];
-                        }
-                        if (
-                            (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
-                            (statusCode === 400 &&
-                                jsonReturn.error &&
-                                jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
-                        ) {
-                            return this.handleRequestRetry(requestParams, retry);
-                        }
-                        const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                        return Promise.reject(
-                            new HTTPError({
-                                statusCode: error.code || statusCode,
-                                message: error.error_description || error.form || error.message || error.error || error,
-                                requestParams
-                            })
-                        );
-                    }
-                }
-                if (isJSON) {
-                    return content;
-                }
+        // return Promise.resolve()
+        // .then(() => {
+        const content = response['content'] ? response['content'].toString() : response['body'];
+        const isJSON = typeof content === 'object' || Array.isArray(content);
+        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
+        if (Math.round(statusCode / 100) !== 2) {
+            let jsonReturn;
+            if (isJSON) {
+                jsonReturn = content;
+            } else {
+                const responseStr = content.replace('=>', ':');
                 try {
-                    return response['content'].toJSON();
-                } catch (e) {
-                    // console.log('failed to parse result to JSON', e);
-                    return response['content'];
+                    jsonReturn = JSON.parse(responseStr);
+                } catch (err) {
+                    // error result might html
+                    const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
+                    this.log('request error1', responseStr, match);
+                    return Promise.reject(
+                        new HTTPError({
+                            statusCode,
+                            message: match ? match[1] : 'HTTP error',
+                            requestParams
+                        })
+                    );
                 }
-            })
-            .catch(err => {
-                const delta = Date.now() - requestStartTime;
-                if (delta >= 0 && delta < 500) {
-                    return timeout(delta).then(() => Promise.reject(err));
-                } else {
-                    return Promise.reject(err);
+            }
+            if (jsonReturn) {
+                if (Array.isArray(jsonReturn)) {
+                    jsonReturn = jsonReturn[0];
                 }
-            });
+                if (
+                    (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
+                    (statusCode === 400 &&
+                        jsonReturn.error &&
+                        jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
+                ) {
+                    return this.handleRequestRetry(requestParams, retry);
+                }
+                const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
+                this.log('throwing http error', error.code || statusCode, error.error_description || error.form || error.message || error.error || error);
+                throw new HTTPError({
+                    statusCode: error.code || statusCode,
+                    message: error.error_description || error.form || error.message || error.error || error,
+                    requestParams
+                });
+            }
+        }
+        if (isJSON) {
+            return content;
+        }
+        try {
+            return response['content'].toJSON();
+        } catch (e) {
+            // console.log('failed to parse result to JSON', e);
+            return response['content'];
+        }
+        // })
+        // .catch(err => {
+        //     const delta = Date.now() - requestStartTime;
+        //     if (delta >= 0 && delta < 500) {
+        //         return timeout(delta).then(() => Promise.reject(err));
+        //     } else {
+        //         return Promise.reject(err);
+        //     }
+        // });
     }
 }

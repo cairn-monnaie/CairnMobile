@@ -9,6 +9,7 @@ import AuthService, { getAuthInstance } from '~/services/AuthService';
 import { clog } from './utils/logging';
 import { screenHeightDips, screenWidthDips } from './variables';
 import { alert, confirm } from 'nativescript-material-dialogs';
+import { Color } from '@nativescript/core/ui/frame';
 
 const Plugin = {
     install(Vue) {
@@ -64,20 +65,21 @@ const Plugin = {
             return filters.uppercase(localize(s, ...args));
         }
         Vue.prototype.$tu = $tu;
-        Vue.prototype.$showError = function(err: Error) {
-            clog('showError', err, err.constructor.name, Object.keys(err), Object.getOwnPropertyNames(err));
+        Vue.prototype.$showError = function showError(err: Error) {
+            // clog('$showError', err, err.constructor.name, Object.keys(err), Object.getOwnPropertyNames(err));
             const message = typeof err === 'string' ? err : err.message || err.toString();
             const label = new HTMLLabel();
-            label.style.padding = 20;
+            label.style.padding = '0 20 20 20';
             // label.style.backgroundColor = new Color(255, 255,0,0);
-            label.style.fontSize = 13;
-            label.html = `<span style="color:rgb(138,138,138)">${Vue.prototype.$tc(message.trim())}</span>`;
+            label.style.fontSize = 14;
+            label.style.color = new Color(255, 138,138,138);
+            label.html = Vue.prototype.$tc(message.trim());
             return confirm({
                 title: Vue.prototype.$tc('error'),
                 view: label,
                 okButtonText: $tc('send_bug_report'),
                 cancelButtonText: $tc('cancel'),
-                message
+                // message
             }).then(result => {
                 if (result && this.$bugsnag) {
                     this.$bugsnag
@@ -87,7 +89,7 @@ const Plugin = {
                         .then(() => {
                             this.$alert(this.$t('bug_report_sent'));
                         })
-                        .catch(this.$showError);
+                        .catch(showError);
                 }
             });
         };

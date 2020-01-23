@@ -12,7 +12,7 @@ const Plugin = {
 
         Vue.use(VueStringFilter);
 
-        Vue.filter('concat', (value, ln) => `${value} ${ln}`);
+            Vue.filter('concat', (value, ln) => `${value} ${ln}`);
         Vue.filter('preconcat', (value, ln) => `${ln} ${value}`);
         Vue.filter('L', localize);
 
@@ -20,7 +20,7 @@ const Plugin = {
             return formatCurrency(value, showZeroCents);
         });
 
-        Vue.filter('date', function(value, formatStr?: string) {
+        Vue.filter('date', function(value,formatStr?: string) {
             return convertTime(value, formatStr || 'LLL');
             // if (value) {
             //     return format(value, formatStr || '[Today is a] dddd', {

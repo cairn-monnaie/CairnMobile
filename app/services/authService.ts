@@ -1,10 +1,10 @@
 import { numberProperty, objectProperty } from './BackendService';
 import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
-import { MapBounds } from 'nativescript-carto/core/core';
+import { MapBounds } from 'nativescript-carto/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
-import { ImageAsset } from '@nativescript/core/image-asset/image-asset';
+import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 
 const clientId = '1_hn56osm3wkoosc44ko8ocok084ggcwg04ks0c0so8osoks00o';
@@ -107,7 +107,7 @@ export interface Address {
         name: string;
     };
 }
-export interface AccountInfo {
+export class AccountInfo {
     balance?: number;
     id: string;
     number: string;
@@ -309,14 +309,15 @@ export default class AuthService extends NetworkService {
         if (currentData.address) {
             currentData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
             if (currentData.address.zipCity) {
-                currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
+                currentData.address.zipCity = `${currentData.address.zipCity.zipCode} ${currentData.address.zipCity.city}`;
+                // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
             }
         }
         const actualData = mergeOptions(currentData, data);
 
         return getFormData(actualData).then(params =>
             this.requestMultipart({
-                url: authority + `/mobile/users/profile`,
+                url: authority + '/mobile/users/profile',
                 multipartParams: params.filter(s => !!s),
                 method: 'POST'
             })
@@ -324,7 +325,7 @@ export default class AuthService extends NetworkService {
     }
     addPhone(phoneNumber: string) {
         return this.request({
-            url: authority + `/mobile/phones.json`,
+            url: authority + '/mobile/phones.json',
             method: 'POST',
             content: JSON.stringify({
                 phoneNumber,
@@ -344,18 +345,16 @@ export default class AuthService extends NetworkService {
     }
     getAccounts(): Promise<AccountInfo[]> {
         return this.request({
-            url: authority + `/mobile/accounts.json`,
+            url: authority + '/mobile/accounts.json',
             method: 'GET'
         }).then(r => {
-            const result = r.map(a => {
-                return {
-                    balance: parseFloat(a.status.balance),
-                    creditLimit: parseFloat(a.status.creditLimit),
-                    number: a.number,
-                    id: a.id,
-                    name: a.type.name
-                } as AccountInfo;
-            }) as AccountInfo[];
+            const result = r.map(a => ({
+                balance: parseFloat(a.status.balance),
+                creditLimit: parseFloat(a.status.creditLimit),
+                number: a.number,
+                id: a.id,
+                name: a.type.name
+            } as AccountInfo)) as AccountInfo[];
             this.notify({
                 eventName: AccountInfoEvent,
                 object: this,
@@ -366,22 +365,18 @@ export default class AuthService extends NetworkService {
     }
     getBenificiaries(): Promise<Benificiary[]> {
         return this.request({
-            url: authority + `/mobile/beneficiaries`,
+            url: authority + '/mobile/beneficiaries',
             method: 'GET'
-        }).then(r => {
-            return r.map(b => {
-                b.user = cleanupUser(b.user);
-                return b;
-            });
-        });
+        }).then(r => r.map(b => {
+            b.user = cleanupUser(b.user);
+            return b;
+        }));
     }
     getUsers(): Promise<User[]> {
         return this.request({
-            url: authority + `/mobile/users`,
+            url: authority + '/mobile/users',
             method: 'POST'
-        }).then(r => {
-            return r.map(cleanupUser);
-        });
+        }).then(r => r.map(cleanupUser));
     }
     addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         return this.request({
@@ -421,17 +416,15 @@ export default class AuthService extends NetworkService {
     }
     getUserForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
-        return this.getUsers().then(r => {
-            return r.filter(u => {
-                // console.log('getUserForMap', 'filter', u.address);
-                if (!!u.address && !!u.address.latitude) {
-                    const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
-                    // console.log('getUserForMap', 'contains', result);
-                    return result;
-                }
-                return false;
-            });
-        });
+        return this.getUsers().then(r => r.filter(u => {
+            // console.log('getUserForMap', 'filter', u.address);
+            if (!!u.address && !!u.address.latitude) {
+                const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
+                // console.log('getUserForMap', 'contains', result);
+                return result;
+            }
+            return false;
+        }));
     }
     getAccountHistory(account: AccountInfo): Promise<Transaction[]> {
         return this.request({
@@ -450,14 +443,12 @@ export default class AuthService extends NetworkService {
                 orderBy: 'ASC'
             }),
             method: 'POST'
-        }).then(r => {
-            return r.map(t => {
-                // t.submissionDate = t.submissionDate.timestamp * 1000;
-                // t.executionDate = t.executionDate.timestamp * 1000;
-                t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
-                return t as Transaction;
-            });
-        });
+        }).then(r => r.map(t => {
+            // t.submissionDate = t.submissionDate.timestamp * 1000;
+            // t.executionDate = t.executionDate.timestamp * 1000;
+            t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
+            return t as Transaction;
+        }));
     }
     fakeSMSPayment(sender: string, message: string) {
         return this.request({
@@ -488,7 +479,6 @@ export default class AuthService extends NetworkService {
             })
             .catch(err => {
                 this.token = undefined;
-                console.error(err);
                 return Promise.reject(err);
             });
     }

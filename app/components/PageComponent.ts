@@ -1,7 +1,7 @@
 import { Component } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 import CairnPage from './CairnPage';
-import { NavigationEntry, topmost } from '@nativescript/core/ui/frame';
+import { Frame, NavigationEntry, topmost } from '@nativescript/core/ui/frame';
 import { Page } from '@nativescript/core/ui/page';
 import { VueConstructor } from 'vue';
 import { bind } from 'helpful-decorators';
@@ -36,17 +36,16 @@ export default class PageComponent extends BaseVueComponent {
     destroyed() {
         super.destroyed();
     }
-    @bind
-    showError(err: Error | string) {
+    showErrorInternal(err: Error | string) {
         this.loading = false;
-        super.showError(err);
+        super.showErrorInternal(err);
     }
     close() {
         this.$getAppComponent().navigateBackIfUrl(this.navigateUrl);
     }
     navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
         options = options || {};
-        (options as any).frame = topmost().id;
+        (options as any).frame = Frame.topmost().id;
         return this.$navigateTo(component, options, cb);
     }
 }
