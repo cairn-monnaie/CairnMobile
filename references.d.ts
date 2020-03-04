@@ -7,10 +7,12 @@
 declare module '*.scss';
 
 declare const gVars: {
+    SENTRY_DSN: string;
+    SENTRY_PREFIX: string;
+    sentry: boolean;
     isIOS: boolean;
     isAndroid: boolean;
     CARTO_TOKEN: string;
-    BUGSNAG_KEY: string;
 };
 
 declare const TNS_ENV: string;

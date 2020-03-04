@@ -193,22 +193,22 @@ export default class App extends BaseVueComponent {
         const result = [
             {
                 title: 'situation',
-                icon: 'bank',
+                icon: 'mdi-bank',
                 url: ComponentIds.Situation
             },
             {
                 title: 'profile',
-                icon: 'account',
+                icon: 'mdi-account',
                 url: ComponentIds.Profile
             },
             {
                 title: 'beneficiaries',
-                icon: 'account-group',
+                icon: 'mdi-account-group',
                 url: ComponentIds.Beneficiaries
             },
             {
                 title: 'map',
-                icon: 'map',
+                icon: 'mdi-map',
                 url: ComponentIds.Map
             }
         ];
@@ -316,15 +316,7 @@ export default class App extends BaseVueComponent {
         authService.on(LoggedinEvent, e => {
             this.currentlyLoggedIn = true;
             const profile = (this.userProfile = e.data as UserProfile);
-            this.$bugsnag.addToTab('profile', 'name', profile.name);
-            this.$bugsnag.addToTab('profile', 'email', profile.email);
-            this.$bugsnag.addToTab('profile', 'username', profile.username);
-            this.$bugsnag.addToTab('profile', 'firstname', profile.firstname);
-            this.$bugsnag.addToTab('profile', 'id', profile.id);
-            this.$bugsnag.addToTab('profile', 'phoneNumbers', profile.phoneNumbers);
-            this.$bugsnag.addToTab('profile', 'roles', profile.roles);
-            this.$bugsnag.addToTab('profile', 'address', profile.address);
-            this.$bugsnag.addToTab('profile', 'description', profile.description);
+            this.$sentry && this.$sentry.setExtra('profile', profile);
             console.log('LoggedinEvent', e.data);
             this.navigateToUrl(ComponentIds.Situation, {
                 // props: { autoConnect: false },
@@ -332,7 +324,7 @@ export default class App extends BaseVueComponent {
             });
         });
         authService.on(LoggedoutEvent, () => {
-            this.$bugsnag.clearTab('profile');
+            this.$sentry && this.$sentry.setExtra('profile', null);
             this.currentlyLoggedIn = false;
             console.log('LoggedoutEvent');
             this.goBackToLogin();
@@ -415,7 +407,7 @@ export default class App extends BaseVueComponent {
     }
 
     isActiveUrl(id) {
-        this.log('isActiveUrl', id, this.activatedUrl);
+        // this.log('isActiveUrl', id, this.activatedUrl);
         return this.activatedUrl === id;
     }
 
@@ -559,7 +551,7 @@ export default class App extends BaseVueComponent {
                         });
                     }
                 }).then(result => {
-                    if (result.result && this.$bugsnag) {
+                    if (result.result && this.$sentry) {
                         if (!result.userName || !mailRegexp.test(result.userName)) {
                             this.showError(new Error(this.$tc('email_required')));
                             return;
@@ -568,20 +560,11 @@ export default class App extends BaseVueComponent {
                             this.showError(new Error(this.$tc('description_required')));
                             return;
                         }
-                        this.$bugsnag
-                            .notify({
-                                error: new Error('bug_report_error'),
-                                metadata: {
-                                    report: {
-                                        email: result.userName,
-                                        message: result.password
-                                    }
-                                }
-                            })
-                            .then(() => {
-                                this.$alert(this.$t('bug_report_sent'));
-                            })
-                            .catch(this.$showError);
+                        this.$sentry.withScope(scope => {
+                            scope.setUser({ email: result.userName });
+                            this.$sentry.captureMessage(result.password);
+                            this.$alert(this.$t('bug_report_sent'));
+                        });
                     }
                 });
                 break;

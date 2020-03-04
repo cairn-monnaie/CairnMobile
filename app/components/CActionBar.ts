@@ -1,6 +1,6 @@
 import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
-import { actionBarHeight } from '~/variables';
+import { actionBarHeight, cairnFontFamily } from '~/variables';
 
 @Component({})
 export default class ActionBar extends BaseVueComponent {
@@ -9,6 +9,7 @@ export default class ActionBar extends BaseVueComponent {
         type: String
     })
     public title: string;
+    public cairnFontFamily =  cairnFontFamily;
 
     @Prop({ default: actionBarHeight, type: Number })
     public height: number;

@@ -89,7 +89,7 @@ export default class UserPicker extends PageComponent {
                 // }, items);
             })
             .catch(this.showError)
-            .then(res => {
+            .finally(() => {
                 this.loading = false;
                 this.dataItems = items;
             });

@@ -1,4 +1,3 @@
-import { getBuildNumber, getVersionName } from 'nativescript-extendedinfo';
 import { install as installGestures } from 'nativescript-gesturehandler';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
 import { install, themer } from 'nativescript-material-core';
@@ -19,40 +18,24 @@ import MixinsPlugin from './vue.mixins';
 // adding to Vue prototype
 import PrototypePlugin from './vue.prototype';
 import ViewsPlugin from './vue.views';
+import { device } from '@nativescript/core/platform';
 
 // setMapPosKeys('lat', 'lon');
 
-if (PRODUCTION) {
-    const bugsnag = (Vue.prototype.$bugsnag = new (require('nativescript-bugsnag').Client)());
-    Promise.all([getVersionName(), getBuildNumber()])
-        .then(result => {
-            console.log('did get Versions', result);
-
-            return bugsnag.init({
-                apiKey: gVars.BUGSNAG_KEY,
-                appVersion: `${result[0]}.${result[1]}${gVars.isAndroid ? 1 : 0}`,
-                automaticallyCollectBreadcrumbs: false,
-                detectAnrs: false,
-                releaseStage: TNS_ENV
+import { getBuildNumber, getVersionName } from 'nativescript-extendedinfo';
+if (PRODUCTION || gVars.sentry) {
+    import('nativescript-akylas-sentry').then(Sentry => {
+        Vue.prototype.$sentry = Sentry;
+        Promise.all([getVersionName(), getBuildNumber()]).then(res => {
+            Sentry.init({
+                dsn: gVars.SENTRY_DSN,
+                appPrefix: gVars.SENTRY_PREFIX,
+                release: `${res[0]}`,
+                dist: `${res[1]}.${gVars.isAndroid ? 'android' : 'ios'}`
             });
-
-            // return bugsnag.init({
-            //     appVersion: result[0],
-            //     apiKey: gVars.BUGSNAG_KEY,
-            //     codeBundleId: result[1].toFixed(),
-            //     automaticallyCollectBreadcrumbs: false,
-            //     detectAnrs: false,
-            //     releaseStage: TNS_ENV
-            // });
-        })
-        .then(() => {
-            bugsnag.enableConsoleBreadcrumbs();
-            bugsnag.handleUncaughtErrors();
-            console.log('bugsnag did init');
-        })
-        .catch(err => {
-            console.log('bugsnag  init failed', err);
+            Sentry.setTag('locale', device.language);
         });
+    });
 }
 
 Vue.use(MixinsPlugin);
@@ -78,13 +61,13 @@ Vue.use(FiltersPlugin);
 
 Vue.use(PrototypePlugin);
 
-import { TNSFontIcon } from 'nativescript-akylas-fonticon';
-// TNSFontIcon.debug = true;
-TNSFontIcon.paths = {
-    mdi: './assets/materialdesignicons.min.css',
-    cairn: './assets/cairn.css'
-};
-TNSFontIcon.loadCssSync();
+// import { TNSFontIcon } from 'nativescript-akylas-fonticon';
+// // TNSFontIcon.debug = true;
+// TNSFontIcon.paths = {
+//     mdi: './assets/materialdesignicons.min.css',
+//     cairn: './assets/cairn.css'
+// };
+// TNSFontIcon.loadCssSync();
 
 // application.on(application.uncaughtErrorEvent, args => clog('uncaughtErrorEvent', args.error));
 // application.on(application.discardedErrorEvent, args => clog('discardedErrorEvent', args.error));

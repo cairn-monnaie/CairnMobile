@@ -1,6 +1,6 @@
 <template>
     <CairnPage  @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight" @actionBarTitleTap="animateLogoView">
-        <!-- <Label  slot="actionBar"  width="100%" textAlignment="center" class="cairn" :text="'cairn-full_logo' | fonticon" color="white" :fontSize="Math.min(logoViewHeight, 200)" /> -->
+        <!-- <Label  slot="actionBar"  width="100%" textAlignment="center" class="cairn" text="cairn-full_logo" color="white" :fontSize="Math.min(logoViewHeight, 200)" /> -->
         <ScrollView>
             <StackLayout horizontalAlignment="center">
                 <!-- <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" > -->
@@ -20,7 +20,7 @@
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">
                     <Span :text="(isLoggingIn ? $t('no_account') : $t('login'))| capitalize" />
-                    <Span :text="isLoggingIn ? $t('register') : '' | capitalize" class="bold" />
+                    <Span :text="isLoggingIn ? $t('register') : '' | capitalize" fontWeight="bold" />
                 </Label>
             </StackLayout>
         </ScrollView>

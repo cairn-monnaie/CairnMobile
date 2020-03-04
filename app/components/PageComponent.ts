@@ -18,6 +18,7 @@ export default class PageComponent extends BaseVueComponent {
         return this.page && this.page.loading;
     }
     set loading(value: boolean) {
+        console.log('set loading', value, !!this.page);
         if (this.page) {
             this.page.loading = value;
         }

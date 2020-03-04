@@ -1,20 +1,21 @@
 import { EventData, Observable } from '@nativescript/core/data/observable';
 import * as appSettings from '@nativescript/core/application-settings';
-import { android as androidApp, ApplicationEventData, exitEvent, launchEvent, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from '@nativescript/core/application';
+import { ApplicationEventData, android as androidApp, off as applicationOff, on as applicationOn, exitEvent, launchEvent, resumeEvent, suspendEvent } from '@nativescript/core/application';
 import { Accuracy } from '@nativescript/core/ui/enums/enums';
 import { isAndroid } from '@nativescript/core/platform';
 import { confirm } from 'nativescript-material-dialogs';
 import { localize } from 'nativescript-localize';
-import { clog, DEV_LOG } from '~/utils/logging';
+import { DEV_LOG, clog } from '~/utils/logging';
 
-import { GeoLocation, GPS, Options as GeolocationOptions, setMockEnabled } from 'nativescript-gps';
+import { GPS, GenericGeoLocation, Options as GeolocationOptions, setMockEnabled } from 'nativescript-gps';
+import { DefaultLatLonKeys } from 'nativescript-carto/core';
 let geolocation: GPS;
 
-export let desiredAccuracy = isAndroid ? Accuracy.high : kCLLocationAccuracyBestForNavigation;
-export let updateDistance = 1;
-export let maximumAge = 3000;
-export let timeout = 20000;
-export let minimumUpdateTime = 1000; // Should update every 1 second according ;
+export const desiredAccuracy = isAndroid ? Accuracy.high : kCLLocationAccuracyBestForNavigation;
+export const updateDistance = 1;
+export const maximumAge = 3000;
+export const timeout = 20000;
+export const minimumUpdateTime = 1000; // Should update every 1 second according ;
 
 setMockEnabled(true);
 
@@ -39,7 +40,7 @@ export enum SessionState {
     PAUSED = 'paused'
 }
 
-export type GeoLocation = GeoLocation;
+export type GeoLocation = GenericGeoLocation<DefaultLatLonKeys>;
 
 export const SessionStateEvent = 'sessionState';
 export const SessionChronoEvent = 'sessionChrono';
@@ -190,7 +191,7 @@ export class GeoHandler extends Observable {
 
     askToEnableIfNotEnabled() {
         if (geolocation.isEnabled()) {
-            return Promise.resolve();
+            return Promise.resolve(true);
         } else {
             return confirm({
                 // title: localize('stop_session'),
@@ -210,18 +211,16 @@ export class GeoHandler extends Observable {
     }
     checkEnabledAndAuthorized(always = true) {
         return Promise.resolve()
-            .then(() => {
-                return geolocation.isAuthorized().then(r => {
+            .then(() =>
+                geolocation.isAuthorized().then(r => {
                     if (!r) {
                         return geolocation.authorize(always);
                     } else {
                         return r;
                     }
-                });
-            })
-            .then(didAuthorize => {
-                return this.askToEnableIfNotEnabled();
-            })
+                })
+            )
+            .then(didAuthorize => this.askToEnableIfNotEnabled())
             .catch(err => {
                 if (err && /denied/i.test(err.message)) {
                     confirm({
@@ -287,7 +286,7 @@ export class GeoHandler extends Observable {
 
     onDeferred = () => {
         this._deferringUpdates = false;
-    }
+    };
     onLocation = (loc: GeoLocation, manager?: any) => {
         // this.log('Received location: ', loc);
         if (loc) {
@@ -302,13 +301,13 @@ export class GeoHandler extends Observable {
             this._deferringUpdates = true;
             manager.allowDeferredLocationUpdatesUntilTraveledTimeout(0, 10);
         }
-    }
+    };
     onLocationError = (err: Error) => {
         if (TEST_LOGS) {
             this.log(' location error: ', err);
         }
         this.currentWatcher && this.currentWatcher(err);
-    }
+    };
     startWatch(onLoc: Function) {
         this.currentWatcher = onLoc;
         const options: GeolocationOptions = { desiredAccuracy, minimumUpdateTime, onDeferred: this.onDeferred };
@@ -492,7 +491,7 @@ export class GeoHandler extends Observable {
             }
             this.updateSessionWithLoc(loc);
         }
-    }
+    };
 
     waitingForLocation() {
         return this.currentSession && this.currentSession.lastLoc === null;

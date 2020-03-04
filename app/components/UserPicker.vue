@@ -4,7 +4,7 @@
             <GridLayout>
                 <GridLayout class="pageContent" rows="auto,*">
                     <StackLayout class="flatCardView"  orientation="horizontal" height="50" margin="10">
-                        <MDButton variant="flat" color="gray" class="icon-themed-btn" :text="'mdi-close' | fonticon" @tap="close()" />
+                        <MDButton variant="flat" color="gray" class="icon-themed-btn" text="mdi-close" @tap="close()" />
                         <MDTextField width="100%" class="input" floating="false" fontSize="17" variant="none" ref="textField" color="black" height="50" verticalAlignment="center" @focus="onFocus" @blur="onBlur" @textChange="onTextChange" paddingRight="5" @loaded="onTFLoaded" />
                     </StackLayout>
                     <CollectionView row="1" :items="dataItems" rowHeight="70">

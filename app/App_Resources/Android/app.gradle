@@ -1,5 +1,3 @@
-project.ext.androidXMaterial = "1.1.0-beta01"
-
 android { 
   defaultConfig {  
     compileSdkVersion 28

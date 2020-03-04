@@ -10,7 +10,7 @@ import Vue, { NativeScriptVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
 import { clog } from '~/utils/logging';
-import { accentColor, darkColor, primaryColor } from '../variables';
+import { accentColor, cairnFontFamily, darkColor, primaryColor } from '../variables';
 import { bind } from 'helpful-decorators';
 
 export interface BaseVueComponentRefs {
@@ -27,6 +27,7 @@ export default class BaseVueComponent extends Vue {
     public darkColor;
     @Prop({ type: String, default: accentColor })
     public accentColor;
+    public cairnFontFamily = cairnFontFamily;
     // public actionBarHeight = actionBarHeight;
     needsRoundedWatchesHandle = false;
     debug = false;

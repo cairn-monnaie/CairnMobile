@@ -3,19 +3,13 @@
 @import '~nativescript-vue-fab/style';
 
 .lato {
-    font-family: 'Lato', 'Lato Regular', 'res/lato';
+    font-family: $lato-fontFamily;
 }
 .mdi {
-    font-family: 'Material Design Icons', 'materialdesignicons-webfont';
+    font-family: $mdi-fontFamily;
 }
-
 .cairn {
-    font-family: 'cairn';
-}
-
-actionbar {
-    background-color: $dark-color;
-    color: white;
+    font-family: $cairn-fontFamily;
 }
 
 htmllabel,
@@ -217,6 +211,7 @@ tabview {
 
 .menuIcon {
     @extend .mdi;
+    backgroundColor:red;
     color: #757575;
     text-align: center;
     font-size: 24;

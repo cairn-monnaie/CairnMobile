@@ -123,7 +123,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         });
         gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
         gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
-        // this.log('mounted2', !!this.scrollingView, !!gestureHandler);
+        this.log('mounted2', !!this.scrollingView, !!gestureHandler);
         gestureHandler.attachToView(this.scrollingView);
         this.panGestureHandler = gestureHandler as any;
     }

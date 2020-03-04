@@ -8,7 +8,7 @@
                 <slot name="actionBarRightButtons" slot="rightButtons" />
                 <slot name="actionBarSubView" slot="subView" />
             </CActionBar>
-            <MDActivityIndicator v-show="loading" row="1" busy verticalAlignment="center" horizontalAlignment="center" />
+            <MDActivityIndicator v-show="loading" row="1" :busy={loading} verticalAlignment="center" horizontalAlignment="center" />
         </GridLayout>
     </Page>
 </template>

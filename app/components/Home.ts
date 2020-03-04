@@ -50,8 +50,8 @@ export default class Home extends PageComponent {
             }
         });
     }
-    onItemTap(args: ItemEventData) {
-        const accountInfo = this.accounts.getItem(args.index);
+    onItemTap(accountInfo: AccountInfo) {
+        // const accountInfo = this.accounts.getItem(args.index);
         // console.log("onItemTap", args.index, JSON.stringify(accountInfo))
         this.navigateTo(AccountHistory, {
             props: {

@@ -283,7 +283,7 @@ export class NetworkService extends Observable {
     }
     request(requestParams: HttpRequestOptions, retry = 0) {
         if (!this.connected) {
-            throw new NoNetworkError();
+            return Promise.reject( new NoNetworkError());
         }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
@@ -347,10 +347,14 @@ export class NetworkService extends Observable {
                     return this.handleRequestRetry(requestParams, retry);
                 }
                 const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                this.log('throwing http error', error.code || statusCode, error.error_description || error.form || error.message || error.error || error);
+                let message = error.error_description || error.form || error.message || error.error || error;
+                if (error.exception && error.exception.length > 0) {
+                    message += ': ' + error.exception[0].message;
+                }
+                this.log('throwing http error', error.code || statusCode, message);
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
-                    message: error.error_description || error.form || error.message || error.error || error,
+                    message,
                     requestParams
                 });
             }

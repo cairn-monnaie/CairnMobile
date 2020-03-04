@@ -7,8 +7,8 @@ import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from '
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 
-const clientId = '1_hn56osm3wkoosc44ko8ocok084ggcwg04ks0c0so8osoks00o';
-const clientSecret = 'j2jd6u6eq348gcgwo4s4ockw8w448o00kg8k00kkw0go8g480';
+const clientId = '1_6bls5acjmqw4s8gcc4gkks0o08kkcs48wg80ww084gs0oss88g';
+const clientSecret = '1qcjmijp7uckw4cs8w80o0s48kcwoo0oscc48wsk00cocswogg';
 const authority = 'https://test.cairn-monnaie.com';
 const tokenEndpoint = '/oauth/tokens';
 

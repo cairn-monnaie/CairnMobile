@@ -2,7 +2,7 @@
     <CairnPage @navigatedTo="onLoaded" :actionBarShowLogo="false">
         <GridLayout slot="actionBarSubView" marginTop="20" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="auto,*" rows="auto">
             <MDTextField col="1" backgroundColor="#15000000" placeholderColor="white" strokeColor="white" color="white" class="input" fontSize="40" :hint="$t('amount') | capitalize" keyboardType="number" :text="amountStr" :error="amountError" @loaded="onAmountTFLoaded" @textChange="validateAmount" />
-            <Label col="0" class="cairn" :text="'cairn-currency' | fonticon" fontSize="42" color="white" verticalAlignment="bottom" paddingBottom="22" />
+            <Label col="0" class="cairn" text="cairn-currency" fontSize="42" color="white" verticalAlignment="bottom" paddingBottom="22" />
         </GridLayout>
         <GridLayout rows="*,auto">
             <ScrollView row="0">

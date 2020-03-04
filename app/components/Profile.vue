@@ -1,11 +1,11 @@
 <template>
     <CairnPage @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
         <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" v-if="editable">
-            <MDButton variant="flat" v-show="canSave" class="icon-btn" :text="'mdi-content-save' | fonticon" @tap="saveProfile()" />
-            <MDButton variant="flat" class="icon-btn" :text="editing? 'mdi-close-circle' : 'mdi-pencil' | fonticon" @tap="switchEditing()" />
+            <MDButton variant="flat" v-show="canSave" class="icon-btn" text="mdi-content-save" @tap="saveProfile()" />
+            <MDButton variant="flat" class="icon-btn" :text="editing? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
         </StackLayout>
         <GridLayout slot="actionBarSubView" height="150" col="0" colSpan="3" verticalAlignment="top" rows="*,3*,*,*">
-            <Label row="1" horizontalAlignment="center" verticalTextAlignment="center" textAlignment="center" class="mdi" width="75" borderRadius="75" borderWidth="2" color="white" borderColor="white" fontSize="60" :text="'mdi-account' | fonticon" v-show="!image" @tap="chooseImage" :isUserInteractionEnabled="editing" />
+            <Label row="1" horizontalAlignment="center" verticalTextAlignment="center" textAlignment="center" class="mdi" width="75" borderRadius="75" borderWidth="2" color="white" borderColor="white" fontSize="60" text="mdi-account" v-show="!image" @tap="chooseImage" :isUserInteractionEnabled="editing" />
             <NSImg row="0" rowSpan="2" width="150" height="140" marginTop="10" horizontalAlignment="center" verticalAlignment="center" v-show="!!image" :src="image" @tap="chooseImage" :isUserInteractionEnabled="editing" stretch="aspectFit" />
             <Label row="2" rowSpan="2" fontSize="20" fontWeight="500" horizontalAlignment="center" verticalAlignment="center" color="white" :text="userProfile.name" />
         </GridLayout>

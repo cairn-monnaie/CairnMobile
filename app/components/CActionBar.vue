@@ -8,7 +8,7 @@
         </StackLayout>
         <ContentView col="1" colSpan="2" :height="height">
             <slot name="title">
-                <Label v-if="!!showLogo && !title" class="cairn" :fontSize="Math.min(height, 200)" color="white" :text="'cairn-full_logo' | fonticon" verticalAlignment="center" @tap="$emit('titleTap', $event)" />
+                <Label v-if="!!showLogo && !title" class="cairn" :fontSize="Math.min(height, 200)" color="white" text="cairn-full_logo" verticalAlignment="center" @tap="$emit('titleTap', $event)" />
             </slot>
         </ContentView>
         <slot row="1" colSpan="3" name="subView" />
@@ -17,7 +17,7 @@
             <slot name="rightButtons" />
         </StackLayout>
         <StackLayout col="0" verticalAlignment="top" :height="height" orientation="horizontal">
-            <MDButton verticalAlignment="center" rippleColor="white" variant="flat" v-show="menuIconVisible" class="icon-btn" :text="menuIcon | fonticon" @tap="onMenuIcon" />
+            <MDButton verticalAlignment="center" rippleColor="white" variant="flat" v-show="menuIconVisible" class="icon-btn" :text="menuIcon" @tap="onMenuIcon" />
         </StackLayout>
         <!-- <StackLayout col="2" orientation="horizontal"> -->
         <!-- </StackLayout> -->
