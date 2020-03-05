@@ -6,7 +6,10 @@
     "nativescript": {
         "id": "com.akylas.cairnmobile",
         "tns-ios": {
-            "version": "6.3.0"
+            "version": "6.5.0-beta.2-v8-2020-02-24-132159-02"
+        },
+        "tns-android": {
+            "version": "6.4.1"
         }
     },
     "author": "Martin Guillon<martin.guillon@akylas.fr>",
@@ -34,19 +37,19 @@
         "nativescript-extendedinfo": "~1.0.7",
         "nativescript-gesturehandler": "0.1.6",
         "nativescript-gps": "^2.0.14",
-        "nativescript-htmllabel": "1.0.23",
+        "nativescript-htmllabel": "1.0.25",
         "nativescript-http-formdata": "^2.1.0",
         "nativescript-image": "^3.0.1",
         "nativescript-imagepicker": "^7.1.0",
         "nativescript-iqkeyboardmanager": "^1.5.1",
         "nativescript-localize": "~4.2.1",
-        "nativescript-material-activityindicator": "^3.1.10",
-        "nativescript-material-bottomsheet": "^3.1.10",
-        "nativescript-material-button": "^3.1.10",
-        "nativescript-material-dialogs": "^3.1.10",
-        "nativescript-material-progress": "^3.1.10",
-        "nativescript-material-slider": "^3.1.10",
-        "nativescript-material-snackbar": "^3.1.10",
+        "nativescript-material-activityindicator": "^3.1.11",
+        "nativescript-material-bottomsheet": "^3.1.11",
+        "nativescript-material-button": "^3.1.11",
+        "nativescript-material-dialogs": "^3.1.11",
+        "nativescript-material-progress": "^3.1.11",
+        "nativescript-material-slider": "^3.1.11",
+        "nativescript-material-snackbar": "^3.1.11",
         "nativescript-perms": "^2.0.3",
         "nativescript-photoviewer": "^2.1.5",
         "nativescript-secure-storage": "^2.6.0",
