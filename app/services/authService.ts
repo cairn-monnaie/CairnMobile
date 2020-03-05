@@ -6,6 +6,7 @@ import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService'
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
 
 const clientId = '1_6bls5acjmqw4s8gcc4gkks0o08kkcs48wg80ww084gs0oss88g';
 const clientSecret = '1qcjmijp7uckw4cs8w80o0s48kcwoo0oscc48wsk00cocswogg';
@@ -117,7 +118,7 @@ export class AccountInfo {
 export interface UserProfile extends User {}
 
 export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
-    image?: ImageAsset;
+    image?: ImageAsset| ImageSource;
 }
 
 export interface Benificiary {
@@ -190,29 +191,46 @@ export interface Transaction {
     debitorName: string;
 }
 
-function getImageData(asset: ImageAsset): Promise<any> {
+function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
     return new Promise((resolve, reject) => {
-        asset.getImageAsync((image, error) => {
-            if (error) {
-                return reject(error);
-            }
-            let imageData: any;
-            if (image) {
-                if (image.ios) {
-                    imageData = UIImagePNGRepresentation(image);
-                } else {
-                    // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
-                    const bitmapImage: android.graphics.Bitmap = image;
-                    const stream = new java.io.ByteArrayOutputStream();
-                    bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
-                    const byteArray = stream.toByteArray();
-                    bitmapImage.recycle();
-
-                    imageData = byteArray;
+        if (asset instanceof ImageAsset) {
+            asset.getImageAsync((image, error) => {
+                if (error) {
+                    return reject(error);
                 }
+                let imageData: any;
+                if (image) {
+                    if (gVars.isIOS) {
+                        imageData = UIImagePNGRepresentation(image);
+                    } else {
+                        // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
+                        const bitmapImage: android.graphics.Bitmap = image;
+                        const stream = new java.io.ByteArrayOutputStream();
+                        bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
+                        const byteArray = stream.toByteArray();
+                        bitmapImage.recycle();
+
+                        imageData = byteArray;
+                    }
+                }
+                resolve(imageData);
+            });
+        } else {
+            let imageData: any;
+            if (gVars.isIOS) {
+                imageData = UIImagePNGRepresentation(asset.ios);
+            } else {
+                // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
+                const bitmapImage: android.graphics.Bitmap = asset.android;
+                const stream = new java.io.ByteArrayOutputStream();
+                bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
+                const byteArray = stream.toByteArray();
+                bitmapImage.recycle();
+
+                imageData = byteArray;
             }
             resolve(imageData);
-        });
+        }
     });
 }
 function flatten(arr) {
@@ -225,7 +243,7 @@ function getFormData(actualData, prefix?: string) {
         Object.keys(actualData).map(k => {
             const value = actualData[k];
             if (!!value) {
-                if (value instanceof ImageAsset) {
+                if (value instanceof ImageAsset || value instanceof ImageSource) {
                     return getImageData(value).then(data => ({
                         data,
                         contentType: 'image/jpeg',
@@ -348,13 +366,16 @@ export default class AuthService extends NetworkService {
             url: authority + '/mobile/accounts.json',
             method: 'GET'
         }).then(r => {
-            const result = r.map(a => ({
-                balance: parseFloat(a.status.balance),
-                creditLimit: parseFloat(a.status.creditLimit),
-                number: a.number,
-                id: a.id,
-                name: a.type.name
-            } as AccountInfo)) as AccountInfo[];
+            const result = r.map(
+                a =>
+                    ({
+                        balance: parseFloat(a.status.balance),
+                        creditLimit: parseFloat(a.status.creditLimit),
+                        number: a.number,
+                        id: a.id,
+                        name: a.type.name
+                    } as AccountInfo)
+            ) as AccountInfo[];
             this.notify({
                 eventName: AccountInfoEvent,
                 object: this,
@@ -367,10 +388,12 @@ export default class AuthService extends NetworkService {
         return this.request({
             url: authority + '/mobile/beneficiaries',
             method: 'GET'
-        }).then(r => r.map(b => {
-            b.user = cleanupUser(b.user);
-            return b;
-        }));
+        }).then(r =>
+            r.map(b => {
+                b.user = cleanupUser(b.user);
+                return b;
+            })
+        );
     }
     getUsers(): Promise<User[]> {
         return this.request({
@@ -416,15 +439,17 @@ export default class AuthService extends NetworkService {
     }
     getUserForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
-        return this.getUsers().then(r => r.filter(u => {
-            // console.log('getUserForMap', 'filter', u.address);
-            if (!!u.address && !!u.address.latitude) {
-                const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
-                // console.log('getUserForMap', 'contains', result);
-                return result;
-            }
-            return false;
-        }));
+        return this.getUsers().then(r =>
+            r.filter(u => {
+                // console.log('getUserForMap', 'filter', u.address);
+                if (!!u.address && !!u.address.latitude) {
+                    const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
+                    // console.log('getUserForMap', 'contains', result);
+                    return result;
+                }
+                return false;
+            })
+        );
     }
     getAccountHistory(account: AccountInfo): Promise<Transaction[]> {
         return this.request({
@@ -443,12 +468,14 @@ export default class AuthService extends NetworkService {
                 orderBy: 'ASC'
             }),
             method: 'POST'
-        }).then(r => r.map(t => {
-            // t.submissionDate = t.submissionDate.timestamp * 1000;
-            // t.executionDate = t.executionDate.timestamp * 1000;
-            t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
-            return t as Transaction;
-        }));
+        }).then(r =>
+            r.map(t => {
+                // t.submissionDate = t.submissionDate.timestamp * 1000;
+                // t.executionDate = t.executionDate.timestamp * 1000;
+                t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
+                return t as Transaction;
+            })
+        );
     }
     fakeSMSPayment(sender: string, message: string) {
         return this.request({

@@ -6,6 +6,8 @@ import PageComponent from './PageComponent';
 import * as imagepicker from 'nativescript-imagepicker';
 import * as perms from 'nativescript-perms';
 import { confirm, prompt } from 'nativescript-material-dialogs';
+import { ImageAsset } from '@nativescript/core/image-asset/image-asset';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
 
 @Component({})
 export default class Profile extends PageComponent {
@@ -16,7 +18,7 @@ export default class Profile extends PageComponent {
     userProfile: UserProfile = null;
     updateUserProfile: UpdateUserProfile = null;
 
-    image: string = null;
+    image: string | ImageAsset | ImageSource = null;
     get canSave() {
         return !!this.updateUserProfile && Object.keys(this.updateUserProfile).length > 0;
     }
@@ -126,18 +128,28 @@ export default class Profile extends PageComponent {
 
     chooseImage() {
         console.log('chooseImage');
-        const context = imagepicker.create({
-            mode: 'single' // use "multiple" for multiple selection
-        });
+
         perms
             .request('storage')
-            .then(() => context.present())
+            .then(() =>
+                imagepicker
+                    .create({
+                        mode: 'single' // use "multiple" for multiple selection
+                    })
+                    .present()
+            )
             .then(selection => {
                 if (selection.length > 0) {
-                    this.updateUserProfile = this.updateUserProfile || {};
-                    this.updateUserProfile.image = selection[0];
-                    this.image = selection[0].android || selection[0].ios;
-                    console.log('got image', selection[0]);
+                    return new Promise((resolve, reject) => {
+                        selection[0].getImageAsync((image, error) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                this.updateUserProfile = this.updateUserProfile || {};
+                                this.updateUserProfile.image = this.image = new ImageSource(image);
+                            }
+                        });
+                    });
                 }
             })
             .catch(this.showError);
