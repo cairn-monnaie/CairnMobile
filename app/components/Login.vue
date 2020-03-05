@@ -34,7 +34,6 @@
     margin-top: 30;
     margin-left: 30;
     margin-right: 30;
-    flex-grow: 2;
     vertical-align: center;
 }
 
