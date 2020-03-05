@@ -39,14 +39,17 @@ export default class Login extends PageComponent {
     }
     animateLogoView() {
         // const view = this.getRef('logoView');
-        new TWEEN.Tween({ height: logoViewHeight })
-            .to({ height: 200 }, 1000)
-            .easing(TWEEN.Easing.Elastic.Out)
-            .onUpdate(object => {
-                this.logoViewHeight = object.height;
-                // Object.assign(view.style, object)
-            })
-            .start();
+        return new Promise(resolve => {
+            new TWEEN.Tween({ height: logoViewHeight })
+                .to({ height: 200 }, 1000)
+                .easing(TWEEN.Easing.Elastic.Out)
+                .onComplete(resolve)
+                .onUpdate(object => {
+                    this.logoViewHeight = object.height;
+                    // Object.assign(view.style, object)
+                })
+                .start();
+        }).catch(this.showError);
     }
     animateLogoViewOut() {
         // const view = this.getRef('logoView');
@@ -60,7 +63,7 @@ export default class Login extends PageComponent {
                     // Object.assign(view.style, object)
                 })
                 .start();
-        });
+        }).catch(this.showError);
     }
     toggleForm() {
         this.isLoggingIn = !this.isLoggingIn;

@@ -133,6 +133,7 @@ export default class App extends BaseVueComponent {
     get drawerOptions() {
         if (this.currentlyLoggedIn) {
             return {
+                enabled:true,
                 // debug:true,
                 // top: {
                 //     height: '100%',
@@ -151,6 +152,7 @@ export default class App extends BaseVueComponent {
         } else {
             return {
                 left: {
+                    enabled:false,
                     swipeOpenTriggerWidth: 0
                 }
             };

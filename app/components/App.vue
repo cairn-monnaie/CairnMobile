@@ -33,25 +33,6 @@
                     <Home v-if="loggedInOnStart" />
                     <Login v-else />
                 </Frame>
-
-            <!-- <GridLayout rows="*, auto" iosOverflowSafeArea="true">
-                    <TabView row="0" :selectedIndex="selectedTabIndex" androidTabsPosition="bottom" ref="tabView" class="mdi">
-                        <TabViewItem :title="$t('home') | capitalize">
-                            <Frame>
-                                <Home />
-                            </Frame>
-                        </TabViewItem>
-                        <TabViewItem :title="$t('profile') | capitalize ">
-                            <Frame>
-                                <Profile />
-                            </Frame>
-                        </TabViewItem>
-                    </TabView>
-                    <!-- <BottomNavigation ref="bottomNavigation" row="1" @tabSelected="onBottomNavigationTabSelected">
-                        <BottomNavigationTab :title="$t('home') | capitalize" icon="logo" />
-                        <BottomNavigationTab :title="$t('profile') | capitalize " icon="logo" />
-                    </BottomNavigation> -->
-            </GridLayout> -->
         </MultiDrawer>
     </Page>
 </template>
