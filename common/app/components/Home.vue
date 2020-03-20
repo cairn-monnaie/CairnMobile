@@ -1,5 +1,5 @@
 <template>
-    <CairnPage @navigatedTo="onNavigatedTo" showMenuIcon>
+    <CairnPage @navigatedTo="onNavigatedTo" showMenuIcon @loaded="onLoaded">
         <GridLayout columns="*,50,*" rows="*,50,*">
             <PullToRefresh col="0" row="0" colSpan="3" rowSpan="3" @refresh="refresh">
                 <CollectionView :items="accounts" rowHeight="180">

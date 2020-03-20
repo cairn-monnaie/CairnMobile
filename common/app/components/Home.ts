@@ -23,15 +23,38 @@ export default class Home extends PageComponent {
         super.mounted();
         // this.$on('navigatedTo', this.onNavigatedTo)
         this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
+        if (this.$securityService.biometricEnabled) {
+            if (this.$securityService.shouldReAuth()) {
+                this.$authService.logout();
+                this.$alert(this.$t('loggedout_due_to_fingerprint_change'));
+            }
+        }
     }
     destroyed() {
         super.destroyed();
         this.$authService.off(AccountInfoEvent, this.onAccountsData, this);
     }
 
+    onLoaded() {}
+
     onNavigatedTo(args: NavigatedData) {
         if (!args.isBackNavigation && this.$authService.isLoggedIn()) {
             this.refresh();
+        }
+        const loggedInOnStart = this.$authService.isLoggedIn();
+        this.log('onLoaded', loggedInOnStart, this.$securityService.passcodeSet());
+        if (loggedInOnStart) {
+            if (!this.$securityService.passcodeSet()) {
+                this.$securityService.createPasscode(this).catch(err => {
+                    this.showError(err);
+                    this.$authService.logout();
+                });
+                // } else {
+                //     this.$securityService.shouldReAuth().then(r => {
+                //         this.$authService.logout();
+                //         this.$alert(this.$t('fingerprint_changed_logout'));
+                //     });
+            }
         }
     }
     onItemLoading(args) {
@@ -90,7 +113,7 @@ export default class Home extends PageComponent {
     openTransferWindow() {
         this.navigateTo(TransferWindow, {
             props: {
-                modal: true
+                // modal: true
             }
             // fullscreen: true
         });
@@ -100,7 +123,7 @@ export default class Home extends PageComponent {
             .then((r: User) => {
                 console.log('addBeneficiary done');
                 if (r) {
-                    this.showLoading('working');
+                    this.showLoading(this.$t('loading'));
                     return this.$authService.addBeneficiary(r.email).then(() => {
                         this.hideLoading();
                         showSnack({

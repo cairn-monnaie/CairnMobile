@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import AuthService from '~/services/AuthService';
+import SecurityService from '~/services/SecurityService';
 // import { ToastDuration, ToastPosition } from 'nativescript-toasty';
 import { Client } from 'nativescript-bugsnag';
 import App from '~/components/App';
@@ -9,6 +10,7 @@ declare module 'vue/types/vue' {
     // 3. Declare augmentation for Vue
     interface Vue {
         $authService: AuthService;
+        $securityService: SecurityService;
         $sentry: typeof Sentry;
 
         $isAndroid: boolean;

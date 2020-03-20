@@ -2,13 +2,15 @@
 import { Observable } from '@nativescript/core/data/observable';
 import { FingerprintAuth } from 'nativescript-fingerprint-auth';
 import { booleanProperty, stringProperty } from './BackendService';
+import NativeScriptVue from 'nativescript-vue';
+import PasscodeWindow from '~/components/PasscodeWindow';
 /**
  * Parent service class. Has common configs and methods.
  */
 export default class SecurityService extends Observable {
     private fingerprintAuth = new FingerprintAuth();
-    // @stringProperty storedPassword: string;
-    @booleanProperty enabled: boolean;
+    @stringProperty storedPassword: string;
+    @booleanProperty biometricEnabled: boolean;
     available() {
         return this.fingerprintAuth.available().then(r => {
             if (!r.touch || !r.face) {
@@ -17,11 +19,50 @@ export default class SecurityService extends Observable {
             return true;
         });
     }
+    clear() {
+        this.storedPassword = null;
+        this.biometricEnabled = false;
+    }
+    passcodeSet() {
+        return !!this.storedPassword;
+    }
+    createPasscode(parent: NativeScriptVue) {
+        return (
+            parent
+                .$showModal(PasscodeWindow, {
+                    fullscreen: true,
+                    // animated: false,
+                    props: {
+                        creation: true
+                    }
+                })
+                // .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
+                .then((r: string) => {
+                    // console.log('test createPasscode', r);
+                    this.storedPassword = r;
+                    // console.log('test createPasscode done ', this.storedPassword);
+                })
+        );
+    }
     shouldReAuth() {
-        if (!this.enabled) {
+        if (this.biometricEnabled !== true) {
             return Promise.resolve(false);
         }
         return this.fingerprintAuth.didFingerprintDatabaseChange().then(changed => !changed);
+    }
+    validateSecurity(parent: NativeScriptVue) {
+        if (this.biometricEnabled) {
+            return this.verifyFingerprint();
+        } else {
+            return (
+                parent
+                    .$showModal(PasscodeWindow, {
+                        fullscreen: true
+                    })
+                    // .then(() => )
+                    .then((r: string) => this.storedPassword === r)
+            );
+        }
     }
     verifyFingerprint() {
         return this.fingerprintAuth

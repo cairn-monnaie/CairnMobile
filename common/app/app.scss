@@ -67,7 +67,7 @@ mdbutton[variant='contained'] {
 }
 
 mdtextfield[variant='filled'] {
-    background-color: #15000000;
+    // background-color: #15000000;
 }
 
 mdtextfield {
@@ -104,7 +104,7 @@ mdtextfield {
 }
 .flatCardView {
     border-radius: 2;
-    elevation: 2;
+    elevation: 1;
     background-color: white;
 }
 
@@ -181,9 +181,9 @@ tabview {
     background-color: transparent;
     ripple-color: white;
     color: white;
-    width: 44;
-    height: 44;
-    border-radius: 22;
+    width: $navigation-bar-height;
+    height: $navigation-bar-height;
+    border-radius: $navigation-bar-height / 2;
     font-size: 24;
     margin: 0;
     padding: 0;

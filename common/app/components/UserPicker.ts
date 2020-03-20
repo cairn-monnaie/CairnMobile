@@ -56,7 +56,6 @@ export default class UserPicker extends PageComponent {
     searchUsers(query: string) {
         this.loading = true;
         const regexp = new RegExp(query, 'i');
-        console.log('searchUsers', query, regexp);
         const items = [];
         const addedItemNames = [];
         if (this.beneficiaries) {
@@ -71,7 +70,7 @@ export default class UserPicker extends PageComponent {
             .getUsers()
             .then(r => {
                 r.forEach(user => {
-                    if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.username) === -1) {
+                    if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.name) === -1) {
                         items.push(user);
                     }
                 });

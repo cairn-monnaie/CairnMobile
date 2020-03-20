@@ -146,6 +146,7 @@ module.exports = (env, params = {}) => {
             'gVars.platform': `"${platform}"`,
             'gVars.isIOS': platform === 'ios',
             'gVars.isAndroid': platform === 'android',
+            'gVars.internalApp': false,
             TNS_ENV: JSON.stringify(mode),
             'gVars.sentry': !!sentry,
             SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
@@ -357,6 +358,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                         {
                             loader: resolve(__dirname, 'node_modules', 'sass-loader'),
                             options: {
+                                sourceMap: false,
                                 prependData: scssPrepend
                             }
                         }
@@ -377,6 +379,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                         {
                             loader: resolve(__dirname, 'node_modules', 'sass-loader'),
                             options: {
+                                sourceMap: false,
                                 prependData: scssPrepend
                             }
                         }

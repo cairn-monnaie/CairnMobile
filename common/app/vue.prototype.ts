@@ -67,8 +67,8 @@ const Plugin = {
         }
         Vue.prototype.$tu = $tu;
         Vue.prototype.$showError = function showError(err: Error) {
-            clog('$showError', err, err.constructor.name, Object.keys(err), Object.getOwnPropertyNames(err));
             const message = typeof err === 'string' ? err : err.message || err.toString();
+            clog('$showError', err, err.constructor.name, Object.keys(err), Object.getOwnPropertyNames(err), message);
             const label = new HTMLLabel();
             label.style.padding = '0 20 20 20';
             // label.style.backgroundColor = new Color(255, 255,0,0);

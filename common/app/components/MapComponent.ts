@@ -3,11 +3,11 @@ import { Point, PointStyleBuilder } from 'nativescript-carto/vectorelements/poin
 import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
 import { LocalVectorDataSource } from 'nativescript-carto/datasources/vector';
 import { RasterTileLayer } from 'nativescript-carto/layers/raster';
-import { VectorLayer } from 'nativescript-carto/layers/vector';
+import { VectorElementEventData, VectorLayer } from 'nativescript-carto/layers/vector';
 import { Projection } from 'nativescript-carto/projections';
 import { CartoMap } from 'nativescript-carto/ui';
 import { Line, LineEndType, LineJointType, LineStyleBuilder } from 'nativescript-carto/vectorelements/line';
-import { MapPosVector, toNativeScreenPos } from 'nativescript-carto/core';
+import { DefaultLatLonKeys, MapPosVector, toNativeScreenPos } from 'nativescript-carto/core';
 import { Polygon, PolygonStyleBuilder } from 'nativescript-carto/vectorelements/polygon';
 import * as appSettings from '@nativescript/core/application-settings';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
@@ -93,7 +93,7 @@ export default class MapComponent extends BaseVueComponent {
         this.mapProjection = cartoMap.projection;
 
         const options = cartoMap.getOptions();
-        options.setWatermarkScale(0.5);
+        options.setWatermarkScale(0);
         // options.setWatermarkPadding(toNativeScreenPos({ x: 80, y: 0 }));
         options.setRestrictedPanning(true);
         options.setSeamlessPanning(true);
@@ -194,10 +194,19 @@ export default class MapComponent extends BaseVueComponent {
     getOrCreateLocalVectorLayer() {
         if (!this.localVectorLayer && this._cartoMap) {
             this.localVectorLayer = new VectorLayer({ visibleZoomRange: [0, 24], dataSource: this.localVectorDataSource });
+            // this.localVectorLayer.setVectorElementEventListener(null);
+            // this.localVectorLayer.setVectorElementEventListener(this, this.mapProjection);
 
             // always add it at 1 to respect local order
             this._cartoMap.addLayer(this.localVectorLayer);
         }
+    }
+    onVectorElementClicked(data: VectorElementEventData<DefaultLatLonKeys>) {
+        const { clickType, position, elementPos, metaData, element } = data;
+        Object.keys(metaData).forEach(k => {
+            metaData[k] = JSON.parse(metaData[k]);
+        });
+        this.$emit('elementClick', position, metaData);
     }
     updateUserLocation(geoPos: GeoLocation) {
         if (

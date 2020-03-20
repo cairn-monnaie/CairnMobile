@@ -1,5 +1,5 @@
 <template>
-    <CairnPage @navigatedTo="onLoaded" :title="$t('beneficiaries')">
+    <CairnPage @navigatedTo="onNavigatedTo" :title="$t('beneficiaries')">
         <GridLayout rows="*,auto">
             <PullToRefresh @refresh="refresh">
                 <CollectionView :items="dataItems" backgroundColor="transparent" separatorColor="transparent" rowHeight="80">

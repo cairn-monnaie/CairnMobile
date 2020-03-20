@@ -6,7 +6,7 @@
     "nativescript": {
         "id": "com.akylas.cairnmobile",
         "tns-ios": {
-            "version": "7.0.0-beta.3-v8-2020-03-09-151530-02"
+            "version": "6.4.1"
         },
         "tns-android": {
             "version": "6.4.1"
@@ -20,11 +20,12 @@
     },
     "dependencies": {
         "@mdi/font": "^4.9.95",
-        "@nativescript/core": "6.4.2",
+        "@nativescript/core": "6.5.0",
         "@nstudio/nativescript-pulltorefresh": "^1.1.1",
-        "dayjs": "^1.8.21",
+        "dayjs": "^1.8.23",
         "duration": "^0.2.2",
         "geojson": "^0.5.0",
+        "hash.js": "^1.1.7",
         "helpful-decorators": "^2.0.6",
         "make-error": "1.3.6",
         "nativescript-akylas-fonticon": "~2.0.7",
@@ -33,7 +34,7 @@
         "nativescript-barcodescanner": "^3.4.2",
         "nativescript-bugsnag": "^1.0.15",
         "nativescript-carto": "^1.2.37",
-        "nativescript-collectionview": "^2.0.12",
+        "nativescript-collectionview": "^2.0.13",
         "nativescript-email": "^1.6.0",
         "nativescript-extendedinfo": "~1.0.7",
         "nativescript-fingerprint-auth": "^7.0.2",
@@ -45,13 +46,14 @@
         "nativescript-imagepicker": "^7.1.0",
         "nativescript-iqkeyboardmanager": "^1.5.1",
         "nativescript-localize": "~4.2.1",
-        "nativescript-material-activityindicator": "^3.1.11",
-        "nativescript-material-bottomsheet": "^3.1.11",
-        "nativescript-material-button": "^3.1.11",
-        "nativescript-material-dialogs": "^3.1.11",
-        "nativescript-material-progress": "^3.1.11",
-        "nativescript-material-slider": "^3.1.11",
-        "nativescript-material-snackbar": "^3.1.11",
+        "nativescript-material-activityindicator": "^3.1.12",
+        "nativescript-material-bottomsheet": "^3.1.12",
+        "nativescript-material-button": "^3.1.13",
+        "nativescript-material-dialogs": "^3.1.12",
+        "nativescript-material-progress": "^3.1.12",
+        "nativescript-material-slider": "^3.1.12",
+        "nativescript-material-snackbar": "^3.1.12",
+        "nativescript-material-textfield": "^3.1.12",
         "nativescript-perms": "^2.0.3",
         "nativescript-photoviewer": "^2.1.5",
         "nativescript-secure-storage": "^2.6.0",
@@ -66,8 +68,8 @@
     "devDependencies": {
         "@types/tinycolor2": "^1.4.2",
         "@types/tween.js": "^18.5.0",
-        "@typescript-eslint/eslint-plugin": "2.22.0",
-        "@typescript-eslint/parser": "2.22.0",
+        "@typescript-eslint/eslint-plugin": "2.24.0",
+        "@typescript-eslint/parser": "2.24.0",
         "ansi-styles": "^4.2.1",
         "clean-webpack-plugin": "3.0.0",
         "cross-var": "^1.1.0",
@@ -86,9 +88,9 @@
         "tns-platform-declarations": "6.4.2",
         "typescript": "^3.8.3",
         "vue": "^2.6.11",
-        "vue-i18n": "^8.15.4",
-        "vue-loader": "^15.9.0",
-        "vue-property-decorator": "^8.4.0",
+        "vue-i18n": "^8.15.5",
+        "vue-loader": "^15.9.1",
+        "vue-property-decorator": "^8.4.1",
         "webpack": "^4.42.0",
         "webpack-cli": "^3.3.11"
     }

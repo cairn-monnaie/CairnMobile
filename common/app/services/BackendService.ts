@@ -18,7 +18,7 @@ export const stringProperty = (target: Object, key: string | symbol) => {
     // property setter
     const setter = function(newVal) {
         this[innerKey] = newVal;
-        if (newVal === undefined) {
+        if (newVal === undefined || newVal === null) {
             return secureStorage.removeSync({ key: actualkey });
         }
         return secureStorage.setSync({ key: actualkey, value: newVal });

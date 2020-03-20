@@ -1,5 +1,5 @@
 <template>
-    <Page ref="page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)">
+    <Page :id="id" ref="page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)">
         <GridLayout rows="auto,*">
             <GridLayout row="1" class="pageContent">
                 <slot />

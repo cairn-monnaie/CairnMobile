@@ -8,8 +8,9 @@ import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 
-const clientId = '1_6bls5acjmqw4s8gcc4gkks0o08kkcs48wg80ww084gs0oss88g';
-const clientSecret = '1qcjmijp7uckw4cs8w80o0s48kcwoo0oscc48wsk00cocswogg';
+const SHA_SECRET_KEY = 'FuckYouCoronavirus';
+const clientId = '1_1vr46xqj1fmswgw0kkgw0os8okow8wcoow040sws8wsoc4kkk0';
+const clientSecret = '3xh9mdtavh44ws888w88s88osc8cgskokoc0o0cwgocwwsg488';
 const authority = 'https://test.cairn-monnaie.com';
 const tokenEndpoint = '/oauth/tokens';
 
@@ -17,6 +18,31 @@ export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 export const AccountInfoEvent = 'accountinfo';
 export const UserProfileEvent = 'userprofile';
+
+import sha256 from 'hash.js/lib/hash/sha/256';
+
+function sha(text: string | number) {
+    return sha256()
+        .update(SHA_SECRET_KEY + text)
+        .digest('hex');
+}
+
+// const sha256 = require('hash.js');
+// export function sha256(text: string) {
+//     if (gVars.isAndroid) {
+//         const md = java.security.MessageDigest.getInstance('SHA-256');
+//         md.update(new java.lang.String(text).getBytes());
+//         const digest = md.digest();
+//         return android.util.Base64.encodeToString(digest, android.util.Base64.DEFAULT);
+//     } else {
+//         const data = NSString.stringWithString(text).dataUsingEncoding(NSUTF8StringEncoding);
+
+//         unsigned char result[CC_SHA256_DIGEST_LENGTH];
+//         CC_SHA256(data.bytes, data.length, result);
+
+//         return [TiUtils convertToHex:(unsigned char *)&result length:CC_SHA256_DIGEST_LENGTH];
+//     }
+// }
 
 export interface AccountInfoEventData extends EventData {
     data: AccountInfo[];
@@ -31,6 +57,7 @@ export class User {
     // adherent: true = null;
     // admin: false = null;
     mainICC: string = null;
+    autocompleteLabel?: string = null;
     name: string = null;
     creationDate: number = null; // timestamp
     address: Address = null;
@@ -118,7 +145,7 @@ export class AccountInfo {
 export interface UserProfile extends User {}
 
 export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
-    image?: ImageAsset| ImageSource;
+    image?: ImageAsset | ImageSource;
 }
 
 export interface Benificiary {
@@ -292,6 +319,7 @@ export default class AuthService extends NetworkService {
         return this.userProfile.roles.indexOf(Roles.PRO) !== -1;
     }
     handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
+        console.log('handleRequestRetry', retry);
         // refresh token
         if (retry === 2) {
             this.logout();
@@ -303,7 +331,7 @@ export default class AuthService extends NetworkService {
                 })
             );
         }
-        return this.getToken(this.loginParams).then(() => this.request(requestParams, retry++));
+        return this.getToken(this.loginParams).then(() => this.request(requestParams, retry + 1));
     }
     getUserProfile() {
         return this.request({
@@ -411,6 +439,7 @@ export default class AuthService extends NetworkService {
         });
     }
     createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
+        const date = Date.now();
         return this.request({
             url: authority + '/mobile/transaction/request/new-unique.json',
             method: 'POST',
@@ -418,18 +447,22 @@ export default class AuthService extends NetworkService {
                 fromAccount: account.number,
                 toAccount: user.email,
                 amount: amount + '',
-                executionDate: dayjs().format('YYYY-MM-DD'),
+                executionDate: date,
+                // executionDate: dayjs().format('YYYY-MM-DD'),
                 reason,
-                description
+                description,
+                api_secret: sha(date)
             })
         });
     }
-    confirmOperation(oprationId, code: string) {
+    confirmOperation(oprationId, code?: string) {
         return this.request({
             url: authority + `/mobile/transaction/confirm/${oprationId}.json`,
             method: 'POST',
             content: JSON.stringify({
-                save: 'true'
+                save: 'true',
+                confirmationCode: '1111',
+                api_secret: sha(oprationId)
             })
         }).then(r => {
             // we need to refresh accounts
@@ -463,7 +496,8 @@ export default class AuthService extends NetworkService {
                 // maxAmount: '',
                 // keywords: '',
                 types: {
-                    '0': 'DEPOSIT'
+                    '0': 'DEPOSIT',
+                    '1': 'TRANSACTION_EXECUTED'
                 },
                 orderBy: 'ASC'
             }),
