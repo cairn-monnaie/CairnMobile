@@ -24,8 +24,8 @@ const GeoJSON = require('geojson');
 export default class Map extends PageComponent {
     navigateUrl = ComponentIds.Map;
     _cartoMap: CartoMap;
-    _localVectorDataSource: GeoJSONVectorTileDataSource;
-    localVectorLayer: VectorTileLayer;
+    _localVectorTileDataSource: GeoJSONVectorTileDataSource;
+    localVectorTileLayer: VectorTileLayer;
     currentBounds: MapBounds;
     selectedItem: User = null;
 
@@ -104,26 +104,26 @@ export default class Map extends PageComponent {
         }
     }
 
-    get localVectorDataSource() {
-        if (!this._localVectorDataSource && this._cartoMap) {
-            this._localVectorDataSource = new GeoJSONVectorTileDataSource({
+    get localVectorTileDataSource() {
+        if (!this._localVectorTileDataSource && this._cartoMap) {
+            this._localVectorTileDataSource = new GeoJSONVectorTileDataSource({
                 minZoom: 0,
                 maxZoom: 24
             });
-            const result = this._localVectorDataSource.createLayer('cairn');
-            console.log('addLayer', result);
+            const result = this._localVectorTileDataSource.createLayer('cairn');
+            // console.log('addLayer', result);
         }
-        return this._localVectorDataSource;
+        return this._localVectorTileDataSource;
     }
     onElementClick(...args) {
         this.log('onElementClick', args);
     }
     getOrCreateLocalVectorLayer() {
-        if (!this.localVectorLayer && this._cartoMap) {
-            this.localVectorLayer = new VectorTileLayer({
+        if (!this.localVectorTileLayer && this._cartoMap) {
+            this.localVectorTileLayer = new VectorTileLayer({
                 preloading: true,
 
-                dataSource: this.localVectorDataSource,
+                dataSource: this.localVectorTileDataSource,
                 decoder: new MBVectorTileDecoder({
                     style: 'voyager',
                     liveReload: TNS_ENV !== 'production',
@@ -132,10 +132,10 @@ export default class Map extends PageComponent {
             });
 
             // always add it at 1 to respect local order
-            this.localVectorLayer.setVectorTileEventListener(this, this._cartoMap.projection);
-            this._cartoMap.addLayer(this.localVectorLayer);
+            this.localVectorTileLayer.setVectorTileEventListener(this, this._cartoMap.projection);
+            this._cartoMap.addLayer(this.localVectorTileLayer);
         }
-        return this.localVectorLayer;
+        return this.localVectorTileLayer;
     }
     onVectorTileClicked(data: VectorTileEventData) {
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
@@ -176,7 +176,7 @@ export default class Map extends PageComponent {
                     // const feature =  features.getFeature(0);
                     // this.log('refresh result', r.length, geojson, features.getFeatureCount(), feature.properties, fromNativeMapPos(feature.geometry.getCenterPos()));
                     // this.localVectorDataSource.setLayerFeatureCollection(1, projection, features);
-                    this.localVectorDataSource.setLayerGeoJSON(1, geojson);
+                    this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
                 }
 
                 this.loading = false;
@@ -191,7 +191,7 @@ export default class Map extends PageComponent {
         //     this.cartoMap.setZoom(zoomLevel, getCenter(item.zoomBounds.northeast, item.zoomBounds.southwest), 200);
         // } else {
         this.cartoMap.setFocusPos(item.address, 200);
-        this.localVectorLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
+        this.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         // }
         this.bottomSheetHolder.peek();
     }
@@ -199,7 +199,7 @@ export default class Map extends PageComponent {
         this.log('unselectItem', !!this.selectedItem);
         if (!!this.selectedItem) {
             this.selectedItem = null;
-            this.localVectorLayer.getTileDecoder().setStyleParameter('selected_id', '');
+            this.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', '');
 
             this.bottomSheetHolder.close();
         }

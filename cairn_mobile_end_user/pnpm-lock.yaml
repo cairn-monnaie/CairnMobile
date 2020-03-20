@@ -13,7 +13,7 @@ dependencies:
   nativescript-akylas-vue: 2.5.0-alpha.12
   nativescript-barcodescanner: 3.4.2
   nativescript-bugsnag: 1.0.15
-  nativescript-carto: 1.2.37
+  nativescript-carto: 'link:../../../../../usr/local/pnpm-global/node_modules/nativescript-carto'
   nativescript-collectionview: 2.0.13
   nativescript-email: 1.6.0
   nativescript-extendedinfo: 1.0.7
@@ -4872,10 +4872,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kjwd5pY+mkbNecYHUSXDIY+fcqh4et46kKmUYWnceTKIXSsY5EGPrGQBqL5H37iWvdk1wc1F0cEdD0qAdYci4A==
-  /nativescript-carto/1.2.37:
-    dev: false
-    resolution:
-      integrity: sha512-H0iXjd7rX3XgpqvkFIrMYNV3ie0xf8FDWFHU3u3jAnel3cemGQ0Fwcww9/2LrwtC6KSrOMcMxWJ6n6Lw/WOMdQ==
   /nativescript-collectionview/2.0.13:
     dev: false
     resolution:

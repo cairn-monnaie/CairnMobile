@@ -242,7 +242,7 @@ export default class App extends BaseVueComponent {
     mMessageReceiver: android.content.BroadcastReceiver;
     mounted(): void {
         super.mounted();
-        if (gVars.isAndroid) {
+        if (gVars.isAndroid && gVars.internalApp) {
             perms
                 .request('receiveSms')
                 .then(() => {
