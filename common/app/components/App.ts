@@ -220,7 +220,7 @@ export default class App extends BaseVueComponent {
 
     constructor() {
         super();
-        this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
+        // this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
         // this.currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
