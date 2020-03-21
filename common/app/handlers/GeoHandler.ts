@@ -4,7 +4,7 @@ import { ApplicationEventData, android as androidApp, off as applicationOff, on 
 import { Accuracy } from '@nativescript/core/ui/enums/enums';
 import { isAndroid } from '@nativescript/core/platform';
 import { confirm } from 'nativescript-material-dialogs';
-import { localize } from 'nativescript-localize';
+import { $t } from '~/helpers/locale';
 import { DEV_LOG, clog } from '~/utils/logging';
 
 import { GPS, GenericGeoLocation, Options as GeolocationOptions, setMockEnabled } from 'nativescript-gps';
@@ -195,9 +195,9 @@ export class GeoHandler extends Observable {
         } else {
             return confirm({
                 // title: localize('stop_session'),
-                message: localize('gps_not_enabled'),
-                okButtonText: localize('settings'),
-                cancelButtonText: localize('cancel')
+                message: $t('gps_not_enabled'),
+                okButtonText: $t('settings'),
+                cancelButtonText: $t('cancel')
             }).then(result => {
                 if (TEST_LOGS) {
                     this.log('askToEnableIfNotEnabled, confirmed', result);
@@ -225,9 +225,9 @@ export class GeoHandler extends Observable {
                 if (err && /denied/i.test(err.message)) {
                     confirm({
                         // title: localize('stop_session'),
-                        message: localize('gps_not_authorized'),
-                        okButtonText: localize('settings'),
-                        cancelButtonText: localize('cancel')
+                        message: $t('gps_not_authorized'),
+                        okButtonText: $t('settings'),
+                        cancelButtonText: $t('cancel')
                     }).then(result => {
                         this.log('stop_session, confirmed', result);
                         if (result) {

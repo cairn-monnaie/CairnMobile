@@ -1,3 +1,4 @@
+"default_reason" = "paiement eCairn Mobile";
 "password_creation" = "Créez un mot de passe";
 "enter_password" = "rentrez votre passcode";
 "wrong_confirmation_code" = "code de confirmation érroné";
@@ -67,7 +68,7 @@
 "password" = "mot de passe";
 "username" = "utilisateur";
 "home" = "accueil";
-"_app_name_1k3Sbz" = "eCairn";
-"_ios_info_plist_NSFaceIDUsageDescription_3r3oG" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
-"_ios_info_plist_NSLocationWhenInUseUsageDescription_ZpKiIF" = "eCairn a besoin de votre localisation";
-"_title_activity_kimera_PKGla" = "eCairn";
+"app.name" = "eCairn";
+"ios.info.plist.NSFaceIDUsageDescription" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
+"ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn a besoin de votre localisation";
+"title.activity.kimera" = "eCairn";

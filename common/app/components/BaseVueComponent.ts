@@ -3,7 +3,7 @@ import { Frame, NavigationEntry, topmost } from '@nativescript/core/ui/frame';
 import { Label } from '@nativescript/core/ui/label/label';
 import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
 import { Page } from '@nativescript/core/ui/page';
-import localize from 'nativescript-localize';
+import { $t } from '~/helpers/locale';
 import { ActivityIndicator } from 'nativescript-material-activityindicator';
 import { AlertDialog } from 'nativescript-material-dialogs';
 import Vue, { NativeScriptVue } from 'nativescript-vue';
@@ -64,7 +64,7 @@ export default class BaseVueComponent extends Vue {
     showLoading(msg: string) {
         const loadingIndicator = this.getLoadingIndicator();
         this.log('showLoading', msg, !!this.loadingIndicator);
-        loadingIndicator.label.text = localize(msg) + '...';
+        loadingIndicator.label.text = $t(msg) + '...';
         this.showLoadingStartTime = Date.now();
         loadingIndicator.show();
     }

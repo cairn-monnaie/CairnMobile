@@ -1,7 +1,7 @@
 import * as application from '@nativescript/core/application';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import * as imageModule from 'nativescript-image';
-import localize from 'nativescript-localize';
+import { $t, $tc, $tt, $tu } from '~/helpers/locale';
 // import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { device, screen } from '@nativescript/core/platform';
 import App from '~/components/App';
@@ -48,23 +48,11 @@ const Plugin = {
         Vue.prototype.$isAndroid = gVars.isAndroid;
         Vue.prototype.$isIOS = gVars.isIOS;
         const filters = (Vue.prototype.$filters = Vue['options'].filters);
-        Vue.prototype.$t = function(s: string, ...args): string {
-            return localize(s, ...args);
-        };
+        Vue.prototype.$t = $t;
 
-        function $tc(s: string, ...args): string {
-            return filters.capitalize(localize(s, ...args));
-        }
+
         Vue.prototype.$tc = $tc;
-
-        function $tt(s: string, ...args): string {
-            return filters.titlecase(localize(s, ...args));
-        }
         Vue.prototype.$tt = $tt;
-
-        function $tu(s: string, ...args) {
-            return filters.uppercase(localize(s, ...args));
-        }
         Vue.prototype.$tu = $tu;
         Vue.prototype.$showError = function showError(err: Error) {
             const message = typeof err === 'string' ? err : err.message || err.toString();

@@ -2,7 +2,7 @@ import * as connectivity from '@nativescript/core/connectivity';
 import { EventData, Observable } from '@nativescript/core/data/observable';
 import * as http from '@nativescript/core/http';
 import { clog } from '~/utils/logging';
-import { localize } from 'nativescript-localize';
+import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { BaseError } from 'make-error';
@@ -159,7 +159,7 @@ export class CustomError extends BaseError {
     }
     toString() {
         // console.log('customError to string', this.message, this.assignedLocalData, localize);
-        const result = evalTemplateString(localize(this.message), Object.assign({ localize }, this.assignedLocalData));
+        const result = evalTemplateString($t(this.message), Object.assign({ localize: $t }, this.assignedLocalData));
         // console.log('customError to string2', result);
         return result;
         // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
@@ -283,7 +283,7 @@ export class NetworkService extends Observable {
     }
     request(requestParams: HttpRequestOptions, retry = 0) {
         if (!this.connected) {
-            return Promise.reject( new NoNetworkError());
+            return Promise.reject(new NoNetworkError());
         }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
