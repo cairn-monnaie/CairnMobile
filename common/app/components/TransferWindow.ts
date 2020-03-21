@@ -14,7 +14,7 @@ import { NoNetworkError } from '~/services/NetworkService';
 @Component({})
 export default class TransferWindow extends PageComponent {
     navigateUrl = ComponentIds.Transfer;
-    reason: string = null;
+    reason: string = this.$t('default_reason');
     description: string = null;
     amountStr: string = null;
     amount: number;
