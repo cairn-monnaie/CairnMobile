@@ -427,7 +427,7 @@ export default class AuthService extends NetworkService {
         return this.request({
             url: authority + '/mobile/users',
             method: 'POST'
-        }).then(r => r.map(cleanupUser));
+        }).then(r => r.filter(r=>r.roles.indexOf('ROLE_PRO') !== -1).map(cleanupUser));
     }
     addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         return this.request({
