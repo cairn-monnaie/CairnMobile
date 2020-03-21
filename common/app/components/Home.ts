@@ -42,7 +42,7 @@ export default class Home extends PageComponent {
             this.refresh();
         }
         const loggedInOnStart = this.$authService.isLoggedIn();
-        this.log('onLoaded', loggedInOnStart, this.$securityService.passcodeSet());
+        // this.log('onLoaded', loggedInOnStart, this.$securityService.passcodeSet());
         if (loggedInOnStart) {
             if (!this.$securityService.passcodeSet()) {
                 this.$securityService.createPasscode(this).catch(err => {
