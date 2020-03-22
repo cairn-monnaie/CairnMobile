@@ -5,6 +5,9 @@ export { l as $t, lt as $tt, lu as $tu, lc as $tc } from 'nativescript-l';
 import dayjs from 'dayjs';
 const supportedLanguages = ['en', 'fr'];
 import { getString, setString } from '@nativescript/core/application-settings';
+import updateLocale from 'dayjs/plugin/updateLocale';
+
+dayjs.extend(updateLocale);
 
 function setLang(newLang) {
     newLang = getOwmLanguage(newLang);
