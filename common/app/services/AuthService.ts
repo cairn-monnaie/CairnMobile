@@ -549,7 +549,7 @@ export default class AuthService extends NetworkService {
             return r;
         });
     }
-    getUserForMap(mapBounds: MapBounds) {
+    getUsersForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
         return this.getUsers({ mapBounds });
         // .then(r =>

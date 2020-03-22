@@ -1,12 +1,10 @@
 import * as Platform from '@nativescript/core/platform';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import calendar from 'dayjs/plugin/calendar';
 import { Address } from '~/services/AuthService';
 dayjs.extend(LocalizedFormat);
 dayjs.extend(calendar);
-dayjs.extend(updateLocale);
 
 // const dayjs: (...args) => Dayjs = require('dayjs');
 // const Duration = require('duration');

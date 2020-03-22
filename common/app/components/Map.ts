@@ -169,7 +169,7 @@ export default class Map extends PageComponent {
         // console.log("refreshing")
         this.loading = true;
         this.$authService
-            .getUserForMap(mapBounds)
+            .getUsersForMap(mapBounds)
             .then(r => {
                 console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
