@@ -15,6 +15,7 @@ export default class Home extends PageComponent {
     navigateUrl = ComponentIds.Situation;
     amountError: string = null;
     accounts: ObservableArray<AccountInfo> = new ObservableArray();
+    users: User[] = [];
     constructor() {
         super();
         // this.showMenuIcon = true;
@@ -93,9 +94,10 @@ export default class Home extends PageComponent {
         }
         // console.log('refreshing');
         this.loading = true;
-        setTimeout(() => {
-            this.$authService.getAccounts().catch(this.showError);
-        }, 1000);
+        // setTimeout(() => {
+        return Promise.all([this.$authService.getAccounts(), this.$authService.getUsers().then(r => (this.users = r))]).catch(this.showError);
+
+        // }, 1000);
     }
     onNavigatingTo() {
         // if (isAndroid) {
@@ -132,6 +134,19 @@ export default class Home extends PageComponent {
                     });
                 }
             })
+            .catch(this.showError);
+    }
+    async handleQRData(qrCodeData: { ICC: string; name: string }) {
+        this.log('handleQRData', qrCodeData);
+        this.navigateTo(TransferWindow, {
+            props: {
+                qrCodeData
+            }
+        });
+    }
+    scanQRCode() {
+        this.$scanQRCode()
+            .then(this.handleQRData)
             .catch(this.showError);
     }
 }

@@ -14,6 +14,7 @@ export default class UserPicker extends PageComponent {
     dataItems: Recipient[] = [];
     constructor() {
         super();
+        // this.beneficiaries = this.$authService.beneficiaries;
         if (this.beneficiaries) {
             this.beneficiaries.forEach(b => {
                 this.dataItems.push({ isBeneficiary: true, ...b.user });

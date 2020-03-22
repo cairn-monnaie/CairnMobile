@@ -1,6 +1,7 @@
 import { throttle } from 'helpful-decorators';
 import { ClickType, MapBounds, MapPos } from 'nativescript-carto/core';
 import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
+import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
 import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
 import { CartoMap } from 'nativescript-carto/ui';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
@@ -120,33 +121,42 @@ export default class Map extends PageComponent {
     }
     getOrCreateLocalVectorLayer() {
         if (!this.localVectorTileLayer && this._cartoMap) {
+            const decoder =  new MBVectorTileDecoder({
+                style: 'voyager',
+                liveReload: TNS_ENV !== 'production',
+                dirPath: '~/assets/styles/cairn'
+            });
             this.localVectorTileLayer = new VectorTileLayer({
                 preloading: true,
 
                 dataSource: this.localVectorTileDataSource,
-                decoder: new MBVectorTileDecoder({
-                    style: 'voyager',
-                    liveReload: TNS_ENV !== 'production',
-                    dirPath: '~/assets/styles/cairn'
-                })
+                decoder
             });
 
-            // always add it at 1 to respect local order
             this.localVectorTileLayer.setVectorTileEventListener(this, this._cartoMap.projection);
+            // always add it at 1 to respect local order
             this._cartoMap.addLayer(this.localVectorTileLayer);
+
+            // const testLayer = new VectorTileLayer({
+            //     dataSource: new HTTPTileDataSource({
+            //         url:'http://localhost:8080/data/contours/{z}/{x}/{y}.pbf',
+            //         minZoom: 9,
+            //         maxZoom: 14
+            //     }),
+            //     decoder
+            // });
+            // this._cartoMap.addLayer(testLayer);
         }
         return this.localVectorTileLayer;
     }
     onVectorTileClicked(data: VectorTileEventData) {
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
-        console.log('onVectorTileClicked', featureLayerName, featureData.class, featureData.subclass, featureData.name, featureData.ele, featureData);
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
             const user = this.shownUsers.find(u => u.id === (featureData.id as any));
             if (user) {
                 this.selectItem(user);
             }
-            console.log(`onVectorTileClicked : name:${featureData.name} layer: ${featureLayerName} class: ${featureData.class}`);
         }
         return true;
     }

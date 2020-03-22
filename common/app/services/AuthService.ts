@@ -191,7 +191,8 @@ export enum TransactionType {
     WITHDRAWAL, // retrait)
     SCHEDULED_FAILED, // virement programmé échoué)
     SMS_PAYMENT, // paiement par SMS)
-    ONLINE_PAYMENT // achat en ligne)
+    ONLINE_PAYMENT, // achat en ligne)
+    MOBILE_APP
 }
 export interface Transaction {
     credit: boolean;
@@ -315,8 +316,8 @@ export default class AuthService extends NetworkService {
     //         this.userId = result.current_user_id + '';
     //     });
     // }
-    isProUser() {
-        return this.userProfile.roles.indexOf(Roles.PRO) !== -1;
+    isProUser(profile: User = this.userProfile) {
+        return profile.roles.indexOf(Roles.PRO) !== -1;
     }
     handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
         console.log('handleRequestRetry', retry);
@@ -333,9 +334,9 @@ export default class AuthService extends NetworkService {
         }
         return this.getToken(this.loginParams).then(() => this.request(requestParams, retry + 1));
     }
-    getUserProfile() {
+    getUserProfile(userId?: number) {
         return this.request({
-            url: authority + `/mobile/users/${this.userId}`,
+            url: authority + `/mobile/users/${userId || this.userId}`,
             method: 'GET'
         }).then(result => {
             this.userProfile = cleanupUser(result);
@@ -389,7 +390,13 @@ export default class AuthService extends NetworkService {
             })
         }).then(() => this.getUserProfile());
     }
-    getAccounts(): Promise<AccountInfo[]> {
+
+    accounts: AccountInfo[];
+    lastAccountsUpdateTime: number;
+    async getAccounts(): Promise<AccountInfo[]> {
+        if (this.accounts && this.lastAccountsUpdateTime && Date.now() - this.lastAccountsUpdateTime < 3600 * 1000) {
+            return this.accounts;
+        }
         return this.request({
             url: authority + '/mobile/accounts.json',
             method: 'GET'
@@ -409,27 +416,38 @@ export default class AuthService extends NetworkService {
                 object: this,
                 data: result
             } as AccountInfoEventData);
+            this.lastAccountsUpdateTime = Date.now();
+            this.accounts = result;
             return result;
         });
     }
-    getBenificiaries(): Promise<Benificiary[]> {
+    beneficiaries: Benificiary[];
+    lastBenificiariesUpdateTime: number;
+    async getBenificiaries(): Promise<Benificiary[]> {
+        if (this.beneficiaries && this.lastBenificiariesUpdateTime && Date.now() - this.lastBenificiariesUpdateTime < 3600 * 1000) {
+            return this.beneficiaries;
+        }
         return this.request({
             url: authority + '/mobile/beneficiaries',
             method: 'GET'
-        }).then(r =>
+        }).then(r => {
             r.map(b => {
                 b.user = cleanupUser(b.user);
                 return b;
-            })
-        );
+            });
+            this.lastBenificiariesUpdateTime = Date.now();
+            this.beneficiaries = r;
+            return r;
+        });
     }
     getUsers(): Promise<User[]> {
         return this.request({
             url: authority + '/mobile/users',
             method: 'POST'
-        }).then(r => r.filter(r=>r.roles.indexOf('ROLE_PRO') !== -1).map(cleanupUser));
+        }).then(r => r.filter(r => r.roles.indexOf('ROLE_PRO') !== -1).map(cleanupUser));
     }
     addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
+        this.lastBenificiariesUpdateTime = undefined;
         return this.request({
             url: authority + '/mobile/beneficiaries',
             method: 'POST',
@@ -441,11 +459,11 @@ export default class AuthService extends NetworkService {
     createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
         return this.request({
-            url: authority + '/mobile/transaction/request/new-unique.json',
+            url: authority + '/mobile/payment/request',
             method: 'POST',
             content: JSON.stringify({
                 fromAccount: account.number,
-                toAccount: user.email,
+                toAccount: user.email || user.mainICC,
                 amount: amount + '',
                 executionDate: date,
                 // executionDate: dayjs().format('YYYY-MM-DD'),
@@ -502,13 +520,15 @@ export default class AuthService extends NetworkService {
                 orderBy: 'ASC'
             }),
             method: 'POST'
-        }).then(r =>
-            r.map(t => {
-                // t.submissionDate = t.submissionDate.timestamp * 1000;
-                // t.executionDate = t.executionDate.timestamp * 1000;
-                t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
-                return t as Transaction;
-            })
+        }).then((r: Transaction[]) =>
+            r
+                .map(t => {
+                    t.submissionDate = dayjs(t.submissionDate).valueOf();
+                    // t.executionDate = dayjs(t.executionDate).valueOf();
+                    t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
+                    return t;
+                })
+                .sort((a, b) => b.submissionDate - a.submissionDate)
         );
     }
     fakeSMSPayment(sender: string, message: string) {

@@ -11,6 +11,7 @@ import { ImageSource } from '@nativescript/core/image-source/image-source';
 import Vue from 'nativescript-vue';
 import MapComponent from './MapComponent';
 import { CartoMap } from 'nativescript-carto/ui';
+import BitmapFactory from 'nativescript-bitmap-factory';
 
 @Component({
     components: {
@@ -30,8 +31,12 @@ export default class Profile extends PageComponent {
         return !!this.updateUserProfile && Object.keys(this.updateUserProfile).length > 0;
     }
 
-    userProfile: UserProfile = Vue.prototype.$authService.userProfile;
+    get isPro() {
+        return !!this.userProfile && this.$authService.isProUser(this.userProfile);
+    }
 
+    userProfile: UserProfile = null;
+    canRefresh = false;
     // get image() {
     //     console.log('get image');
     //     if (!!this.updateUserProfile && !!this.updateUserProfile.image) {
@@ -46,8 +51,11 @@ export default class Profile extends PageComponent {
             this.userProfile = this.propUserProfile;
         } else {
             this.userProfile = this.$authService.userProfile;
+            this.canRefresh = true;
         }
+        this.image = this.userProfile.image;
     }
+
     destroyed() {
         super.destroyed();
         this.$authService.off(UserProfileEvent, this.onProfileUpdate, this);
@@ -81,9 +89,12 @@ export default class Profile extends PageComponent {
         if (args && args.object) {
             args.object.refreshing = false;
         }
+        if (!this.canRefresh) {
+            return;
+        }
         console.log('refreshing');
         this.loading = true;
-        this.$authService.getUserProfile().catch(this.showError);
+        this.$authService.getUserProfile(this.userProfile.id).catch(this.showError);
     }
     saveProfile() {
         this.loading = true;
@@ -149,6 +160,9 @@ export default class Profile extends PageComponent {
 
     chooseImage() {
         console.log('chooseImage');
+        if (!this.isPro) {
+            return;
+        }
 
         perms
             .request('storage')
@@ -167,7 +181,10 @@ export default class Profile extends PageComponent {
                                 reject(error);
                             } else {
                                 this.updateUserProfile = this.updateUserProfile || {};
-                                this.updateUserProfile.image = this.image = new ImageSource(image);
+                                // we need to resize the image as our server only accept images < 500kb
+                                const mutableImageSource = BitmapFactory.makeMutable(new ImageSource(image));
+                                const bmp = BitmapFactory.asBitmap(mutableImageSource);
+                                this.updateUserProfile.image = this.image = bmp.resizeMax(500).toImageSource();
                             }
                         });
                     });

@@ -34,8 +34,10 @@ mdripple {
     ripple-color: $primary-color;
 }
 
-.page {
+page {
     background-color: $dark-color;
+    status-bar-style: light;
+    status-bar-color: $primary-color;
 }
 
 .pageContent {

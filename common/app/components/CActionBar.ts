@@ -9,7 +9,7 @@ export default class ActionBar extends BaseVueComponent {
         type: String
     })
     public title: string;
-    public cairnFontFamily =  cairnFontFamily;
+    public cairnFontFamily = cairnFontFamily;
 
     @Prop({ default: actionBarHeight, type: Number })
     public height: number;
