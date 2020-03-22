@@ -12,6 +12,7 @@ declare const gVars: {
     sentry: boolean;
     isIOS: boolean;
     isAndroid: boolean;
+    internalApp: boolean;
     CARTO_TOKEN: string;
 };
 

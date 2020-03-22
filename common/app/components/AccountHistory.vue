@@ -22,7 +22,7 @@
                             <Label col="1" row="1" horizontalAlignment="right" verticalAlignment="bottom" fontWeight="bold" :text=" item.amount | currency " fontSize="16" :color="item.credit ? accentColor : '#FC5457'">
                                 <Span :text="item.credit ? '+' : '-' "></Span>
                                 <Span :text="item.amount | currency"></Span>
-                                <Span class="cairn" text="cairn-currency" />
+                                <Span :fontFamily="cairnFontFamily" text="cairn-currency" />
                             </Label>
                         </GridLayout>
                     </v-template>

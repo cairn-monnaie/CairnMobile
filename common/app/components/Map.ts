@@ -115,6 +115,9 @@ export default class Map extends PageComponent {
         }
         return this._localVectorDataSource;
     }
+    onElementClick(...args) {
+        this.log('onElementClick', args);
+    }
     getOrCreateLocalVectorLayer() {
         if (!this.localVectorLayer && this._cartoMap) {
             this.localVectorLayer = new VectorTileLayer({

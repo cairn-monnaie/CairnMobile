@@ -1,5 +1,5 @@
 import { NavigatedData } from '@nativescript/core/ui/frame';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
 import { ComponentIds } from './App';
 import PageComponent from './PageComponent';
@@ -8,20 +8,29 @@ import * as perms from 'nativescript-perms';
 import { confirm, prompt } from 'nativescript-material-dialogs';
 import { ImageAsset } from '@nativescript/core/image-asset/image-asset';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
+import Vue from 'nativescript-vue';
+import MapComponent from './MapComponent';
+import { CartoMap } from 'nativescript-carto/ui';
 
-@Component({})
+@Component({
+    components: {
+        MapComponent
+    }
+})
 export default class Profile extends PageComponent {
     navigateUrl = ComponentIds.Profile;
     editing = false;
-    editable = true;
+    @Prop({ default: true }) editable;
     // canSave = false;
-    userProfile: UserProfile = null;
+    @Prop() propUserProfile: UserProfile;
     updateUserProfile: UpdateUserProfile = null;
 
     image: string | ImageAsset | ImageSource = null;
     get canSave() {
         return !!this.updateUserProfile && Object.keys(this.updateUserProfile).length > 0;
     }
+
+    userProfile: UserProfile = Vue.prototype.$authService.userProfile;
 
     // get image() {
     //     console.log('get image');
@@ -33,7 +42,9 @@ export default class Profile extends PageComponent {
 
     constructor() {
         super();
-        if (!this.userProfile) {
+        if (this.propUserProfile) {
+            this.userProfile = this.propUserProfile;
+        } else {
             this.userProfile = this.$authService.userProfile;
         }
     }
@@ -45,10 +56,20 @@ export default class Profile extends PageComponent {
         super.mounted();
         this.$authService.on(UserProfileEvent, this.onProfileUpdate, this);
     }
+    updateMapCenter() {
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
+            const map = this.$refs.mapComp.cartoMap;
+            map.setFocusPos(this.userProfile.address, 0);
+        }
+    }
+    onMapReady(e) {
+        this.updateMapCenter();
+    }
     onProfileUpdate(event: UserProfileEventData) {
         this.loading = false;
         this.userProfile = event.data;
         this.image = this.userProfile.image;
+        this.updateMapCenter();
     }
     switchEditing() {
         this.editing = !this.editing;

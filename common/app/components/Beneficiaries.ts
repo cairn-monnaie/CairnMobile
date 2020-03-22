@@ -32,8 +32,10 @@ export default class Beneficiaries extends PageComponent {
             })
             .catch(this.showError);
     }
-    onLoaded(args: NavigatedData) {
-        this.refresh();
+    onNavigatedTo(args: NavigatedData) {
+        if (!args.isBackNavigation) {
+            this.refresh();
+        }
     }
     onNavigatingTo() {
         // if (isAndroid) {
@@ -53,7 +55,7 @@ export default class Beneficiaries extends PageComponent {
             .then((r: User) => {
                 console.log('addBeneficiary done');
                 if (r) {
-                    this.showLoading('working');
+                    this.showLoading(this.$t('loading'));
                     return this.$authService.addBeneficiary(r.email).then(() => {
                         this.hideLoading();
                         showSnack({
@@ -71,7 +73,7 @@ export default class Beneficiaries extends PageComponent {
         console.log('onItemTap', userProfile);
         this.navigateTo(Profile, {
             props: {
-                userProfile,
+                propUserProfile: userProfile,
                 editable: false
             }
         });

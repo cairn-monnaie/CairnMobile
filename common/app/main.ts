@@ -2,6 +2,12 @@ import { install as installGestures } from 'nativescript-gesturehandler';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
 import { install, themer } from 'nativescript-material-core';
 import Vue from 'nativescript-vue';
+
+// import * as trace from '@nativescript/core/trace';
+// trace.addCategories(trace.categories.ViewHierarchy);
+// trace.addCategories(trace.categories.Navigation);
+// trace.addCategories(trace.categories.NativeLifecycle);
+// trace.enable();
 /* DEV-START */
 // const VueDevtools = require('nativescript-vue-devtools');
 // Vue.use(VueDevtools

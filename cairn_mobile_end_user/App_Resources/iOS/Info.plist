@@ -53,5 +53,9 @@
     </dict>
     <key>BugsnagAPIKey</key>
     <string>d85d1a07697803385200b8d955e42236</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>eCairn utilise les services de biométrie pour sécuriser vos transactions</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>eCairn a besoin de votre localisation</string>
   </dict>
 </plist>

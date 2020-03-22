@@ -1,7 +1,10 @@
-"wrong_scancode" = "le code scanne n'est pas un code ECairn";
+"password_creation" = "Créez un mot de passe";
+"enter_password" = "rentrez votre passcode";
+"wrong_confirmation_code" = "code de confirmation érroné";
+"wrong_scancode" = "le code scanne n'est pas un code eCairn";
 "close" = "fermer";
 "description_optional" = "description (optionel)";
-"sms_received" = "received \"%1$@\" from %2$@";
+"sms_received" = "recu \"%1$@\" de %2$@";
 "delete_phone" = "supprimer le téléphone %1$@ ?";
 "delete" = "supprimer";
 "add" = "ajouter";
@@ -47,7 +50,6 @@
 "zipcode" = "code postal";
 "send" = "envoyer";
 "httpError" = "${localize(errorMessage)} (${statusCode})";
-"sprintf" = "format me %1$@";
 "cancel" = "annuler";
 "error" = "erreur";
 "ok" = "ok";
@@ -66,3 +68,6 @@
 "username" = "utilisateur";
 "home" = "accueil";
 "_app_name_1k3Sbz" = "eCairn";
+"_ios_info_plist_NSFaceIDUsageDescription_3r3oG" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
+"_ios_info_plist_NSLocationWhenInUseUsageDescription_ZpKiIF" = "eCairn a besoin de votre localisation";
+"_title_activity_kimera_PKGla" = "eCairn";

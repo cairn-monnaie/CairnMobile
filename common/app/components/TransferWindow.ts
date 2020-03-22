@@ -1,5 +1,5 @@
 import { PropertyChangeData } from '@nativescript/core/data/observable';
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import { alert, prompt } from 'nativescript-material-dialogs';
 import { AccountInfo, Benificiary, User } from '~/services/AuthService';
 import PageComponent from './PageComponent';
@@ -9,6 +9,7 @@ import { TextField } from 'nativescript-material-textfield';
 import { showSnack } from 'nativescript-material-snackbar';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { isSimulator } from 'nativescript-extendedinfo';
+import { NoNetworkError } from '~/services/NetworkService';
 
 @Component({})
 export default class TransferWindow extends PageComponent {
@@ -23,11 +24,20 @@ export default class TransferWindow extends PageComponent {
     refreshing = false;
     canStartTransfer = false;
     amountError: string = null;
-    reasonError: string = null;
+    reasonError: string = this.$t('reason_required');
     accounts: AccountInfo[] = [];
+
+    @Watch('reason')
+    onReasonChanged() {
+        this.checkForm();
+    }
     checkForm() {
-        if (this.reason !== null) {
+        console.log('checkForm', this.reason);
+        if (!this.reason ||  this.reason.length === 0) {
+            this.reasonError = this.$t('reason_required');
+        } else {
             this.reasonError = null;
+            // this.showError(this.reasonError);
         }
         // if (this.amount <= 0) {
         //     this.amountError = this.$t('amount_required');
@@ -37,7 +47,7 @@ export default class TransferWindow extends PageComponent {
         // if (!this.account) {
         // }
         console.log('checkForm', this.amount, !!this.account, !!this.recipient);
-        this.canStartTransfer = this.amount > 0 && !!this.account && !!this.recipient;
+        this.canStartTransfer = this.amount > 0 && !!this.account && !!this.recipient && !this.reasonError;
     }
     onInputChange(e: PropertyChangeData, value) {
         this.checkForm();
@@ -120,35 +130,42 @@ export default class TransferWindow extends PageComponent {
         //     .catch(this.showError);
     }
     submit() {
-        if (!this.reason) {
-            this.reasonError = this.$t('reason_required');
-            this.showError(this.reasonError);
+        if (!this.$authService.connected) {
+            this.showError(new NoNetworkError());
         }
-        this.$authService
-            .createTransaction(this.account, this.recipient, this.amount, this.reason, this.description)
-            .then(r =>
-                prompt({
-                    autoFocus: true,
-                    cancelable: false,
-                    hintText: this.$t('confirmation_code'),
-                    title: this.$t('confirmation'),
-                    message: this.$t('confirmation_code_description'),
-                    okButtonText: this.$t('confirm'),
-                    cancelButtonText: this.$t('cancel')
-                }).then(result => {
-                    if (result && result.text && result.text.length > 0) {
-                        return this.$authService.confirmOperation(r.operation.id, result.text).then(() => {
-                            this.close();
-                            showSnack({
-                                message: this.$t('transaction_done', this.amount, this.recipient)
-                            });
-                        });
-                    } else {
-                        this.showError(this.$t('wrong_confirmation_code'));
-                    }
+        this.$securityService.validateSecurity(this).then(() => {
+            this.$authService
+                .createTransaction(this.account, this.recipient, this.amount, this.reason, this.description)
+                .then(
+                    r => this.$authService.confirmOperation(r.operation.id)
+                    // if (this.$securityService.enabled) {
+                    //     this.$securityService.verifyFingerprint();
+                    // } else {
+                    //     prompt({
+                    //         autoFocus: true,
+                    //         cancelable: false,
+                    //         hintText: this.$t('confirmation_code'),
+                    //         title: this.$t('confirmation'),
+                    //         message: this.$t('confirmation_code_description'),
+                    //         okButtonText: this.$t('confirm'),
+                    //         cancelButtonText: this.$t('cancel')
+                    //     }).then(result => {
+                    //         if (result && result.text && result.text.length > 0) {
+                    // return this.$authService.confirmOperation(r.operation.id);
+                    //         } else {
+                    //             return Promise.reject(this.$t('wrong_confirmation_code'));
+                    //         }
+                    //     });
+                    // }
+                )
+                .then(() => {
+                    this.close();
+                    showSnack({
+                        message: this.$t('transaction_done', this.amount, this.recipient)
+                    });
                 })
-            )
-            .catch(this.showError);
+                .catch(this.showError);
+        });
     }
     selectAccount() {}
     selectRecipient() {

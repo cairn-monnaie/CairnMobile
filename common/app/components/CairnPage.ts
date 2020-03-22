@@ -34,6 +34,7 @@ export default class CairnPage extends BaseVueComponent {
     public actionBarElevation: number;
 
     public navigateUrl = null;
+    public id = null;
 
     public loading = false;
 

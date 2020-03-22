@@ -1,11 +1,13 @@
 <template>
-    <CairnPage @navigatedTo="onLoaded" :actionBarShowLogo="false">
-        <GridLayout slot="actionBarSubView" marginTop="20" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="auto,*" rows="auto">
+    <CairnPage id="transfer" @navigatedTo="onLoaded" :actionBarShowLogo="false">
+        <GridLayout slot="actionBarSubView" marginTop="20" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="*,auto" rows="auto">
             <MDTextField
-                col="1"
-                backgroundColor="#15000000"
+                col="0"
+                marginLeft="30"
                 placeholderColor="white"
+                floatingColor="white"
                 strokeColor="white"
+                textAlignment="right"
                 color="white"
                 class="input"
                 fontSize="40"
@@ -16,20 +18,21 @@
                 @loaded="onAmountTFLoaded"
                 @textChange="validateAmount"
             />
-            <Label col="0" class="cairn" text="cairn-currency" fontSize="42" color="white" verticalAlignment="bottom" paddingBottom="22" />
+            <Label col="1" class="cairn" text="cairn-currency" fontSize="42" color="white" verticalAlignment="bottom" paddingBottom="8" />
         </GridLayout>
-        <GridLayout rows="*,auto">
+        <GridLayout rows="auto,auto">
             <ScrollView row="0">
                 <StackLayout margin="0">
                     <ListItem
                         margin="20 20 10 20"
                         :height="80"
-                        class="cardView"
+                        :class="accounts.length > 1 ? 'cardView': 'flatCardView'"
                         :showBottomLine="false"
                         :overText="$t('account')"
                         :title="account ? account.name : $t('choose_account')"
-                        :subtitle="account ? account.id : undefined"
-                        :rightIcon="accounts.length > 0 ? 'mdi-chevron-right' : undefined"
+                        :subtitle="account ? account.number : undefined"
+                        :rightIcon="accounts.length > 1 ? 'mdi-chevron-right' : undefined"
+                            @tap="selectAccount"
                     />
 
                     <GridLayout columns="*,auto">
@@ -42,12 +45,21 @@
                             :title="recipient ? recipient.name : $t('choose_recipient')"
                             :subtitle="(recipient ? recipient.address : undefined) | address"
                             rightIcon="mdi-chevron-right"
+                            @tap="selectRecipient"
                         />
                         <MDButton col="1" textAlignment="center" marginRight="20" variant="flat" class="big-icon-themed-btn" text="mdi-qrcode-scan" @tap="scanQRCode()" />
                     </GridLayout>
-                    <MDTextField backgroundColor="#15000000" margin="0 20 0 20" class="input" :hint="$t('reason') | capitalize" v-model="reason" returnKeyType="next" :error="reasonError" />
                     <MDTextField
-                        backgroundColor="#15000000"
+                        backgroundColor="#ffffff"
+                        margin="0 20 0 20"
+                        class="input"
+                        :hint="$t('reason') | capitalize"
+                        v-model="reason"
+                        returnKeyType="next"
+                        :error="reasonError"
+                    />
+                    <MDTextField
+                        backgroundColor="#ffffff"
                         margin="10 20 20 20"
                         class="input"
                         :floatingLabel="$t('description') | capitalize"

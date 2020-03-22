@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="password_creation">"Créez un mot de passe"</string>
+  <string name="enter_password">"rentrez votre passcode"</string>
   <string name="wrong_confirmation_code">"code de confirmation érroné"</string>
   <string name="wrong_scancode">"le code scanne n\'est pas un code eCairn"</string>
   <string name="close">"fermer"</string>

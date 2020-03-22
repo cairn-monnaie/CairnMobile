@@ -146,7 +146,7 @@ export default class App extends BaseVueComponent {
                 //     swipeCloseTriggerMinDrag: 30
                 // }
                 left: {
-                    swipeOpenTriggerWidth: 20
+                    swipeOpenTriggerWidth: 5
                 }
             };
         } else {
@@ -228,16 +228,10 @@ export default class App extends BaseVueComponent {
     }
     onLoaded() {
         GC();
-        if (this.loggedInOnStart) {
-            this.$securityService.shouldReAuth().then(r => {
-                this.$authService.logout();
-                this.$alert(this.$t('fingerprint_changed_logout'));
-            });
-        }
     }
     destroyed() {
         super.destroyed();
-        if (gVars.isAndroid) {
+        if (gVars.isAndroid && gVars.internalApp) {
             application.android.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
                 androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).unregisterReceiver(this.mMessageReceiver);
@@ -249,55 +243,53 @@ export default class App extends BaseVueComponent {
     mounted(): void {
         super.mounted();
         if (gVars.isAndroid) {
-            if (gVars.isAndroid) {
-                perms
-                    .request('receiveSms')
-                    .then(() => {
-                        // class BroadcastReceiver extends android.content.BroadcastReceiver {
-                        //     private _onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void;
+            perms
+                .request('receiveSms')
+                .then(() => {
+                    // class BroadcastReceiver extends android.content.BroadcastReceiver {
+                    //     private _onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void;
 
-                        //     constructor(onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void) {
-                        //         super();
-                        //         this._onReceiveCallback = onReceiveCallback;
+                    //     constructor(onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void) {
+                    //         super();
+                    //         this._onReceiveCallback = onReceiveCallback;
 
-                        //         return global.__native(this);
-                        //     }
+                    //         return global.__native(this);
+                    //     }
 
-                        //     public onReceive(context: android.content.Context, intent: android.content.Intent) {
-                        //         console.log('onReceive', intent.getAction());
-                        //         if (this._onReceiveCallback) {
-                        //             this._onReceiveCallback(context, intent);
-                        //         }
-                        //     }
-                        // }
-                        // this.mMessageReceiver = new BroadcastReceiver((context: android.content.Context, intent: android.content.Intent) => {
-                        //     const msg = intent.getStringExtra('message');
-                        //     const sender = intent.getStringExtra('sender');
-                        //     this.log('messageReceived', msg, sender);
-                        //     showSnack({
-                        //         message: this.$t('sms_received', msg, sender)
-                        //     });
-                        // });
-                        // console.log('registerReceiver', 'com.akylas.cairnmobile.SMS_RECEIVED');
-                        // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).registerReceiver(
-                        //     this.mMessageReceiver,
-                        //     new globalAndroid.content.IntentFilter('com.akylas.cairnmobile.SMS_RECEIVED')
-                        // );
-                        application.android.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
-                            const msg = intent.getStringExtra('message');
-                            const sender = intent.getStringExtra('sender');
-                            // this.log('messageReceived', msg, sender);
-                            // this.$authService.fakeSMSPayment(sender, msg).then(() => {
-                            showSnack({
-                                message: this.$t('sms_received', msg, sender)
-                            });
-                            new Vibrate().vibrate(1000);
-
-                            // });
+                    //     public onReceive(context: android.content.Context, intent: android.content.Intent) {
+                    //         console.log('onReceive', intent.getAction());
+                    //         if (this._onReceiveCallback) {
+                    //             this._onReceiveCallback(context, intent);
+                    //         }
+                    //     }
+                    // }
+                    // this.mMessageReceiver = new BroadcastReceiver((context: android.content.Context, intent: android.content.Intent) => {
+                    //     const msg = intent.getStringExtra('message');
+                    //     const sender = intent.getStringExtra('sender');
+                    //     this.log('messageReceived', msg, sender);
+                    //     showSnack({
+                    //         message: this.$t('sms_received', msg, sender)
+                    //     });
+                    // });
+                    // console.log('registerReceiver', 'com.akylas.cairnmobile.SMS_RECEIVED');
+                    // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).registerReceiver(
+                    //     this.mMessageReceiver,
+                    //     new globalAndroid.content.IntentFilter('com.akylas.cairnmobile.SMS_RECEIVED')
+                    // );
+                    application.android.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
+                        const msg = intent.getStringExtra('message');
+                        const sender = intent.getStringExtra('sender');
+                        // this.log('messageReceived', msg, sender);
+                        // this.$authService.fakeSMSPayment(sender, msg).then(() => {
+                        showSnack({
+                            message: this.$t('sms_received', msg, sender)
                         });
-                    })
-                    .catch(this.showError);
-            }
+                        new Vibrate().vibrate(1000);
+
+                        // });
+                    });
+                })
+                .catch(this.showError);
         }
         // this.page.actionBarHidden = true;
         setDrawerInstance(this.drawer);
@@ -326,14 +318,17 @@ export default class App extends BaseVueComponent {
             const profile = (this.userProfile = e.data as UserProfile);
             this.$sentry && this.$sentry.setExtra('profile', profile);
             console.log('LoggedinEvent', e.data);
-            this.navigateToUrl(ComponentIds.Situation, {
-                // props: { autoConnect: false },
-                clearHistory: true
+            this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
+                // this.$securityService.createPasscode(this).catch(err => {
+                //     this.showError(err);
+                //     this.$authService.logout();
+                // });
             });
         });
         authService.on(LoggedoutEvent, () => {
             this.$sentry && this.$sentry.setExtra('profile', null);
             this.currentlyLoggedIn = false;
+            this.$securityService.clear();
             console.log('LoggedoutEvent');
             this.goBackToLogin();
         });
@@ -443,13 +438,13 @@ export default class App extends BaseVueComponent {
         // this.log('setActivatedUrl', id);
         this.handleSetActivatedUrl(id);
     }
-    navigateBack(backEntry?) {
+    async navigateBack(backEntry?) {
         this.innerFrame && this.innerFrame.goBack(backEntry);
     }
 
-    navigateBackIfUrl(url) {
+    async navigateBackIfUrl(url) {
         if (this.isActiveUrl(url)) {
-            this.navigateBack();
+            return this.navigateBack();
         }
     }
     findNavigationUrlIndex(url) {
@@ -460,11 +455,11 @@ export default class App extends BaseVueComponent {
         console.log('navigateBackToUrl', url, index);
         if (index === -1) {
             console.log(url, 'not in backstack');
-            return;
+            return Promise.reject();
         }
-        this.navigateBack(this.innerFrame.backStack[index]);
+        return this.navigateBack(this.innerFrame.backStack[index]);
     }
-    navigateBackToRoot() {
+    async navigateBackToRoot() {
         const stack = this.innerFrame.backStack;
         if (stack.length > 0) {
             this.innerFrame && this.innerFrame.goBack(stack[0]);
@@ -592,21 +587,21 @@ export default class App extends BaseVueComponent {
         (options as any).frame = options['frame'] || this.innerFrame.id;
         return super.navigateTo(component, options, cb);
     }
-    navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+    navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page): Promise<any> {
         if (this.isActiveUrl(url) || !this.routes[url]) {
-            return;
+            return Promise.reject();
         }
         // options = options || {};
         // options.props = options.props || {};
         // options.props[navigateUrlProperty] = url;
 
         this.closeDrawer();
-        // console.log('navigateToUrl', url);
+        console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
-            this.navigateTo(this.routes[url].component, options);
+            return this.navigateTo(this.routes[url].component, options);
         } else {
-            this.navigateBackToUrl(url);
+            return this.navigateBackToUrl(url);
         }
     }
     goBackToLogin() {

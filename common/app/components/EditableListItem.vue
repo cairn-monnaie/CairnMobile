@@ -1,5 +1,5 @@
 <template>
-    <GridLayout columns="16,40,*,auto,16" rows="5,auto,*,auto,5" backgroundColor="white">
+    <GridLayout columns="16,auto,*,auto,16" rows="5,auto,*,auto,5" backgroundColor="white">
         <Label v-if="!!leftIcon" col="1" row="0" rowSpan="5" fontSize="24" marginRight="16" textAlignment="left"  :text="leftIcon" horizontalAlignment="left" verticalAlignment="center" color="#757575" class="mdi" />
         <MDTextField col="2" row="2" fontSize="17" :text="title" :floatingLabel="overText" :hint="subtitle || overText" @textChange="$emit('textChange', $event)" @return="$emit('return', $event)"/>
         <!-- <Label col="2" row="1" fontSize="10" v-if="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" /> -->

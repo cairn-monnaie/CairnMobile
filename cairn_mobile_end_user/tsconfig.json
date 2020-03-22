@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "module": "ESNext",
+        "module": "esnext",
         "moduleResolution": "node",
         "removeComments": false,
         "experimentalDecorators": true,
@@ -14,6 +14,7 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitUseStrict": true,
+        "downlevelIteration":true,
         "lib": ["es6", "dom", "es2015.iterable"],
         "baseUrl": ".",
         "paths": {

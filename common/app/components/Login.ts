@@ -40,7 +40,7 @@ export default class Login extends PageComponent {
 
     @Watch('user', { deep: true })
     onUserChange() {
-        console.log('onUserChange', this.user);
+        // console.log('onUserChange', this.user);
     }
 
     animateLogoView() {
