@@ -1,4 +1,3 @@
-import * as application from '@nativescript/core/application';
 import { Color } from '@nativescript/core/color';
 import { device, screen } from '@nativescript/core/platform';
 import { NavigationEntry } from '@nativescript/core/ui/frame';
@@ -21,6 +20,9 @@ import { Component } from 'vue-property-decorator';
 import { setDrawerInstance } from '~/main';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import { screenHeightDips, screenWidthDips } from '~/variables';
+
+import { ApplicationEventData, android as androidApp, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from '@nativescript/core/application';
+
 // import Map from './Map';
 import AppFrame from './AppFrame';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
@@ -217,7 +219,7 @@ export default class App extends BaseVueComponent {
             },
             {
                 title: 'settings',
-                icon:'mdi-settings',
+                icon: 'mdi-settings',
                 url: ComponentIds.Settings
             }
         ];
@@ -239,9 +241,9 @@ export default class App extends BaseVueComponent {
     destroyed() {
         super.destroyed();
         if (gVars.isAndroid && gVars.internalApp) {
-            application.android.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
+            androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
-                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).unregisterReceiver(this.mMessageReceiver);
+                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(this.mMessageReceiver);
                 this.mMessageReceiver = null;
             }
         }
@@ -249,6 +251,8 @@ export default class App extends BaseVueComponent {
     mMessageReceiver: android.content.BroadcastReceiver;
     mounted(): void {
         super.mounted();
+        applicationOn(suspendEvent, this.onAppPause, this);
+        applicationOn(resumeEvent, this.onAppResume, this);
         if (gVars.isAndroid && gVars.internalApp) {
             perms
                 .request('receiveSms')
@@ -283,7 +287,7 @@ export default class App extends BaseVueComponent {
                     //     this.mMessageReceiver,
                     //     new globalAndroid.content.IntentFilter('com.akylas.cairnmobile.SMS_RECEIVED')
                     // );
-                    application.android.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
+                    androidApp.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
                         const msg = intent.getStringExtra('message');
                         const sender = intent.getStringExtra('sender');
                         // this.log('messageReceived', msg, sender);
@@ -340,12 +344,23 @@ export default class App extends BaseVueComponent {
             this.goBackToLogin();
         });
     }
-    // onAppResume(args: ApplicationEventData) {
-    //     this.appPaused = false;
-    // }
-    // onAppPause(args: ApplicationEventData) {
-    //     this.appPaused = true;
-    // }
+    appPaused = true;
+    onAppResume(args: ApplicationEventData) {
+        console.log('onAppResume', this.appPaused, this.$securityService.autoLockEnabled);
+        if (!this.appPaused) {
+            return;
+        }
+        this.appPaused = false;
+        if (this.$securityService.autoLockEnabled) {
+            this.$securityService.validateSecurity(this, { closeOnBack: true });
+        }
+    }
+    onAppPause(args: ApplicationEventData) {
+        if (this.appPaused) {
+            return;
+        }
+        this.appPaused = true;
+    }
 
     // onBottomNavigationTabSelected(e) {
     //     console.log("onTabSelected", e.newIndex, this.selectedTabIndex)

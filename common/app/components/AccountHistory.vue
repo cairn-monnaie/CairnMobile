@@ -11,7 +11,7 @@
             <PullToRefresh @refresh="refresh" colSpan="3" rowSpan="3">
                 <CollectionView :items="dataItems" rowHeight="80">
                     <v-template>
-                        <GridLayout width="100%" columns="*,auto" rows="auto,*" padding="16" borderBottomWidth="1" borderBottomColor="lightgray" backgroundColor="white">
+                        <GridLayout width="100%" columns="*,auto" rows="auto,auto,*" padding="16" borderBottomWidth="1" borderBottomColor="lightgray" backgroundColor="white">
                             <Label
                                 fontWeight="bold"
                                 :text="item.credit ? item.debitorName : item.creditorName"
@@ -29,6 +29,7 @@
                             <Label
                                 col="1"
                                 row="1"
+                                rowSpan="2"
                                 horizontalAlignment="right"
                                 verticalAlignment="bottom"
                                 fontWeight="bold"

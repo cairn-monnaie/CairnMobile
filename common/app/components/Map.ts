@@ -171,6 +171,7 @@ export default class Map extends PageComponent {
         this.$authService
             .getUserForMap(mapBounds)
             .then(r => {
+                console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {
                     const geojson = GeoJSON.parse(r, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] });
@@ -189,9 +190,10 @@ export default class Map extends PageComponent {
                     this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
                 }
 
-                this.loading = false;
             })
-            .catch(this.showError);
+            .catch(this.showError).finally(()=>{
+                this.loading = false;
+            });
     }
     selectItem(item: User) {
         this.log('selectItem', item);

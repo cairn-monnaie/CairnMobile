@@ -11,9 +11,12 @@ export default class SecurityService extends Observable {
     private fingerprintAuth = new FingerprintAuth();
     @stringProperty storedPassword: string;
     @booleanProperty biometricEnabled: boolean;
-    available() {
+    @booleanProperty autoLockEnabled: boolean;
+    biometricsAvailable() {
+        console.log('biometricsAvailable');
         return this.fingerprintAuth.available().then(r => {
-            if (!r.touch || !r.face) {
+            console.log('fingerprintAuth', 'available', r);
+            if (!r.touch && !r.face) {
                 return false;
             }
             return true;
@@ -50,14 +53,17 @@ export default class SecurityService extends Observable {
         }
         return this.fingerprintAuth.didFingerprintDatabaseChange().then(changed => !changed);
     }
-    validateSecurity(parent: NativeScriptVue) {
+    validateSecurity(parent: NativeScriptVue, options?: { closeOnBack?: boolean }) {
         if (this.biometricEnabled) {
             return this.verifyFingerprint();
         } else {
             return (
                 parent
                     .$showModal(PasscodeWindow, {
-                        fullscreen: true
+                        fullscreen: true,
+                        props: {
+                            closeOnBack: options && options.closeOnBack === true
+                        }
                     })
                     // .then(() => )
                     .then((r: string) => this.storedPassword === r)

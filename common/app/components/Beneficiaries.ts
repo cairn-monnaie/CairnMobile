@@ -28,9 +28,10 @@ export default class Beneficiaries extends PageComponent {
             .getBenificiaries()
             .then(r => {
                 this.dataItems = r.map(b => b.user);
-                this.loading = false;
             })
-            .catch(this.showError);
+            .catch(this.showError).finally(()=>{
+                this.loading = false;
+            });
     }
     onNavigatedTo(args: NavigatedData) {
         if (!args.isBackNavigation) {

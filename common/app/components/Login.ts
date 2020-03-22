@@ -121,6 +121,8 @@ export default class Login extends PageComponent {
         return this.$authService.login(this.user).catch(err => {
             this.animateLogoView();
             this.showError(err);
+        }).finally(()=>{
+            this.loading = false;
         });
     }
     register() {
@@ -133,9 +135,10 @@ export default class Login extends PageComponent {
             .then(() => {
                 this.$alert('account_created');
                 this.isLoggingIn = true;
-                this.loading = false;
             })
-            .catch(this.showError);
+            .catch(this.showError).finally(()=>{
+                this.loading = false;
+            });
     }
 
     forgotPassword() {

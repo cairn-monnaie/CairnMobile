@@ -3,21 +3,37 @@ import { Component, Prop } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 import { ComponentIds } from './App';
 import { TextField } from 'nativescript-material-textfield';
+import { AndroidActivityBackPressedEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 
 @Component({})
 export default class PasscodeWindow extends PageComponent {
     @Prop({ default: false }) creation: boolean;
+    @Prop({ default: false }) closeOnBack: boolean;
     confirmingPassword = false;
 
     title: string = null;
     message: string = null;
-    destroyed() {
-        super.destroyed();
-    }
+
     mounted() {
         super.mounted();
+        if (gVars.isAndroid) {
+            androidApp.on(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
+        }
         this.title = this.creation ? this.$t('password_creation') : this.$t('enter_password');
         this.updateMessage();
+    }
+    destroyed() {
+        super.destroyed();
+        if (gVars.isAndroid) {
+            androidApp.off(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
+        }
+    }
+    onAndroidBackButton(data: AndroidActivityBackPressedEventData) {
+        if (this.creation) {
+            data.cancel = true;
+        } else if (this.closeOnBack) {
+            androidApp.foregroundActivity.finish();
+        }
     }
     onLoaded() {}
 

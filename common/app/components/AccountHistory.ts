@@ -26,10 +26,12 @@ export default class AccountHistory extends PageComponent {
         this.$authService
             .getAccountHistory(this.accountInfo)
             .then(r => {
+                console.log('getAccountHistory', r);
                 this.dataItems = new ObservableArray(r);
-                this.loading = false;
             })
-            .catch(this.showError);
+            .catch(this.showError).finally(()=>{
+                this.loading = false;
+            });
     }
     onLoaded(args: NavigatedData) {
         if (!args.isBackNavigation) {
