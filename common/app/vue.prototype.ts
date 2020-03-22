@@ -97,15 +97,15 @@ const Plugin = {
 
         const barCodeScanner = new BarcodeScanner();
         Vue.prototype.$scanQRCode = function(message) {
-            // if (isSimulator) {
-            //     return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
-            // }
+            if (isSimulator) {
+                return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
+            }
             return barCodeScanner
                 .scan({
                     formats: 'QR_CODE, EAN_13',
                     cancelLabel: this.$t('close'), // iOS only, default 'Close'
                     message: '', // Android only, default is 'Place a barcode inside the viewfinder rectangle to scan it.'
-                    showFlipCameraButton: true, // default false
+                    showFlipCameraButton: false, // default false
                     preferFrontCamera: false, // default false
                     showTorchButton: true, // default false
                     beepOnScan: true, // Play or Suppress beep on scan (default true)

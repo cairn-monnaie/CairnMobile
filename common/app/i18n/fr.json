@@ -2,11 +2,6 @@
   "app": {
     "name": "eCairn"
   },
-  "title": {
-    "activity": {
-      "kimera": "eCairn"
-    }
-  },
   "ios": {
     "info": {
       "plist": {

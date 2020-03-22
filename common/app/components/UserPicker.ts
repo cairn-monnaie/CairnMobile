@@ -68,13 +68,15 @@ export default class UserPicker extends PageComponent {
             });
         }
         this.$authService
-            .getUsers()
+            .getUsers({
+                query
+            })
             .then(r => {
-                r.forEach(user => {
-                    if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.name) === -1) {
-                        items.push(user);
-                    }
-                });
+                // r.forEach(user => {
+                //     if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.name) === -1) {
+                items.push(...r);
+                // }
+                // });
                 // return r;
                 // return r.reduce((accumulator: User[], currentValue) => {
                 //     console.log('test user', query, regexp, currentValue.name, currentValue.username);

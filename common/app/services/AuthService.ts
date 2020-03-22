@@ -111,6 +111,20 @@ function cleanupUser(user: any) {
     }
     return result as User;
 }
+function cleanupTransaction(transaction: any) {
+    const result = pick(transaction, TransactionKeys) as Transaction;
+    result.submissionDate = dayjs(result.submissionDate).valueOf();
+    result.reason = result.reason.split('\n')[0];
+    // t.executionDate = dayjs(t.executionDate).valueOf();
+    result.credit = result.type === TransactionType.CONVERSION_BDC || result.type === TransactionType.CONVERSION_HELLOASSO || result.type === TransactionType.DEPOSIT;
+    if (result.creditor) {
+        result.creditor = cleanupUser(result.creditor);
+    }
+    if (result.debitor) {
+        result.debitor = cleanupUser(result.debitor);
+    }
+    return result;
+}
 
 export interface LoginParams {
     username: string;
@@ -194,30 +208,31 @@ export enum TransactionType {
     ONLINE_PAYMENT, // achat en ligne)
     MOBILE_APP
 }
-export interface Transaction {
-    credit: boolean;
-    smsPayment: boolean;
-    id: number;
-    type: TransactionType;
-    paymentID: string;
-    submissionDate: number;
-    creditorame: string;
-    description: string;
-    reason: string;
-    amount: number;
-    fromAccountNumber: string;
-    toAccountNumber: string;
+export class Transaction {
+    credit: boolean = null;
+    smsPayment: boolean = null;
+    id: number = null;
+    type: TransactionType = null;
+    paymentID: string = null;
+    submissionDate: number = null;
+    creditorame: string = null;
+    description: string = null;
+    reason: string = null;
+    amount: number = null;
+    fromAccountNumber: string = null;
+    toAccountNumber: string = null;
     creditor: {
         name: string;
         id: number;
-    };
-    creditorName: string;
+    } = null;
+    creditorName: string = null;
     debitor: {
         name: string;
         id: number;
-    };
-    debitorName: string;
+    } = null;
+    debitorName: string = null;
 }
+const TransactionKeys = Object.getOwnPropertyNames(new Transaction());
 
 function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -395,6 +410,11 @@ export default class AuthService extends NetworkService {
     lastAccountsUpdateTime: number;
     async getAccounts(): Promise<AccountInfo[]> {
         if (this.accounts && this.lastAccountsUpdateTime && Date.now() - this.lastAccountsUpdateTime < 3600 * 1000) {
+            this.notify({
+                eventName: AccountInfoEvent,
+                object: this,
+                data: this.accounts
+            } as AccountInfoEventData);
             return this.accounts;
         }
         return this.request({
@@ -440,11 +460,52 @@ export default class AuthService extends NetworkService {
             return r;
         });
     }
-    getUsers(): Promise<User[]> {
+    getUsers({
+        sortKey,
+        sortOrder,
+        limit,
+        offset,
+        query,
+        mapBounds
+    }: {
+        sortKey?: string;
+        sortOrder?: string;
+        limit?: number;
+        offset?: number;
+        query?: string;
+        mapBounds?: MapBounds;
+    }): Promise<User[]> {
+        let boundingBox = {
+            minLon: '',
+            maxLon: '',
+            minLat: '',
+            maxLat: ''
+        };
+        if (mapBounds) {
+            boundingBox = {
+                minLon: mapBounds.southwest.longitude + '',
+                maxLon: mapBounds.northeast.longitude + '',
+                minLat: mapBounds.southwest.latitude + '',
+                maxLat: mapBounds.northeast.latitude + ''
+            };
+        }
         return this.request({
             url: authority + '/mobile/users',
-            method: 'POST'
-        }).then(r => r.filter(r => r.roles.indexOf('ROLE_PRO') !== -1).map(cleanupUser));
+            method: 'POST',
+            content: JSON.stringify({
+                limit: limit || 100 + '',
+                offset: offset || 0 + '',
+                orderBy: {
+                    key: sortKey || '',
+                    order: sortOrder || ''
+                },
+                bounding_box: boundingBox,
+                name: query || '',
+                roles: {
+                    '0': 'ROLE_PRO'
+                }
+            })
+        }).then(r => r.map(cleanupUser));
     }
     addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         this.lastBenificiariesUpdateTime = undefined;
@@ -490,17 +551,18 @@ export default class AuthService extends NetworkService {
     }
     getUserForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
-        return this.getUsers().then(r =>
-            r.filter(u => {
-                // console.log('getUserForMap', 'filter', u.address);
-                if (!!u.address && !!u.address.latitude) {
-                    const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
-                    // console.log('getUserForMap', 'contains', result);
-                    return result;
-                }
-                return false;
-            })
-        );
+        return this.getUsers({ mapBounds });
+        // .then(r =>
+        //     r.filter(u => {
+        //         // console.log('getUserForMap', 'filter', u.address);
+        //         if (!!u.address && !!u.address.latitude) {
+        //             const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
+        //             // console.log('getUserForMap', 'contains', result);
+        //             return result;
+        //         }
+        //         return false;
+        //     })
+        // );
     }
     getAccountHistory(account: AccountInfo): Promise<Transaction[]> {
         return this.request({
@@ -520,16 +582,7 @@ export default class AuthService extends NetworkService {
                 orderBy: 'ASC'
             }),
             method: 'POST'
-        }).then((r: Transaction[]) =>
-            r
-                .map(t => {
-                    t.submissionDate = dayjs(t.submissionDate).valueOf();
-                    // t.executionDate = dayjs(t.executionDate).valueOf();
-                    t.credit = t.type === TransactionType.CONVERSION_BDC || t.type === TransactionType.CONVERSION_HELLOASSO || t.type === TransactionType.DEPOSIT;
-                    return t;
-                })
-                .sort((a, b) => b.submissionDate - a.submissionDate)
-        );
+        }).then((r: any[]) => r.map(cleanupTransaction).sort((a, b) => b.submissionDate - a.submissionDate));
     }
     fakeSMSPayment(sender: string, message: string) {
         return this.request({

@@ -102,10 +102,12 @@ export default class Profile extends PageComponent {
             .updateUserProfile(this.updateUserProfile)
             .then(result => {
                 this.editing = false;
-                this.loading = false;
                 this.updateUserProfile = null;
             })
-            .catch(this.showError);
+            .catch(this.showError)
+            .finally(() => {
+                this.loading = false;
+            });
     }
     onNavigatedTo(args: NavigatedData) {
         // if (!args.isBackNavigation) {
@@ -128,11 +130,13 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r) {
-                    this.loading = true;
                     return this.$authService.deletePhone(phoneNumber);
                 }
             })
-            .catch(this.showError);
+            .catch(this.showError)
+            .finally(() => {
+                this.loading = false;
+            });
     }
     addPhoneNumber() {
         prompt({
@@ -146,11 +150,12 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r && r.text && r.text.length > 0) {
-                    this.loading = true;
                     return this.$authService.addPhone(r.text);
                 }
             })
-            .catch(this.showError);
+            .catch(this.showError).finally(()=>{
+                this.loading = false;
+            });
     }
     onTextChange(value: string, key: string) {
         this.log('onTextChange', key, value);

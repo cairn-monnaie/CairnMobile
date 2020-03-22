@@ -9,8 +9,14 @@ import PageComponent from './PageComponent';
 import TransferWindow from './TransferWindow';
 import UserPicker from './UserPicker';
 import { showSnack } from 'nativescript-material-snackbar';
+import { formatAddress } from '~/helpers/formatter';
+import MapComponent from './MapComponent';
 
-@Component({})
+@Component({
+    components: {
+        MapComponent
+    }
+})
 export default class Home extends PageComponent {
     navigateUrl = ComponentIds.Situation;
     amountError: string = null;
@@ -24,12 +30,12 @@ export default class Home extends PageComponent {
         super.mounted();
         // this.$on('navigatedTo', this.onNavigatedTo)
         this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
-        if (this.$securityService.biometricEnabled) {
-            if (this.$securityService.shouldReAuth()) {
-                this.$authService.logout();
-                this.$alert(this.$t('loggedout_due_to_fingerprint_change'));
-            }
-        }
+        // if (this.$securityService.biometricEnabled) {
+        //     if (this.$securityService.shouldReAuth()) {
+        //         this.$authService.logout();
+        //         this.$alert(this.$t('loggedout_due_to_fingerprint_change'));
+        //     }
+        // }
     }
     destroyed() {
         super.destroyed();
@@ -58,6 +64,8 @@ export default class Home extends PageComponent {
             }
         }
     }
+
+    formatAddress = formatAddress;
     onItemLoading(args) {
         if (this.$isIOS) {
             if (args.ios.backgroundView) {
@@ -92,10 +100,23 @@ export default class Home extends PageComponent {
         if (args && args.object) {
             args.object.refreshing = false;
         }
-        // console.log('refreshing');
+        this.log('refreshing');
         this.loading = true;
         // setTimeout(() => {
-        return Promise.all([this.$authService.getAccounts(), this.$authService.getUsers().then(r => (this.users = r))]).catch(this.showError);
+        return Promise.all([
+            this.$authService.getAccounts(),
+            this.$authService
+                .getUsers({
+                    limit: 10,
+                    sortKey: 'creationDate',
+                    sortOrder: 'DESC'
+                })
+                .then(r => (this.users = r))
+        ])
+            .catch(this.showError)
+            .finally(() => {
+                this.loading = false;
+            });
 
         // }, 1000);
     }
