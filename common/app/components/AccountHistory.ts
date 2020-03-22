@@ -26,7 +26,6 @@ export default class AccountHistory extends PageComponent {
         this.$authService
             .getAccountHistory(this.accountInfo)
             .then(r => {
-                this.log(r);
                 this.dataItems = new ObservableArray(r);
                 this.loading = false;
             })

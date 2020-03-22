@@ -84,5 +84,6 @@
   "wrong_scancode": "le code scanne n'est pas un code eCairn",
   "wrong_confirmation_code": "code de confirmation érroné",
   "enter_password": "rentrez votre passcode",
-  "password_creation": "Créez un mot de passe"
+  "password_creation": "Créez un mot de passe",
+  "default_reason": "paiement eCairn Mobile"
 }

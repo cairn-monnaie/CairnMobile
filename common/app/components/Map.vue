@@ -1,5 +1,5 @@
 <template>
-    <CairnPage title="map">
+    <CairnPage :title="$t('map')">
         <GridLayout rows="*,150" class="pageContent">
             <MapComponent ref="mapComp" rowSpan="2" showLocationButton="true" @mapReady="onMapReady" @mapStable="onMapStable" @elementClick="onElementClick"/>
             <BottomSheetHolder rowSpan="2" ref="bottomSheetHolder" :peekerSteps="bottomSheetSteps" isPassThroughParentEnabled="true" @close="unselectItem" @scroll="onBottomSheetScroll">

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 // import { fonticon } from 'nativescript-akylas-fonticon';
-import { localize } from 'nativescript-localize';
+import { $t } from '~/helpers/locale';
 import VueStringFilter from 'vue-string-filter';
 import { convertTime, formatAddress, formatCurrency } from '~/helpers/formatter';
 dayjs.extend(relativeTime);
@@ -14,7 +14,7 @@ const Plugin = {
 
         Vue.filter('concat', (value, ln) => `${value} ${ln}`);
         Vue.filter('preconcat', (value, ln) => `${ln} ${value}`);
-        Vue.filter('L', localize);
+        Vue.filter('L', $t);
 
         Vue.filter('currency', function(value: number, showZeroCents = true) {
             return formatCurrency(value, showZeroCents);
@@ -40,7 +40,7 @@ const Plugin = {
             return value.charAt(0).toUpperCase() + value.slice(1);
         });
         Vue.filter('dateRelative', function(value, formatStr?: string) {
-            return dayjs(value).fromNow();
+            return dayjs(value).calendar();
             // if (value) {
             //     return formatRelative(value, Date.now(), {
             //         locale: frLocale

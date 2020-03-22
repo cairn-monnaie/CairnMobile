@@ -2,7 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 import { NavigationEntry, Page, topmost } from '@nativescript/core/ui/frame/frame';
 import { VueConstructor } from 'vue';
-import { primaryColor } from '~/variables';
+import { actionBarButtonHeight, actionBarHeight, primaryColor } from '~/variables';
 
 @Component({})
 export default class CairnPage extends BaseVueComponent {
@@ -22,13 +22,27 @@ export default class CairnPage extends BaseVueComponent {
     public actionBarHidden: boolean;
 
     @Prop({ default: true, type: Boolean })
+    public bottomActionBarHidden: boolean;
+
+    @Prop({ type: String })
+    public mdiAction: string;
+
+    @Prop({ type: String })
+    public mdiActionClass: string;
+
+    @Prop({ type: Number })
+    public mdiActionFontSize: number;
+
+    @Prop({ default: true, type: Boolean })
     public actionBarShowLogo: boolean;
 
     @Prop({ default: primaryColor, type: String })
     public actionBarBackroundColor: string;
 
-    @Prop({ type: Number })
+    @Prop({ default: actionBarHeight, type: Number })
     public actionBarHeight: number;
+
+    public actionBarButtonHeight = actionBarButtonHeight;
 
     @Prop({ type: Number })
     public actionBarElevation: number;

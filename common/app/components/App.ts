@@ -30,6 +30,7 @@ import Login from './Login';
 import Map from './Map';
 import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
+import Settings from './Settings';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
@@ -93,7 +94,8 @@ export enum ComponentIds {
     Profile = 'profile',
     Transfer = 'transfer',
     Map = 'map',
-    Beneficiaries = 'beneficiaries'
+    Beneficiaries = 'beneficiaries',
+    Settings = 'settings'
 }
 // Settings = 'settings',
 // Pairing = 'pairing',
@@ -162,9 +164,6 @@ export default class App extends BaseVueComponent {
         [ComponentIds.Situation]: {
             component: Home
         },
-        // [ComponentIds.Settings]: {
-        //     component: Settings
-        // },
         [ComponentIds.Profile]: {
             component: Profile
         },
@@ -176,6 +175,9 @@ export default class App extends BaseVueComponent {
         },
         [ComponentIds.Map]: {
             component: Map
+        },
+        [ComponentIds.Settings]: {
+            component: Settings
         }
     };
     selectedTabIndex: number = 0;
@@ -212,6 +214,11 @@ export default class App extends BaseVueComponent {
                 title: 'map',
                 icon: 'mdi-map',
                 url: ComponentIds.Map
+            },
+            {
+                title: 'settings',
+                icon:'mdi-settings',
+                url: ComponentIds.Settings
             }
         ];
 
@@ -220,7 +227,7 @@ export default class App extends BaseVueComponent {
 
     constructor() {
         super();
-        this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
+        // this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
         // this.currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
@@ -242,7 +249,7 @@ export default class App extends BaseVueComponent {
     mMessageReceiver: android.content.BroadcastReceiver;
     mounted(): void {
         super.mounted();
-        if (gVars.isAndroid) {
+        if (gVars.isAndroid && gVars.internalApp) {
             perms
                 .request('receiveSms')
                 .then(() => {

@@ -34,8 +34,10 @@ mdripple {
     ripple-color: $primary-color;
 }
 
-.page {
+page {
     background-color: $dark-color;
+    status-bar-style: light;
+    status-bar-color: $primary-color;
 }
 
 .pageContent {
@@ -67,12 +69,13 @@ mdbutton[variant='contained'] {
 }
 
 mdtextfield[variant='filled'] {
-    // background-color: #15000000;
+    background-color: #15000000;
 }
 
 mdtextfield {
     highlight-color: $accent-color;
-    placeholder-color: $accent-color;
+    hint-color: gray;
+    // placeholder-color: $accent-color;
 }
 
 .fab-item-title {

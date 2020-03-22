@@ -18,7 +18,7 @@ export default class PageComponent extends BaseVueComponent {
         return this.page && this.page.loading;
     }
     set loading(value: boolean) {
-        console.log('set loading', value, !!this.page);
+        // console.log('set loading', value, !!this.page);
         if (this.page) {
             this.page.loading = value;
         }
@@ -31,7 +31,7 @@ export default class PageComponent extends BaseVueComponent {
     mounted() {
         super.mounted();
         this.page = this.$children[0] as CairnPage;
-        console.log(this.$children[0].constructor.name, this.navigateUrl);
+        // console.log(this.$children[0].constructor.name, this.navigateUrl);
         this.page.navigateUrl = this.navigateUrl;
     }
     destroyed() {

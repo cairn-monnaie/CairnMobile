@@ -26,13 +26,13 @@
                     <ListItem
                         margin="20 20 10 20"
                         :height="80"
-                        :class="accounts.length > 1 ? 'cardView': 'flatCardView'"
+                        :class="accounts.length > 1 ? 'cardView' : 'flatCardView'"
                         :showBottomLine="false"
                         :overText="$t('account')"
                         :title="account ? account.name : $t('choose_account')"
                         :subtitle="account ? account.number : undefined"
                         :rightIcon="accounts.length > 1 ? 'mdi-chevron-right' : undefined"
-                            @tap="selectAccount"
+                        @tap="selectAccount"
                     />
 
                     <GridLayout columns="*,auto">
@@ -49,7 +49,7 @@
                         />
                         <MDButton col="1" textAlignment="center" marginRight="20" variant="flat" class="big-icon-themed-btn" text="mdi-qrcode-scan" @tap="scanQRCode()" />
                     </GridLayout>
-                    <MDTextField
+                    <!-- <MDTextField
                         backgroundColor="#ffffff"
                         margin="0 20 0 20"
                         class="input"
@@ -57,7 +57,8 @@
                         v-model="reason"
                         returnKeyType="next"
                         :error="reasonError"
-                    />
+                    /> -->
+                    <MDButton row="1" v-show="!loading" verticalAlignment="center" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
                     <MDTextField
                         backgroundColor="#ffffff"
                         margin="10 20 20 20"
@@ -69,7 +70,6 @@
                 </StackLayout>
             </ScrollView>
 
-            <MDButton row="1" v-show="!loading" verticalAlignment="center" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
             <MDActivityIndicator row="3" v-show="loading" :busy="loading" width="45" height="45" />
 
             <StackLayout row="1" v-show="refreshing" backgroundColor="#88ffffff" horizontalAlignment="center" verticalAlignment="center">

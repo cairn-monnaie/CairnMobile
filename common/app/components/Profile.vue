@@ -18,7 +18,7 @@
                 color="white"
                 borderColor="white"
                 fontSize="60"
-                text="mdi-account"
+                :text="(editing && isPro) ? 'mdi-account-edit': 'mdi-account'"
                 v-show="!image"
                 @tap="chooseImage"
                 :isUserInteractionEnabled="editing"

@@ -17,8 +17,10 @@
 	::icon {
 		marker-placement: [nuti::markers3d];
 		marker-file: url(images/cairn.png);
-		marker-width: 16;
-		marker-height: 16;
+		marker-width: 24;
+		marker-height: 24;
+		marker-allow-overlap: true;
+		marker-clip: false;
 	}
 	
 	::label {
@@ -29,12 +31,28 @@
 		text-wrap-before: true;
 		text-avoid-edges: true;
 		text-fill: #000000;
-		text-size: 10;
+		text-size: 12;
 		text-wrap-width: step([zoom], (15, 80), (16, 90), (18, 100));
 		text-feature-id: [name];
-		text-dy: 10; 
+		text-dy: 15; 
 		text-halo-fill: #ffffff;
 		text-halo-rasterizer: fast;
 		text-halo-radius: 1;
 	}
 }
+
+// #contour {
+// 	[zoom>=12][ele>300],
+// 	[zoom>=14][ele>200],
+// 	[zoom>=16][ele>0] {
+// 		line-width: 0.68;
+// 		line-color: #ff0000;
+// 		// line-comp-op: minus;
+// 		line-opacity: 0.2;
+// 		[index=5][zoom>=16],
+// 		[index=10] {
+// 			line-opacity: 0.3;
+// 			line-width: 0.96;
+// 		}
+// 	}
+// }
