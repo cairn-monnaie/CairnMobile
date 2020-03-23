@@ -114,6 +114,7 @@ function cleanupUser(user: any) {
 function cleanupTransaction(transaction: any) {
     const result = pick(transaction, TransactionKeys) as Transaction;
     result.submissionDate = dayjs(result.submissionDate).valueOf();
+    result.executionDate = dayjs(result.executionDate).valueOf();
     result.reason = result.reason.split('\n')[0];
     // t.executionDate = dayjs(t.executionDate).valueOf();
     result.credit = result.type === TransactionType.CONVERSION_BDC || result.type === TransactionType.CONVERSION_HELLOASSO || result.type === TransactionType.DEPOSIT;
@@ -215,6 +216,7 @@ export class Transaction {
     type: TransactionType = null;
     paymentID: string = null;
     submissionDate: number = null;
+    executionDate: number = null;
     creditorame: string = null;
     description: string = null;
     reason: string = null;
@@ -564,25 +566,45 @@ export default class AuthService extends NetworkService {
         //     })
         // );
     }
-    getAccountHistory(account: AccountInfo): Promise<Transaction[]> {
+    getAccountHistory({
+        accountId,
+        sortKey,
+        sortOrder,
+        limit,
+        offset,
+        query
+    }: {
+        accountId: string;
+        sortKey?: string;
+        sortOrder?: string;
+        limit?: number;
+        offset?: number;
+        query?: string;
+    }): Promise<Transaction[]> {
         return this.request({
-            url: authority + `/mobile/account/operations/${account.id}`,
+            url: authority + `/mobile/account/operations/${accountId}`,
             content: JSON.stringify({
                 begin: dayjs()
                     .subtract(2, 'month')
                     .format('YYYY-MM-DD'),
                 end: dayjs().format('YYYY-MM-DD'),
-                // minAmount: '',
                 // maxAmount: '',
                 // keywords: '',
                 types: {
                     '0': 'DEPOSIT',
                     '1': 'TRANSACTION_EXECUTED'
                 },
-                orderBy: 'ASC'
+                sortOrder: 'ASC',
+                limit: limit || 100 + '',
+                offset: offset || 0 + '',
+                // orderBy: {
+                //     key: sortKey || '',
+                //     order: sortOrder || ''
+                // },
+                // name: query || ''
             }),
             method: 'POST'
-        }).then((r: any[]) => r.map(cleanupTransaction).sort((a, b) => b.submissionDate - a.submissionDate));
+        }).then((r: any[]) => r.map(cleanupTransaction));
     }
     fakeSMSPayment(sender: string, message: string) {
         return this.request({
