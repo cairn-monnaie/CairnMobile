@@ -54,7 +54,7 @@ export default class PasscodeWindow extends PageComponent {
     }
 
     updateMessage() {
-        this.message = this.confirmingPassword ? this.$t('confirm_password') : this.$t('enter_password');
+        this.message = this.confirmingPassword ? this.$t('confirm_passcode') : this.$t('enter_passcode');
     }
     clear() {
         this.confirmingPassword = false;
@@ -74,8 +74,7 @@ export default class PasscodeWindow extends PageComponent {
                     console.log('closing modal');
                     this.$modal.close(this.passCodeArray.join(''));
                 } else {
-                    // this.$alert(this.$t('confirm_password_dont_match'));
-                    this.message = this.$t('confirm_password_dont_match');
+                    this.message = this.$t('confirm_passcode_dont_match');
                     setTimeout(() => {
                         this.confirmingPassword = false;
                         this.passCodeArray = [];
