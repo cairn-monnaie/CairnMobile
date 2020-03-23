@@ -15,12 +15,14 @@
                 <v-template>
                     <GridLayout rows="*" columns="*">
                         <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
-                        <NSImg stretch="aspectFit" :src="item.image" width="100%" height="100%" backgroundColor="white" />
+                        <NSImg stretch="aspectFill" :src="item.image" width="100%" height="100%" backgroundColor="white" />
                         <Label
-                            textAlignment="center"
-                            verticalTextAlignment="center"
-                            fontSize="18"
-                            color="black"
+                            textAlignment="left"
+                            verticalAlignment="bottom"
+                            class="bottom-gradient"
+                            paddingTop="40"
+                            fontSize="14"
+                            color="white"
                             :html="`<big><b>${item.name}</b></big><br>${item.description}<br> ${formatAddress(item.address)}`"
                         />
                     </GridLayout>
