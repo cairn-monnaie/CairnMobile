@@ -89,5 +89,8 @@
   "auto_lock_desc": "Demander votre PIN/Empreinte/FaceID à chaque ouverture de l'application",
   "change_pin_code": "Changer votre code PIN",
   "change_pin_code_desc": "Changer votre code PIN",
-  "loggedout_due_to_fingerprint_change": "il semblerait que vous ayez changé vos empreinte/FaceID. Pour des raisons de sécurité il vous est nécessaire de vous reconnecter"
+  "loggedout_due_to_fingerprint_change": "il semblerait que vous ayez changé vos empreinte/FaceID. Pour des raisons de sécurité il vous est nécessaire de vous reconnecter",
+  "confirm_passcode_dont_match": "la confirmation du PIN ne correspond pas",
+  "confirm_passcode": "confirmer le PIN",
+  "enter_passcode": "entrer un PIN"
 }
