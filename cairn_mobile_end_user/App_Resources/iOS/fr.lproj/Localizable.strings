@@ -1,3 +1,6 @@
+"enter_passcode" = "entrer un PIN";
+"confirm_passcode" = "confirmer le PIN";
+"confirm_passcode_dont_match" = "la confirmation du PIN ne correspond pas";
 "loggedout_due_to_fingerprint_change" = "il semblerait que vous ayez changé vos empreinte/FaceID. Pour des raisons de sécurité il vous est nécessaire de vous reconnecter";
 "change_pin_code_desc" = "Changer votre code PIN";
 "change_pin_code" = "Changer votre code PIN";
