@@ -8,9 +8,6 @@ import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 
-const clientId = '1_1vr46xqj1fmswgw0kkgw0os8okow8wcoow040sws8wsoc4kkk0';
-const clientSecret = '3xh9mdtavh44ws888w88s88osc8cgskokoc0o0cwgocwwsg488';
-const authority = 'https://test.cairn-monnaie.com';
 const tokenEndpoint = '/oauth/tokens';
 
 export const LoggedinEvent = 'loggedin';
@@ -85,9 +82,9 @@ function cleanupUser(user: any) {
         result.creationDate = result.creationDate.timestamp * 1000;
     }
     if (result.image) {
-        result.image = `${authority}/${result.image.webPath}`;
+        result.image = `${CAIRN_URL}/${result.image.webPath}`;
     } else {
-        result.image = `${authority}/bundles/cairnuser/img/pro.png`;
+        result.image = `${CAIRN_URL}/bundles/cairnuser/img/pro.png`;
     }
     if (result.address) {
         result.address = {
@@ -307,7 +304,7 @@ export default class AuthService extends NetworkService {
     @numberProperty userId: number;
     @objectProperty userProfile: UserProfile;
     @objectProperty loginParams: LoginParams;
-    authority = authority;
+    authority = CAIRN_URL;
 
     getMessage() {
         // firebase.addOnMessageReceivedCallback(function (data) {
@@ -525,7 +522,7 @@ export default class AuthService extends NetworkService {
                 executionDate: date,
                 // executionDate: dayjs().format('YYYY-MM-DD'),
                 reason,
-                description,
+                description
                 // api_secret: sha(date)
             })
         });
@@ -536,7 +533,7 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             content: JSON.stringify({
                 save: 'true',
-                confirmationCode: '1111',
+                confirmationCode: '1111'
                 // api_secret: sha(oprationId)
             })
         }).then(r => {
@@ -602,7 +599,7 @@ export default class AuthService extends NetworkService {
     }
     fakeSMSPayment(sender: string, message: string) {
         return this.request({
-            url: `${authority}/sms/reception`,
+            apiPath: '/sms/reception',
             method: 'GET',
             queryParams: {
                 originator: 'blabalcairn',
@@ -616,8 +613,8 @@ export default class AuthService extends NetworkService {
             apiPath: tokenEndpoint,
             method: 'POST',
             content: JSON.stringify({
-                client_id: clientId,
-                client_secret: clientSecret,
+                client_id: CAIRN_CLIENT_ID,
+                client_secret: CAIRN_CLIENT_SECRET,
                 grant_type: 'password',
                 username: user.username,
                 password: user.password

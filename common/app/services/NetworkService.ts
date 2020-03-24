@@ -223,8 +223,6 @@ function jsonObjectToKeepOrderString(obj) {
     return (Object.keys(obj).map(k=>k+':'+jsonObjectToKeepOrderString(obj[k])).sort()).join('');
 }
 
-// import sha256 from 'hash.js/lib/hash/sha/256';
-const SHA_SECRET_KEY = 'FuckYouCoronavirus';
 import hmacSHA256 from 'crypto-js/hmac-sha256';
 import md5 from 'crypto-js/md5';
 export class NetworkService extends Observable {
