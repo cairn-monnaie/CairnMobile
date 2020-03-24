@@ -23,6 +23,7 @@ declare const CAIRN_CLIENT_ID: string;
 declare const CAIRN_CLIENT_SECRET: string;
 declare const SHA_SECRET_KEY: string;
 declare const CAIRN_URL: string;
+declare const CAIRN_SMS_NUMBER: string;
 
 declare namespace com {
     export namespace akylas {
