@@ -8,7 +8,6 @@ import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 
-const SHA_SECRET_KEY = 'FuckYouCoronavirus';
 const clientId = '1_1vr46xqj1fmswgw0kkgw0os8okow8wcoow040sws8wsoc4kkk0';
 const clientSecret = '3xh9mdtavh44ws888w88s88osc8cgskokoc0o0cwgocwwsg488';
 const authority = 'https://test.cairn-monnaie.com';
@@ -18,14 +17,6 @@ export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 export const AccountInfoEvent = 'accountinfo';
 export const UserProfileEvent = 'userprofile';
-
-import sha256 from 'hash.js/lib/hash/sha/256';
-
-function sha(text: string | number) {
-    return sha256()
-        .update(SHA_SECRET_KEY + text)
-        .digest('hex');
-}
 
 // const sha256 = require('hash.js');
 // export function sha256(text: string) {
@@ -95,6 +86,8 @@ function cleanupUser(user: any) {
     }
     if (result.image) {
         result.image = `${authority}/${result.image.webPath}`;
+    } else {
+        result.image = `${authority}/bundles/cairnuser/img/pro.png`;
     }
     if (result.address) {
         result.address = {
@@ -314,6 +307,7 @@ export default class AuthService extends NetworkService {
     @numberProperty userId: number;
     @objectProperty userProfile: UserProfile;
     @objectProperty loginParams: LoginParams;
+    authority = authority;
 
     getMessage() {
         // firebase.addOnMessageReceivedCallback(function (data) {
@@ -353,7 +347,7 @@ export default class AuthService extends NetworkService {
     }
     getUserProfile(userId?: number) {
         return this.request({
-            url: authority + `/mobile/users/${userId || this.userId}`,
+            apiPath: `/mobile/users/${userId || this.userId}`,
             method: 'GET'
         }).then(result => {
             this.userProfile = cleanupUser(result);
@@ -381,7 +375,7 @@ export default class AuthService extends NetworkService {
 
         return getFormData(actualData).then(params =>
             this.requestMultipart({
-                url: authority + '/mobile/users/profile',
+                apiPath: '/mobile/users/profile',
                 multipartParams: params.filter(s => !!s),
                 method: 'POST'
             })
@@ -389,7 +383,7 @@ export default class AuthService extends NetworkService {
     }
     addPhone(phoneNumber: string) {
         return this.request({
-            url: authority + '/mobile/phones.json',
+            apiPath: '/mobile/phones.json',
             method: 'POST',
             content: JSON.stringify({
                 phoneNumber,
@@ -399,7 +393,7 @@ export default class AuthService extends NetworkService {
     }
     deletePhone(phoneNumber: string) {
         return this.request({
-            url: authority + `/mobile/phones/${this.userId}.json`,
+            apiPath: `/mobile/phones/${this.userId}.json`,
             method: 'DELETE',
             content: JSON.stringify({
                 phoneNumber,
@@ -420,7 +414,7 @@ export default class AuthService extends NetworkService {
             return this.accounts;
         }
         return this.request({
-            url: authority + '/mobile/accounts.json',
+            apiPath: '/mobile/accounts.json',
             method: 'GET'
         }).then(r => {
             const result = r.map(
@@ -450,7 +444,7 @@ export default class AuthService extends NetworkService {
             return this.beneficiaries;
         }
         return this.request({
-            url: authority + '/mobile/beneficiaries',
+            apiPath: '/mobile/beneficiaries',
             method: 'GET'
         }).then(r => {
             r.map(b => {
@@ -492,7 +486,7 @@ export default class AuthService extends NetworkService {
             };
         }
         return this.request({
-            url: authority + '/mobile/users',
+            apiPath: '/mobile/users',
             method: 'POST',
             content: JSON.stringify({
                 limit: limit || 100 + '',
@@ -512,7 +506,7 @@ export default class AuthService extends NetworkService {
     addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         this.lastBenificiariesUpdateTime = undefined;
         return this.request({
-            url: authority + '/mobile/beneficiaries',
+            apiPath: '/mobile/beneficiaries',
             method: 'POST',
             content: JSON.stringify({
                 cairn_user: cairn_user_email
@@ -522,7 +516,7 @@ export default class AuthService extends NetworkService {
     createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
         return this.request({
-            url: authority + '/mobile/payment/request',
+            apiPath: '/mobile/payment/request',
             method: 'POST',
             content: JSON.stringify({
                 fromAccount: account.number,
@@ -532,18 +526,18 @@ export default class AuthService extends NetworkService {
                 // executionDate: dayjs().format('YYYY-MM-DD'),
                 reason,
                 description,
-                api_secret: sha(date)
+                // api_secret: sha(date)
             })
         });
     }
     confirmOperation(oprationId, code?: string) {
         return this.request({
-            url: authority + `/mobile/transaction/confirm/${oprationId}.json`,
+            apiPath: `/mobile/transaction/confirm/${oprationId}.json`,
             method: 'POST',
             content: JSON.stringify({
                 save: 'true',
                 confirmationCode: '1111',
-                api_secret: sha(oprationId)
+                // api_secret: sha(oprationId)
             })
         }).then(r => {
             // we need to refresh accounts
@@ -582,7 +576,7 @@ export default class AuthService extends NetworkService {
         query?: string;
     }): Promise<Transaction[]> {
         return this.request({
-            url: authority + `/mobile/account/operations/${accountId}`,
+            apiPath: `/mobile/account/operations/${accountId}`,
             content: JSON.stringify({
                 begin: dayjs()
                     .subtract(2, 'month')
@@ -596,7 +590,7 @@ export default class AuthService extends NetworkService {
                 },
                 sortOrder: 'ASC',
                 limit: limit || 100 + '',
-                offset: offset || 0 + '',
+                offset: offset || 0 + ''
                 // orderBy: {
                 //     key: sortKey || '',
                 //     order: sortOrder || ''
@@ -619,7 +613,7 @@ export default class AuthService extends NetworkService {
     }
     getToken(user: LoginParams) {
         return this.request({
-            url: authority + tokenEndpoint,
+            apiPath: tokenEndpoint,
             method: 'POST',
             content: JSON.stringify({
                 client_id: clientId,
