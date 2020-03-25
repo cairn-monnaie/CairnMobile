@@ -24,12 +24,18 @@ export default class AccountHistory extends PageComponent {
         // console.log("refreshing")
         this.loading = true;
         this.$authService
-            .getAccountHistory(this.accountInfo)
+            .getAccountHistory({
+                accountId: this.accountInfo.id,
+                limit: 100,
+                sortOrder: 'DESC',
+                sortKey: 'submissionDate'
+            })
             .then(r => {
-                console.log('getAccountHistory', r);
+                // console.log('getAccountHistory', r);
                 this.dataItems = new ObservableArray(r);
             })
-            .catch(this.showError).finally(()=>{
+            .catch(this.showError)
+            .finally(() => {
                 this.loading = false;
             });
     }

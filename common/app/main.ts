@@ -34,8 +34,8 @@ if (PRODUCTION || gVars.sentry) {
         Vue.prototype.$sentry = Sentry;
         Promise.all([getVersionName(), getBuildNumber()]).then(res => {
             Sentry.init({
-                dsn: gVars.SENTRY_DSN,
-                appPrefix: gVars.SENTRY_PREFIX,
+                dsn: SENTRY_DSN,
+                appPrefix: SENTRY_PREFIX,
                 release: `${res[0]}`,
                 dist: `${res[1]}.${gVars.isAndroid ? 'android' : 'ios'}`
             });

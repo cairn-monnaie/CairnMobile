@@ -148,39 +148,43 @@ export default class TransferWindow extends PageComponent {
         if (!this.$authService.connected) {
             this.showError(new NoNetworkError());
         }
-        this.$securityService.validateSecurity(this).then(() => {
-            this.$authService
-                .createTransaction(this.account, this.recipient, this.amount, this.reason, this.description)
-                .then(
-                    r => this.$authService.confirmOperation(r.operation.id)
-                    // if (this.$securityService.enabled) {
-                    //     this.$securityService.verifyFingerprint();
-                    // } else {
-                    //     prompt({
-                    //         autoFocus: true,
-                    //         cancelable: false,
-                    //         hintText: this.$t('confirmation_code'),
-                    //         title: this.$t('confirmation'),
-                    //         message: this.$t('confirmation_code_description'),
-                    //         okButtonText: this.$t('confirm'),
-                    //         cancelButtonText: this.$t('cancel')
-                    //     }).then(result => {
-                    //         if (result && result.text && result.text.length > 0) {
-                    // return this.$authService.confirmOperation(r.operation.id);
-                    //         } else {
-                    //             return Promise.reject(this.$t('wrong_confirmation_code'));
-                    //         }
-                    //     });
-                    // }
-                )
-                .then(() => {
-                    this.close();
-                    showSnack({
-                        message: this.$t('transaction_done', this.amount, this.recipient)
+        this.$securityService
+            .validateSecurity(this)
+            .then(() => {
+                this.showLoading(this.$t('loading'));
+                return this.$authService
+                    .createTransaction(this.account, this.recipient, this.amount, this.reason, this.description)
+                    .then(
+                        r => this.$authService.confirmOperation(r.operation.id)
+                        // if (this.$securityService.enabled) {
+                        //     this.$securityService.verifyFingerprint();
+                        // } else {
+                        //     prompt({
+                        //         autoFocus: true,
+                        //         cancelable: false,
+                        //         hintText: this.$t('confirmation_code'),
+                        //         title: this.$t('confirmation'),
+                        //         message: this.$t('confirmation_code_description'),
+                        //         okButtonText: this.$t('confirm'),
+                        //         cancelButtonText: this.$t('cancel')
+                        //     }).then(result => {
+                        //         if (result && result.text && result.text.length > 0) {
+                        // return this.$authService.confirmOperation(r.operation.id);
+                        //         } else {
+                        //             return Promise.reject(this.$t('wrong_confirmation_code'));
+                        //         }
+                        //     });
+                        // }
+                    )
+                    .then(() => {
+                        this.close();
+                        showSnack({
+                            message: this.$t('transaction_done', this.amount, this.recipient)
+                        });
                     });
-                })
-                .catch(this.showError);
-        });
+            })
+            .catch(this.showError)
+            .finally(this.hideLoading);
     }
     selectAccount() {}
     selectRecipient() {

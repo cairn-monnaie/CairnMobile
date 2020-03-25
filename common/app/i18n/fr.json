@@ -10,7 +10,6 @@
       }
     }
   },
-  "app.name": "eCairn",
   "home": "accueil",
   "username": "utilisateur",
   "password": "mot de passe",
@@ -80,5 +79,18 @@
   "wrong_confirmation_code": "code de confirmation érroné",
   "enter_password": "rentrez votre passcode",
   "password_creation": "Créez un mot de passe",
-  "default_reason": "paiement eCairn Mobile"
+  "default_reason": "paiement eCairn Mobile",
+  "map": "carte",
+  "loading": "chargement",
+  "settings": "paramètres",
+  "biometric_lock": "sécurité biométrique",
+  "biometric_lock_desc": "permettre l'utilisation de votre empreinte/Face ID comme moyen de sécurisation",
+  "auto_lock": "verrouillage automatique",
+  "auto_lock_desc": "Demander votre PIN/Empreinte/FaceID à chaque ouverture de l'application",
+  "change_pin_code": "Changer votre code PIN",
+  "change_pin_code_desc": "Changer votre code PIN",
+  "loggedout_due_to_fingerprint_change": "il semblerait que vous ayez changé vos empreinte/FaceID. Pour des raisons de sécurité il vous est nécessaire de vous reconnecter",
+  "confirm_passcode_dont_match": "la confirmation du PIN ne correspond pas",
+  "confirm_passcode": "confirmer le PIN",
+  "enter_passcode": "entrer un PIN"
 }

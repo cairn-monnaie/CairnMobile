@@ -5,7 +5,7 @@
     <key>CFBundleVersion</key>
     <string>24</string>
     <key>CFBundleDevelopmentRegion</key>
-    <string>fr</string>
+    <string>en</string>
     <key>CFBundleDisplayName</key>
     <string>eCairn</string>
     <key>CFBundleExecutable</key>
@@ -54,8 +54,8 @@
     <key>BugsnagAPIKey</key>
     <string>d85d1a07697803385200b8d955e42236</string>
     <key>NSFaceIDUsageDescription</key>
-    <string>eCairn utilise les services de biométrie pour sécuriser vos transactions</string>
+    <string>eCairn uses biometric services to secure your transactions</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>eCairn a besoin de votre localisation</string>
+    <string>eCairn needs your location</string>
   </dict>
 </plist>

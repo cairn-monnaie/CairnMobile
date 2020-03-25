@@ -12,10 +12,6 @@ function timeout(ms) {
 }
 type HTTPOptions = http.HttpRequestOptions;
 
-export interface HttpRequestOptions extends HTTPOptions {
-    queryParams?: {};
-}
-
 export const NetworkConnectionStateEvent = 'NetworkConnectionStateEvent';
 export interface NetworkConnectionStateEventData extends EventData {
     data: {
@@ -26,6 +22,7 @@ export interface NetworkConnectionStateEventData extends EventData {
 
 export interface HttpRequestOptions extends HTTPOptions {
     queryParams?: {};
+    apiPath?: string;
     multipartParams?;
 }
 
@@ -216,8 +213,21 @@ export class HTTPError extends CustomError {
     }
 }
 
+function jsonObjectToKeepOrderString(obj) {
+    if (typeof obj === 'string') {
+        return obj;
+    }
+    if (Array.isArray(obj)) {
+        return (obj.map(v=>jsonObjectToKeepOrderString(v)).sort()).join('');
+    }
+    return (Object.keys(obj).map(k=>k+':'+jsonObjectToKeepOrderString(obj[k])).sort()).join('');
+}
+
+import hmacSHA256 from 'crypto-js/hmac-sha256';
+import md5 from 'crypto-js/md5';
 export class NetworkService extends Observable {
     @stringProperty token: string;
+    authority: string;
     _connectionType: connectivity.connectionType = connectivity.connectionType.none;
     _connected = false;
     get connected() {
@@ -276,34 +286,51 @@ export class NetworkService extends Observable {
         if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';
         }
-        if (this.token) {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
+        const signature = this.buildAuthorization(requestParams);
+
+        headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${signature[1]}`;
         return headers;
     }
-    request(requestParams: HttpRequestOptions, retry = 0) {
+    buildAuthorization(requestParams: HttpRequestOptions) {
+        const time = Date.now().toString();
+
+        let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
+        if (typeof requestParams.content === 'string') {
+            console.log('content', requestParams.content, jsonObjectToKeepOrderString(JSON.parse(requestParams.content)));
+            hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)));
+        }
+        console.log(hmacString);
+        return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
+    }
+    request(requestParams: Partial<HttpRequestOptions>, retry = 0) {
         if (!this.connected) {
             return Promise.reject(new NoNetworkError());
+        }
+        if (requestParams.apiPath) {
+            requestParams.url = this.authority + requestParams.apiPath;
         }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
-        requestParams.headers = this.getRequestHeaders(requestParams);
+        requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         this.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http.request(requestParams).then(response => this.handleRequestResponse(response, requestParams, requestStartTime, retry));
+        return http.request(requestParams as HttpRequestOptions).then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
     }
 
-    requestMultipart(requestParams: HttpRequestOptions, retry = 0) {
+    requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
         this.log('requestMultipart', requestParams);
+        if (requestParams.apiPath) {
+            requestParams.url = this.authority + requestParams.apiPath;
+        }
         const requestStartTime = Date.now();
         return new TNSHttpFormData()
             .post(requestParams.url, requestParams.multipartParams, {
-                headers: this.getRequestHeaders(requestParams)
+                headers: this.getRequestHeaders(requestParams as HttpRequestOptions)
             })
-            .then(response => this.handleRequestResponse(response, requestParams, requestStartTime, retry));
+            .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
     }
 
     async handleRequestResponse(response: http.HttpResponse | TNSHttpFormDataResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {

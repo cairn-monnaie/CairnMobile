@@ -1,3 +1,16 @@
+"enter_passcode" = "entrer un PIN";
+"confirm_passcode" = "confirmer le PIN";
+"confirm_passcode_dont_match" = "la confirmation du PIN ne correspond pas";
+"loggedout_due_to_fingerprint_change" = "il semblerait que vous ayez changé vos empreinte/FaceID. Pour des raisons de sécurité il vous est nécessaire de vous reconnecter";
+"change_pin_code_desc" = "Changer votre code PIN";
+"change_pin_code" = "Changer votre code PIN";
+"auto_lock_desc" = "Demander votre PIN/Empreinte/FaceID à chaque ouverture de l'application";
+"auto_lock" = "verrouillage automatique";
+"biometric_lock_desc" = "permettre l'utilisation de votre empreinte/Face ID comme moyen de sécurisation";
+"biometric_lock" = "sécurité biométrique";
+"settings" = "paramètres";
+"loading" = "chargement";
+"map" = "carte";
 "default_reason" = "paiement eCairn Mobile";
 "password_creation" = "Créez un mot de passe";
 "enter_password" = "rentrez votre passcode";
@@ -68,7 +81,7 @@
 "password" = "mot de passe";
 "username" = "utilisateur";
 "home" = "accueil";
-"app.name" = "eCairn";
 "ios.info.plist.NSFaceIDUsageDescription" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
 "ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn a besoin de votre localisation";
-"title.activity.kimera" = "eCairn";
+"app.name" = "eCairn";
+"app.__i18n_ally_root__.name" = "";
