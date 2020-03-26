@@ -236,7 +236,7 @@ export default class App extends BaseVueComponent {
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
     }
     onLoaded() {
-        GC();
+        // GC();
     }
     destroyed() {
         super.destroyed();

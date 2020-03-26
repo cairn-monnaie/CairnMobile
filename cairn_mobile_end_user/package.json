@@ -9,7 +9,7 @@
             "version": "6.4.1"
         },
         "tns-android": {
-            "version": "6.4.1"
+            "version": "6.5.0"
         }
     },
     "author": "Martin Guillon<martin.guillon@akylas.fr>",
@@ -31,10 +31,11 @@
         "helpful-decorators": "^2.0.6",
         "make-error": "1.3.6",
         "nativescript-akylas-fonticon": "~2.0.7",
+        "nativescript-akylas-https": "1.3.0",
         "nativescript-akylas-preferences": "^1.1.6",
         "nativescript-akylas-sentry": "^0.0.5",
         "nativescript-akylas-vue": "2.5.0-alpha.12",
-        "nativescript-barcodescanner": "^3.4.2",
+        "nativescript-barcodeview": "3.4.5",
         "nativescript-bitmap-factory": "^1.8.1",
         "nativescript-bugsnag": "^1.0.15",
         "nativescript-carto": "^1.2.37",
@@ -50,16 +51,17 @@
         "nativescript-imagepicker": "^7.1.0",
         "nativescript-iqkeyboardmanager": "^1.5.1",
         "nativescript-l": "^4.2.3",
-        "nativescript-material-activityindicator": "^3.1.14",
-        "nativescript-material-bottomsheet": "^3.1.14",
-        "nativescript-material-button": "^3.1.14",
-        "nativescript-material-dialogs": "^3.1.14",
-        "nativescript-material-progress": "^3.1.14",
-        "nativescript-material-slider": "^3.1.14",
-        "nativescript-material-snackbar": "^3.1.14",
-        "nativescript-material-textfield": "^3.1.14",
+        "nativescript-material-activityindicator": "^3.1.15",
+        "nativescript-material-bottomsheet": "^3.1.15",
+        "nativescript-material-button": "^3.1.15",
+        "nativescript-material-dialogs": "^3.1.15",
+        "nativescript-material-progress": "^3.1.15",
+        "nativescript-material-slider": "^3.1.15",
+        "nativescript-material-snackbar": "^3.1.15",
+        "nativescript-material-textfield": "^3.1.15",
         "nativescript-pager": "^12.0.0-alpha.8",
-        "nativescript-perms": "^2.0.3",
+        "nativescript-perms": "^2.0.4",
+        "nativescript-phone": "^1.4.1",
         "nativescript-photoviewer": "^2.1.5",
         "nativescript-secure-storage": "^2.6.0",
         "nativescript-systemui": "^1.0.4",
@@ -73,8 +75,8 @@
     "devDependencies": {
         "@types/tinycolor2": "^1.4.2",
         "@types/tween.js": "^18.5.0",
-        "@typescript-eslint/eslint-plugin": "2.24.0",
-        "@typescript-eslint/parser": "2.24.0",
+        "@typescript-eslint/eslint-plugin": "2.25.0",
+        "@typescript-eslint/parser": "2.25.0",
         "ansi-styles": "^4.2.1",
         "clean-webpack-plugin": "3.0.0",
         "cross-var": "^1.1.0",
@@ -93,10 +95,10 @@
         "tns-platform-declarations": "6.5.0",
         "typescript": "^3.8.3",
         "vue": "^2.6.11",
-        "vue-i18n": "^8.15.5",
+        "vue-i18n": "^8.15.7",
         "vue-loader": "^15.9.1",
         "vue-property-decorator": "^8.4.1",
-        "webpack": "^4.42.0",
+        "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11"
     }
 }

@@ -3,7 +3,7 @@ import { Point, PointStyleBuilder } from 'nativescript-carto/vectorelements/poin
 import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
 import { LocalVectorDataSource } from 'nativescript-carto/datasources/vector';
 import { RasterTileLayer } from 'nativescript-carto/layers/raster';
-import { VectorElementEventData, VectorLayer } from 'nativescript-carto/layers/vector';
+import { VectorElementEventData, VectorLayer, VectorTileLayer } from 'nativescript-carto/layers/vector';
 import { Projection } from 'nativescript-carto/projections';
 import { CartoMap } from 'nativescript-carto/ui';
 import { Line, LineEndType, LineJointType, LineStyleBuilder } from 'nativescript-carto/vectorelements/line';
@@ -18,6 +18,9 @@ import { GeoHandler, GeoLocation, Session, UserLocationdEvent, UserLocationdEven
 import BaseVueComponent from './BaseVueComponent';
 import { getBoundsZoomLevel, getCenter } from '~/helpers/geo';
 import { screen } from '@nativescript/core/platform';
+import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
+import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
+const GeoJSON = require('geojson');
 
 const LOCATION_ANIMATION_DURATION = 300;
 
@@ -36,6 +39,10 @@ export default class MapComponent extends BaseVueComponent {
     isUserFollow = true;
     static _geoHandler: GeoHandler;
 
+    _localVectorTileDataSource: GeoJSONVectorTileDataSource;
+    localVectorTileLayer: VectorTileLayer;
+    ignoreStable = false;
+
     get geoHandler() {
         if (!MapComponent._geoHandler) {
             MapComponent._geoHandler = new GeoHandler();
@@ -46,6 +53,8 @@ export default class MapComponent extends BaseVueComponent {
     // @Prop() session: Session;
     // @Prop({ default: false }) readonly licenseRegistered!: boolean;
     @Prop({ default: false }) readonly showLocationButton!: boolean;
+    @Prop({ default: 16 }) readonly zoom!: number;
+    @Prop({ default: 1 }) readonly layerOpacity!: number;
 
     get cartoMap() {
         return this._cartoMap;
@@ -102,7 +111,7 @@ export default class MapComponent extends BaseVueComponent {
         options.setZoomGestures(true);
         options.setRotatable(true);
 
-        cartoMap.setZoom(appSettings.getNumber('mapZoom', 16), 0);
+        cartoMap.setZoom(this.zoom, 0);
         cartoMap.setFocusPos({ latitude: 45.2002, longitude: 5.7222 }, 0);
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -120,13 +129,15 @@ export default class MapComponent extends BaseVueComponent {
             }),
             databasePath: cacheFolder.path
         });
+        console.log('layerOpacity', this.layerOpacity);
         this.rasterLayer = new RasterTileLayer({
             zoomLevelBias: 1,
+            opacity: this.layerOpacity,
             dataSource
         });
         cartoMap.addLayer(this.rasterLayer);
 
-        console.log('onMapReady', cartoMap.zoom, cartoMap.focusPos, 0);
+        // console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
         // setTimeout(() => {
         // perms
         // .request('storage')
@@ -155,9 +166,14 @@ export default class MapComponent extends BaseVueComponent {
     }
     onMapMove(e) {
         this.userFollow = !e.data.userAction;
+        // console.log('onMapMove',this._cartoMap.zoom, this._cartoMap.focusPos);
         this.$emit('mapMove', e);
     }
     onMapStable(e) {
+        if (this.ignoreStable) {
+            this.ignoreStable = false;
+            return;
+        }
         this.$emit('mapStable', e);
     }
     onMapIdle(e) {
@@ -200,6 +216,43 @@ export default class MapComponent extends BaseVueComponent {
             // always add it at 1 to respect local order
             this._cartoMap.addLayer(this.localVectorLayer);
         }
+    }
+    getOrCreateLocalVectorTileLayer() {
+        if (!this.localVectorTileLayer && this._cartoMap) {
+            const decoder = new MBVectorTileDecoder({
+                style: 'voyager',
+                liveReload: TNS_ENV !== 'production',
+                dirPath: '~/assets/styles/cairn'
+            });
+            this.localVectorTileLayer = new VectorTileLayer({
+                preloading: true,
+
+                dataSource: this.localVectorTileDataSource,
+                decoder
+            });
+
+            // always add it at 1 to respect local order
+            this._cartoMap.addLayer(this.localVectorTileLayer);
+        }
+        return this.localVectorTileLayer;
+    }
+
+    get localVectorTileDataSource() {
+        if (!this._localVectorTileDataSource && this._cartoMap) {
+            this._localVectorTileDataSource = new GeoJSONVectorTileDataSource({
+                minZoom: 0,
+                maxZoom: 24
+            });
+            this._localVectorTileDataSource.createLayer('cairn');
+        }
+        return this._localVectorTileDataSource;
+    }
+
+    addGeoJSONPoints(points: any[]) {
+        const geojson = GeoJSON.parse(points, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] });
+        this.getOrCreateLocalVectorTileLayer();
+        this.ignoreStable = true;
+        this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
     }
     onVectorElementClicked(data: VectorElementEventData<DefaultLatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;

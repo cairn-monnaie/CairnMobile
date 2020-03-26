@@ -10,11 +10,14 @@ import { ImageAsset } from '@nativescript/core/image-asset/image-asset';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import Vue from 'nativescript-vue';
 import MapComponent from './MapComponent';
+import InteractiveMap from './InteractiveMap';
 import { CartoMap } from 'nativescript-carto/ui';
 import BitmapFactory from 'nativescript-bitmap-factory';
+import { generateBarCode } from 'nativescript-barcodeview';
 
 @Component({
     components: {
+        InteractiveMap,
         MapComponent
     }
 })
@@ -36,7 +39,7 @@ export default class Profile extends PageComponent {
     }
 
     userProfile: UserProfile = null;
-    canRefresh = false;
+    myProfile = false;
     // get image() {
     //     console.log('get image');
     //     if (!!this.updateUserProfile && !!this.updateUserProfile.image) {
@@ -51,7 +54,7 @@ export default class Profile extends PageComponent {
             this.userProfile = this.propUserProfile;
         } else {
             this.userProfile = this.$authService.userProfile;
-            this.canRefresh = true;
+            this.myProfile = true;
         }
         this.image = this.userProfile.image;
     }
@@ -67,11 +70,16 @@ export default class Profile extends PageComponent {
     updateMapCenter() {
         if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
             const map = this.$refs.mapComp.cartoMap;
+            console.log('updateMapCenter', map, this.userProfile.address);
             map.setFocusPos(this.userProfile.address, 0);
         }
     }
     onMapReady(e) {
         this.updateMapCenter();
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
+            this.$refs.mapComp.addGeoJSONPoints([this.userProfile]);
+        }
+
     }
     onProfileUpdate(event: UserProfileEventData) {
         this.loading = false;
@@ -83,13 +91,15 @@ export default class Profile extends PageComponent {
         this.editing = !this.editing;
         if (!this.editing) {
             this.updateUserProfile = null;
+        } else if(this.showingQRCode) {
+            this.toggleQRCode();
         }
     }
     refresh(args?) {
         if (args && args.object) {
             args.object.refreshing = false;
         }
-        if (!this.canRefresh) {
+        if (!this.myProfile) {
             return;
         }
         console.log('refreshing');
@@ -153,7 +163,8 @@ export default class Profile extends PageComponent {
                     return this.$authService.addPhone(r.text);
                 }
             })
-            .catch(this.showError).finally(()=>{
+            .catch(this.showError)
+            .finally(() => {
                 this.loading = false;
             });
     }
@@ -196,5 +207,25 @@ export default class Profile extends PageComponent {
                 }
             })
             .catch(this.showError);
+    }
+    showingQRCode = false;
+    qrCodeImage: ImageSource;
+    toggleQRCode() {
+        if (!this.showingQRCode) {
+            if (!this.qrCodeImage) {
+                this.qrCodeImage = generateBarCode({
+                    text: `${this.userProfile.mainICC}#${this.userProfile.id}#${this.userProfile.name}`,
+                    type: 'QR_CODE',
+                    width: 400,
+                    height: 400,
+                    backColor: 'transparent',
+                    frontColor: 'white'
+                });
+            }
+            this.image = this.qrCodeImage;
+        } else {
+            this.image = this.userProfile.image;
+        }
+        this.showingQRCode = !this.showingQRCode;
     }
 }

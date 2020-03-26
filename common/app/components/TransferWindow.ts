@@ -7,11 +7,12 @@ import UserPicker from './UserPicker';
 import { ComponentIds } from './App';
 import { TextField } from 'nativescript-material-textfield';
 import { showSnack } from 'nativescript-material-snackbar';
+import { sms } from 'nativescript-phone';
 import { NoNetworkError } from '~/services/NetworkService';
 
 @Component({})
 export default class TransferWindow extends PageComponent {
-    @Prop() qrCodeData: { ICC: string; name: string };
+    @Prop() qrCodeData: { ICC: string; id: number; name: string };
 
     navigateUrl = ComponentIds.Transfer;
     reason: string = this.$t('default_reason');
@@ -144,6 +145,9 @@ export default class TransferWindow extends PageComponent {
         //     })
         //     .catch(this.showError);
     }
+    sendSMS() {
+        sms([CAIRN_SMS_NUMBER], `PAYER ${this.amount} LECAIRN`);
+    }
     submit() {
         if (!this.$authService.connected) {
             this.showError(new NoNetworkError());
@@ -201,16 +205,18 @@ export default class TransferWindow extends PageComponent {
             }
         });
     }
-    handleQRData({ ICC, name }: { ICC: string; name: string }) {
-        this.log('handleQRData1', ICC, name);
-        const beneficiary = this.beneficiaries && this.beneficiaries.find(b => b.ICC === ICC);
-        if (beneficiary) {
-            this.recipient = beneficiary.user;
-        } else {
-            this.recipient = { mainICC: ICC, name } as any;
+    handleQRData({ ICC, name, id }: { ICC: string; id: number; name: string }) {
+        if (ICC && name) {
+            this.log('handleQRData1', ICC, name);
+            const beneficiary = this.beneficiaries && this.beneficiaries.find(b => b.id === id);
+            if (beneficiary) {
+                this.recipient = beneficiary.user;
+            } else {
+                this.recipient = { mainICC: ICC, id, name } as any;
+            }
+            this.log('handleQRData', ICC, name, beneficiary, this.recipient);
+            this.checkForm();
         }
-        this.log('handleQRData', ICC, name, beneficiary, this.recipient);
-        this.checkForm();
     }
     scanQRCode() {
         this.$scanQRCode()

@@ -6,10 +6,35 @@ import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { BaseError } from 'make-error';
+import * as https from 'nativescript-akylas-https';
 
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+import { knownFolders, path } from '@nativescript/core/file-system';
+
+export interface CacheOptions {
+    diskLocation: string;
+    diskSize: number;
+    memorySize?: number;
 }
+// export type CachePolicy = 'noCache' | 'onlyCache' | 'ignoreCache';
+// export function setCache(options?: CacheOptions) {
+//     if (gVars.isIOS) {
+//         NSURLCache.sharedURLCache = NSURLCache.alloc().initWithMemoryCapacityDiskCapacityDirectoryURL(options.memorySize, options.diskSize, NSURL.URLWithString(options.diskLocation));
+//     } else {
+//         try {
+//             const httpCacheDir = new java.io.File(options.diskLocation);
+//             android.net.http.HttpResponseCache.install(httpCacheDir, options.diskSize);
+//         } catch (e) {
+//             console.log('error creating cache', e);
+//         }
+//     }
+// }
+// https.setCache({
+//     diskLocation: path.join(knownFolders.documents().path, 'httpcache'),
+//     diskSize: 10 * 1024 * 1024 // 10 MiB
+// });
+// function timeout(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 type HTTPOptions = http.HttpRequestOptions;
 
 export const NetworkConnectionStateEvent = 'NetworkConnectionStateEvent';
@@ -21,6 +46,8 @@ export interface NetworkConnectionStateEventData extends EventData {
 }
 
 export interface HttpRequestOptions extends HTTPOptions {
+    body?;
+    cachePolicy?: https.CachePolicy;
     queryParams?: {};
     apiPath?: string;
     multipartParams?;
@@ -233,6 +260,7 @@ import hmacSHA256 from 'crypto-js/hmac-sha256';
 import md5 from 'crypto-js/md5';
 export class NetworkService extends Observable {
     @stringProperty token: string;
+    @stringProperty refreshToken: string;
     authority: string;
     _connectionType: connectivity.connectionType = connectivity.connectionType.none;
     _connected = false;
@@ -292,9 +320,28 @@ export class NetworkService extends Observable {
         if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';
         }
+
+        if (requestParams.cachePolicy) {
+            switch (requestParams.cachePolicy) {
+                case 'noCache':
+                    headers['Cache-Control'] = 'no-cache';
+                    break;
+                case 'onlyCache':
+                    headers['Cache-Control'] = 'only-if-cached';
+
+                    break;
+                // case "ignoreCache":
+                //     manager.requestSerializer.cachePolicy =
+                //         NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData;
+                // break;
+            }
+        }
         const signature = this.buildAuthorization(requestParams);
 
         headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${signature[1]}`;
+        // if (this.token) {
+        //     headers['Authorization'] = `Bearer ${this.token}`;
+        // }
         return headers;
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
@@ -302,28 +349,34 @@ export class NetworkService extends Observable {
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (typeof requestParams.content === 'string') {
-            console.log('content', requestParams.content, jsonObjectToKeepOrderString(JSON.parse(requestParams.content)));
-            hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)));
+            console.log('content', requestParams.content, jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
+            hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
         }
         console.log(hmacString);
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
     }
-    request(requestParams: Partial<HttpRequestOptions>, retry = 0) {
-        if (!this.connected) {
-            return Promise.reject(new NoNetworkError());
-        }
+    request<T = any>(requestParams: Partial<HttpRequestOptions>, retry = 0) {
+        // if (!this.connected) {
+        //     return Promise.reject(new NoNetworkError());
+        // }
         if (requestParams.apiPath) {
             requestParams.url = this.authority + requestParams.apiPath;
+        }
+        if (!this.connected && !requestParams.cachePolicy) {
+            requestParams.cachePolicy = 'onlyCache';
         }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
+        if (requestParams.body) {
+            requestParams.content = JSON.stringify(requestParams.body);
+        }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         this.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http.request(requestParams as HttpRequestOptions).then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
+        return http.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
     requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -343,6 +396,7 @@ export class NetworkService extends Observable {
         const statusCode = response.statusCode;
         // return Promise.resolve()
         // .then(() => {
+        // const content = response['content'] || response['body'];
         const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
         this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
@@ -357,7 +411,6 @@ export class NetworkService extends Observable {
                 } catch (err) {
                     // error result might html
                     const match = /<title>(.*)\n*<\/title>/.exec(responseStr);
-                    this.log('request error1', responseStr, match);
                     return Promise.reject(
                         new HTTPError({
                             statusCode,
@@ -371,6 +424,7 @@ export class NetworkService extends Observable {
                 if (Array.isArray(jsonReturn)) {
                     jsonReturn = jsonReturn[0];
                 }
+                // we try to handle all cases where a refreshed token would suffice
                 if (
                     (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
                     (statusCode === 400 &&
@@ -397,9 +451,10 @@ export class NetworkService extends Observable {
         }
         try {
             return response['content'].toJSON();
+            // return JSON.parse(content);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
-            return response['content'];
+            return content;
         }
         // })
         // .catch(err => {

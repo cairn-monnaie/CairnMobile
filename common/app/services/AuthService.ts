@@ -83,8 +83,8 @@ function cleanupUser(user: any) {
     }
     if (result.image) {
         result.image = `${CAIRN_URL}/${result.image.webPath}`;
-    } else {
-        result.image = `${CAIRN_URL}/bundles/cairnuser/img/pro.png`;
+        // } else {
+        // result.image = ``;
     }
     if (result.address) {
         result.address = {
@@ -145,6 +145,13 @@ export class AccountInfo {
     id: string;
     number: string;
     name: string;
+    status?: {
+        balance: string;
+        creditLimit: string;
+    };
+    type?: {
+        name: string;
+    };
 }
 
 export interface UserProfile extends User {}
@@ -327,36 +334,34 @@ export default class AuthService extends NetworkService {
     isProUser(profile: User = this.userProfile) {
         return profile.roles.indexOf(Roles.PRO) !== -1;
     }
-    handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
+    async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
         console.log('handleRequestRetry', retry);
         // refresh token
         if (retry === 2) {
             this.logout();
-            return Promise.reject(
-                new HTTPError({
-                    statusCode: 401,
-                    message: 'not_authorized',
-                    requestParams
-                })
-            );
+            throw new HTTPError({
+                statusCode: 401,
+                message: 'not_authorized',
+                requestParams
+            });
         }
-        return this.getToken(this.loginParams).then(() => this.request(requestParams, retry + 1));
+        await this.getRefreshToken();
+        return this.request(requestParams, retry + 1);
     }
-    getUserProfile(userId?: number) {
-        return this.request({
+    async getUserProfile(userId?: number) {
+        const result = await this.request({
             apiPath: `/mobile/users/${userId || this.userId}`,
             method: 'GET'
-        }).then(result => {
-            this.userProfile = cleanupUser(result);
-            this.notify({
-                eventName: UserProfileEvent,
-                object: this,
-                data: this.userProfile
-            } as UserProfileEventData);
-            return this.userProfile;
         });
+        this.userProfile = cleanupUser(result);
+        this.notify({
+            eventName: UserProfileEvent,
+            object: this,
+            data: this.userProfile
+        } as UserProfileEventData);
+        return this.userProfile;
     }
-    updateUserProfile(data: UpdateUserProfile): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -378,96 +383,71 @@ export default class AuthService extends NetworkService {
             })
         );
     }
-    addPhone(phoneNumber: string) {
+    async addPhone(phoneNumber: string) {
         return this.request({
             apiPath: '/mobile/phones.json',
             method: 'POST',
-            content: JSON.stringify({
+            body: {
                 phoneNumber,
                 paymentEnabled: false
-            })
+            }
         }).then(() => this.getUserProfile());
     }
-    deletePhone(phoneNumber: string) {
+    async deletePhone(phoneNumber: string) {
         return this.request({
             apiPath: `/mobile/phones/${this.userId}.json`,
             method: 'DELETE',
-            content: JSON.stringify({
+            body: {
                 phoneNumber,
                 paymentEnabled: false
-            })
+            }
         }).then(() => this.getUserProfile());
     }
 
     accounts: AccountInfo[];
     lastAccountsUpdateTime: number;
-    async getAccounts(): Promise<AccountInfo[]> {
-        if (this.accounts && this.lastAccountsUpdateTime && Date.now() - this.lastAccountsUpdateTime < 3600 * 1000) {
-            this.notify({
-                eventName: AccountInfoEvent,
-                object: this,
-                data: this.accounts
-            } as AccountInfoEventData);
-            return this.accounts;
-        }
-        return this.request({
-            apiPath: '/mobile/accounts.json',
-            method: 'GET'
-        }).then(r => {
-            const result = r.map(
-                a =>
-                    ({
-                        balance: parseFloat(a.status.balance),
-                        creditLimit: parseFloat(a.status.creditLimit),
-                        number: a.number,
-                        id: a.id,
-                        name: a.type.name
-                    } as AccountInfo)
-            ) as AccountInfo[];
-            this.notify({
-                eventName: AccountInfoEvent,
-                object: this,
-                data: result
-            } as AccountInfoEventData);
+    async getAccounts() {
+        if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
+            let result = await this.request<AccountInfo[]>({
+                apiPath: '/mobile/accounts.json',
+                method: 'GET'
+            });
+
+            result = result.map(a => ({
+                balance: parseFloat(a.status.balance),
+                creditLimit: parseFloat(a.status.creditLimit),
+                number: a.number,
+                id: a.id,
+                name: a.type.name
+            }));
             this.lastAccountsUpdateTime = Date.now();
             this.accounts = result;
-            return result;
-        });
+        }
+        this.notify({
+            eventName: AccountInfoEvent,
+            object: this,
+            data: this.accounts
+        } as AccountInfoEventData);
+        return this.accounts;
     }
     beneficiaries: Benificiary[];
     lastBenificiariesUpdateTime: number;
-    async getBenificiaries(): Promise<Benificiary[]> {
+    async getBenificiaries() {
         if (this.beneficiaries && this.lastBenificiariesUpdateTime && Date.now() - this.lastBenificiariesUpdateTime < 3600 * 1000) {
             return this.beneficiaries;
         }
-        return this.request({
+        let result = await this.request<Benificiary[]>({
             apiPath: '/mobile/beneficiaries',
             method: 'GET'
-        }).then(r => {
-            r.map(b => {
-                b.user = cleanupUser(b.user);
-                return b;
-            });
-            this.lastBenificiariesUpdateTime = Date.now();
-            this.beneficiaries = r;
-            return r;
         });
+        this.beneficiaries = result = result.map(b => {
+            b.user = cleanupUser(b.user);
+            return b;
+        });
+        this.lastBenificiariesUpdateTime = Date.now();
+        return result;
     }
-    getUsers({
-        sortKey,
-        sortOrder,
-        limit,
-        offset,
-        query,
-        mapBounds
-    }: {
-        sortKey?: string;
-        sortOrder?: string;
-        limit?: number;
-        offset?: number;
-        query?: string;
-        mapBounds?: MapBounds;
-    }): Promise<User[]> {
+    async getUsers({ sortKey, sortOrder, limit, offset, query, mapBounds }: { sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string; mapBounds?: MapBounds }) {
         let boundingBox = {
             minLon: '',
             maxLon: '',
@@ -482,10 +462,10 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
-        return this.request({
+        const result = await this.request<User[]>({
             apiPath: '/mobile/users',
             method: 'POST',
-            content: JSON.stringify({
+            body: {
                 limit: limit || 100 + '',
                 offset: offset || 0 + '',
                 orderBy: {
@@ -497,25 +477,26 @@ export default class AuthService extends NetworkService {
                 roles: {
                     '0': 'ROLE_PRO'
                 }
-            })
-        }).then(r => r.map(cleanupUser));
+            }
+        });
+        return result.map(cleanupUser);
     }
-    addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
+    async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         this.lastBenificiariesUpdateTime = undefined;
         return this.request({
             apiPath: '/mobile/beneficiaries',
             method: 'POST',
-            content: JSON.stringify({
+            body: {
                 cairn_user: cairn_user_email
-            })
+            }
         });
     }
-    createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
+    async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
         return this.request({
             apiPath: '/mobile/payment/request',
             method: 'POST',
-            content: JSON.stringify({
+            body: {
                 fromAccount: account.number,
                 toAccount: user.email || user.mainICC,
                 amount: amount + '',
@@ -524,25 +505,26 @@ export default class AuthService extends NetworkService {
                 reason,
                 description
                 // api_secret: sha(date)
-            })
+            }
         });
     }
-    confirmOperation(oprationId, code?: string) {
-        return this.request({
+    async confirmOperation(oprationId, code?: string) {
+        const result = await this.request({
             apiPath: `/mobile/transaction/confirm/${oprationId}.json`,
             method: 'POST',
-            content: JSON.stringify({
+            body: {
                 save: 'true',
                 confirmationCode: '1111'
                 // api_secret: sha(oprationId)
-            })
-        }).then(r => {
-            // we need to refresh accounts
-            this.getAccounts();
-            return r;
+            }
         });
+        // .then(r => {
+        // we need to refresh accounts for he whole UI to update
+        await this.getAccounts();
+        return result;
+        // });
     }
-    getUsersForMap(mapBounds: MapBounds) {
+    async getUsersForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
         return this.getUsers({ mapBounds });
         // .then(r =>
@@ -557,7 +539,7 @@ export default class AuthService extends NetworkService {
         //     })
         // );
     }
-    getAccountHistory({
+    async getAccountHistory({
         accountId,
         sortKey,
         sortOrder,
@@ -572,9 +554,9 @@ export default class AuthService extends NetworkService {
         offset?: number;
         query?: string;
     }): Promise<Transaction[]> {
-        return this.request({
+        const result = await this.request({
             apiPath: `/mobile/account/operations/${accountId}`,
-            content: JSON.stringify({
+            body: {
                 begin: dayjs()
                     .subtract(2, 'month')
                     .format('YYYY-MM-DD'),
@@ -593,11 +575,12 @@ export default class AuthService extends NetworkService {
                 //     order: sortOrder || ''
                 // },
                 // name: query || ''
-            }),
+            },
             method: 'POST'
-        }).then((r: any[]) => r.map(cleanupTransaction));
+        });
+        return result.map(cleanupTransaction);
     }
-    fakeSMSPayment(sender: string, message: string) {
+    async fakeSMSPayment(sender: string, message: string) {
         return this.request({
             apiPath: '/sms/reception',
             method: 'GET',
@@ -608,54 +591,83 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    getToken(user: LoginParams) {
-        return this.request({
-            apiPath: tokenEndpoint,
-            method: 'POST',
-            content: JSON.stringify({
-                client_id: CAIRN_CLIENT_ID,
-                client_secret: CAIRN_CLIENT_SECRET,
-                grant_type: 'password',
-                username: user.username,
-                password: user.password
-            })
-        })
-            .then(result => {
-                this.token = result.access_token;
-                this.userId = result.user_id;
-            })
-            .catch(err => {
-                this.token = undefined;
-                return Promise.reject(err);
+    async getRefreshToken() {
+        try {
+            const result = await this.request({
+                apiPath: tokenEndpoint,
+                method: 'POST',
+                body: {
+                    client_id: CAIRN_CLIENT_ID,
+                    client_secret: CAIRN_CLIENT_SECRET,
+                    grant_type: 'refresh_token',
+                    refresh_token: this.refreshToken
+                }
             });
+            this.token = result.access_token;
+            this.refreshToken = result.refresh_token;
+        } catch (err) {
+            // for now we try to get a new token there, should we?
+            console.log('error getting refresh token', err);
+            await this.getToken(this.loginParams);
+
+            // this.token = undefined;
+            // this.refreshToken = undefined;
+            // return Promise.reject(err);
+        }
     }
-    login(user: LoginParams = this.loginParams) {
+    async getToken(user: LoginParams) {
+        try {
+            const result = await this.request({
+                cachePolicy: 'noCache',
+                apiPath: tokenEndpoint,
+                method: 'POST',
+                body: {
+                    client_id: CAIRN_CLIENT_ID,
+                    client_secret: CAIRN_CLIENT_SECRET,
+                    grant_type: 'password',
+                    username: user.username,
+                    password: user.password
+                }
+            });
+            console.log('got token', result);
+            this.token = result.access_token;
+            this.refreshToken = result.refresh_token;
+            this.userId = result.user_id;
+        } catch (err) {
+            this.token = undefined;
+            this.refreshToken = undefined;
+            return Promise.reject(err);
+        }
+    }
+    async login(user: LoginParams = this.loginParams) {
         if (!user) {
-            return Promise.reject('missing_login_params');
+            throw new Error('missing_login_params');
         }
         const wasLoggedin = this.isLoggedIn();
-        return this.getToken(user)
-
-            .then(() => this.getUserProfile())
-            .then(() => {
-                this.loginParams = user;
-                if (!wasLoggedin) {
-                    this.notify({
-                        eventName: LoggedinEvent,
-                        object: this,
-                        data: this.userProfile
-                    } as UserProfileEventData);
-                }
-            })
-            .catch(err => {
-                this.onLoggedOut();
-                return Promise.reject(err);
-            });
+        try {
+            const result = await this.getToken(user);
+            await this.getUserProfile();
+            // .then(() => this.getUserProfile())
+            // .then(() => {
+            this.loginParams = user;
+            if (!wasLoggedin) {
+                this.notify({
+                    eventName: LoggedinEvent,
+                    object: this,
+                    data: this.userProfile
+                } as UserProfileEventData);
+            }
+            // })
+        } catch (err) {
+            this.onLoggedOut();
+            return Promise.reject(err);
+        }
     }
 
     onLoggedOut() {
         const wasLoggedin = this.isLoggedIn();
         this.token = undefined;
+        this.refreshToken = undefined;
         this.loginParams = undefined;
         this.userId = undefined;
         if (wasLoggedin) {

@@ -1,15 +1,6 @@
 <template>
     <CairnPage :title="$t('map')">
-        <GridLayout rows="*,150" class="pageContent">
-            <MapComponent ref="mapComp" rowSpan="2" showLocationButton="true" @mapReady="onMapReady" @mapStable="onMapStable" @elementClick="onElementClick"/>
-            <BottomSheetHolder rowSpan="2" ref="bottomSheetHolder" :peekerSteps="bottomSheetSteps" isPassThroughParentEnabled="true" @close="unselectItem" @scroll="onBottomSheetScroll">
-                <GridLayout :paddingBottom="bottomSheetTranslation" :opacity="scrollingWidgetsOpacity">
-                    <MDButton @tap="askUserLocation" class="floating-btn" margin="8" text="mdi-crosshairs-gps" horizontalAlignment="right" verticalAlignment="bottom" />
-
-                </GridLayout>
-                <MapBottomSheet slot="bottomSheet" :item="selectedItem" :steps="bottomSheetSteps" />
-            </BottomSheetHolder>
-        </GridLayout>
+        <InteractiveMap/>
     </CairnPage>
 </template>
 

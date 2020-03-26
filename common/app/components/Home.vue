@@ -15,7 +15,7 @@
                 <v-template>
                     <GridLayout rows="*" columns="*">
                         <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
-                        <NSImg stretch="aspectFit" :src="item.image" width="100%" height="100%" backgroundColor="#E86A45" />
+                        <NSImg stretch="aspectFit" :src="item.image || DEFAULT_IMAGE_URL" width="100%" height="100%" backgroundColor="#E86A45" />
                         <Label
                             textAlignment="left"
                             verticalAlignment="bottom"

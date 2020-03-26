@@ -12,7 +12,8 @@ import { screenHeightDips, screenWidthDips } from './variables';
 import { alert, confirm } from 'nativescript-material-dialogs';
 import { Color } from '@nativescript/core/ui/frame';
 import { isSimulator } from 'nativescript-extendedinfo';
-import { BarcodeScanner } from 'nativescript-barcodescanner';
+import BarCodeBottomSheet from './components/BarCodeBottomSheet';
+import NativescriptVue from 'nativescript-vue';
 
 const Plugin = {
     install(Vue) {
@@ -22,7 +23,7 @@ const Plugin = {
         Vue.prototype.$authService = authService;
         Vue.prototype.$securityService = new SecurityService();
 
-        imageModule.setDebug(true);
+        // imageModule.setDebug(true);
         application.on(application.launchEvent, () => {
             imageModule.initialize({ isDownsampleEnabled: true });
         });
@@ -67,8 +68,8 @@ const Plugin = {
             return confirm({
                 title: Vue.prototype.$tc('error'),
                 view: label,
-                okButtonText: $tc('send_bug_report'),
-                cancelButtonText: $tc('cancel')
+                okButtonText: this.$sentry ? $tc('send_bug_report') : undefined,
+                cancelButtonText: this.$sentry ? $tc('cancel'):  $tc('ok')
                 // message
             }).then(result => {
                 if (result && this.$sentry) {
@@ -95,42 +96,45 @@ const Plugin = {
             });
         };
 
-        const barCodeScanner = new BarcodeScanner();
-        Vue.prototype.$scanQRCode = function(message) {
-            if (isSimulator) {
+        Vue.prototype.$scanQRCode = function() {
+            console.log('scanQRCode');
+            if (gVars.isIOS && isSimulator()) {
                 return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
             }
-            return barCodeScanner
-                .scan({
-                    formats: 'QR_CODE, EAN_13',
-                    cancelLabel: this.$t('close'), // iOS only, default 'Close'
-                    message: '', // Android only, default is 'Place a barcode inside the viewfinder rectangle to scan it.'
-                    showFlipCameraButton: false, // default false
-                    preferFrontCamera: false, // default false
-                    showTorchButton: true, // default false
-                    beepOnScan: true, // Play or Suppress beep on scan (default true)
-                    fullScreen: true, // Currently only used on iOS; with iOS 13 modals are no longer shown fullScreen by default, which may be actually preferred. But to use the old fullScreen appearance, set this to 'true'. Default 'false'.
-                    torchOn: false, // launch with the flashlight on (default false)
-                    closeCallback: () => {
-                        console.log('Scanner closed');
-                    }, // invoked when the scanner was closed (success or abort)
-                    resultDisplayDuration: 0, // Android only, default 1500 (ms), set to 0 to disable echoing the scanned text
-                    openSettingsIfPermissionWasPreviouslyDenied: true, // On iOS you can send the user to the settings app if access was previously denied
-                    presentInRootViewController: true // iOS-only; If you're sure you're not presenting the (non embedded) scanner in a modal, or are experiencing issues with fi. the navigationbar, set this to 'true' and see if it works better for your app (default false).
-                })
-                .then(result => {
-                    const text = result.text;
-                    console.log('scanned',result);
-                    const splitedString = text.split('#');
-                    if (splitedString.length === 2 && /[0-9]{9}/.test(splitedString[0])) {
-                        return {
-                            ICC: splitedString[0],
-                            name: splitedString[1]
-                        };
-                    } else {
-                        return Promise.reject(new Error(this.$t('wrong_scancode')));
-                    }
-                });
+            return new Promise((resolve, reject) => {
+                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent:true });
+            });
+            // return barCodeScanner
+            //     .scan({
+            //         formats: 'QR_CODE, EAN_13',
+            //         cancelLabel: this.$t('close'), // iOS only, default 'Close'
+            //         message: '', // Android only, default is 'Place a barcode inside the viewfinder rectangle to scan it.'
+            //         showFlipCameraButton: false, // default false
+            //         preferFrontCamera: false, // default false
+            //         showTorchButton: true, // default false
+            //         beepOnScan: true, // Play or Suppress beep on scan (default true)
+            //         fullScreen: true, // Currently only used on iOS; with iOS 13 modals are no longer shown fullScreen by default, which may be actually preferred. But to use the old fullScreen appearance, set this to 'true'. Default 'false'.
+            //         torchOn: false, // launch with the flashlight on (default false)
+            //         closeCallback: () => {
+            //             console.log('Scanner closed');
+            //         }, // invoked when the scanner was closed (success or abort)
+            //         resultDisplayDuration: 0, // Android only, default 1500 (ms), set to 0 to disable echoing the scanned text
+            //         openSettingsIfPermissionWasPreviouslyDenied: true, // On iOS you can send the user to the settings app if access was previously denied
+            //         presentInRootViewController: true // iOS-only; If you're sure you're not presenting the (non embedded) scanner in a modal, or are experiencing issues with fi. the navigationbar, set this to 'true' and see if it works better for your app (default false).
+            //     })
+            //     .then(result => {
+            //         const text = result.text;
+            //         console.log('scanned', result);
+            //         const splitedString = text.split('#');
+            //         if (splitedString.length === 2 && /[0-9]{9}/.test(splitedString[0])) {
+            //             return {
+            //                 ICC: splitedString[0],
+            //                 name: splitedString[1]
+            //             };
+            //         } else {
+            //             return Promise.reject(new Error(this.$t('wrong_scancode')));
+            //         }
+            //     });
         };
 
         /* DEV-START */
