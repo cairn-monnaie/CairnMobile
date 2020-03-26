@@ -150,6 +150,7 @@ module.exports = (env, params = {}) => {
             TNS_ENV: JSON.stringify(mode),
             'gVars.sentry': !!sentry,
             SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
+            CAIRN_URL: `"${process.env.CAIRN_URL}"`,
             CAIRN_CLIENT_ID: `"${process.env.CAIRN_CLIENT_ID}"`,
             CAIRN_CLIENT_SECRET: `"${process.env.CAIRN_CLIENT_SECRET}"`,
             CAIRN_SMS_NUMBER: `"${process.env.CAIRN_SMS_NUMBER}"`,
