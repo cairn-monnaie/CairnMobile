@@ -378,9 +378,9 @@ export default class AuthService extends NetworkService {
             })
         );
     }
-    addPhone(phoneNumber: string) {
+    addPhone(phoneNumber: string,target: string) {
         return this.request({
-            apiPath: '/mobile/phones.json',
+            apiPath: `/mobile/phones/${target}`,
             method: 'POST',
             content: JSON.stringify({
                 phoneNumber,
@@ -482,8 +482,10 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
+        
+        const apiPath = (this.isLoggedIn()) ? '/mobile/users' : '/mapUsers';
         return this.request({
-            apiPath: '/mobile/users',
+            apiPath: apiPath,
             method: 'POST',
             content: JSON.stringify({
                 limit: limit || 100 + '',
