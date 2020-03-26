@@ -218,9 +218,15 @@ function jsonObjectToKeepOrderString(obj) {
         return obj;
     }
     if (Array.isArray(obj)) {
-        return (obj.map(v=>jsonObjectToKeepOrderString(v)).sort()).join('');
+        return obj
+            .map(v => jsonObjectToKeepOrderString(v))
+            .sort()
+            .join('');
     }
-    return (Object.keys(obj).map(k=>k+':'+jsonObjectToKeepOrderString(obj[k])).sort()).join('');
+    return Object.keys(obj)
+        .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
+        .sort()
+        .join('');
 }
 
 import hmacSHA256 from 'crypto-js/hmac-sha256';
