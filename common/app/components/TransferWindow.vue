@@ -58,7 +58,10 @@
                         returnKeyType="next"
                         :error="reasonError"
                     /> -->
-                    <MDButton row="1" v-show="!loading" verticalAlignment="center" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
+                    <GridLayout columns="*,auto">
+                        <MDButton row="1" v-show="!loading" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
+                        <MDButton row="1" class="mdi" v-show="!loading" text="mdi-cellphone-message" @tap="sendSMS" :isEnabled="canStartTransfer" />
+                    </GridLayout>
                     <MDTextField
                         backgroundColor="#ffffff"
                         margin="10 20 20 20"

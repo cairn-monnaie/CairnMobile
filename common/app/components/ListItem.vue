@@ -2,8 +2,8 @@
     <GridLayout
         :columns="`${16 * sizeFactor},auto,*,auto,${16 * sizeFactor}`"
         :rows="`${16 * sizeFactor},auto,*,auto,${16 * sizeFactor}`"
-        backgroundColor="white"
         :rippleColor="themeColor"
+        backgroundColor="white"
         @tap="$emit('tap', $event)"
     >
         <Label
@@ -20,7 +20,7 @@
             color="#757575"
             class="mdi"
         />
-        <NSImg v-show="showAvatar" col="1" row="1" rowSpan="3" :width="40 * sizeFactor" :height="40 * sizeFactor" :marginRight="16 * sizeFactor" :src="avatar" verticalAlignment="center" />
+        <NSImg v-show="showAvatar" backgroundColor="gray" col="1" row="1" rowSpan="3" :width="40 * sizeFactor" :height="40 * sizeFactor" :marginRight="16 * sizeFactor" :src="avatar" verticalAlignment="center" :borderRadius="20 * sizeFactor" :roundAsCircle="true"/>
         <Label col="2" row="1" :fontSize="10 * sizeFactor" v-if="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
 
         <Label col="2" row="2" :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalAlignment="bottom" />

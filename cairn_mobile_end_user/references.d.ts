@@ -31,6 +31,11 @@ declare namespace com {
             class SmsReceiver extends globalAndroid.content.BroadcastReceiver {
                 static bindListener(listener: { messageReceived(msg, address) });
             }
+
+            class OkhttpCallback {
+                onStringResponse( responseString,  statusCode, headers);
+                onFailure(call, error)
+            }
         }
     }
 }

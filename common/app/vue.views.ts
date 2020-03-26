@@ -44,6 +44,7 @@ const Plugin = {
 
         Vue.registerElement('Label', () => HTMLLabel);
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
+        Vue.registerElement('BarcodeView', () => require('nativescript-barcodeview').BarcodeView);
         // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
     }
 };

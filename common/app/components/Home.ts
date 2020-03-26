@@ -66,6 +66,7 @@ export default class Home extends PageComponent {
     }
 
     formatAddress = formatAddress;
+    DEFAULT_IMAGE_URL = `${CAIRN_URL}/bundles/cairnuser/img/pro.png`;
     onItemLoading(args) {
         if (this.$isIOS) {
             if (args.ios.backgroundView) {
@@ -157,13 +158,15 @@ export default class Home extends PageComponent {
             })
             .catch(this.showError);
     }
-    async handleQRData(qrCodeData: { ICC: string; name: string }) {
-        this.log('handleQRData', qrCodeData);
-        this.navigateTo(TransferWindow, {
-            props: {
-                qrCodeData
-            }
-        });
+    async handleQRData(qrCodeData?: { ICC: string; id: number; name: string }) {
+        if (qrCodeData) {
+            this.log('handleQRData', qrCodeData);
+            this.navigateTo(TransferWindow, {
+                props: {
+                    qrCodeData
+                }
+            });
+        }
     }
     scanQRCode() {
         this.$scanQRCode()
