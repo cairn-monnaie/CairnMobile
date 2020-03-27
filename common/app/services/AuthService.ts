@@ -39,9 +39,19 @@ export interface UserProfileEventData extends EventData {
     data: UserProfile;
 }
 
+export interface PhoneNumber {
+    id: number;
+    phoneNumber: string;
+}
+export interface SmsId {
+    id: number;
+    identifier: string;
+}
+
 export class User {
     // webPushSubscriptions: string[] = null;
-    phoneNumbers: string[] = null;
+    phoneNumbers: PhoneNumber[] = null;
+    smsIds: SmsId[] = null;
     // adherent: true = null;
     // admin: false = null;
     mainICC: string = null;
@@ -85,6 +95,24 @@ function cleanupUser(user: any) {
         result.image = `${CAIRN_URL}/${result.image.webPath}`;
         // } else {
         // result.image = ``;
+    }
+    if (user.phones) {
+        result.phoneNumbers = [];
+        result.smsIds = [];
+        user.phones.forEach(p => {
+            if (p.phoneNumber) {
+                result.phoneNumbers.push({
+                    id: p.id,
+                    phoneNumber: p.phoneNumber
+                });
+            }
+            if (p.identifier) {
+                result.smsIds.push({
+                    id: p.id,
+                    identifier: p.identifier
+                });
+            }
+        });
     }
     if (result.address) {
         result.address = {
@@ -354,6 +382,7 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         this.userProfile = cleanupUser(result);
+        console.log('userProfile', this.userProfile, result);
         this.notify({
             eventName: UserProfileEvent,
             object: this,
@@ -383,9 +412,9 @@ export default class AuthService extends NetworkService {
             })
         );
     }
-    async addPhone(phoneNumber: string, target: string) {
+    async addPhone(phoneNumber: string, userId: number) {
         return this.request({
-            apiPath: `/mobile/phones/${target}`,
+            apiPath: `/mobile/phones/add/${userId}`,
             method: 'POST',
             body: {
                 phoneNumber,
@@ -394,9 +423,9 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    async deletePhone(phoneId: string) {
+    async deletePhone(phoneNumber: PhoneNumber) {
         return this.request({
-            apiPath: `/mobile/phones/${phoneId}.json`,
+            apiPath: `/mobile/phones/${phoneNumber.id}`,
             method: 'DELETE',
             body: {
                 save: 'true'

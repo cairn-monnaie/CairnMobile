@@ -1,6 +1,6 @@
 import { NavigatedData } from '@nativescript/core/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
-import { UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
+import { PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
 import { ComponentIds } from './App';
 import PageComponent from './PageComponent';
 import * as imagepicker from 'nativescript-imagepicker';
@@ -78,7 +78,6 @@ export default class Profile extends PageComponent {
         if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
             this.$refs.mapComp.addGeoJSONPoints([this.userProfile]);
         }
-
     }
     onProfileUpdate(event: UserProfileEventData) {
         this.loading = false;
@@ -90,7 +89,7 @@ export default class Profile extends PageComponent {
         this.editing = !this.editing;
         if (!this.editing) {
             this.updateUserProfile = null;
-        } else if(this.showingQRCode) {
+        } else if (this.showingQRCode) {
             this.toggleQRCode();
         }
     }
@@ -129,11 +128,11 @@ export default class Profile extends PageComponent {
     // openIn() {
     // this.navigateTo(HomePage as any)
     // }
-    deletePhoneNumber(phoneNumber: string) {
+    deletePhoneNumber(phoneNumber: PhoneNumber) {
         this.log('deletePhoneNumber', phoneNumber);
         confirm({
             // title: localize('stop_session'),
-            message: this.$tc('delete_phone', phoneNumber),
+            message: this.$tc('delete_phone', phoneNumber.phoneNumber),
             okButtonText: this.$tc('delete'),
             cancelButtonText: this.$tc('cancel')
         })
@@ -159,7 +158,7 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r && r.text && r.text.length > 0) {
-                    return this.$authService.addPhone(r.text,this.userProfile.username);
+                    return this.$authService.addPhone(r.text, this.userProfile.id);
                 }
             })
             .catch(this.showError)
