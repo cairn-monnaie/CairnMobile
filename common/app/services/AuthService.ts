@@ -361,7 +361,7 @@ export default class AuthService extends NetworkService {
         } as UserProfileEventData);
         return this.userProfile;
     }
-    async updateUserProfile(data: UpdateUserProfile,username?: string): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile, username?: string): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -383,7 +383,7 @@ export default class AuthService extends NetworkService {
             })
         );
     }
-    async addPhone(phoneNumber: string,target: string) {
+    async addPhone(phoneNumber: string, target: string) {
         return this.request({
             apiPath: `/mobile/phones/${target}`,
             method: 'POST',
@@ -462,10 +462,10 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
-        
-        const apiPath = (this.isLoggedIn()) ? '/mobile/users' : '/mapUsers';
+
+        const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
-            apiPath: apiPath,
+            apiPath,
             method: 'POST',
             body: {
                 limit: limit || 100 + '',
