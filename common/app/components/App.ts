@@ -33,6 +33,7 @@ import Map from './Map';
 import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
 import Settings from './Settings';
+import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
     const fontAspectRatio = 1.28571429;
@@ -118,6 +119,8 @@ const mailRegexp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}
 })
 export default class App extends BaseVueComponent {
     $refs: AppRefs;
+    mMessageReceiver: android.content.BroadcastReceiver;
+    networkConnected = true;
     // drawerOptions: OptionsType = {
     //     // top: {
     //     //     height: '100%',
@@ -240,6 +243,7 @@ export default class App extends BaseVueComponent {
     }
     destroyed() {
         super.destroyed();
+        this.$authService.off(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
         if (gVars.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
@@ -248,9 +252,14 @@ export default class App extends BaseVueComponent {
             }
         }
     }
-    mMessageReceiver: android.content.BroadcastReceiver;
+    onNetworkStateChange(e: NetworkConnectionStateEventData) {
+        this.networkConnected = e.data.connected;
+    }
     mounted(): void {
         super.mounted();
+
+        // this.networkConnected = this.$authService.connected;
+        this.$authService.on(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
         applicationOn(suspendEvent, this.onAppPause, this);
         applicationOn(resumeEvent, this.onAppResume, this);
         if (gVars.isAndroid && gVars.internalApp) {

@@ -2,7 +2,6 @@ import Vue from 'vue';
 import AuthService from '~/services/AuthService';
 import SecurityService from '~/services/SecurityService';
 // import { ToastDuration, ToastPosition } from 'nativescript-toasty';
-import { Client } from 'nativescript-bugsnag';
 import App from '~/components/App';
 import * as Sentry from 'nativescript-akylas-sentry';
 

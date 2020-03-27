@@ -8,7 +8,7 @@
         </StackLayout>
         <ContentView col="1" colSpan="2" :height="height">
             <slot name="title">
-                <Label v-if="!!showLogo && !title" :fontFamily="cairnFontFamily" :fontSize="Math.min(height, 200)" color="white" text="cairn-full_logo" verticalAlignment="center" @tap="$emit('titleTap', $event)" />
+                <Label v-if="!!showLogo && !title" :fontFamily="cairnFontFamily" :fontSize="titleFontSize" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" @tap="$emit('titleTap', $event)" />
             </slot>
         </ContentView>
         <slot row="1" colSpan="3" name="subView" />

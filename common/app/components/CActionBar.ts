@@ -42,6 +42,10 @@ export default class ActionBar extends BaseVueComponent {
         return this.modalWindow || this.canGoBack || this.showMenuIcon;
     }
 
+    get titleFontSize() {
+        return Math.min(this.height, 200);
+    }
+
     mounted() {
         setTimeout(() => {
             this.canGoBack = this.$getAppComponent().canGoBack();

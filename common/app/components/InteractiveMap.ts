@@ -6,7 +6,7 @@ import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/
 import { CartoMap } from 'nativescript-carto/ui';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import * as appSettings from '@nativescript/core/application-settings';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
 import { User } from '~/services/AuthService';
 import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
@@ -23,6 +23,7 @@ const GeoJSON = require('geojson');
     }
 })
 export default class InteractiveMap extends BaseVueComponent {
+    @Prop({ default: 1 }) opacity: number;
     _cartoMap: CartoMap;
     currentBounds: MapBounds;
     selectedItem: User = null;
@@ -77,6 +78,7 @@ export default class InteractiveMap extends BaseVueComponent {
         console.log('map start pos', pos, zoom);
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
+        this.mapComp.getOrCreateLocalVectorTileLayer().setVectorTileEventListener(this);
     }
 
     @throttle(100)

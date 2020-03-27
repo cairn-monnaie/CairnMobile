@@ -4,13 +4,18 @@ import { PropertyChangeData } from '@nativescript/core/data/observable';
 import { isAndroid } from '@nativescript/core/platform/platform';
 import { NavigatedData } from '@nativescript/core/ui/page/page';
 import { Component, Watch } from 'vue-property-decorator';
-import { screenHeightDips } from '../variables';
+import { actionBarHeight, screenHeightDips, statusBarHeight } from '../variables';
 import { ComponentIds } from './App';
 import { TWEEN } from 'nativescript-tween';
 import PageComponent from './PageComponent';
+import InteractiveMap from './InteractiveMap';
 
-const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - 20 - 0.3;
-@Component({})
+const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - statusBarHeight - 0.3;
+@Component({
+    components: {
+        InteractiveMap
+    }
+})
 export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
@@ -20,11 +25,15 @@ export default class Login extends PageComponent {
         password: '@@bbccdd',
         confirmPassword: ''
     };
-    logoViewHeight = logoViewHeight;
+    // logoViewHeight = logoViewHeight;
+    logoViewHeight = 200;
     usernameError?: string = null;
     mailError?: string = null;
     passwordError?: string = null;
     canLoginOrRegister = false;
+
+    showLogin = false;
+    showLoginAlpha = 0;
     destroyed() {
         super.destroyed();
     }
@@ -33,11 +42,38 @@ export default class Login extends PageComponent {
     }
     onLoaded(args: NavigatedData) {
         this.checkForm();
-        if (!args.isBackNavigation) {
-            setTimeout(this.animateLogoView, 300); // delay for now as the first run is "jumping"
-        }
+        // if (!args.isBackNavigation) {
+        //     setTimeout(this.animateLogoView, 300); // delay for now as the first run is "jumping"
+        // }
     }
-
+    hideMap() {
+        this.showLogin = true;
+        // this.animateLogoView();
+        return new Promise(resolve => {
+            new TWEEN.Tween({ opacity: this.showLoginAlpha })
+                .to({ opacity: 1 }, 300)
+                .onComplete(resolve)
+                .onUpdate(object => {
+                    this.showLoginAlpha = object.opacity;
+                    // Object.assign(view.style, object)
+                })
+                .start();
+        }).catch(this.showError);
+    }
+    showMap() {
+        // this.animateLogoViewOut();
+        return new Promise(resolve => {
+            new TWEEN.Tween({ opacity: this.showLoginAlpha })
+                .to({ opacity: 0 }, 300)
+                .onComplete(resolve)
+                .onUpdate(object => {
+                    this.showLoginAlpha = object.opacity;
+                })
+                .start();
+        })
+            .then(() => (this.showLogin = false))
+            .catch(this.showError);
+    }
     @Watch('user', { deep: true })
     onUserChange() {
         // console.log('onUserChange', this.user);
@@ -46,7 +82,7 @@ export default class Login extends PageComponent {
     animateLogoView() {
         // const view = this.getRef('logoView');
         return new Promise(resolve => {
-            new TWEEN.Tween({ height: logoViewHeight })
+            new TWEEN.Tween({ height: this.logoViewHeight })
                 .to({ height: 200 }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
@@ -60,8 +96,8 @@ export default class Login extends PageComponent {
     animateLogoViewOut() {
         // const view = this.getRef('logoView');
         return new Promise(resolve => {
-            new TWEEN.Tween({ height: 200 }) // ratio 2.94
-                .to({ height: 68 }, 1000)
+            new TWEEN.Tween({ height: this.logoViewHeight }) // ratio 2.94
+                .to({ height: actionBarHeight }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
                 .onUpdate(object => {
@@ -117,13 +153,16 @@ export default class Login extends PageComponent {
             return this.$alert('missing_parameters');
         }
         this.loading = true;
-        this.animateLogoViewOut();
-        return this.$authService.login(this.user).catch(err => {
-            this.animateLogoView();
-            this.showError(err);
-        }).finally(()=>{
-            this.loading = false;
-        });
+        // this.animateLogoViewOut();
+        return this.$authService
+            .login(this.user)
+            .catch(err => {
+                // this.animateLogoView();
+                this.showError(err);
+            })
+            .finally(() => {
+                this.loading = false;
+            });
     }
     register() {
         if (!this.canLoginOrRegister) {
@@ -136,7 +175,8 @@ export default class Login extends PageComponent {
                 this.$alert('account_created');
                 this.isLoggingIn = true;
             })
-            .catch(this.showError).finally(()=>{
+            .catch(this.showError)
+            .finally(() => {
                 this.loading = false;
             });
     }
