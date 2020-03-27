@@ -28,7 +28,6 @@ export default class BaseVueComponent extends Vue {
     @Prop({ type: String, default: accentColor })
     public accentColor;
     public cairnFontFamily = cairnFontFamily;
-    public actionBarHeight = actionBarHeight;
     needsRoundedWatchesHandle = false;
     debug = false;
     getRef(key: string) {
