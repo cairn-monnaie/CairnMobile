@@ -39,9 +39,19 @@ export interface UserProfileEventData extends EventData {
     data: UserProfile;
 }
 
+export interface PhoneNumber {
+    id: number;
+    phoneNumber: string;
+}
+export interface SmsId {
+    id: number;
+    identifier: string;
+}
+
 export class User {
     // webPushSubscriptions: string[] = null;
-    phones: Phone[] = null;
+    phoneNumbers: PhoneNumber[] = null;
+    smsIds: SmsId[] = null;
     // adherent: true = null;
     // admin: false = null;
     mainICC: string = null;
@@ -85,6 +95,24 @@ function cleanupUser(user: any) {
         result.image = `${CAIRN_URL}/${result.image.webPath}`;
         // } else {
         // result.image = ``;
+    }
+    if (user.phones) {
+        result.phoneNumbers = [];
+        result.smsIds = [];
+        user.phones.forEach(p => {
+            if (p.phoneNumber) {
+                result.phoneNumbers.push({
+                    id: p.id,
+                    phoneNumber: p.phoneNumber
+                });
+            }
+            if (p.identifier) {
+                result.smsIds.push({
+                    id: p.id,
+                    identifier: p.identifier
+                });
+            }
+        });
     }
     if (result.address) {
         result.address = {
@@ -364,6 +392,7 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         this.userProfile = cleanupUser(result);
+        console.log('userProfile', this.userProfile, result);
         this.notify({
             eventName: UserProfileEvent,
             object: this,
@@ -394,9 +423,10 @@ export default class AuthService extends NetworkService {
             })
         );
     }
-    async addPhone(phoneNumber: string,username?: string) {
+
+    async addPhone(phoneNumber: string, userId: number) {
         return this.request({
-            apiPath: `/mobile/phones/${username || this.userProfile.username}`,
+            apiPath: `/mobile/phones/add/${userId}`,
             method: 'POST',
             body: {
                 phoneNumber,
@@ -407,9 +437,9 @@ export default class AuthService extends NetworkService {
 
     //Cannot use phoneNumber as URI because it is not an unique identifier : 
     //a same phone number can be added to both a person and a pro
-    async deletePhone(phoneId: number) {
+    async deletePhone(phoneNumber: PhoneNumber) {
         return this.request({
-            apiPath: `/mobile/phones/${phoneId}.json`,
+            apiPath: `/mobile/phones/${phoneNumber.id}`,
             method: 'DELETE',
             body: {
                 save: 'true'
@@ -476,10 +506,9 @@ export default class AuthService extends NetworkService {
             };
         }
         
-        //apiPath depends on user connection state
-        const apiPath = (this.isLoggedIn()) ? '/mobile/users' : '/mapUsers';
+        const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
-            apiPath: apiPath,
+            apiPath,
             method: 'POST',
             body: {
                 limit: limit || 100 + '',

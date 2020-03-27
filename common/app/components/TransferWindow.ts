@@ -32,6 +32,10 @@ export default class TransferWindow extends PageComponent {
         super();
     }
 
+    get canSendSMS() {
+        return this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0;
+    }
+
     @Watch('reason')
     onReasonChanged() {
         this.checkForm();
@@ -71,8 +75,8 @@ export default class TransferWindow extends PageComponent {
             this.handleQRData(this.qrCodeData);
         }
 
-        console.log('created', this.qrCodeData, this.account, this.recipient);
-        this.log('mounted', this.account, this.beneficiaries);
+        // console.log('created', this.qrCodeData, this.account, this.recipient);
+        // this.log('mounted', this.account, this.beneficiaries);
         if (!this.account || !this.beneficiaries) {
             this.refresh();
         }
@@ -146,7 +150,16 @@ export default class TransferWindow extends PageComponent {
         //     .catch(this.showError);
     }
     sendSMS() {
-        sms([CAIRN_SMS_NUMBER], `PAYER ${this.amount} LECAIRN`);
+        sms([CAIRN_SMS_NUMBER], `PAYER ${this.amount} ${this.recipient.smsIds[0].identifier}`).then((response: any) => {
+            console.log('on sms response', response)
+            if (response === 'success') {
+                this.close();
+                this.$authService.getAccounts();
+                showSnack({
+                    message: this.$t('transaction_done', this.amount, this.recipient)
+                });
+            }
+        });
     }
     submit() {
         if (!this.$authService.connected) {

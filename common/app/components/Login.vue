@@ -1,25 +1,55 @@
 <template>
-    <CairnPage  @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight" @actionBarTitleTap="animateLogoView">
-        <!-- <Label  slot="actionBar"  width="100%" textAlignment="center" class="cairn" text="cairn-full_logo" color="white" :fontSize="Math.min(logoViewHeight, 200)" /> -->
-        <ScrollView>
+    <CairnPage @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight">
+        <InteractiveMap/>
+        <MDButton v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+        <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
             <StackLayout horizontalAlignment="center">
-                <!-- <StackLayout @tap="animateLogoView" ref="logoView" class="themedBack logoView" > -->
-                    
-                <!-- </StackLayout> -->
                 <StackLayout class="form">
-                    <MDTextField class="input" :hint="$t('username') | capitalize" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.username" returnKeyType="next" @returnPress="focusPassword" @textChange="onInputChange" :error="usernameError" />
+                    <MDTextField
+                        class="input"
+                        :hint="$t('username') | capitalize"
+                        keyboardType="email"
+                        autocorrect="false"
+                        autocapitalizationType="none"
+                        v-model="user.username"
+                        returnKeyType="next"
+                        @returnPress="focusPassword"
+                        @textChange="onInputChange"
+                        :error="usernameError"
+                    />
 
-                    <MDTextField ref="password" class="input" :hint="$t('password') | capitalize" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'" @returnPress="focusConfirmPassword" @textChange="onInputChange" :error="passwordError" />
+                    <MDTextField
+                        ref="password"
+                        class="input"
+                        :hint="$t('password') | capitalize"
+                        secure="true"
+                        v-model="user.password"
+                        :returnKeyType="isLoggingIn ? 'done' : 'next'"
+                        @returnPress="focusConfirmPassword"
+                        @textChange="onInputChange"
+                        :error="passwordError"
+                    />
 
-                    <MDTextField v-show="!isLoggingIn" ref="confirmPassword" class="input" :hint="$t('confirm_password') | capitalize" secure="true" v-model="user.confirmPassword" returnKeyType="done" @textChange="onInputChange" @returnPress="submit" :error="passwordError" />
+                    <MDTextField
+                        v-show="!isLoggingIn"
+                        ref="confirmPassword"
+                        class="input"
+                        :hint="$t('confirm_password') | capitalize"
+                        secure="true"
+                        v-model="user.confirmPassword"
+                        returnKeyType="done"
+                        @textChange="onInputChange"
+                        @returnPress="submit"
+                        :error="passwordError"
+                    />
 
                     <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
-                    <!-- <MDActivityIndicator v-show="loading" busy width="45" height="45" /> -->
                     <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
+                    <MDButton v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap"  />
                 </StackLayout>
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">
-                    <Span :text="(isLoggingIn ? $t('no_account') : $t('login'))| capitalize" />
+                    <Span :text="(isLoggingIn ? $t('no_account') : $t('login')) | capitalize" />
                     <Span :text="isLoggingIn ? $t('register') : '' | capitalize" fontWeight="bold" />
                 </Label>
             </StackLayout>

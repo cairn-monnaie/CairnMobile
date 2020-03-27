@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>CFBundleVersion</key>
-        <string>24</string>
+        <string>27</string>
         <key>CFBundleDevelopmentRegion</key>
         <string>en</string>
         <key>CFBundleDisplayName</key>
@@ -61,8 +61,6 @@
                 </dict>
             </dict>
         </dict>
-        <key>BugsnagAPIKey</key>
-        <string>d85d1a07697803385200b8d955e42236</string>
         <key>NSFaceIDUsageDescription</key>
         <string>eCairn uses biometric services to secure your transactions</string>
         <key>NSLocationWhenInUseUsageDescription</key>

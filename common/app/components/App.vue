@@ -10,9 +10,9 @@
                 </GridLayout>
                 <ScrollView row="1" paddingTop="10" @tap="noop">
                     <StackLayout ref="menu" @tap="noop">
-                        <GridLayout v-for="(item) in menuItems" :key="item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)"  @tap="onNavItemTap(item.url)">
-                            <Label col="0" class="menuIcon" :text="item.icon" verticalAlignment="center" :active="activatedUrl  === item.url" />
-                            <Label col="1" class="menuText" :text="item.title | capitalize" verticalAlignment="center" :active="activatedUrl  === item.url" />
+                        <GridLayout v-for="item in menuItems" :key="item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)" @tap="onNavItemTap(item.url)">
+                            <Label col="0" class="menuIcon" :text="item.icon" verticalAlignment="center" :active="activatedUrl === item.url" />
+                            <Label col="1" class="menuText" :text="item.title | capitalize" verticalAlignment="center" :active="activatedUrl === item.url" />
                         </GridLayout>
                     </StackLayout>
                 </ScrollView>
@@ -29,10 +29,13 @@
                     </StackLayout>
                 </StackLayout>
             </GridLayout>
+            <!-- <GridLayout> -->
                 <Frame ref="innerFrame">
                     <Home v-if="loggedInOnStart" />
                     <Login v-else />
                 </Frame>
+                <!-- <Label :text="$t('no_network_desc')"  verticalAlignment="bottom" textAlignment="center" color="white" backgroundColor="red" padding="10"/> -->
+            <!-- </GridLayout> -->
         </MultiDrawer>
     </Page>
 </template>

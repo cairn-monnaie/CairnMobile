@@ -374,9 +374,9 @@ export class NetworkService extends Observable {
         }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
-        this.log('request', requestParams);
+        // this.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
+        return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
     requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -399,7 +399,7 @@ export class NetworkService extends Observable {
         // const content = response['content'] || response['body'];
         const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
+        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {

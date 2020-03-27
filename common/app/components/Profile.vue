@@ -66,7 +66,7 @@
 
                         <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" />
                         <ListItem leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" />
-                        <ListItem v-for="phone in userProfile.phoneNumbers" :key="phone" leftIcon="mdi-phone" :title="phone" :overText="$t('phone')" />
+                        <ListItem v-for="phone in userProfile.phoneNumbers" :key="phone.id" leftIcon="mdi-phone" :title="phone.phoneNumber" :overText="$t('phone')" />
                         <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="$t('address')" />
                     </StackLayout>
                 </ScrollView>
