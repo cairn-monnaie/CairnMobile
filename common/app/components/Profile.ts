@@ -130,17 +130,19 @@ export default class Profile extends PageComponent {
     // openIn() {
     // this.navigateTo(HomePage as any)
     // }
-    deletePhoneNumber(phoneNumber: string) {
-        this.log('deletePhoneNumber', phoneNumber);
+
+    //phoneNumber cannot be used as it is not an unique identifier
+    deletePhoneNumber(phone: Phone) {
+        this.log('deletePhoneNumber', phone.phoneNumber);
         confirm({
             // title: localize('stop_session'),
-            message: this.$tc('delete_phone', phoneNumber),
+            message: this.$tc('delete_phone',phone.phoneNumber),
             okButtonText: this.$tc('delete'),
             cancelButtonText: this.$tc('cancel')
         })
             .then(r => {
                 if (r) {
-                    return this.$authService.deletePhone(phoneNumber);
+                    return this.$authService.deletePhone(phone.id);
                 }
             })
             .catch(this.showError)

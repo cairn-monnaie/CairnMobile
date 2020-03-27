@@ -41,7 +41,7 @@ export interface UserProfileEventData extends EventData {
 
 export class User {
     // webPushSubscriptions: string[] = null;
-    phoneNumbers: string[] = null;
+    phones: Phone[] = null;
     // adherent: true = null;
     // admin: false = null;
     mainICC: string = null;
@@ -99,6 +99,7 @@ function cleanupUser(user: any) {
             }
         };
     }
+
     return result as User;
 }
 function cleanupTransaction(transaction: any) {
@@ -123,10 +124,11 @@ export interface LoginParams {
 }
 
 export enum Roles {
-    PRO = 'ROLE_PPRO',
+    PRO = 'ROLE_PRO',
     PERSON = 'ROLE_PERSON',
     USER = 'ROLE_USER'
 }
+
 export interface Address {
     id: number;
     street1: string;
@@ -140,6 +142,14 @@ export interface Address {
         name: string;
     };
 }
+
+export class Phone {
+    id: number;
+    phoneNumber: string;
+    identifier?: string;
+    paymentEnabled: boolean;
+}
+
 export class AccountInfo {
     balance?: number;
     id: string;
@@ -290,14 +300,14 @@ function getFormData(actualData, prefix?: string) {
                         data,
                         contentType: 'image/jpeg',
                         fileName: 'image.jpeg',
-                        parameterName: `fos_user_profile_form[${k}][file]`
+                        parameterName: `cairn_user_profile_edit[${k}][file]`
                     }));
                 } else if (typeof value === 'object') {
                     return getFormData(value, `${prefix || ''}[${k}]`);
                 } else {
                     return Promise.resolve({
                         data: value.toString(),
-                        parameterName: `fos_user_profile_form${prefix || ''}[${k}]`
+                        parameterName: `cairn_user_profile_edit${prefix || ''}[${k}]`
                     });
                 }
             }
@@ -361,7 +371,8 @@ export default class AuthService extends NetworkService {
         } as UserProfileEventData);
         return this.userProfile;
     }
-    async updateUserProfile(data: UpdateUserProfile,username?: string): Promise<any> {
+
+    async updateUserProfile(data: UpdateUserProfile,userId?: number): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -377,15 +388,15 @@ export default class AuthService extends NetworkService {
 
         return getFormData(actualData).then(params =>
             this.requestMultipart({
-                apiPath: `/mobile/users/profile/${username || this.userProfile.username}`,
+                apiPath: `/mobile/users/profile/${userId || this.userId}`,
                 multipartParams: params.filter(s => !!s),
                 method: 'POST'
             })
         );
     }
-    async addPhone(phoneNumber: string,target: string) {
+    async addPhone(phoneNumber: string,username?: string) {
         return this.request({
-            apiPath: `/mobile/phones/${target}`,
+            apiPath: `/mobile/phones/${username || this.userProfile.username}`,
             method: 'POST',
             body: {
                 phoneNumber,
@@ -394,7 +405,9 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    async deletePhone(phoneId: string) {
+    //Cannot use phoneNumber as URI because it is not an unique identifier : 
+    //a same phone number can be added to both a person and a pro
+    async deletePhone(phoneId: number) {
         return this.request({
             apiPath: `/mobile/phones/${phoneId}.json`,
             method: 'DELETE',
@@ -463,6 +476,7 @@ export default class AuthService extends NetworkService {
             };
         }
         
+        //apiPath depends on user connection state
         const apiPath = (this.isLoggedIn()) ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
             apiPath: apiPath,
@@ -476,7 +490,7 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: {
+                roles: { // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
                     '0': 'ROLE_PRO'
                 }
             }
@@ -510,9 +524,9 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    async confirmOperation(oprationId, code?: string) {
+    async confirmOperation(operationId, code?: string) {
         const result = await this.request({
-            apiPath: `/mobile/transaction/confirm/${oprationId}.json`,
+            apiPath: `/mobile/transaction/confirm/${operationId}.json`,
             method: 'POST',
             body: {
                 save: 'true',
@@ -609,6 +623,7 @@ export default class AuthService extends NetworkService {
             this.refreshToken = result.refresh_token;
         } catch (err) {
             // for now we try to get a new token there, should we?
+            // Yes, we should ! 
             console.log('error getting refresh token', err);
             await this.getToken(this.loginParams);
 
@@ -680,7 +695,15 @@ export default class AuthService extends NetworkService {
         }
     }
 
-    async register(user) {
+    async register(user,type: string) {
+        return this.request({
+            apiPath: '/mobile/users/registration',
+            method: 'POST',
+            queryParams: {
+                type: type
+            }
+        });
+
         // const result = await firebase.createUser({
         //   email: user.email,
         //   password: user.password
