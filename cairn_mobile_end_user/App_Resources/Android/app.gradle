@@ -2,7 +2,7 @@ android {
   defaultConfig {  
     compileSdkVersion 28
     multiDexEnabled true
-    minSdkVersion 18
+    minSdkVersion 23
     targetSdkVersion 28
     versionCode 24
     versionName "1.0"

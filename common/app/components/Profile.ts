@@ -160,7 +160,7 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r && r.text && r.text.length > 0) {
-                    return this.$authService.addPhone(r.text);
+                    return this.$authService.addPhone(r.text,this.userProfile.username);
                 }
             })
             .catch(this.showError)

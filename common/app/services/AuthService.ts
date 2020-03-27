@@ -361,7 +361,7 @@ export default class AuthService extends NetworkService {
         } as UserProfileEventData);
         return this.userProfile;
     }
-    async updateUserProfile(data: UpdateUserProfile): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile,username?: string): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -377,15 +377,15 @@ export default class AuthService extends NetworkService {
 
         return getFormData(actualData).then(params =>
             this.requestMultipart({
-                apiPath: '/mobile/users/profile',
+                apiPath: `/mobile/users/profile/${username || this.userProfile.username}`,
                 multipartParams: params.filter(s => !!s),
                 method: 'POST'
             })
         );
     }
-    async addPhone(phoneNumber: string) {
+    async addPhone(phoneNumber: string,target: string) {
         return this.request({
-            apiPath: '/mobile/phones.json',
+            apiPath: `/mobile/phones/${target}`,
             method: 'POST',
             body: {
                 phoneNumber,
@@ -393,13 +393,13 @@ export default class AuthService extends NetworkService {
             }
         }).then(() => this.getUserProfile());
     }
-    async deletePhone(phoneNumber: string) {
+
+    async deletePhone(phoneId: string) {
         return this.request({
-            apiPath: `/mobile/phones/${this.userId}.json`,
+            apiPath: `/mobile/phones/${phoneId}.json`,
             method: 'DELETE',
             body: {
-                phoneNumber,
-                paymentEnabled: false
+                save: 'true'
             }
         }).then(() => this.getUserProfile());
     }
@@ -462,8 +462,10 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
+        
+        const apiPath = (this.isLoggedIn()) ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
-            apiPath: '/mobile/users',
+            apiPath: apiPath,
             method: 'POST',
             body: {
                 limit: limit || 100 + '',
