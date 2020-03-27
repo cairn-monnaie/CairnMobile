@@ -399,7 +399,7 @@ export default class App extends BaseVueComponent {
         //     this.$navigateBack(), 5000)
     }
     onPageNavigation(event) {
-        this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
+        // this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
         this.closeDrawer();
         this.setActivatedUrl(event.entry.resolvedPage[navigateUrlProperty]);
     }

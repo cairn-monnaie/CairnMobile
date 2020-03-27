@@ -71,8 +71,8 @@ export default class TransferWindow extends PageComponent {
             this.handleQRData(this.qrCodeData);
         }
 
-        console.log('created', this.qrCodeData, this.account, this.recipient);
-        this.log('mounted', this.account, this.beneficiaries);
+        // console.log('created', this.qrCodeData, this.account, this.recipient);
+        // this.log('mounted', this.account, this.beneficiaries);
         if (!this.account || !this.beneficiaries) {
             this.refresh();
         }

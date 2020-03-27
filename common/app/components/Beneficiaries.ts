@@ -71,7 +71,6 @@ export default class Beneficiaries extends PageComponent {
 
     onItemTap(userProfile: User) {
         // const accountInfo = this.dataItems[args.index];
-        console.log('onItemTap', userProfile);
         this.navigateTo(Profile, {
             props: {
                 propUserProfile: userProfile,

@@ -70,7 +70,6 @@ export default class Profile extends PageComponent {
     updateMapCenter() {
         if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
             const map = this.$refs.mapComp.cartoMap;
-            console.log('updateMapCenter', map, this.userProfile.address);
             map.setFocusPos(this.userProfile.address, 0);
         }
     }
