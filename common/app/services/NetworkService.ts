@@ -376,7 +376,7 @@ export class NetworkService extends Observable {
 
         // this.log('request', requestParams);
         const requestStartTime = Date.now();
-        return http.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
+        return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
     requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
