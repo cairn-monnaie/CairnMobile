@@ -733,6 +733,19 @@ export default class AuthService extends NetworkService {
             }
         });
 
+    async changePassword(currentPassword: string,newPassword: string,confirmPassword: string) {
+        return this.request({
+            apiPath: '/mobile/users/change-password',
+            method: 'POST',
+            body: {
+                current_password: currentPassword,
+                plainPassword: {
+                    first: newPassword,
+                    second: confirmPassword
+                }
+            }
+        });
+
         // const result = await firebase.createUser({
         //   email: user.email,
         //   password: user.password
