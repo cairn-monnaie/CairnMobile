@@ -349,8 +349,9 @@ export class NetworkService extends Observable {
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (typeof requestParams.content === 'string') {
-            console.log('content', requestParams.content, jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
             hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
+        } else if (requestParams.body && (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data')) {
+            hmacString += md5(jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, ''));
         }
         console.log(hmacString);
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
@@ -369,12 +370,13 @@ export class NetworkService extends Observable {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
-        if (requestParams.body) {
-            requestParams.content = JSON.stringify(requestParams.body);
-        }
+        // if (requestParams.body) {
+        //     requestParams.content = JSON.stringify(requestParams.body);
+        // }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         const requestStartTime = Date.now();
+        console.log('request', requestParams);
         return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
