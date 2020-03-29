@@ -735,7 +735,7 @@ export default class AuthService extends NetworkService {
                 type: type
             }
         });
-
+    }
     async changePassword(currentPassword: string,newPassword: string,confirmPassword: string) {
         return this.request({
             apiPath: '/mobile/users/change-password',
