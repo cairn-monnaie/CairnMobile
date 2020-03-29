@@ -3,7 +3,7 @@ import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
-import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
+// import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
@@ -390,7 +390,7 @@ export default class AuthService extends NetworkService {
         } as UserProfileEventData);
         return this.userProfile;
     }
-    async updateUserProfile(data: UpdateUserProfile, username?: string): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile, userId?: string): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -405,9 +405,12 @@ export default class AuthService extends NetworkService {
         const actualData = mergeOptions(currentData, data);
 
         return getFormData(actualData).then(params =>
-            this.requestMultipart({
-                apiPath: `/mobile/users/profile/${username || this.userProfile.username}`,
-                multipartParams: params.filter(s => !!s),
+            this.request({
+                headers:{
+                    'Content-Type':'multipart/form-data'
+                },
+                apiPath: `/mobile/users/profile/${userId || this.userProfile.id}`,
+                body: params.filter(s => !!s),
                 method: 'POST'
             })
         );

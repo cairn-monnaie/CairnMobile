@@ -4,7 +4,7 @@ import * as http from '@nativescript/core/http';
 import { clog } from '~/utils/logging';
 import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
-import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
+// import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { BaseError } from 'make-error';
 import * as https from 'nativescript-akylas-https';
 
@@ -378,18 +378,18 @@ export class NetworkService extends Observable {
         return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
-    requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
-        this.log('requestMultipart', requestParams);
-        if (requestParams.apiPath) {
-            requestParams.url = this.authority + requestParams.apiPath;
-        }
-        const requestStartTime = Date.now();
-        return new TNSHttpFormData()
-            .post(requestParams.url, requestParams.multipartParams, {
-                headers: this.getRequestHeaders(requestParams as HttpRequestOptions)
-            })
-            .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
-    }
+    // requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
+    //     this.log('requestMultipart', requestParams);
+    //     if (requestParams.apiPath) {
+    //         requestParams.url = this.authority + requestParams.apiPath;
+    //     }
+    //     const requestStartTime = Date.now();
+    //     return new TNSHttpFormData()
+    //         .post(requestParams.url, requestParams.multipartParams, {
+    //             headers: this.getRequestHeaders(requestParams as HttpRequestOptions)
+    //         })
+    //         .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
+    // }
 
     async handleRequestResponse(response: http.HttpResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
