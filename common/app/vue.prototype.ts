@@ -23,10 +23,10 @@ const Plugin = {
         Vue.prototype.$authService = authService;
         Vue.prototype.$securityService = new SecurityService();
 
-        // imageModule.setDebug(true);
-        application.on(application.launchEvent, () => {
-            imageModule.initialize({ isDownsampleEnabled: true });
-        });
+        imageModule.initialize({ isDownsampleEnabled: true });
+        // application.on(application.launchEvent, () => {
+        //     console.log('about to init image module');
+        // });
 
         application.on(application.exitEvent, args => {
             imageModule.shutDown();

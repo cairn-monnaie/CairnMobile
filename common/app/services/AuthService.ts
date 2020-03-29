@@ -3,7 +3,7 @@ import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
-import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
+// import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
@@ -401,7 +401,7 @@ export default class AuthService extends NetworkService {
         return this.userProfile;
     }
 
-    async updateUserProfile(data: UpdateUserProfile,userId?: number): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile, userId?: number): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -416,9 +416,12 @@ export default class AuthService extends NetworkService {
         const actualData = mergeOptions(currentData, data);
 
         return getFormData(actualData).then(params =>
-            this.requestMultipart({
+            this.request({
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
                 apiPath: `/mobile/users/profile/${userId || this.userId}`,
-                multipartParams: params.filter(s => !!s),
+                body: params.filter(s => !!s),
                 method: 'POST'
             })
         );
@@ -435,7 +438,7 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    //Cannot use phoneNumber as URI because it is not an unique identifier : 
+    //Cannot use phoneNumber as URI because it is not an unique identifier :
     //a same phone number can be added to both a person and a pro
     async deletePhone(phoneNumber: PhoneNumber) {
         return this.request({
@@ -505,7 +508,7 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
-        
+
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
             apiPath,
@@ -519,7 +522,8 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: { // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
+                roles: {
+                    // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
                     '0': 'ROLE_PRO'
                 }
             }
@@ -652,7 +656,7 @@ export default class AuthService extends NetworkService {
             this.refreshToken = result.refresh_token;
         } catch (err) {
             // for now we try to get a new token there, should we?
-            // Yes, we should ! 
+            // Yes, we should !
             console.log('error getting refresh token', err);
             await this.getToken(this.loginParams);
 
@@ -724,17 +728,17 @@ export default class AuthService extends NetworkService {
         }
     }
 
-    async register(user,type: string) {
+    async register(user, type: string) {
         return this.request({
             apiPath: '/mobile/users/registration',
             method: 'POST',
             queryParams: {
-                type: type
+                type
             }
         });
     }
 
-    async changePassword(currentPassword: string,newPassword: string,confirmPassword: string) {
+    async changePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
         return this.request({
             apiPath: '/mobile/users/change-password',
             method: 'POST',
