@@ -39,13 +39,13 @@
                         />
                         <EditableListItem leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" @textChange="onTextChange($event.value, 'email')" />
                         <EditableListItem
-                            v-for="phone in userProfile.phoneNumbers"
+                            v-for="phone in userProfile.phones"
                             leftIcon="mdi-phone"
                             rightButton="mdi-delete"
                             :title="phone.phoneNumber"
                             :overText="$t('phone')"
                             @rightTap="deletePhoneNumber(phone)"
-                            :key="phone"
+                            :key="phone.phoneNumber"
                         />
                         <MDButton :text="$tc('add_phone')" @tap="addPhoneNumber" />
 

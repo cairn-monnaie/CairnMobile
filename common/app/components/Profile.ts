@@ -128,6 +128,8 @@ export default class Profile extends PageComponent {
     // openIn() {
     // this.navigateTo(HomePage as any)
     // }
+
+    //phoneNumber cannot be used as it is not an unique identifier
     deletePhoneNumber(phoneNumber: PhoneNumber) {
         this.log('deletePhoneNumber', phoneNumber);
         confirm({
@@ -138,7 +140,7 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r) {
-                    return this.$authService.deletePhone(phoneNumber);
+                    return this.$authService.deletePhone(phone.id);
                 }
             })
             .catch(this.showError)

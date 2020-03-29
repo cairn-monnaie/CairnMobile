@@ -127,6 +127,7 @@ function cleanupUser(user: any) {
             }
         };
     }
+
     return result as User;
 }
 function cleanupTransaction(transaction: any) {
@@ -151,10 +152,11 @@ export interface LoginParams {
 }
 
 export enum Roles {
-    PRO = 'ROLE_PPRO',
+    PRO = 'ROLE_PRO',
     PERSON = 'ROLE_PERSON',
     USER = 'ROLE_USER'
 }
+
 export interface Address {
     id: number;
     street1: string;
@@ -168,6 +170,14 @@ export interface Address {
         name: string;
     };
 }
+
+export class Phone {
+    id: number;
+    phoneNumber: string;
+    identifier?: string;
+    paymentEnabled: boolean;
+}
+
 export class AccountInfo {
     balance?: number;
     id: string;
@@ -318,14 +328,14 @@ function getFormData(actualData, prefix?: string) {
                         data,
                         contentType: 'image/jpeg',
                         fileName: 'image.jpeg',
-                        parameterName: `fos_user_profile_form[${k}][file]`
+                        parameterName: `cairn_user_profile_edit[${k}][file]`
                     }));
                 } else if (typeof value === 'object') {
                     return getFormData(value, `${prefix || ''}[${k}]`);
                 } else {
                     return Promise.resolve({
                         data: value.toString(),
-                        parameterName: `fos_user_profile_form${prefix || ''}[${k}]`
+                        parameterName: `cairn_user_profile_edit${prefix || ''}[${k}]`
                     });
                 }
             }
@@ -390,7 +400,8 @@ export default class AuthService extends NetworkService {
         } as UserProfileEventData);
         return this.userProfile;
     }
-    async updateUserProfile(data: UpdateUserProfile, userId?: string): Promise<any> {
+
+    async updateUserProfile(data: UpdateUserProfile,userId?: number): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -409,12 +420,13 @@ export default class AuthService extends NetworkService {
                 headers:{
                     'Content-Type':'multipart/form-data'
                 },
-                apiPath: `/mobile/users/profile/${userId || this.userProfile.id}`,
+                apiPath: `/mobile/users/profile/${userId || this.userId}`,
                 body: params.filter(s => !!s),
                 method: 'POST'
             })
         );
     }
+
     async addPhone(phoneNumber: string, userId: number) {
         return this.request({
             apiPath: `/mobile/phones/add/${userId}`,
@@ -426,6 +438,8 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
+    //Cannot use phoneNumber as URI because it is not an unique identifier : 
+    //a same phone number can be added to both a person and a pro
     async deletePhone(phoneNumber: PhoneNumber) {
         return this.request({
             apiPath: `/mobile/phones/${phoneNumber.id}`,
@@ -494,7 +508,7 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
-
+        
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
             apiPath,
@@ -508,7 +522,7 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: {
+                roles: { // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
                     '0': 'ROLE_PRO'
                 }
             }
@@ -542,9 +556,9 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    async confirmOperation(oprationId, code?: string) {
+    async confirmOperation(operationId, code?: string) {
         const result = await this.request({
-            apiPath: `/mobile/transaction/confirm/${oprationId}.json`,
+            apiPath: `/mobile/transaction/confirm/${operationId}.json`,
             method: 'POST',
             body: {
                 save: 'true',
@@ -641,6 +655,7 @@ export default class AuthService extends NetworkService {
             this.refreshToken = result.refresh_token;
         } catch (err) {
             // for now we try to get a new token there, should we?
+            // Yes, we should ! 
             console.log('error getting refresh token', err);
             await this.getToken(this.loginParams);
 
@@ -712,7 +727,28 @@ export default class AuthService extends NetworkService {
         }
     }
 
-    async register(user) {
+    async register(user,type: string) {
+        return this.request({
+            apiPath: '/mobile/users/registration',
+            method: 'POST',
+            queryParams: {
+                type: type
+            }
+        });
+
+    async changePassword(currentPassword: string,newPassword: string,confirmPassword: string) {
+        return this.request({
+            apiPath: '/mobile/users/change-password',
+            method: 'POST',
+            body: {
+                current_password: currentPassword,
+                plainPassword: {
+                    first: newPassword,
+                    second: confirmPassword
+                }
+            }
+        });
+
         // const result = await firebase.createUser({
         //   email: user.email,
         //   password: user.password
