@@ -401,7 +401,7 @@ export default class AuthService extends NetworkService {
         return this.userProfile;
     }
 
-    async updateUserProfile(data: UpdateUserProfile,userId?: number): Promise<any> {
+    async updateUserProfile(data: UpdateUserProfile, userId?: number): Promise<any> {
         if (!data) {
             return Promise.resolve();
         }
@@ -417,8 +417,8 @@ export default class AuthService extends NetworkService {
 
         return getFormData(actualData).then(params =>
             this.request({
-                headers:{
-                    'Content-Type':'multipart/form-data'
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 },
                 apiPath: `/mobile/users/profile/${userId || this.userId}`,
                 body: params.filter(s => !!s),
@@ -438,7 +438,7 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    //Cannot use phoneNumber as URI because it is not an unique identifier : 
+    //Cannot use phoneNumber as URI because it is not an unique identifier :
     //a same phone number can be added to both a person and a pro
     async deletePhone(phoneNumber: PhoneNumber) {
         return this.request({
@@ -508,7 +508,7 @@ export default class AuthService extends NetworkService {
                 maxLat: mapBounds.northeast.latitude + ''
             };
         }
-        
+
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         const result = await this.request<User[]>({
             apiPath,
@@ -522,7 +522,8 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: { // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
+                roles: {
+                    // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
                     '0': 'ROLE_PRO'
                 }
             }
@@ -655,7 +656,7 @@ export default class AuthService extends NetworkService {
             this.refreshToken = result.refresh_token;
         } catch (err) {
             // for now we try to get a new token there, should we?
-            // Yes, we should ! 
+            // Yes, we should !
             console.log('error getting refresh token', err);
             await this.getToken(this.loginParams);
 
@@ -727,16 +728,16 @@ export default class AuthService extends NetworkService {
         }
     }
 
-    async register(user,type: string) {
+    async register(user, type: string) {
         return this.request({
             apiPath: '/mobile/users/registration',
             method: 'POST',
             queryParams: {
-                type: type
+                type
             }
         });
     }
-    async changePassword(currentPassword: string,newPassword: string,confirmPassword: string) {
+    async changePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
         return this.request({
             apiPath: '/mobile/users/change-password',
             method: 'POST',
