@@ -321,21 +321,21 @@ export class NetworkService extends Observable {
             headers['Content-Type'] = 'application/json';
         }
 
-        if (requestParams.cachePolicy) {
-            switch (requestParams.cachePolicy) {
-                case 'noCache':
-                    headers['Cache-Control'] = 'no-cache';
-                    break;
-                case 'onlyCache':
-                    headers['Cache-Control'] = 'only-if-cached';
+        // if (requestParams.cachePolicy) {
+        //     switch (requestParams.cachePolicy) {
+        //         case 'noCache':
+        //             headers['Cache-Control'] = 'public, no-cache';
+        //             break;
+        //         case 'onlyCache':
+        //             headers['Cache-Control'] = 'public, only-if-cached';
 
-                    break;
-                // case "ignoreCache":
-                //     manager.requestSerializer.cachePolicy =
-                //         NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData;
-                // break;
-            }
-        }
+        //             break;
+        //         // case "ignoreCache":
+        //         //     manager.requestSerializer.cachePolicy =
+        //         //         NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData;
+        //         // break;
+        //     }
+        // }
         const signature = this.buildAuthorization(requestParams);
 
         headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${signature[1]}`;
@@ -356,15 +356,15 @@ export class NetworkService extends Observable {
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
     }
     request<T = any>(requestParams: Partial<HttpRequestOptions>, retry = 0) {
-        // if (!this.connected) {
-        //     return Promise.reject(new NoNetworkError());
-        // }
+        if (!this.connected) {
+            return Promise.reject(new NoNetworkError());
+        }
         if (requestParams.apiPath) {
             requestParams.url = this.authority + requestParams.apiPath;
         }
-        if (!this.connected && !requestParams.cachePolicy) {
-            requestParams.cachePolicy = 'onlyCache';
-        }
+        // if (!this.connected && !requestParams.cachePolicy) {
+        //     requestParams.cachePolicy = 'onlyCache';
+        // }
         if (requestParams.queryParams) {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
@@ -374,7 +374,6 @@ export class NetworkService extends Observable {
         }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
-        // this.log('request', requestParams);
         const requestStartTime = Date.now();
         return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
@@ -392,14 +391,14 @@ export class NetworkService extends Observable {
             .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
     }
 
-    async handleRequestResponse(response: http.HttpResponse | TNSHttpFormDataResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
+    async handleRequestResponse(response: http.HttpResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
         // return Promise.resolve()
         // .then(() => {
-        // const content = response['content'] || response['body'];
-        const content = response['content'] ? response['content'].toString() : response['body'];
+        const content = response['content'] || response['body'];
+        // const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content, content.error);
+        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {
@@ -450,8 +449,8 @@ export class NetworkService extends Observable {
             return content;
         }
         try {
-            return response['content'].toJSON();
-            // return JSON.parse(content);
+            // return response['content'].toJSON();
+            return JSON.parse(content);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
             return content;
