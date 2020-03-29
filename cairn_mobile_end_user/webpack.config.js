@@ -15,6 +15,7 @@ const { NativeScriptWorkerPlugin } = require('nativescript-worker-loader/NativeS
 const hashSalt = Date.now().toString();
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const mergeOptions = require('merge-options');
+const SentryCliPlugin = require('@sentry/webpack-plugin');
 
 // returns a new object with the values at each key mapped using mapFn(value)
 
@@ -492,11 +493,11 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
             let appVersion;
             let buildNumber;
             if (platform === 'android') {
-                appVersion = readFileSync('app/App_Resources/Android/app.gradle', 'utf8').match(/versionName "((?:[0-9]+\.?)+)"/)[1];
-                buildNumber = readFileSync('app/App_Resources/Android/app.gradle', 'utf8').match(/versionCode ([0-9]+)/)[1];
+                appVersion = readFileSync('App_Resources/Android/app.gradle', 'utf8').match(/versionName "((?:[0-9]+\.?)+)"/)[1];
+                buildNumber = readFileSync('App_Resources/Android/app.gradle', 'utf8').match(/versionCode ([0-9]+)/)[1];
             } else if (platform === 'ios') {
-                appVersion = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleShortVersionString<\/key>[\s\n]*<string>(.*?)<\/string>/)[1];
-                buildNumber = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleVersion<\/key>[\s\n]*<string>([0-9]*)<\/string>/)[1];
+                appVersion = readFileSync('App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleShortVersionString<\/key>[\s\n]*<string>(.*?)<\/string>/)[1];
+                buildNumber = readFileSync('App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleVersion<\/key>[\s\n]*<string>([0-9]*)<\/string>/)[1];
             }
             console.log('appVersion', appVersion, buildNumber);
 
