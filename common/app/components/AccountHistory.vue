@@ -20,7 +20,7 @@
                                 row="0"
                                 fontSize="14"
                                 maxLines="3"
-                                whiteSpace="nowrap"
+                                textWrap="false"
                             />
                             <Label row="1" :text="item.reason" fontSize="12" verticalAlignment="bottom" />
                             <Label row="2" marginTop="0" v-show="!!item.description" :text="item.description" color="#6F6F6F" fontSize="12" verticalAlignment="bottom" />
