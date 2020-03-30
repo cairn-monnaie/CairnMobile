@@ -619,6 +619,7 @@ export default class App extends BaseVueComponent {
         return super.navigateTo(component, options, cb);
     }
     navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page): Promise<any> {
+        this.closeDrawer();
         if (this.isActiveUrl(url) || !this.routes[url]) {
             return Promise.reject();
         }
@@ -626,7 +627,6 @@ export default class App extends BaseVueComponent {
         // options.props = options.props || {};
         // options.props[navigateUrlProperty] = url;
 
-        this.closeDrawer();
         // console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
