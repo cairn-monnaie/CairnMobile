@@ -50,8 +50,10 @@
                         <MDButton :text="$tc('add_phone')" @tap="addPhoneNumber" />
 
                         <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="$t('street')" @textChange="onTextChange($event.value, 'address.street1')" />
-                        <EditableListItem :title="userProfile.address.zipCity.city" :overText="$t('city')" @textChange="onTextChange($event.value, 'address.zipCity.city')" />
-                        <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="$t('zipcode')" @textChange="onTextChange($event.value, 'address.zipCity.zipCode')" />
+
+                        <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="$t('zipcode')" @textChange="onTextChange($event.value, 'address.zipCity')" />
+
+                        <EditableListItem :title="userProfile.address.zipCity.city" :overText="$t('city')" @textChange="onTextChange($event.value, 'address.zipCity')" />
                     </StackLayout>
                     <StackLayout v-else>
                         <MapComponent
