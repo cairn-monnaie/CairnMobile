@@ -73,7 +73,7 @@
   "delete": "supprimer",
   "delete_phone": "supprimer le téléphone %s ?",
   "sms_received": "recu \"%1$s\" de %2$s",
-  "description_optional": "description (optionel)",
+  "description_optional": "description (optionnel)",
   "close": "fermer",
   "wrong_scancode": "le code scanne n'est pas un code eCairn",
   "wrong_confirmation_code": "code de confirmation érroné",
