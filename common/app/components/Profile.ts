@@ -140,7 +140,7 @@ export default class Profile extends PageComponent {
         })
             .then(r => {
                 if (r) {
-                    return this.$authService.deletePhone(phone.id);
+                    return this.$authService.deletePhone(phoneNumber);
                 }
             })
             .catch(this.showError)
