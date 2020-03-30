@@ -17,7 +17,7 @@
 "wrong_confirmation_code" = "code de confirmation érroné";
 "wrong_scancode" = "le code scanne n'est pas un code eCairn";
 "close" = "fermer";
-"description_optional" = "description (optionel)";
+"description_optional" = "description (optionnel)";
 "sms_received" = "recu \"%1$@\" de %2$@";
 "delete_phone" = "supprimer le téléphone %1$@ ?";
 "delete" = "supprimer";
