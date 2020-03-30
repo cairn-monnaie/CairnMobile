@@ -353,7 +353,7 @@ export class NetworkService extends Observable {
         } else if (requestParams.body && (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data')) {
             hmacString += md5(jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, ''));
         }
-        console.log(hmacString);
+        // console.log(hmacString);
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
     }
     request<T = any>(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -376,7 +376,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         const requestStartTime = Date.now();
-        console.log('request', requestParams);
+        // console.log('request', requestParams);
         return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 
@@ -400,7 +400,7 @@ export class NetworkService extends Observable {
         const content = response['content'] || response['body'];
         // const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content);
+        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {
