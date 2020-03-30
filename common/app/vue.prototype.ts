@@ -23,6 +23,7 @@ const Plugin = {
         Vue.prototype.$authService = authService;
         Vue.prototype.$securityService = new SecurityService();
 
+        // imageModule.setDebug(true);
         imageModule.initialize({ isDownsampleEnabled: true });
         // application.on(application.launchEvent, () => {
         //     console.log('about to init image module');
@@ -69,7 +70,7 @@ const Plugin = {
                 title: Vue.prototype.$tc('error'),
                 view: label,
                 okButtonText: this.$sentry ? $tc('send_bug_report') : undefined,
-                cancelButtonText: this.$sentry ? $tc('cancel'):  $tc('ok')
+                cancelButtonText: this.$sentry ? $tc('cancel') : $tc('ok')
                 // message
             }).then(result => {
                 if (result && this.$sentry) {
@@ -102,7 +103,7 @@ const Plugin = {
                 return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
             }
             return new Promise((resolve, reject) => {
-                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent:true });
+                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent: true });
             });
             // return barCodeScanner
             //     .scan({

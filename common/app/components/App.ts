@@ -627,7 +627,7 @@ export default class App extends BaseVueComponent {
         // options.props[navigateUrlProperty] = url;
 
         this.closeDrawer();
-        console.log('navigateToUrl', url);
+        // console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
             return this.navigateTo(this.routes[url].component, options);

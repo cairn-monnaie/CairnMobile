@@ -151,7 +151,7 @@ export default class TransferWindow extends PageComponent {
     }
     sendSMS() {
         sms([CAIRN_SMS_NUMBER], `PAYER ${this.amount} ${this.recipient.smsIds[0].identifier}`).then((response: any) => {
-            console.log('on sms response', response)
+            console.log('on sms response', response);
             if (response === 'success') {
                 this.close();
                 this.$authService.getAccounts();

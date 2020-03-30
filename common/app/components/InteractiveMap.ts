@@ -75,7 +75,6 @@ export default class InteractiveMap extends BaseVueComponent {
         // this.refresh();
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
-        console.log('map start pos', pos, zoom);
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
         this.mapComp.getOrCreateLocalVectorTileLayer().setVectorTileEventListener(this);
@@ -118,12 +117,12 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     @throttle(2000)
     refresh(mapBounds: MapBounds) {
-        console.log('refresh', this._cartoMap.zoom, mapBounds);
+        // console.log('refresh', this._cartoMap.zoom, mapBounds);
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds)
             .then(r => {
-                console.log('received', r.length, 'users for map');
+                // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {
                     // const geojson = GeoJSON.parse(r, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] });

@@ -129,7 +129,6 @@ export default class MapComponent extends BaseVueComponent {
             }),
             databasePath: cacheFolder.path
         });
-        console.log('layerOpacity', this.layerOpacity);
         this.rasterLayer = new RasterTileLayer({
             zoomLevelBias: 1,
             opacity: this.layerOpacity,

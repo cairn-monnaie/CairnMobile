@@ -71,7 +71,6 @@ export default class PasscodeWindow extends PageComponent {
             }
             if (this.passCodeConfirmationArray.length === 4) {
                 if (this.passCodeArray.join('') === this.passCodeConfirmationArray.join('')) {
-                    console.log('closing modal');
                     this.$modal.close(this.passCodeArray.join(''));
                 } else {
                     this.message = this.$t('confirm_passcode_dont_match');
