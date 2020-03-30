@@ -386,6 +386,8 @@ export default class AuthService extends NetworkService {
         await this.getRefreshToken();
         return this.request(requestParams, retry + 1);
     }
+
+    
     async getUserProfile(userId?: number) {
         const result = await this.request({
             apiPath: `/mobile/users/${userId || this.userId}`,
@@ -405,7 +407,17 @@ export default class AuthService extends NetworkService {
         if (!data) {
             return Promise.resolve();
         }
-        const currentData = pick(this.userProfile as any, ['address', 'name', 'image', 'description', 'email']);
+
+        //the name cannnot be changed after account creation
+        //can change logo only if adherent is a pro
+        //an admin can also change name, username and id document if necessary
+        const editableKeys = ['address', 'description', 'email'];
+        if(this.isProUser(this.userProfile)){
+            editableKeys.push('image');
+        }//if user is admin...
+
+        this.log('editable keys ', editableKeys);
+        const currentData = pick(this.userProfile as any, editableKeys);
         if (currentData.address) {
             currentData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
             if (currentData.address.zipCity) {
@@ -416,6 +428,7 @@ export default class AuthService extends NetworkService {
         const actualData = mergeOptions(currentData, data);
 
         return getFormData(actualData).then(params =>
+            
             this.request({
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -448,6 +461,17 @@ export default class AuthService extends NetworkService {
                 save: 'true'
             }
         }).then(() => this.getUserProfile());
+    }
+
+    async getZipCities(search?: string){
+        const params = {
+            apiPath: '/zipcities',
+            method: 'POST',
+            body: {}
+        }
+        if(search){ params.queryParams = {search : search }  };
+
+        return await this.request(params);
     }
 
     accounts: AccountInfo[];

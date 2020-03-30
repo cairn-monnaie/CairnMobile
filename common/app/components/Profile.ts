@@ -168,10 +168,33 @@ export default class Profile extends PageComponent {
                 this.loading = false;
             });
     }
+
     onTextChange(value: string, key: string) {
-        this.log('onTextChange', key, value);
+        this.log('onTextChange', key, value); 
         this.updateUserProfile = this.updateUserProfile || {};
-        this.updateUserProfile[key] = value;
+        const keysArray = key.split('.');
+        const finalKey = keysArray.pop();
+
+        let ref = this.updateUserProfile;
+        for(const userKey of keysArray){
+            if(! this.updateUserProfile[userKey]){
+                this.updateUserProfile[userKey] = {};
+            }
+            ref = this.updateUserProfile[userKey];
+        }
+
+        if(finalKey == 'zipCity'){
+            if(value.length >= 4){
+                this.$authService.getZipCities(value)
+                    .then(zipCities => {
+                        console.log(zipCities);//AUTOCOMPLETION CHOICES HERE
+                    })
+                    .catch(this.showError);
+            }
+        }else{
+            ref[finalKey] = value;
+        }
+        this.log(this.updateUserProfile);
     }
 
     chooseImage() {
