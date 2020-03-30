@@ -175,8 +175,8 @@ export default class Profile extends PageComponent {
     }
 
     chooseImage() {
-        console.log('chooseImage');
         if (!this.isPro) {
+            // non pro users can't change their image
             return;
         }
 
@@ -187,7 +187,8 @@ export default class Profile extends PageComponent {
                     .create({
                         mode: 'single' // use "multiple" for multiple selection
                     })
-                    .present()
+                    // on android pressing the back button will trigger an error which we dont want
+                    .present().catch(()=>[])
             )
             .then(selection => {
                 if (selection.length > 0) {
