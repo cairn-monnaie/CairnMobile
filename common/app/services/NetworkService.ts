@@ -8,6 +8,8 @@ import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
 import * as https from 'nativescript-akylas-https';
 
+const USE_HTTPS = false;
+
 import { knownFolders, path } from '@nativescript/core/file-system';
 
 export interface CacheOptions {
@@ -370,14 +372,16 @@ export class NetworkService extends Observable {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
-        // if (requestParams.body) {
-        //     requestParams.content = JSON.stringify(requestParams.body);
-        // }
+        if (!USE_HTTPS && requestParams.body) {
+            requestParams.content = JSON.stringify(requestParams.body);
+        }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
-        return https.request(requestParams as any).then(response => this.handleRequestResponse(response as any, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
+        return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then(response =>
+            this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
+        ) as Promise<T>;
     }
 
     // requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -397,7 +401,7 @@ export class NetworkService extends Observable {
         const statusCode = response.statusCode;
         // return Promise.resolve()
         // .then(() => {
-        const content = response['content'] || response['body'];
+        const content = USE_HTTPS ? response['content'] || response['body'] : response['content'] ? response['content'].toString() : response['body'];
         // const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
         // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content);
@@ -451,8 +455,12 @@ export class NetworkService extends Observable {
             return content;
         }
         try {
+            if (USE_HTTPS) {
+                return JSON.parse(content);
+            } else {
+                return response['content'].toJSON();
+            }
             // return response['content'].toJSON();
-            return JSON.parse(content);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
             return content;
