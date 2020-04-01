@@ -33,7 +33,7 @@
         "nativescript-akylas-fonticon": "~2.0.7",
         "nativescript-akylas-https": "1.3.4",
         "nativescript-akylas-preferences": "^1.1.6",
-        "nativescript-akylas-sentry": "^0.0.5",
+        "nativescript-akylas-sentry": "^0.0.6",
         "nativescript-akylas-vue": "2.5.0-alpha.12",
         "nativescript-barcodeview": "3.4.5",
         "nativescript-bitmap-factory": "^1.8.1",
