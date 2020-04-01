@@ -382,7 +382,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         const requestStartTime = Date.now();
-        // console.log('request', requestParams);
+        console.log('request', requestParams);
         return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then(response =>
             this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
         ) as Promise<T>;
