@@ -443,16 +443,15 @@ export default class AuthService extends NetworkService {
             editableKeys.push('image');
         } //if user is admin...
 
-        this.log('editable keys ', editableKeys);
         const currentData = pick(this.userProfile as any, editableKeys);
 
         const actualData = mergeOptions(currentData, data);
         if (actualData.address) {
             actualData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
             if (actualData.address.zipCity) {
-                actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
+                // actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
                 // currentData.address.zipCity = pick(currentData.address, ['street1', 'street2', 'zipCity']);
-                // actualData.address.zipCity = `${currentData.address.zipCity.zipCode} ${currentData.address.zipCity.city}`;
+                actualData.address.zipCity = `${actualData.address.zipCity.zipCode} ${actualData.address.zipCity.city}`;
                 // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
             }
         }
