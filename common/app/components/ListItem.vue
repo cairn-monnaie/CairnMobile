@@ -7,7 +7,7 @@
         @tap="$emit('tap', $event)"
     >
         <Label
-            v-if="!!leftIcon"
+            v-show="!!leftIcon"
             col="1"
             row="0"
             rowSpan="5"
@@ -20,21 +20,37 @@
             color="#757575"
             class="mdi"
         />
-        <NSImg v-show="showAvatar" backgroundColor="gray" col="1" row="1" rowSpan="3" :width="40 * sizeFactor" :height="40 * sizeFactor" stretch="aspectFit" :marginRight="16 * sizeFactor" :src="avatar" verticalAlignment="center" :borderRadius="20 * sizeFactor" :roundAsCircle="true"/>
-        <Label col="2" row="1" :fontSize="10 * sizeFactor" v-if="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
+        <NSImg
+            v-show="showAvatar"
+            backgroundColor="gray"
+            col="1"
+            row="1"
+            rowSpan="3"
+            :width="40 * sizeFactor"
+            :height="40 * sizeFactor"
+            stretch="aspectFit"
+            :marginRight="16 * sizeFactor"
+            :src="avatar"
+            verticalAlignment="center"
+            :borderRadius="20 * sizeFactor"
+            :roundAsCircle="true"
+        />
+        <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
 
-        <Label col="2" row="2" :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalAlignment="bottom" />
-        <Label v-if="!!subtitle" col="2" row="3" :fontSize="14 * sizeFactor" :text="subtitle" verticalAlignment="top" :color="subtitleColor" maxLines="2" lineBreak="end"/>
+        <StackLayout col="2" row="2" verticalAlignment="center">
+            <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="bottom" />
+            <Label v-show="!!subtitle" :fontSize="14 * sizeFactor" :text="subtitle" verticalTextAlignment="top" :color="subtitleColor" maxLines="2" lineBreak="end" />
+        </StackLayout>
 
-        <Label col="3" row="1" :fontSize="14 * sizeFactor" v-if="!!date" :text="date" verticalAlignment="top" />
+        <Label col="3" row="1" :fontSize="14 * sizeFactor" v-show="!!date" :text="date" verticalAlignment="top" />
         <GridLayout col="3" row="1" rowSpan="3" verticalAlignment="center">
             <slot name="rightView">
-                <Label v-if="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" color="#757575" :text="rightIcon" verticalAlignment="center" />
-                <MDButton variant="flat" v-if="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
+                <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" color="#757575" :text="rightIcon" verticalAlignment="center" />
+                <MDButton variant="flat" v-show="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
             </slot>
         </GridLayout>
 
-        <AbsoluteLayout v-if="!!showBottomLine" row="4" colSpan="5" marginLeft="20" backgroundColor="#EFEFEF" height="1" verticalAlignment="bottom" />
+        <AbsoluteLayout v-show="!!showBottomLine" row="4" colSpan="5" marginLeft="20" backgroundColor="#EFEFEF" height="1" verticalAlignment="bottom" />
     </GridLayout>
 </template>
 
