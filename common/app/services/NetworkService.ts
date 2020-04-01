@@ -8,7 +8,7 @@ import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
 import * as https from 'nativescript-akylas-https';
 
-const USE_HTTPS = false;
+const USE_HTTPS = true;
 
 import { knownFolders, path } from '@nativescript/core/file-system';
 
@@ -322,7 +322,9 @@ export class NetworkService extends Observable {
         if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';
         }
-
+        if (!headers['Connection']) {
+            headers['Connection'] = 'Keep-Alive';
+        }
         // if (requestParams.cachePolicy) {
         //     switch (requestParams.cachePolicy) {
         //         case 'noCache':
@@ -350,10 +352,12 @@ export class NetworkService extends Observable {
         const time = Date.now().toString();
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
-        if (typeof requestParams.content === 'string') {
-            hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
-        } else if (requestParams.body && (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data')) {
-            hmacString += md5(jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, ''));
+        if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
+            if (requestParams.body) {
+                hmacString += md5(jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, ''));
+            } else if (typeof requestParams.content === 'string') {
+                hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
+            }
         }
         // console.log(hmacString);
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
