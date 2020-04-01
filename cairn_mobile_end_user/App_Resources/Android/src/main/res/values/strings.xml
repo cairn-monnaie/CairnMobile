@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="change_address">"change address"</string>
   <string name="settings">"settings"</string>
-  <string name="map">"menu"</string>
+  <string name="map">"map"</string>
   <string name="loggedout_due_to_fingerprint_change">"it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect"</string>
   <string name="loading">"loading"</string>
   <string name="enter_passcode">"enter a PIN"</string>
