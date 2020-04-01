@@ -2,7 +2,7 @@ import * as Platform from '@nativescript/core/platform';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import calendar from 'dayjs/plugin/calendar';
-import { Address } from '~/services/AuthService';
+import { Address, NominatimAddress } from '~/services/AuthService';
 dayjs.extend(LocalizedFormat);
 dayjs.extend(calendar);
 
@@ -100,6 +100,9 @@ export function convertDuration(date, formatStr: string) {
 
 export function formatAddress(address: Address) {
     return `${address.street1} ${address.zipCity.name}`;
+}
+export function formatOsmAddress(address: NominatimAddress) {
+    return `${address.house_number? `${address.house_number} `: ''} ${address.pedestrian || address.road|| address.street} ${address.postcode} ${address.city || address.village}`;
 }
 
 export function formatCurrency(num, showZeroCents = true) {

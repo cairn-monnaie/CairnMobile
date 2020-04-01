@@ -3,7 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 // import { fonticon } from 'nativescript-akylas-fonticon';
 import { $t } from '~/helpers/locale';
 import VueStringFilter from 'vue-string-filter';
-import { convertTime, formatAddress, formatCurrency } from '~/helpers/formatter';
+import { convertTime, formatAddress, formatCurrency, formatOsmAddress } from '~/helpers/formatter';
 dayjs.extend(relativeTime);
 
 const Plugin = {
@@ -32,6 +32,11 @@ const Plugin = {
         Vue.filter('address', function(value) {
             if (value) {
                 return formatAddress(value);
+            }
+        });
+        Vue.filter('osmAddress', function(value) {
+            if (value) {
+                return formatOsmAddress(value);
             }
         });
 

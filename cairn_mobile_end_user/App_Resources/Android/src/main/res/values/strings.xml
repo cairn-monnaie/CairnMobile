@@ -86,4 +86,6 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
+  <string name="enter_add_phone_confirmation">"enter_add_phone_confirmation"</string>
+  <string name="add_phone_desc">"add_phone_desc"</string>
 </resources>

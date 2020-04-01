@@ -94,6 +94,7 @@
   "enter_passcode": "enter a PIN",
   "loading": "loading",
   "loggedout_due_to_fingerprint_change": "it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect",
-  "map": "menu",
-  "settings": "settings"
+  "map": "map",
+  "settings": "settings",
+  "change_address": "change address"
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="enter_add_phone_confirmation">"Entrez le code de confirmation recu au %1$s"</string>
+  <string name="add_phone_desc">"ajouter un telephone pour pouvoir recevoir des notifications. Vous allez recevoir recevoir un sms de confirmation"</string>
   <string name="enter_passcode">"entrer un PIN"</string>
   <string name="confirm_passcode">"confirmer le PIN"</string>
   <string name="confirm_passcode_dont_match">"la confirmation du PIN ne correspond pas"</string>

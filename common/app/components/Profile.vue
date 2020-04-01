@@ -49,22 +49,21 @@
                         />
                         <MDButton :text="$tc('add_phone')" @tap="addPhoneNumber" />
 
-                        <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="$t('street')" @textChange="onTextChange($event.value, 'address.street1')" />
+                        <!-- <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="$t('street')" @textChange="onTextChange($event.value, 'address.street1')" /> -->
 
-                        <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="$t('zipcode')" @textChange="onTextChange($event.value, 'address.zipCity')" />
+                        <!-- <EditableListItem :title="userProfile.address.zipCity.zipCode" :overText="$t('zipcode')" @textChange="onTextChange($event.value, 'address.zipCity')" />
 
-                        <EditableListItem :title="userProfile.address.zipCity.city" :overText="$t('city')" @textChange="onTextChange($event.value, 'address.zipCity')" />
+                        <EditableListItem :title="userProfile.address.zipCity.city" :overText="$t('city')" @textChange="onTextChange($event.value, 'address.zipCity')" /> -->
+                        <ListItem
+                            v-if="(updateUserProfile && updateUserProfile.address) || userProfile.address"
+                            leftIcon="mdi-map-marker"
+                            :title="((updateUserProfile && updateUserProfile.address) || userProfile.address) | address"
+                            :overText="$t('address')"
+                        />
+                        <MDButton :text="$tc('change_address')" @tap="changeAddress" />
                     </StackLayout>
                     <StackLayout v-else>
-                        <MapComponent
-                            v-if="!myProfile && userProfile.address && userProfile.address.latitude"
-                            ref="mapComp"
-                            @mapReady="onMapReady"
-                            rowSpan="4"
-                            :zoom="16"
-                            width="100%"
-                            height="150"
-                        />
+                        <MapComponent v-if="!myProfile && userProfile.address && userProfile.address.latitude" ref="mapComp" @mapReady="onMapReady" rowSpan="4" :zoom="16" width="100%" height="150" />
 
                         <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" />
                         <ListItem v-show="myProfile" leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" />

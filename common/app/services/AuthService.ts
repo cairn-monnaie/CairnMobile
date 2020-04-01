@@ -7,6 +7,7 @@ import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService'
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { formatOsmAddress } from '~/helpers/formatter';
 
 const tokenEndpoint = '/oauth/tokens';
 
@@ -31,6 +32,32 @@ export const UserProfileEvent = 'userprofile';
 //         return [TiUtils convertToHex:(unsigned char *)&result length:CC_SHA256_DIGEST_LENGTH];
 //     }
 // }
+
+export interface NominatimAddress {
+    city?: string;
+    village?: string;
+    city_district: string;
+    country: string;
+    country_code: string;
+    house_number: string;
+    neighbourhood: string;
+    postcode: string;
+    pedestrian?: string;
+    street?: string;
+    road?: string;
+    state: string;
+    suburb: string;
+}
+export interface NominatimResult {
+    address: NominatimAddress;
+    boundingbox: string[];
+    class: string;
+    display_name: string;
+    importance: number;
+    lat: string;
+    lon: string;
+    osm_id: string;
+}
 
 export interface AccountInfoEventData extends EventData {
     data: AccountInfo[];
@@ -157,18 +184,19 @@ export enum Roles {
     USER = 'ROLE_USER'
 }
 
+export interface ZipCity {
+    id: number;
+    zipCode: string;
+    city: string;
+    name: string;
+}
 export interface Address {
     id: number;
     street1: string;
     street2: string;
     latitude: number;
     longitude: number;
-    zipCity: {
-        id: number;
-        zipCode: string;
-        city: string;
-        name: string;
-    };
+    zipCity: ZipCity;
 }
 
 export class Phone {
@@ -387,7 +415,6 @@ export default class AuthService extends NetworkService {
         return this.request(requestParams, retry + 1);
     }
 
-    
     async getUserProfile(userId?: number) {
         const result = await this.request({
             apiPath: `/mobile/users/${userId || this.userId}`,
@@ -412,23 +439,25 @@ export default class AuthService extends NetworkService {
         //can change logo only if adherent is a pro
         //an admin can also change name, username and id document if necessary
         const editableKeys = ['address', 'description', 'email'];
-        if(this.isProUser(this.userProfile)){
+        if (this.isProUser(this.userProfile)) {
             editableKeys.push('image');
-        }//if user is admin...
+        } //if user is admin...
 
         this.log('editable keys ', editableKeys);
         const currentData = pick(this.userProfile as any, editableKeys);
-        if (currentData.address) {
-            currentData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
-            if (currentData.address.zipCity) {
-                currentData.address.zipCity = `${currentData.address.zipCity.zipCode} ${currentData.address.zipCity.city}`;
+
+        const actualData = mergeOptions(currentData, data);
+        if (actualData.address) {
+            actualData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
+            if (actualData.address.zipCity) {
+                actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
+                // currentData.address.zipCity = pick(currentData.address, ['street1', 'street2', 'zipCity']);
+                // actualData.address.zipCity = `${currentData.address.zipCity.zipCode} ${currentData.address.zipCity.city}`;
                 // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
             }
         }
-        const actualData = mergeOptions(currentData, data);
 
         return getFormData(actualData).then(params =>
-            
             this.request({
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -441,14 +470,23 @@ export default class AuthService extends NetworkService {
     }
 
     async addPhone(phoneNumber: string, userId: number) {
-        return this.request({
+        return this.request<{ validation_url: string }>({
             apiPath: `/mobile/phones/add/${userId}`,
             method: 'POST',
             body: {
                 phoneNumber,
                 paymentEnabled: false
             }
-        }).then(() => this.getUserProfile());
+        });
+    }
+    async confirmPhone(validationUrl: string, activationCode: string) {
+        return this.request<{ validation_url: string }>({
+            apiPath: validationUrl,
+            method: 'POST',
+            body: {
+                activationCode
+            }
+        });
     }
 
     //Cannot use phoneNumber as URI because it is not an unique identifier :
@@ -463,15 +501,53 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    async getZipCities(search?: string){
-        const params = {
+    async getZipCities(zipCity: ZipCity) {
+        return this.request({
             apiPath: '/zipcities',
-            method: 'POST',
-            body: {}
-        }
-        if(search){ params.queryParams = {search : search }  };
-
-        return await this.request(params);
+            body: {
+                search: `${zipCity.zipCode} ${zipCity.city}`
+            },
+            method: 'POST'
+        });
+    }
+    async autocompleteAddress(query: string) {
+        const result = await this.request({
+            url: 'https://photon.komoot.de/api',
+            queryParams: {
+                q: query,
+                // format: 'json',
+                // 'accept-language': 'fr',
+                // countrycodes: 'fr',
+                lang: 'fr',
+                // email: 'contact@akylas.fr',
+                // namedetails: 0,
+                // addressdetails: 1,
+                // dedupe: true,
+                limit: 20
+            },
+            method: 'GET'
+        });
+        result.features.forEach(r => {
+            console.log('photon result', r);
+        });
+        const newItems = result.features
+            .filter(r => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode)
+            .map(r => ({
+                longitude: r.geometry && r.geometry.coordinates[0],
+                latitude: r.geometry && r.geometry.coordinates[1],
+                display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
+                street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name}`,
+                zipCity: {
+                    name: `${r.properties.postcode} ${r.properties.city}`,
+                    zipCode: r.properties.postcode,
+                    city: r.properties.city
+                }
+            }));
+        // const newItems = result.filter(s => s.address && (s.address.pedestrian || s.address.road || s.address.street) && (s.address.city || s.address.village));
+        // newItems.forEach(s => (s.display_name = formatOsmAddress(s.address)));
+        const displayNames = newItems.map(s => s.display_name);
+        return newItems.filter((el, i, a) => i === displayNames.indexOf(el.display_name)) as Address[];
+        // return newItems;
     }
 
     accounts: AccountInfo[];

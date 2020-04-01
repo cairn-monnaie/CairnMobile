@@ -1,6 +1,6 @@
 import { NavigatedData } from '@nativescript/core/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
-import { PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
+import { Address, NominatimResult, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
 import { ComponentIds } from './App';
 import PageComponent from './PageComponent';
 import * as imagepicker from 'nativescript-imagepicker';
@@ -11,6 +11,7 @@ import { ImageSource } from '@nativescript/core/image-source/image-source';
 import Vue from 'nativescript-vue';
 import MapComponent from './MapComponent';
 import InteractiveMap from './InteractiveMap';
+import AddressPicker from './AddressPicker';
 import { CartoMap } from 'nativescript-carto/ui';
 import BitmapFactory from 'nativescript-bitmap-factory';
 import { generateBarCode } from 'nativescript-barcodeview';
@@ -104,18 +105,20 @@ export default class Profile extends PageComponent {
         this.loading = true;
         this.$authService.getUserProfile(this.userProfile.id).catch(this.showError);
     }
-    saveProfile() {
+    async saveProfile() {
         this.loading = true;
-        this.$authService
-            .updateUserProfile(this.updateUserProfile)
-            .then(result => {
-                this.editing = false;
-                this.updateUserProfile = null;
-            })
-            .catch(this.showError)
-            .finally(() => {
-                this.loading = false;
-            });
+        try {
+            // if (this.updateUserProfile.address && this.updateUserProfile.address.zipCity) {
+            //     const zipCities = await this.$authService.getZipCities(Object.assign(this.userProfile.address.zipCity, this.updateUserProfile.address.zipCity));
+            // }
+            const result = await this.$authService.updateUserProfile(this.updateUserProfile);
+            this.editing = false;
+            this.updateUserProfile = null;
+        } catch (err) {
+            this.showError(err);
+        } finally {
+            this.loading = false;
+        }
     }
     onNavigatedTo(args: NavigatedData) {
         // if (!args.isBackNavigation) {
@@ -148,52 +151,88 @@ export default class Profile extends PageComponent {
                 this.loading = false;
             });
     }
-    addPhoneNumber() {
-        prompt({
-            // title: localize('stop_session'),
-            message: this.$tc('add_phone'),
-            okButtonText: this.$tc('add'),
-            cancelButtonText: this.$tc('cancel'),
-            textFieldProperties: {
-                keyboardType: 'number'
-            }
-        })
-            .then(r => {
-                if (r && r.text && r.text.length > 0) {
-                    return this.$authService.addPhone(r.text, this.userProfile.id);
+    async changeAddress() {
+        const result: Address = await this.$showModal(AddressPicker, { fullscreen: true });
+        console.log('changeAddress', result);
+        if (result) {
+            this.updateUserProfile = this.updateUserProfile || {};
+            this.updateUserProfile.address = result;
+
+            //trick to get reactivity to work if this.updateUserProfile is already defined
+            this.updateUserProfile = JSON.parse(JSON.stringify(this.updateUserProfile));
+        }
+    }
+    async addPhoneNumber() {
+        try {
+            const r = await prompt({
+                // title: localize('stop_session'),
+                title: this.$tc('add_phone'),
+                message: this.$tc('add_phone_desc'),
+                okButtonText: this.$tc('add'),
+                cancelButtonText: this.$tc('cancel'),
+                textFieldProperties: {
+                    keyboardType: 'number'
                 }
-            })
-            .catch(this.showError)
-            .finally(() => {
-                this.loading = false;
             });
+            // .then(r => {
+            if (r && r.text && r.text.length > 0) {
+                const phoneNumber = r.text;
+                const addResult = await this.$authService.addPhone(phoneNumber, this.userProfile.id);
+                console.log('addResult', addResult);
+                const resultPConfirm = await prompt({
+                    // title: localize('stop_session'),
+                    message: this.$tc('enter_add_phone_confirmation', phoneNumber),
+                    okButtonText: this.$tc('confirm'),
+                    cancelButtonText: this.$tc('cancel'),
+                    textFieldProperties: {
+                        keyboardType: 'number'
+                    }
+                });
+                if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
+                    console.log('resultPConfirm', resultPConfirm.text);
+                    await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text);
+                }
+                // return r;
+                // } else {
+                // return Promise.reject();
+            }
+            // })
+            // .then(r => {
+
+            // })
+        } catch (err) {
+            this.showError(err);
+        } finally {
+            this.loading = false;
+        }
     }
 
     onTextChange(value: string, key: string) {
-        this.log('onTextChange', key, value); 
+        this.log('onTextChange', key, value);
         this.updateUserProfile = this.updateUserProfile || {};
         const keysArray = key.split('.');
         const finalKey = keysArray.pop();
 
         let ref = this.updateUserProfile;
-        for(const userKey of keysArray){
-            if(! this.updateUserProfile[userKey]){
+        for (const userKey of keysArray) {
+            if (!this.updateUserProfile[userKey]) {
                 this.updateUserProfile[userKey] = {};
             }
             ref = this.updateUserProfile[userKey];
         }
 
-        if(finalKey == 'zipCity'){
-            if(value.length >= 4){
-                this.$authService.getZipCities(value)
-                    .then(zipCities => {
-                        console.log(zipCities);//AUTOCOMPLETION CHOICES HERE
-                    })
-                    .catch(this.showError);
-            }
-        }else{
-            ref[finalKey] = value;
-        }
+        // if (finalKey === 'zipCity') {
+        //     if (value.length >= 4) {
+        //         this.$authService
+        //             .getZipCities(value)
+        //             .then(zipCities => {
+        //                 console.log(zipCities); //AUTOCOMPLETION CHOICES HERE
+        //             })
+        //             .catch(this.showError);
+        //     }
+        // } else {
+        ref[finalKey] = value;
+        // }
         this.log(this.updateUserProfile);
     }
 
@@ -211,7 +250,8 @@ export default class Profile extends PageComponent {
                         mode: 'single' // use "multiple" for multiple selection
                     })
                     // on android pressing the back button will trigger an error which we dont want
-                    .present().catch(()=>[])
+                    .present()
+                    .catch(() => [])
             )
             .then(selection => {
                 if (selection.length > 0) {
