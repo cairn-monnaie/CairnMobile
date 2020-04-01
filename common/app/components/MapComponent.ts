@@ -21,6 +21,12 @@ import { screen } from '@nativescript/core/platform';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
 const GeoJSON = require('geojson');
+import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
+
+interface GeoJSONProperties {
+    name: string;
+    id: string;
+}
 
 const LOCATION_ANIMATION_DURATION = 300;
 
@@ -246,9 +252,8 @@ export default class MapComponent extends BaseVueComponent {
         }
         return this._localVectorTileDataSource;
     }
-
     addGeoJSONPoints(points: any[]) {
-        const geojson = GeoJSON.parse(points, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] });
+        const geojson = GeoJSON.parse(points, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
