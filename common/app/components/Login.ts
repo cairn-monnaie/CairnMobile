@@ -20,9 +20,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: 'nico_faus_perso',
+        username: '',
         email: '',
-        password: '@@bbccdd',
+        password: '',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
