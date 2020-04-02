@@ -243,16 +243,19 @@ export class HTTPError extends CustomError {
 }
 
 function jsonObjectToKeepOrderString(obj) {
+    console.log('jsonObjectToKeepOrderString', typeof obj, obj);
     if (typeof obj === 'string') {
         return obj;
     }
     if (Array.isArray(obj)) {
-        return obj
+        console.log('jsonObjectToKeepOrderString array', obj);
+        return obj.filter(v=>v !== undefined)
             .map(v => jsonObjectToKeepOrderString(v))
             .sort()
             .join('');
     }
-    return Object.keys(obj)
+    console.log('jsonObjectToKeepOrderString object', Object.keys(obj), Object.keys(obj).filter(k=>obj[k] !== undefined));
+    return Object.keys(obj).filter(k=>obj[k] !== undefined)
         .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
         .sort()
         .join('');
@@ -350,6 +353,7 @@ export class NetworkService extends Observable {
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
         const time = Date.now().toString();
+        console.log('buildAuthorization', requestParams);
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
