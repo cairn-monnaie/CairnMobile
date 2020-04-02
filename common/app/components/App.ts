@@ -201,17 +201,17 @@ export default class App extends BaseVueComponent {
     get menuItems() {
         const result = [
             {
-                title: 'situation',
+                title: this.$t('situation'),
                 icon: 'mdi-bank',
                 url: ComponentIds.Situation
             },
             {
-                title: 'profile',
+                title: this.$t('profile'),
                 icon: 'mdi-account',
                 url: ComponentIds.Profile
             },
             {
-                title: 'beneficiaries',
+                title: this.$t('beneficiaries'),
                 icon: 'mdi-account-group',
                 url: ComponentIds.Beneficiaries
             },
