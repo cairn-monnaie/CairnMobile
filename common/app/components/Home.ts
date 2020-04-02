@@ -66,7 +66,7 @@ export default class Home extends PageComponent {
     }
 
     formatAddress = formatAddress;
-    DEFAULT_IMAGE_URL = `${CAIRN_URL}/bundles/cairnuser/img/pro.png`;
+    DEFAULT_IMAGE_URL = '~/images/pro.png';
     onItemLoading(args) {
         if (this.$isIOS) {
             if (args.ios.backgroundView) {

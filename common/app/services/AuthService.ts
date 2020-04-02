@@ -447,7 +447,7 @@ export default class AuthService extends NetworkService {
 
         const actualData = mergeOptions(currentData, data);
         if (actualData.address) {
-            actualData.address = pick(currentData.address, ['street1', 'street2', 'zipCity']);
+            actualData.address = pick(actualData.address, ['street1', 'street2', 'zipCity']);
             if (actualData.address.zipCity) {
                 // actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
                 // currentData.address.zipCity = pick(currentData.address, ['street1', 'street2', 'zipCity']);
@@ -455,17 +455,18 @@ export default class AuthService extends NetworkService {
                 // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
             }
         }
-
-        return getFormData(actualData).then(params =>
-            this.request({
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                apiPath: `/mobile/users/profile/${userId || this.userId}`,
-                body: params.filter(s => !!s),
-                method: 'POST'
-            })
-        );
+        const params = await getFormData(actualData);
+        const result = await this.request({
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            apiPath: `/mobile/users/profile/${userId || this.userId}`,
+            body: params.filter(s => !!s),
+            method: 'POST'
+        });
+        // if it succeeds we need to update the user profile
+        await this.getUserProfile();
+        return result;
     }
 
     async addPhone(phoneNumber: string, userId: number) {

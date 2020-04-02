@@ -15,6 +15,7 @@ import AddressPicker from './AddressPicker';
 import { CartoMap } from 'nativescript-carto/ui';
 import BitmapFactory from 'nativescript-bitmap-factory';
 import { generateBarCode } from 'nativescript-barcodeview';
+import { showSnack } from 'nativescript-material-snackbar';
 
 @Component({
     components: {
@@ -191,6 +192,10 @@ export default class Profile extends PageComponent {
                 if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
                     console.log('resultPConfirm', resultPConfirm.text);
                     await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text);
+                    await this.$authService.getUserProfile();
+                    showSnack({
+                        message: this.$t('phone_added',phoneNumber )
+                    });
                 }
                 // return r;
                 // } else {

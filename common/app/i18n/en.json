@@ -96,5 +96,7 @@
   "loggedout_due_to_fingerprint_change": "it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect",
   "map": "map",
   "settings": "settings",
-  "change_address": "change address"
+  "change_address": "change address",
+  "phone_added": "phone number %s has been added correctly",
+  "enter_add_phone_confirmation": "Enter the confirmation code received at %s"
 }

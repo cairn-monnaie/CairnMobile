@@ -1,3 +1,6 @@
+"change_address" = "changer d'adresse";
+"enter_add_phone_confirmation" = "Entrez le code de confirmation recu au %1$@";
+"add_phone_desc" = "ajouter un telephone pour pouvoir recevoir des notifications. Vous allez recevoir recevoir un sms de confirmation";
 "enter_passcode" = "entrer un PIN";
 "confirm_passcode" = "confirmer le PIN";
 "confirm_passcode_dont_match" = "la confirmation du PIN ne correspond pas";

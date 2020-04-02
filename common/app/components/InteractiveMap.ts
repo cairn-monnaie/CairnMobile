@@ -75,6 +75,7 @@ export default class InteractiveMap extends BaseVueComponent {
         // this.refresh();
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
+        this.log('onMapReady', pos, zoom);
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
         this.mapComp.getOrCreateLocalVectorTileLayer().setVectorTileEventListener(this);

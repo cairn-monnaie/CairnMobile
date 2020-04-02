@@ -1,5 +1,6 @@
+"change_address" = "change address";
 "settings" = "settings";
-"map" = "menu";
+"map" = "map";
 "loggedout_due_to_fingerprint_change" = "it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect";
 "loading" = "loading";
 "enter_passcode" = "enter a PIN";
@@ -85,3 +86,5 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
+"enter_add_phone_confirmation" = "enter_add_phone_confirmation";
+"add_phone_desc" = "add_phone_desc";

@@ -408,7 +408,7 @@ export class NetworkService extends Observable {
         const content = USE_HTTPS ? response['content'] || response['body'] : response['content'] ? response['content'].toString() : response['body'];
         // const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), response['content'], response['body'], isJSON, typeof content);
+        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), isJSON, typeof content, response['content'], response['body']);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {
