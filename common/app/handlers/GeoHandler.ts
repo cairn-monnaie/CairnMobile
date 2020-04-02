@@ -267,11 +267,14 @@ export class GeoHandler extends Observable {
         return geolocation
             .getCurrentLocation(options || { desiredAccuracy, minimumUpdateTime, timeout, onDeferred: this.onDeferred })
             .then(r => {
-                this.notify({
-                    eventName: UserLocationdEvent,
-                    object: this,
-                    location: r
-                } as UserLocationdEventData);
+                if (r) {
+                    this.notify({
+                        eventName: UserLocationdEvent,
+                        object: this,
+                        location: r
+                    } as UserLocationdEventData);
+                }
+
                 return r;
             })
             .catch(err => {
