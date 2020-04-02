@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="situation">"accueil"</string>
   <string name="phone_added">"le numéro de téléphone %1$s a été correctement ajouté"</string>
   <string name="change_address">"changer d\'adresse"</string>
   <string name="enter_add_phone_confirmation">"Entrez le code de confirmation recu au %1$s"</string>
