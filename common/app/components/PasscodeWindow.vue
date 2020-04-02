@@ -3,7 +3,7 @@
         <CairnPage @navigatedTo="onLoaded" actionBarHidden backgroundColor="red">
             <GridLayout rows="3*,*,*,*,*" columns="*,*,*">
                 <GridLayout columns="*,*,*,*" row="0" colSpan="3" orientation="horizontal" :backgroundColor="themeColor">
-                    <MDTextField
+                    <Label
                         variant="none"
                         v-for="i in 4"
                         :key="i"
@@ -12,15 +12,15 @@
                         borderColor="black"
                         floating="false"
                         secure
+                        height="100"
                         margin="0 10 0 10"
                         backgroundColor="white"
                         :col="i - 1"
                         fontSize="50"
-                        verticalAlignment="middle"
                         textAlignment="center"
-                        @onTextChange="onTextChange(i, $event.value)"
+                        verticalTextAlignment="center"
                         isUserInteractionEnabled="false"
-                        :text="(confirmingPassword ? passCodeConfirmationArray : passCodeArray)[i - 1]"
+                        :text="((confirmingPassword ? passCodeConfirmationArray : passCodeArray)[i - 1]) ? '●':''"
                     />
                     <Label fontSize="18" paddingTop="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="top" :text="title" />
                     <Label fontSize="16" paddingBottom="30" fontWeight="bold" v-show="creation" colSpan="4" textAlignment="center" color="white" verticalAlignment="bottom" :text="message" />
