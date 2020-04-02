@@ -243,22 +243,25 @@ export class HTTPError extends CustomError {
 }
 
 function jsonObjectToKeepOrderString(obj) {
-    console.log('jsonObjectToKeepOrderString', typeof obj, obj);
-    if (typeof obj === 'string') {
-        return obj;
-    }
+    // console.log('jsonObjectToKeepOrderString', typeof obj, obj);
+    // if (typeof obj === 'string') {
+    //     return obj;
+    // }
     if (Array.isArray(obj)) {
-        console.log('jsonObjectToKeepOrderString array', obj);
-        return obj.filter(v=>v !== undefined)
+        // console.log('jsonObjectToKeepOrderString array', obj);
+        return obj
+            .filter(v => v !== undefined)
             .map(v => jsonObjectToKeepOrderString(v))
             .sort()
             .join('');
+    } else if (typeof obj === 'object') {
+        return Object.keys(obj)
+            .filter(k => obj[k] !== undefined)
+            .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
+            .sort()
+            .join('');
     }
-    console.log('jsonObjectToKeepOrderString object', Object.keys(obj), Object.keys(obj).filter(k=>obj[k] !== undefined));
-    return Object.keys(obj).filter(k=>obj[k] !== undefined)
-        .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
-        .sort()
-        .join('');
+    return obj;
 }
 
 import hmacSHA256 from 'crypto-js/hmac-sha256';
