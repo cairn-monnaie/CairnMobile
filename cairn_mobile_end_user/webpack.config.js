@@ -64,6 +64,15 @@ module.exports = (env, params = {}) => {
     // Default destination inside platforms/<platform>/...
     const dist = resolve(projectRoot, nsWebpack.getAppPath(platform, projectRoot));
 
+    if (env.adhoc) {
+        env = Object.assign({}, env, {
+            production: true,
+            sentry: true,
+            sourceMap: true,
+            uglify: true
+        });
+    }
+
     const {
         // The 'appPath' and 'appResourcesPath' values are fetched from
         // the nsconfig.json configuration file.
@@ -89,14 +98,6 @@ module.exports = (env, params = {}) => {
         adhoc // --env.adhoc
     } = env;
 
-    if (adhoc) {
-        env = Object.assign({}, env, {
-            production: true,
-            sentry: true,
-            sourceMap: true,
-            uglify: true
-        });
-    }
 
     const useLibs = compileSnapshot;
     const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap || !!inlineSourceMap;
