@@ -96,5 +96,6 @@
   "add_phone_desc": "ajouter un telephone pour pouvoir recevoir des notifications. Vous allez recevoir recevoir un sms de confirmation",
   "enter_add_phone_confirmation": "Entrez le code de confirmation recu au %s",
   "change_address": "changer d'adresse",
-  "phone_added": "le numéro de téléphone %s a été correctement ajouté"
+  "phone_added": "le numéro de téléphone %s a été correctement ajouté",
+  "situation": "accueil"
 }

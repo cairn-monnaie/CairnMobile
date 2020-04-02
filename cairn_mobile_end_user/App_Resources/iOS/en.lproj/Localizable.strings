@@ -1,3 +1,5 @@
+"enter_add_phone_confirmation" = "Enter the confirmation code received at %1$@";
+"phone_added" = "phone number %1$@ has been added correctly";
 "change_address" = "change address";
 "settings" = "settings";
 "map" = "map";
@@ -86,5 +88,4 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
-"enter_add_phone_confirmation" = "enter_add_phone_confirmation";
 "add_phone_desc" = "add_phone_desc";

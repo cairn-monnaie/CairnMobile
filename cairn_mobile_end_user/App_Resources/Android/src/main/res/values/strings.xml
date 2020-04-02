@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="enter_add_phone_confirmation">"Enter the confirmation code received at %1$s"</string>
+  <string name="phone_added">"phone number %1$s has been added correctly"</string>
   <string name="change_address">"change address"</string>
   <string name="settings">"settings"</string>
   <string name="map">"map"</string>
@@ -87,6 +89,5 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
-  <string name="enter_add_phone_confirmation">"enter_add_phone_confirmation"</string>
   <string name="add_phone_desc">"add_phone_desc"</string>
 </resources>
