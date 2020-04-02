@@ -14,5 +14,4 @@
 - *android:* app build failed
 - locale cleanup
 - *android:* crash if en
-- crash because of wrong require order
-- show loading during payme...build
+- crash because o...build
