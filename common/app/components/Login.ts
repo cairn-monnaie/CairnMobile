@@ -168,17 +168,17 @@ export default class Login extends PageComponent {
         if (!this.canLoginOrRegister) {
             return this.$alert('missing_parameters');
         }
-        this.loading = true;
-        this.$authService
-            .register(this.user)
-            .then(() => {
-                this.$alert('account_created');
-                this.isLoggingIn = true;
-            })
-            .catch(this.showError)
-            .finally(() => {
-                this.loading = false;
-            });
+        // this.loading = true;
+        // this.$authService
+        //     .register(this.user)
+        //     .then(() => {
+        //         this.$alert('account_created');
+        //         this.isLoggingIn = true;
+        //     })
+        //     .catch(this.showError)
+        //     .finally(() => {
+        //         this.loading = false;
+        //     });
     }
 
     forgotPassword() {
