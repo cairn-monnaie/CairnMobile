@@ -38,7 +38,7 @@
                             @textChange="onTextChange($event.value, 'description')"
                         />
                         <EditableListItem leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" @textChange="onTextChange($event.value, 'email')" />
-                        <EditableListItem
+                        <ListItem
                             v-for="phone in userProfile.phoneNumbers"
                             leftIcon="mdi-phone"
                             rightButton="mdi-delete"
