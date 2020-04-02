@@ -337,7 +337,7 @@ export default class MapComponent extends BaseVueComponent {
             console.log(data.error);
             return;
         }
-        const { android, ios, ...toPrint } = data.location;
+        // const { android, ios, ...toPrint } = data.location;
         // console.log('onLocation', this._userFollow, toPrint, this.userFollow);
         this.updateUserLocation(data.location);
     }
