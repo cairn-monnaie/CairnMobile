@@ -1,0 +1,3 @@
+*Bug fixes*
+- prevent error if no locaiton is returned
+- removed default login account
