@@ -103,7 +103,7 @@ const Plugin = {
                 return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
             }
             return new Promise((resolve, reject) => {
-                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent: true });
+                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: r => resolve(r || {}), transparent: true });
             });
             // return barCodeScanner
             //     .scan({
