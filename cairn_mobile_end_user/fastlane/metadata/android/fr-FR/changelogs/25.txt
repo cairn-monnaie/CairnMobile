@@ -1,0 +1,49 @@
+*Features*
+- better home layouyt
+
+*Bug fixes*
+- *android:* flex prop make it crash
+- profile image no being update
+- *android:* for now class font family not read
+- *android:* multiple bug fixes
+- remove reason, make description more discret
+- switched to nativescript-l
+- filter pros in get users
+- better colors for textfields
+- account history better layout
+- *android:* app build failed
+- locale cleanup
+- *android:* crash if en
+- crash because of wrong require order
+- show loading during payment
+- home design
+- no more api key in source
+- fix for new signature
+- working phone numbers and sms ids
+- fix image init error
+- use the new https module
+- trying new multipart function
+- fixed multipart
+- wrong translation
+- dont show others mail
+- *android:* error on image pick bach button
+- call with phoneNumber
+- dont show mail but description
+- listitem layout fix
+- close drawer even if current url
+- updated deps
+- fix https headers to keep session alive
+- adress picker with auto completion
+- updated sentry
+- listitem layout fix
+- show gps search location button
+- fixed addressed send to oupdate profile
+- signature handling of numbers
+- error on dismissing camera scan
+- infinite loading after transfer
+- shoud not be possible to edit a phone number
+- localized menu
+- dont show cursor in passcode window
+- signature handles numbers
+- fix build by disabling this for now
+- updated deps to fix build
