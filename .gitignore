@@ -12,3 +12,4 @@ certs
 /.vscode/settings.json
 */.vscode/settings.json
 .vscode
+pnpm-lock.yaml
