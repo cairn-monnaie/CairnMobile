@@ -20,7 +20,7 @@
                         textAlignment="center"
                         verticalTextAlignment="center"
                         isUserInteractionEnabled="false"
-                        :text="((confirmingPassword ? passCodeConfirmationArray : passCodeArray)[i - 1]) ? '●':''"
+                        :text="((confirmingPassword ? passCodeConfirmationArray : passCodeArray)[i - 1]) !== undefined ? '●':''"
                     />
                     <Label fontSize="18" paddingTop="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="top" :text="title" />
                     <Label fontSize="16" paddingBottom="30" fontWeight="bold" v-show="creation" colSpan="4" textAlignment="center" color="white" verticalAlignment="bottom" :text="message" />
