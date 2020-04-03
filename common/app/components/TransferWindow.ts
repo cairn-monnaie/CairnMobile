@@ -17,7 +17,6 @@ export default class TransferWindow extends PageComponent {
     navigateUrl = ComponentIds.Transfer;
     reason: string = this.$t('default_reason');
     description: string = null;
-    amountStr: string = null;
     amount: number;
     account: AccountInfo = null;
     recipient: User = null;
@@ -91,27 +90,22 @@ export default class TransferWindow extends PageComponent {
         }
     }
     oldAmountStr = null;
+
+    amountRegexp = /^\d*(,\d{0,2})?$/;
     validateAmount(e) {
         if (!e.value) {
-            this.amountStr = null;
             this.amount = 0;
             return;
         }
-        const value = parseFloat(e.value);
-        if (value + '' !== this.amountStr) {
+        if (!this.amountRegexp.test(e.value)) {
             setTimeout(() => {
-                this.amountStr = value + '';
+                (this.$refs.amountTF.nativeView as TextField).text = this.oldAmountStr;
             }, 0);
-            this.amount = value;
-        } else if (isNaN(value)) {
-            setTimeout(() => {
-                this.amountStr = this.oldAmountStr;
-            }, 0);
-        } else {
-            this.amount = value;
-            this.oldAmountStr = this.amountStr;
-            this.amountStr = e.value;
+            return;
         }
+        const value = parseFloat(e.value) || 0;
+        this.oldAmountStr = e.value;
+        this.amount = value;
         this.checkForm();
     }
     refresh() {
