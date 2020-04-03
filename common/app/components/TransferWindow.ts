@@ -166,9 +166,17 @@ export default class TransferWindow extends PageComponent {
             return this.showError(new NoNetworkError());
         }
         try {
-            await this.$securityService.validateSecurity(this);
+            
             this.showLoading(this.$t('loading'));
             const r = await this.$authService.createTransaction(this.account, this.recipient, this.amount, this.reason, this.description);
+            if(r.secure_validation){
+                let isValidSecurity = false;
+                let nbTries = 0;
+                while(! isValidSecurity){
+                    nbTries++;
+                    isValidSecurity = await this.$securityService.validateSecurity(this);
+                }
+            }
             await this.$authService.confirmOperation(r.operation.id);
             this.hideLoading();
             this.close();
