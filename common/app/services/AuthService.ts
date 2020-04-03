@@ -235,6 +235,7 @@ export interface Benificiary {
 
 export interface TransactionConfirmation {
     confirmation_url: string;
+    secure_validation: boolean;
     operation: {
         smsPayment: boolean;
         id: number;

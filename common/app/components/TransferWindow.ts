@@ -160,18 +160,38 @@ export default class TransferWindow extends PageComponent {
             return this.showError(new NoNetworkError());
         }
         try {
-            
             this.showLoading(this.$t('loading'));
             const r = await this.$authService.createTransaction(this.account, this.recipient, this.amount, this.reason, this.description);
-            if(r.secure_validation){
-                let isValidSecurity = false;
-                let nbTries = 0;
-                while(! isValidSecurity){
-                    nbTries++;
-                    isValidSecurity = await this.$securityService.validateSecurity(this);
+            // createTransaction returns a response with 3 fields :
+            // * confirmation_url
+            // * operation object
+            // * secure_validation, which value is either false if no threshold has been reached (amount, number of daily payments), or true otherwise. If a threshold is reached, validation with PIN code is required
+            let code;
+            if (r.secure_validation) {
+                // let isValidSecurity = false;
+                // let nbTries = 0;
+                // while (!isValidSecurity) {
+                //     nbTries++;
+                //     if (nbTries > 3) {
+                //         throw new Error(this.$t('too_many_attemps'));
+                //     } else {
+                const resultPConfirm = await prompt({
+                    // title: localize('stop_session'),
+                    message: this.$tc('enter_confirmation_code_sms'),
+                    okButtonText: this.$tc('confirm'),
+                    cancelButtonText: this.$tc('cancel'),
+                    textFieldProperties: {
+                        keyboardType: 'number'
+                    }
+                });
+                if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
+                    code = resultPConfirm.text;
                 }
+                // isValidSecurity = await this.$securityService.validateSecurity(this);
+                // }
+                // }
             }
-            await this.$authService.confirmOperation(r.operation.id);
+            await this.$authService.confirmOperation(r.operation.id, code);
             this.hideLoading();
             this.close();
             showSnack({
