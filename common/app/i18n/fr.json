@@ -6,7 +6,8 @@
     "info": {
       "plist": {
         "NSLocationWhenInUseUsageDescription": "eCairn a besoin de votre localisation",
-        "NSFaceIDUsageDescription": "eCairn utilise les services de biométrie pour sécuriser vos transactions"
+        "NSFaceIDUsageDescription": "eCairn utilise les services de biométrie pour sécuriser vos transactions",
+        "NSCameraUsageDescription": "eCairn utilise votre caméra pour lire des QRCodes"
       }
     }
   },

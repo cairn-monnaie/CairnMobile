@@ -47,8 +47,9 @@
   "ios": {
     "info": {
       "plist": {
-        "nSFaceIDUsageDescription": "eCairn uses biometric services to secure your transactions",
-        "nSLocationWhenInUseUsageDescription": "eCairn needs your location"
+        "NNSFaceIDUsageDescription": "eCairn uses biometric services to secure your transactions",
+        "NSLocationWhenInUseUsageDescription": "eCairn needs your location",
+        "NSCameraUsageDescription": "eCairn needs your camera to scan QRCodes"
       }
     }
   },
