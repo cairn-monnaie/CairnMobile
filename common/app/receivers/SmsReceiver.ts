@@ -19,14 +19,15 @@ export class SmsReceiver extends android.content.BroadcastReceiver {
                     sender = `+33${sender.slice(1)}`;
                 }
 
-                getAuthInstance().fakeSMSPayment(sender, text).then(() =>{ 
-                    const intent = new android.content.Intent('com.akylas.cairnmobile.SMS_RECEIVED');
-                    intent.putExtra('message', text);
-                    intent.putExtra('sender', sender);
-                    // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                    context.sendBroadcast(intent);
-                })
-                
+                getAuthInstance()
+                    .fakeSMSPayment(sender, text)
+                    .then(() => {
+                        const intent = new android.content.Intent('com.akylas.cairnmobile.SMS_RECEIVED');
+                        intent.putExtra('message', text);
+                        intent.putExtra('sender', sender);
+                        // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                        context.sendBroadcast(intent);
+                    });
             }
 
             // }
