@@ -1,0 +1,7 @@
+*Bug fixes*
+- remove sms permission!!!
+- prevent error if no locaiton is returned
+- removed default login account
+- transfer amount can have dot
+- passcode not showing correctly wth 0
+- trying new way of handling secure_validation
