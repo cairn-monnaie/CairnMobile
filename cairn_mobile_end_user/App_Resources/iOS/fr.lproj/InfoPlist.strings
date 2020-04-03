@@ -2,3 +2,5 @@
 "NSLocationWhenInUseUsageDescription" = "eCairn a besoin de votre localisation";
 "CFBundleDisplayName" = "eCairn";
 "CFBundleName" = "eCairn";
+"nSLocationWhenInUseUsageDescription" = "eCairn needs your location";
+"nSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
