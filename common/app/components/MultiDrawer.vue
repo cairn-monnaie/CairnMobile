@@ -9,7 +9,7 @@
 
         <template v-for="side in computedSidesEnabled" isPassThroughParentEnabled>
             <!-- Drawer Content -->
-            <GridLayout @layoutChanged="onDrawerLayoutChange(side)" :col="computedLayout[side].col" :key="side" @tap="noop" @pan="onDrawerPan(side, $event)" :ref="`${side}Drawer`" :style="computedDrawerStyle(side)">
+            <GridLayout  @layoutChanged="onDrawerLayoutChange(side)" :col="computedLayout[side].col" :key="side" @tap="noop" @pan="onDrawerPan(side, $event)" :ref="`${side}Drawer`" :style="computedDrawerStyle(side)">
                 <slot :name="side" />
             </GridLayout>
             <!-- Open Trigger -->

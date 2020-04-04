@@ -337,7 +337,6 @@ export default class App extends BaseVueComponent {
             this.currentlyLoggedIn = true;
             const profile = (this.userProfile = e.data as UserProfile);
             this.$sentry && this.$sentry.setExtra('profile', profile);
-            console.log('LoggedinEvent', e.data);
             this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
                 // this.$securityService.createPasscode(this).catch(err => {
                 //     this.showError(err);
@@ -349,13 +348,11 @@ export default class App extends BaseVueComponent {
             this.$sentry && this.$sentry.setExtra('profile', null);
             this.currentlyLoggedIn = false;
             this.$securityService.clear();
-            console.log('LoggedoutEvent');
             this.goBackToLogin();
         });
     }
     appPaused = true;
     onAppResume(args: ApplicationEventData) {
-        console.log('onAppResume', this.appPaused, this.$securityService.autoLockEnabled);
         if (!this.appPaused) {
             return;
         }
@@ -483,9 +480,9 @@ export default class App extends BaseVueComponent {
     }
     navigateBackToUrl(url) {
         const index = this.findNavigationUrlIndex(url);
-        console.log('navigateBackToUrl', url, index);
+        // console.log('navigateBackToUrl', url, index);
         if (index === -1) {
-            console.log(url, 'not in backstack');
+            // console.log(url, 'not in backstack');
             return Promise.reject();
         }
         return this.navigateBack(this.innerFrame.backStack[index]);

@@ -101,7 +101,6 @@ export default class Home extends PageComponent {
         if (args && args.object) {
             args.object.refreshing = false;
         }
-        this.log('refreshing');
         this.loading = true;
         // setTimeout(() => {
         return Promise.all([

@@ -422,7 +422,6 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         this.userProfile = cleanupUser(result);
-        console.log('userProfile', this.userProfile, result);
         this.notify({
             eventName: UserProfileEvent,
             object: this,
@@ -780,7 +779,6 @@ export default class AuthService extends NetworkService {
                     password: user.password
                 }
             });
-            console.log('got token', result);
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
             this.userId = result.user_id;

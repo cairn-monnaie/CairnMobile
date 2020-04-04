@@ -113,10 +113,10 @@ export class GeoHandler extends Observable {
         if (this.launched) {
             return;
         }
-        this.log('appOnLaunch');
+        // this.log('appOnLaunch');
         this.currentSession = JSON.parse(appSettings.getString('pausedSession', null));
         if (this.currentSession) {
-            this.log('restore paused session', this.currentSession);
+            // this.log('restore paused session', this.currentSession);
             this.currentSession.startTime = new Date(this.currentSession.startTime);
             this.currentSession.lastPauseTime = new Date(this.currentSession.lastPauseTime);
             this.sessionState = SessionState.PAUSED;
@@ -133,7 +133,7 @@ export class GeoHandler extends Observable {
             this._isIOSBackgroundMode = false;
             // For iOS applications, args.ios is UIApplication.
             if (TEST_LOGS) {
-                this.log('UIApplication: resumeEvent', this.isWatching());
+                // this.log('UIApplication: resumeEvent', this.isWatching());
             }
             if (this.isWatching()) {
                 const watcher = this.currentWatcher;
@@ -147,7 +147,7 @@ export class GeoHandler extends Observable {
             this._isIOSBackgroundMode = true;
             // For iOS applications, args.ios is UIApplication.
             if (TEST_LOGS) {
-                this.log('UIApplication: suspendEvent', this.isWatching());
+                // this.log('UIApplication: suspendEvent', this.isWatching());
             }
             if (this.isWatching()) {
                 const watcher = this.currentWatcher;
@@ -229,7 +229,7 @@ export class GeoHandler extends Observable {
                         okButtonText: $t('settings'),
                         cancelButtonText: $t('cancel')
                     }).then(result => {
-                        this.log('stop_session, confirmed', result);
+                        // this.log('stop_session, confirmed', result);
                         if (result) {
                             geolocation.openGPSSettings().catch(() => {});
                         }

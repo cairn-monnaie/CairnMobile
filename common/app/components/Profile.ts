@@ -102,7 +102,6 @@ export default class Profile extends PageComponent {
         if (!this.myProfile) {
             return;
         }
-        console.log('refreshing');
         this.loading = true;
         this.$authService.getUserProfile(this.userProfile.id).catch(this.showError);
     }

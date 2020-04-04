@@ -1,26 +1,22 @@
 import { throttle } from 'helpful-decorators';
 import { ClickType, MapBounds, MapPos } from 'nativescript-carto/core';
-import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
-import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
-import { VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
+import { VectorTileEventData } from 'nativescript-carto/layers/vector';
 import { CartoMap } from 'nativescript-carto/ui';
-import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import * as appSettings from '@nativescript/core/application-settings';
 import { Component, Prop } from 'vue-property-decorator';
-import PageComponent from '~/components/PageComponent';
 import { User } from '~/services/AuthService';
+import { navigationBarHeight } from '~/variables';
 import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
 import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
 import BaseVueComponent from './BaseVueComponent';
-const GeoJSON = require('geojson');
 
 @Component({
     components: {
         MapComponent,
         MapBottomSheet,
-        BottomSheetHolder
-    }
+        BottomSheetHolder,
+    },
 })
 export default class InteractiveMap extends BaseVueComponent {
     @Prop({ default: 1 }) opacity: number;
@@ -32,6 +28,7 @@ export default class InteractiveMap extends BaseVueComponent {
     bottomSheetPercentage = 0;
     shownUsers: User[] = [];
     loading = false;
+
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
@@ -75,7 +72,7 @@ export default class InteractiveMap extends BaseVueComponent {
         // this.refresh();
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
-        this.log('onMapReady', pos, zoom);
+        // this.log('onMapReady', pos, zoom);
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
         this.mapComp.getOrCreateLocalVectorTileLayer().setVectorTileEventListener(this);
@@ -109,7 +106,7 @@ export default class InteractiveMap extends BaseVueComponent {
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
-            const user = this.shownUsers.find(u => u.id === (featureData.id as any));
+            const user = this.shownUsers.find((u) => u.id === (featureData.id as any));
             if (user) {
                 this.selectItem(user);
             }
@@ -122,7 +119,7 @@ export default class InteractiveMap extends BaseVueComponent {
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds)
-            .then(r => {
+            .then((r) => {
                 // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {

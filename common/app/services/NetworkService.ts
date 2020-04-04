@@ -356,7 +356,7 @@ export class NetworkService extends Observable {
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
         const time = Date.now().toString();
-        console.log('buildAuthorization', requestParams);
+        // console.log('buildAuthorization', requestParams);
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
@@ -389,7 +389,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
 
         const requestStartTime = Date.now();
-        console.log('request', requestParams);
+        // console.log('request', requestParams);
         return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then(response =>
             this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
         ) as Promise<T>;
@@ -415,7 +415,7 @@ export class NetworkService extends Observable {
         const content = USE_HTTPS ? response['content'] || response['body'] : response['content'] ? response['content'].toString() : response['body'];
         // const content = response['content'] ? response['content'].toString() : response['body'];
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), isJSON, typeof content, response['content'], response['body']);
+        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), isJSON, typeof content, response['content'], response['body']);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {
@@ -450,9 +450,9 @@ export class NetworkService extends Observable {
                     return this.handleRequestRetry(requestParams, retry);
                 }
                 const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                let message = error.error_description || error.form || error.message || error.error || error;
+                let message = $t(error.error_description || error.form || error.message || error.error || error);
                 if (error.exception && error.exception.length > 0) {
-                    message += ': ' + error.exception[0].message;
+                    message += ': ' + $t(error.exception[0].message);
                 }
                 this.log('throwing http error', error.code || statusCode, message);
                 throw new HTTPError({

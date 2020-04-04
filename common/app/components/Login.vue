@@ -1,6 +1,6 @@
 <template>
     <CairnPage @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight">
-        <InteractiveMap/>
+        <InteractiveMap />
         <MDButton v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
         <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
             <StackLayout horizontalAlignment="center">

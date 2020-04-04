@@ -138,17 +138,17 @@ mdtextfield {
     border-radius: 27;
 }
 
-.botom-nav {
-    tab-active-color: green;
-    tab-inactive-color: black;
-    tab-background-color: blue;
-}
+// .botom-nav {
+//     tab-active-color: green;
+//     tab-inactive-color: black;
+//     tab-background-color: blue;
+// }
 
-tabview {
-    selected-tab-text-color: white;
-    tab-background-color: $dark-color;
-    android-selected-tab-highlight-color: $primary-color;
-}
+// tabview {
+//     selected-tab-text-color: white;
+//     tab-background-color: $dark-color;
+//     android-selected-tab-highlight-color: $primary-color;
+// }
 
 .actionBar {
     elevation: 1;
@@ -221,7 +221,6 @@ tabview {
 
 .menuIcon {
     @extend .mdi;
-    backgroundColor:red;
     color: #757575;
     text-align: center;
     font-size: 24;

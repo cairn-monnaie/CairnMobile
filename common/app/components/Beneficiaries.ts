@@ -22,7 +22,6 @@ export default class Beneficiaries extends PageComponent {
         if (args && args.object) {
             args.object.refreshing = false;
         }
-        console.log('refreshing');
         this.loading = true;
         this.$authService
             .getBenificiaries()
