@@ -51,7 +51,7 @@ export function onLanguageChanged(callback) {
 let deviceLanguage = getString('language');
 if (!deviceLanguage) {
     deviceLanguage = device.language.split('-')[0].toLowerCase();
-    setString('language', deviceLanguage);
+    // setString('language', deviceLanguage);
     // console.log('prefs language not set', deviceLanguage, getString('language'));
 }
 // console.log('deviceLanguage', deviceLanguage);
