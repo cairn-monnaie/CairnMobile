@@ -28,12 +28,12 @@
             rowSpan="3"
             :width="40 * sizeFactor"
             :height="40 * sizeFactor"
-            stretch="aspectFit"
+            stretch="aspectFill"
             :marginRight="16 * sizeFactor"
             :src="avatar"
             verticalAlignment="center"
             :borderRadius="20 * sizeFactor"
-            :roundAsCircle="true"
+            :android:roundAsCircle="true"
         />
         <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
 
