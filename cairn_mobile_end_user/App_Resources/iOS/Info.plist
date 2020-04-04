@@ -62,7 +62,7 @@
       </dict>
     </dict>
     <key>NSFaceIDUsageDescription</key>
-    <string>ios.info.plist.NSFaceIDUsageDescription</string>
+    <string>eCairn uses biometric services to secure your transactions</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>eCairn needs your location</string>
     <key>NSCameraUsageDescription</key>

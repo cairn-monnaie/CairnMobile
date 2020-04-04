@@ -49,7 +49,7 @@
 "login" = "login";
 "ios.info.plist.NSCameraUsageDescription" = "eCairn needs your camera to scan QRCodes";
 "ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn needs your location";
-"ios.info.plist.NNSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
+"ios.info.plist.NSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
 "invalid_grant" = "username or password incorrect";
 "httpError" = "$ {localize (errorMessage)} ($ {statusCode})";
 "home" = "home";
@@ -92,4 +92,3 @@
 "account_history" = "account history";
 "account" = "account";
 "add_phone_desc" = "add_phone_desc";
-"ios.info.plist.NSFaceIDUsageDescription" = "ios.info.plist.NSFaceIDUsageDescription";

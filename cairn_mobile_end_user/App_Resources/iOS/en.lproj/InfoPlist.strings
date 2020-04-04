@@ -1,6 +1,5 @@
 "NSCameraUsageDescription" = "eCairn needs your camera to scan QRCodes";
 "NSLocationWhenInUseUsageDescription" = "eCairn needs your location";
-"NNSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
+"NSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
 "CFBundleDisplayName" = "eCairn";
 "CFBundleName" = "eCairn";
-"NSFaceIDUsageDescription" = "ios.info.plist.NSFaceIDUsageDescription";

@@ -91,5 +91,4 @@
 "ios.info.plist.NSFaceIDUsageDescription" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
 "ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn a besoin de votre localisation";
 "app.name" = "eCairn";
-"ios.info.plist.NNSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
 "app.__i18n_ally_root__.name" = "";
