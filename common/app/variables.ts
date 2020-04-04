@@ -1,6 +1,7 @@
 import { locals } from '~/variables.module.scss';
 import { screen } from '@nativescript/core/platform';
 import { ad } from '@nativescript/core/utils/utils';
+import { off as appOff, on as appOn, ios as iosApp, launchEvent } from '@nativescript/core/application';
 
 export const primaryColor: string = locals.primaryColor;
 export const accentColor: string = locals.accentColor;
@@ -24,4 +25,9 @@ if (gVars.isAndroid) {
     }
 } else {
     navigationBarHeight = 0;
+    const onAppLaunch = function () {
+        navigationBarHeight = iosApp.window.safeAreaInsets.bottom;
+        appOff(launchEvent, onAppLaunch);
+    };
+    appOn(launchEvent, onAppLaunch);
 }

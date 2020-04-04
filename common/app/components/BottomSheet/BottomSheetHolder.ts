@@ -5,6 +5,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from '../BaseVueComponent';
 import BottomSheet, { NATIVE_GESTURE_TAG } from './BottomSheetBase';
 import { TWEEN } from 'nativescript-tween';
+import { navigationBarHeight } from '~/variables';
 
 const OPEN_DURATION = 100;
 const CLOSE_DURATION = 200;
@@ -80,10 +81,10 @@ export default class BottomSheetHolder extends BaseVueComponent {
         default: () => [50]
     })
     peekerSteps;
-    @Prop({
-        default: 0
-    })
-    bottomDecale;
+    // @Prop({
+    //     default: 0
+    // })
+    bottomDecale = 0;
     // @Prop()
     // shouldPan: Function;
     @Prop({
@@ -123,7 +124,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         });
         gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
         gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
-        this.log('mounted2', !!this.scrollingView, !!gestureHandler);
+        // this.log('mounted2', !!this.scrollingView, !!gestureHandler);
         gestureHandler.attachToView(this.scrollingView);
         this.panGestureHandler = gestureHandler as any;
     }
@@ -146,9 +147,12 @@ export default class BottomSheetHolder extends BaseVueComponent {
     }
     onLayoutChange() {
         const viewHeight = Math.round(layout.toDeviceIndependentPixels(this.nativeView.getMeasuredHeight()));
-        // this.log('onLayoutChange', viewHeight, this.viewHeight, this.currentViewHeight, this.translationMaxOffset);
+        if (gVars.isIOS) {
+            this.bottomDecale = navigationBarHeight;
+        }
+        // this.log('onLayoutChange', viewHeight, this.viewHeight, this.currentViewHeight, this.translationMaxOffset, this.bottomDecale);
         if (this.mCurrentViewHeight === 0) {
-            this.viewHeight = viewHeight;
+            this.viewHeight = viewHeight + this.bottomDecale ;
             this.currentViewHeight = this.viewHeight;
         } else {
             const shown = this.viewHeight - this.mCurrentViewHeight;
@@ -189,7 +193,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         }
     }
     updateIsPanning(state: GestureState) {
-        const viewTop = this.mCurrentViewHeight - this.viewHeight;
+        // const viewTop = this.mCurrentViewHeight - this.viewHeight;
         this.isPanning = state === GestureState.ACTIVE || state === GestureState.BEGAN;
         // if (this._isPanning) {
 
