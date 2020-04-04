@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="invalid_authentication">"the username/password specified is not valid"</string>
   <string name="situation">"home"</string>
   <string name="enter_add_phone_confirmation">"enter the confirmation code received at %1$s"</string>
   <string name="phone_added">"phone number %1$s has been added correctly"</string>

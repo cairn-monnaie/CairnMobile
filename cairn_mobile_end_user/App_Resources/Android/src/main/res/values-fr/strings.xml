@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="invalid_authentication">"le nom d\'utilisateur / mot de passe spécifié n\'est pas valide"</string>
   <string name="situation">"accueil"</string>
   <string name="phone_added">"le numéro de téléphone %1$s a été correctement ajouté"</string>
   <string name="change_address">"changer d\'adresse"</string>
