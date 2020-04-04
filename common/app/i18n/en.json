@@ -101,5 +101,5 @@
   "phone_added": "phone number %s has been added correctly",
   "enter_add_phone_confirmation": "enter the confirmation code received at %s",
   "situation": "home",
-  "Invalid authentication": "the username/password specified is not valid"
+  "invalid_authentication": "the username/password specified is not valid"
 }
