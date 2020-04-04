@@ -60,7 +60,6 @@ class FrameWithEvents extends NSFrame {
 
 const Plugin = {
     install(Vue) {
-        clog('installing view mixins');
         const NSFrame = require('@nativescript/core/ui/frame').Frame;
         applyMixins(NSFrame, [FrameWithEvents]);
     }
