@@ -1,3 +1,4 @@
+"Invalid authentication" = "le nom d'utilisateur / mot de passe spécifié n'est pas valide";
 "situation" = "accueil";
 "phone_added" = "le numéro de téléphone %1$@ a été correctement ajouté";
 "change_address" = "changer d'adresse";
@@ -86,9 +87,9 @@
 "password" = "mot de passe";
 "username" = "utilisateur";
 "home" = "accueil";
+"ios.info.plist.NSCameraUsageDescription" = "eCairn utilise votre caméra pour lire des QRCodes";
 "ios.info.plist.NSFaceIDUsageDescription" = "eCairn utilise les services de biométrie pour sécuriser vos transactions";
 "ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn a besoin de votre localisation";
 "app.name" = "eCairn";
-"ios.info.plist.nSLocationWhenInUseUsageDescription" = "eCairn needs your location";
-"ios.info.plist.nSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
+"ios.info.plist.NNSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
 "app.__i18n_ally_root__.name" = "";

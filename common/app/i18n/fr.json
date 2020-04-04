@@ -98,5 +98,6 @@
   "enter_add_phone_confirmation": "Entrez le code de confirmation recu au %s",
   "change_address": "changer d'adresse",
   "phone_added": "le numéro de téléphone %s a été correctement ajouté",
-  "situation": "accueil"
+  "situation": "accueil",
+  "Invalid authentication": "le nom d'utilisateur / mot de passe spécifié n'est pas valide"
 }

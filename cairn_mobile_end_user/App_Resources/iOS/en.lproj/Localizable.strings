@@ -1,3 +1,4 @@
+"Invalid authentication" = "the username/password specified is not valid";
 "situation" = "home";
 "enter_add_phone_confirmation" = "enter the confirmation code received at %1$@";
 "phone_added" = "phone number %1$@ has been added correctly";
@@ -46,8 +47,9 @@
 "no_network" = "no internet connection";
 "no_account" = "no account?";
 "login" = "login";
-"ios.info.plist.nSLocationWhenInUseUsageDescription" = "eCairn needs your location";
-"ios.info.plist.nSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
+"ios.info.plist.NSCameraUsageDescription" = "eCairn needs your camera to scan QRCodes";
+"ios.info.plist.NSLocationWhenInUseUsageDescription" = "eCairn needs your location";
+"ios.info.plist.NNSFaceIDUsageDescription" = "eCairn uses biometric services to secure your transactions";
 "invalid_grant" = "username or password incorrect";
 "httpError" = "$ {localize (errorMessage)} ($ {statusCode})";
 "home" = "home";
@@ -91,4 +93,3 @@
 "account" = "account";
 "add_phone_desc" = "add_phone_desc";
 "ios.info.plist.NSFaceIDUsageDescription" = "ios.info.plist.NSFaceIDUsageDescription";
-"ios.info.plist.NSLocationWhenInUseUsageDescription" = "ios.info.plist.NSLocationWhenInUseUsageDescription";

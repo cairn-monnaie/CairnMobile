@@ -47,7 +47,7 @@
   "ios": {
     "info": {
       "plist": {
-        "NNSFaceIDUsageDescription": "eCairn uses biometric services to secure your transactions",
+        "NSFaceIDUsageDescription": "eCairn uses biometric services to secure your transactions",
         "NSLocationWhenInUseUsageDescription": "eCairn needs your location",
         "NSCameraUsageDescription": "eCairn needs your camera to scan QRCodes"
       }
@@ -100,5 +100,6 @@
   "change_address": "change address",
   "phone_added": "phone number %s has been added correctly",
   "enter_add_phone_confirmation": "enter the confirmation code received at %s",
-  "situation": "home"
+  "situation": "home",
+  "Invalid authentication": "the username/password specified is not valid"
 }

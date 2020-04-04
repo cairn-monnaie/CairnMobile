@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>CFBundleVersion</key>
-    <string>27</string>
+    <string>28</string>
     <key>CFBundleShortVersionString</key>
     <string>1.0.0</string>
     <key>CFBundleDevelopmentRegion</key>
@@ -64,10 +64,8 @@
     <key>NSFaceIDUsageDescription</key>
     <string>ios.info.plist.NSFaceIDUsageDescription</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>ios.info.plist.NSLocationWhenInUseUsageDescription</string>
-    <key>nSLocationWhenInUseUsageDescription</key>
     <string>eCairn needs your location</string>
-    <key>nSFaceIDUsageDescription</key>
-    <string>eCairn uses biometric services to secure your transactions</string>
+    <key>NSCameraUsageDescription</key>
+    <string>eCairn needs your camera to scan QRCodes</string>
   </dict>
 </plist>
