@@ -11,7 +11,7 @@
         @actionTap="openTransferWindow"
     >
         <StackLayout>
-            <Pager :items="users" height="30%">
+            <Pager :items="users" height="30%" :backgroundColor="themeColor">
                 <v-template>
                     <GridLayout rows="*" columns="*">
                         <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
