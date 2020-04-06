@@ -14,7 +14,9 @@
                 fontSize="40"
                 :hint="$t('amount') | capitalize"
                 keyboardType="number"
+                :returnKeyType="canStartTransfer ? 'go' : 'done'"
                 :error="amountError"
+                @returnPress="submit"
                 @loaded="onAmountTFLoaded"
                 @textChange="validateAmount"
             />
@@ -23,18 +25,11 @@
         <GridLayout rows="auto,auto">
             <ScrollView row="0">
                 <StackLayout margin="0">
-                    <ListItem
-                        margin="20 20 10 20"
-                        :height="80"
-                        :class="accounts.length > 1 ? 'cardView' : 'flatCardView'"
-                        :showBottomLine="false"
-                        :overText="$t('account')"
-                        :title="account ? account.name : $t('choose_account')"
-                        :subtitle="account ? account.number : undefined"
-                        :rightIcon="accounts.length > 1 ? 'mdi-chevron-right' : undefined"
-                        @tap="selectAccount"
-                    />
 
+                    <GridLayout columns="*,auto" row="1" margin="10 10 0 10">
+                        <MDButton v-show="!loading" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
+                        <MDButton padding="0" col="1" fontSize="24" class="mdi" v-show="!loading" text="mdi-cellphone-message" @tap="sendSMS" :isEnabled="canSendSMS" />
+                    </GridLayout>
                     <GridLayout columns="*,auto">
                         <ListItem
                             margin="0 0 10 20"
@@ -43,12 +38,25 @@
                             :showBottomLine="false"
                             :overText="$t('recipient')"
                             :title="recipient ? recipient.name : $t('choose_recipient')"
-                            :subtitle="(recipient ? recipient.address : undefined) | address"
                             rightIcon="mdi-chevron-right"
                             @tap="selectRecipient"
                         />
-                        <MDButton col="1" textAlignment="center" marginRight="20" variant="flat" class="big-icon-themed-btn" text="mdi-qrcode-scan" @tap="scanQRCode()" />
+                        <MDButton col="1" textAlignment="center" marginRight="10" variant="flat" class="big-icon-themed-btn" text="mdi-qrcode-scan" @tap="scanQRCode()" />
                     </GridLayout>
+
+                    <ListItem
+                        margin="0 20 10 20"
+                        :height="80"
+                        :class="accounts.length > 1 ? 'cardView' : 'flatCardView'"
+                        :showBottomLine="false"
+                        :overText="$t('account')"
+                        :title="account ? account.name : $t('choose_account')"
+                        :subtitle="accountBalanceText"
+                        :date="account ? account.number : undefined"
+                        :rightIcon="accounts.length > 1 ? 'mdi-chevron-right' : undefined"
+                        @tap="selectAccount"
+                    />
+
                     <!-- <MDTextField
                         backgroundColor="#ffffff"
                         margin="0 20 0 20"
@@ -58,10 +66,6 @@
                         returnKeyType="next"
                         :error="reasonError"
                     /> -->
-                    <GridLayout columns="*,auto" row="1" marginLeft="10" marginRight="10">
-                        <MDButton v-show="!loading" :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
-                        <MDButton padding="0" col="1" fontSize="24" class="mdi" v-show="!loading" text="mdi-cellphone-message" @tap="sendSMS" :isEnabled="canSendSMS" />
-                    </GridLayout>
                     <MDTextField
                         backgroundColor="#ffffff"
                         margin="10 20 20 20"
