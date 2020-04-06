@@ -34,8 +34,8 @@
                         <StackLayout>
                             <GridLayout class="cardView" margin="20" padding="10" columns="*, auto" rows="auto, *" @tap="onItemTap(item)">
                                 <Label row="0" :text="item.name | capitalize" fontWeight="bold" fontSize="18" />
-                                <Label row="1" class="balance" :text="item.balance | currency(false)" paddingTop="20">
-                                    <Span :text="item.balance | currency(false)" />
+                                <Label row="1" class="balance"  paddingTop="20">
+                                    <Span :text="item.balance | currency(true)" />
                                     <Span :fontFamily="cairnFontFamily" text="cairn-currency" />
                                 </Label>
                                 <Label col="1" rowSpan="2" class="mdi" text="mdi-chevron-right" fontSize="30" color="gray" verticalAlignment="center" />
