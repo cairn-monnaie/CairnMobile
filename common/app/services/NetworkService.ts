@@ -60,7 +60,7 @@ function evalTemplateString(resource: string, obj: {}) {
         return resource;
     }
     const names = Object.keys(obj);
-    const vals = Object.keys(obj).map(key => obj[key]);
+    const vals = Object.keys(obj).map((key) => obj[key]);
     return new Function(...names, `return \`${resource}\`;`)(...vals);
 }
 
@@ -171,9 +171,9 @@ export class CustomError extends BaseError {
 
     toJSON() {
         const error = {
-            message: this.message
+            message: this.message,
         };
-        Object.getOwnPropertyNames(this).forEach(key => {
+        Object.getOwnPropertyNames(this).forEach((key) => {
             if (typeof this[key] !== 'function') {
                 error[key] = this[key];
             }
@@ -199,7 +199,7 @@ export class TimeoutError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'timeout_error'
+                    message: 'timeout_error',
                 },
                 props
             ),
@@ -213,7 +213,7 @@ export class NoNetworkError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'no_network'
+                    message: 'no_network',
                 },
                 props
             ),
@@ -233,7 +233,7 @@ export class HTTPError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'httpError'
+                    message: 'httpError',
                 },
                 props
             ),
@@ -283,8 +283,8 @@ export class NetworkService extends Observable {
                 object: this,
                 data: {
                     connected: value,
-                    connectionType: this._connectionType
-                }
+                    connectionType: this._connectionType,
+                },
             } as NetworkConnectionStateEventData);
         }
     }
@@ -318,7 +318,7 @@ export class NetworkService extends Observable {
         throw new HTTPError({
             statusCode: 401,
             message: 'HTTP error',
-            requestParams
+            requestParams,
         });
     }
 
@@ -389,7 +389,7 @@ export class NetworkService extends Observable {
 
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
-        return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then(response =>
+        return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then((response) =>
             this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
         ) as Promise<T>;
     }
@@ -430,7 +430,7 @@ export class NetworkService extends Observable {
                         new HTTPError({
                             statusCode,
                             message: match ? match[1] : 'HTTP error',
-                            requestParams
+                            requestParams,
                         })
                     );
                 }
