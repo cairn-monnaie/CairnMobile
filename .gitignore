@@ -14,3 +14,4 @@ certs
 .vscode
 pnpm-lock.yaml
 report.xml
+/cairn_mobile_end_user/dist
