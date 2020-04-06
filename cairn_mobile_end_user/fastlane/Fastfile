@@ -199,7 +199,7 @@ platform :ios do
   desc 'Ship iOS build to Testflight.'
   lane :alpha do
     # checkGitStatus
-    # tns_install(platform:'ios')
+    tns_install(platform:'ios')
     build_flavor(platform:'ios', flavor:'alpha')
   end
 end
