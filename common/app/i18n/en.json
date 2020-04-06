@@ -91,7 +91,7 @@
   "change_pin_code": "change your PIN code",
   "change_pin_code_desc": "change your PIN code",
   "confirm_passcode": "confirm PIN",
-  "confirm_passcode_dont_match": "pIN confirmation does not match",
+  "confirm_passcode_dont_match": "PIN confirmation does not match",
   "enter_passcode": "enter a PIN",
   "loading": "loading",
   "loggedout_due_to_fingerprint_change": "it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect",
@@ -101,5 +101,10 @@
   "phone_added": "phone number %s has been added correctly",
   "enter_add_phone_confirmation": "enter the confirmation code received at %s",
   "situation": "home",
-  "invalid_authentication": "the username/password specified is not valid"
+  "invalid_authentication": "the username/password specified is not valid",
+  "current_passcode": "old PIN",
+  "new_passcode": "new PIN",
+  "wrong_security": "authentification error",
+  "wrong_passcode": "wrong PIN",
+  "pin_changed": "your PIN has been changed!"
 }

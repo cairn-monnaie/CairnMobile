@@ -99,5 +99,10 @@
   "change_address": "changer d'adresse",
   "phone_added": "le numéro de téléphone %s a été correctement ajouté",
   "situation": "accueil",
-  "invalid_authentication": "le nom d'utilisateur / mot de passe spécifié n'est pas valide"
+  "invalid_authentication": "le nom d'utilisateur / mot de passe spécifié n'est pas valide",
+  "current_passcode": "ancien PIN",
+  "new_passcode": "nouveau PIN",
+  "wrong_security": "erreur d'authentification",
+  "wrong_passcode": "PIN erroné",
+  "pin_changed": "votre PIN à bien été changé!"
 }

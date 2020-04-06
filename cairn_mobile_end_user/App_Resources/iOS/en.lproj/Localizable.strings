@@ -1,3 +1,7 @@
+"wrong_passcode" = "Wrong PIN";
+"wrong_security" = "Authentification error";
+"new_passcode" = "new PIN";
+"current_passcode" = "old PIN";
 "invalid_authentication" = "the username/password specified is not valid";
 "situation" = "home";
 "enter_add_phone_confirmation" = "enter the confirmation code received at %1$@";

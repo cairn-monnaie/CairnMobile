@@ -1,3 +1,7 @@
+"wrong_passcode" = "PIN erroné";
+"wrong_security" = "erreur d'authentification";
+"new_passcode" = "nouveau PIN";
+"current_passcode" = "ancien PIN";
 "invalid_authentication" = "le nom d'utilisateur / mot de passe spécifié n'est pas valide";
 "situation" = "accueil";
 "phone_added" = "le numéro de téléphone %1$@ a été correctement ajouté";
