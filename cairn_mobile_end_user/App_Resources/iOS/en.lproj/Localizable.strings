@@ -1,5 +1,6 @@
-"wrong_passcode" = "Wrong PIN";
-"wrong_security" = "Authentification error";
+"pin_changed" = "your PIN has been changed!";
+"wrong_passcode" = "wrong PIN";
+"wrong_security" = "authentification error";
 "new_passcode" = "new PIN";
 "current_passcode" = "old PIN";
 "invalid_authentication" = "the username/password specified is not valid";
@@ -12,7 +13,7 @@
 "loggedout_due_to_fingerprint_change" = "it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect";
 "loading" = "loading";
 "enter_passcode" = "enter a PIN";
-"confirm_passcode_dont_match" = "pIN confirmation does not match";
+"confirm_passcode_dont_match" = "PIN confirmation does not match";
 "confirm_passcode" = "confirm PIN";
 "change_pin_code_desc" = "change your PIN code";
 "change_pin_code" = "change your PIN code";

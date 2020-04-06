@@ -1,3 +1,4 @@
+"pin_changed" = "votre PIN à bien été changé!";
 "wrong_passcode" = "PIN erroné";
 "wrong_security" = "erreur d'authentification";
 "new_passcode" = "nouveau PIN";

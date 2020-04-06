@@ -184,8 +184,8 @@ platform :ios do
       prepare(platform:'ios')
       build_ios_app(
         output_directory:"dist",
-        scheme: "nsforecastie",
-        workspace: './platforms/ios/nsforecastie.xcworkspace'
+        scheme: "cairnmobileenduser",
+        workspace: './platforms/ios/cairnmobileenduser.xcworkspace'
       )
   end
 
