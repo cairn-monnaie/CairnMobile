@@ -250,14 +250,14 @@ function jsonObjectToKeepOrderString(obj) {
     if (Array.isArray(obj)) {
         // console.log('jsonObjectToKeepOrderString array', obj);
         return obj
-            .filter(v => v !== undefined)
-            .map(v => jsonObjectToKeepOrderString(v))
+            .filter((v) => v !== undefined && v !== null)
+            .map((v) => jsonObjectToKeepOrderString(v))
             .sort()
             .join('');
     } else if (typeof obj === 'object') {
         return Object.keys(obj)
-            .filter(k => obj[k] !== undefined)
-            .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
+            .filter((k) => obj[k] !== undefined && obj[k] !== null)
+            .map((k) => k + ':' + jsonObjectToKeepOrderString(obj[k]))
             .sort()
             .join('');
     }
