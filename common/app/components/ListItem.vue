@@ -38,11 +38,11 @@
         <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
 
         <StackLayout col="2" row="2" verticalAlignment="center">
-            <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="bottom" />
-            <Label v-show="!!subtitle" :fontSize="14 * sizeFactor" :text="subtitle" verticalTextAlignment="top" :color="subtitleColor" maxLines="2" lineBreak="end" />
+            <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="top"  maxLines="2" lineBreak="end" />
+            <Label v-show="!!subtitle" :fontSize="14 * sizeFactor" :html="subtitle" verticalTextAlignment="top" :color="subtitleColor" maxLines="2" lineBreak="end" />
         </StackLayout>
 
-        <Label col="3" row="1" :fontSize="14 * sizeFactor" v-show="!!date" :text="date" verticalAlignment="top" />
+        <Label col="3" row="1" :fontSize="10 * sizeFactor" v-show="!!date" :text="date" verticalAlignment="top" />
         <GridLayout col="3" row="1" rowSpan="3" verticalAlignment="center">
             <slot name="rightView">
                 <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" color="#757575" :text="rightIcon" verticalAlignment="center" />
