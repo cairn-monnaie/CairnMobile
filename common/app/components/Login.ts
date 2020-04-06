@@ -26,7 +26,7 @@ export default class Login extends PageComponent {
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
-    logoViewHeight = 200;
+    logoViewHeight = Math.min(screenHeightDips* 0.25, 200);
     usernameError?: string = null;
     mailError?: string = null;
     passwordError?: string = null;
@@ -215,7 +215,7 @@ export default class Login extends PageComponent {
     focusConfirmPassword() {
         if (!this.isLoggingIn) {
             this.confirmPasswordTF.requestFocus();
-        } else {
+        } else if (this.canLoginOrRegister) {
             this.submit();
         }
     }

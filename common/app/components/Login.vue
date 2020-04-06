@@ -1,10 +1,14 @@
 <template>
-    <CairnPage @navigatedTo="onLoaded" :actionBarHeight="logoViewHeight">
+    <CairnPage @navigatedTo="onLoaded" actionBarHidden :actionBarHeight="logoViewHeight">
         <InteractiveMap />
-        <MDButton v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+        <StackLayout>
+            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" :backgroundColor="themeColor" />
+            <MDButton v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+        </StackLayout>
         <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
-            <StackLayout horizontalAlignment="center">
-                <StackLayout class="form">
+            <StackLayout>
+                <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" :backgroundColor="themeColor" />
+                <StackLayout class="form" horizontalAlignment="center">
                     <MDTextField
                         class="input"
                         :hint="$t('username') | capitalize"
@@ -44,8 +48,8 @@
                     />
 
                     <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
+                    <MDButton v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
                     <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
-                    <MDButton v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap"  />
                 </StackLayout>
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">
