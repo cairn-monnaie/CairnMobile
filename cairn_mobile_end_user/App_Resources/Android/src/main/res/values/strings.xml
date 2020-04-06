@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="pin_changed">"your PIN has been changed!"</string>
+  <string name="wrong_passcode">"wrong PIN"</string>
+  <string name="wrong_security">"authentification error"</string>
+  <string name="new_passcode">"new PIN"</string>
+  <string name="current_passcode">"old PIN"</string>
   <string name="invalid_authentication">"the username/password specified is not valid"</string>
   <string name="situation">"home"</string>
   <string name="enter_add_phone_confirmation">"enter the confirmation code received at %1$s"</string>
@@ -10,7 +15,7 @@
   <string name="loggedout_due_to_fingerprint_change">"it looks like you changed your fingerprint / FaceID.\nFor security reasons you need to reconnect"</string>
   <string name="loading">"loading"</string>
   <string name="enter_passcode">"enter a PIN"</string>
-  <string name="confirm_passcode_dont_match">"pIN confirmation does not match"</string>
+  <string name="confirm_passcode_dont_match">"PIN confirmation does not match"</string>
   <string name="confirm_passcode">"confirm PIN"</string>
   <string name="change_pin_code_desc">"change your PIN code"</string>
   <string name="change_pin_code">"change your PIN code"</string>

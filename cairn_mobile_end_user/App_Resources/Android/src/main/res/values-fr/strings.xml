@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="pin_changed">"votre PIN à bien été changé!"</string>
+  <string name="wrong_passcode">"PIN erroné"</string>
+  <string name="wrong_security">"erreur d\'authentification"</string>
+  <string name="new_passcode">"nouveau PIN"</string>
+  <string name="current_passcode">"ancien PIN"</string>
   <string name="invalid_authentication">"le nom d\'utilisateur / mot de passe spécifié n\'est pas valide"</string>
   <string name="situation">"accueil"</string>
   <string name="phone_added">"le numéro de téléphone %1$s a été correctement ajouté"</string>
