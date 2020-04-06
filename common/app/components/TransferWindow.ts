@@ -9,6 +9,7 @@ import { TextField } from 'nativescript-material-textfield';
 import { showSnack } from 'nativescript-material-snackbar';
 import { sms } from 'nativescript-phone';
 import { NoNetworkError } from '~/services/NetworkService';
+import { formatCurrency } from '~/helpers/formatter';
 
 @Component({})
 export default class TransferWindow extends PageComponent {
@@ -111,7 +112,7 @@ export default class TransferWindow extends PageComponent {
     refresh() {
         this.refreshing = true;
         return Promise.all([
-            this.$authService.getAccounts().then(r => {
+            this.$authService.getAccounts().then((r) => {
                 // console.log('got accounts', r);
                 this.accounts = r;
                 if (r.length === 1) {
@@ -119,15 +120,15 @@ export default class TransferWindow extends PageComponent {
                     this.checkForm();
                 }
             }),
-            this.$authService.getBenificiaries().then(r => {
+            this.$authService.getBenificiaries().then((r) => {
                 this.beneficiaries = r;
                 console.log('got benificiaries', r.length, this.recipient);
                 if (this.beneficiaries.length === 1 && !this.recipient) {
                     this.recipient = this.beneficiaries[0].user;
                 }
-            })
+            }),
         ])
-            .then(r => {
+            .then((r) => {
                 this.refreshing = false;
             })
             .catch(this.showError);
@@ -200,7 +201,6 @@ export default class TransferWindow extends PageComponent {
             //     if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
             //         code = resultPConfirm.text;
             //     }
-            //     // isValidSecurity = await this.$securityService.validateSecurity(this);
             //     // }
             //     // }
             // }
@@ -208,7 +208,7 @@ export default class TransferWindow extends PageComponent {
             this.hideLoading();
             this.close();
             showSnack({
-                message: this.$t('transaction_done', this.amount, this.recipient)
+                message: this.$t('transaction_done', this.amount, this.recipient),
             });
         } catch (err) {
             this.showError(err);
@@ -220,10 +220,10 @@ export default class TransferWindow extends PageComponent {
     selectRecipient() {
         this.$showModal(UserPicker, {
             props: {
-                beneficiaries: this.beneficiaries
+                beneficiaries: this.beneficiaries,
             },
-            fullscreen: true
-        }).then(r => {
+            fullscreen: true,
+        }).then((r) => {
             this.log('close', 'TransferRecipientPicker', r);
             if (r) {
                 this.recipient = r;
@@ -234,7 +234,7 @@ export default class TransferWindow extends PageComponent {
     handleQRData({ ICC, name, id }: { ICC: string; id: number; name: string }) {
         if (ICC && name) {
             this.log('handleQRData1', ICC, name);
-            const beneficiary = this.beneficiaries && this.beneficiaries.find(b => b.id === id);
+            const beneficiary = this.beneficiaries && this.beneficiaries.find((b) => b.id === id);
             if (beneficiary) {
                 this.recipient = beneficiary.user;
             } else {
@@ -245,8 +245,6 @@ export default class TransferWindow extends PageComponent {
         }
     }
     scanQRCode() {
-        this.$scanQRCode()
-            .then(this.handleQRData)
-            .catch(this.showError);
+        this.$scanQRCode().then(this.handleQRData).catch(this.showError);
     }
 }
