@@ -346,7 +346,7 @@ export default class MapComponent extends BaseVueComponent {
     // }
     askUserLocation() {
         this.userFollow = true;
-        return this.geoHandler.enableLocation().then(() => this.geoHandler.getLocation());
+        return this.geoHandler.enableLocation(true).then(() => this.geoHandler.getLocation());
     }
 
     // updateSession() {

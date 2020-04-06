@@ -212,16 +212,18 @@ export class GeoHandler extends Observable {
     checkEnabledAndAuthorized(always = true) {
         return Promise.resolve()
             .then(() =>
-                geolocation.isAuthorized().then(r => {
-                    if (!r) {
+                geolocation.isAuthorized().then(authorized => {
+                    console.log('isAuthorized' ,authorized);
+                    if (!authorized) {
                         return geolocation.authorize(always);
                     } else {
-                        return r;
+                        return authorized;
                     }
                 })
             )
             .then(didAuthorize => this.askToEnableIfNotEnabled())
             .catch(err => {
+                console.log(err);
                 if (err && /denied/i.test(err.message)) {
                     confirm({
                         // title: localize('stop_session'),
@@ -241,9 +243,9 @@ export class GeoHandler extends Observable {
             });
     }
 
-    enableLocation() {
+    enableLocation(always = true) {
         // if (!geolocation.isEnabled()) {
-        return this.checkEnabledAndAuthorized();
+        return this.checkEnabledAndAuthorized(always);
         // }
         // return Promise.resolve();
         // geolocation.isEnabled().then(
