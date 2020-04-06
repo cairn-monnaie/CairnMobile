@@ -137,7 +137,7 @@ export class CustomError extends BaseError {
 
         // we need to understand if we are duplicating or not
         const isError = props instanceof Error;
-        if (props.customErrorConstructorName || isError) {
+        if (customErrorConstructorName || isError) {
             // duplicating
             // use getOwnPropertyNames to get hidden Error props
             const keys = Object.getOwnPropertyNames(props);
@@ -151,10 +151,10 @@ export class CustomError extends BaseError {
                 // console.log('assigning', k, props[k], this[k]);
                 this[k] = props[k];
             }
-        } else {
+            // } else {
             // console.log('creating new CustomError', props);
-            this.assignedLocalData = props;
         }
+        this.assignedLocalData = props;
 
         if (!this.customErrorConstructorName) {
             this.customErrorConstructorName = customErrorConstructorName || (this as any).constructor.name; // OR (<any>this).constructor.name;
