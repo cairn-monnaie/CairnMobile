@@ -14,6 +14,7 @@ import { Color } from '@nativescript/core/ui/frame';
 import { isSimulator } from 'nativescript-extendedinfo';
 import BarCodeBottomSheet from './components/BarCodeBottomSheet';
 import NativescriptVue from 'nativescript-vue';
+import { HTTPError, NoNetworkError } from './services/NetworkService';
 
 const Plugin = {
     install(Vue) {
@@ -59,18 +60,25 @@ const Plugin = {
         Vue.prototype.$tu = $tu;
         Vue.prototype.$showError = function showError(err: Error) {
             const message = typeof err === 'string' ? err : err.message || err.toString();
+            let title = $tc('error');
+            let showSendBugReport = this.$sentry && !!err.stack;
+            if (err instanceof HTTPError) {
+                title = `${title} (${err.statusCode})`;
+            } else if (err instanceof NoNetworkError) {
+                showSendBugReport = false;
+            }
             clog('$showError', err, err.stack);
             const label = new HTMLLabel();
             label.style.padding = '0 20 20 20';
             // label.style.backgroundColor = new Color(255, 255,0,0);
             label.style.fontSize = 14;
             label.style.color = new Color(255, 138, 138, 138);
-            label.html = Vue.prototype.$tc(message.trim());
+            label.html = $tc(message.trim());
             return confirm({
-                title: Vue.prototype.$tc('error'),
+                title,
                 view: label,
-                okButtonText: this.$sentry ? $tc('send_bug_report') : undefined,
-                cancelButtonText: this.$sentry ? $tc('cancel') : $tc('ok')
+                okButtonText: showSendBugReport ? $tc('send_bug_report') : undefined,
+                cancelButtonText: showSendBugReport ? $tc('cancel') : $tc('ok')
                 // message
             }).then(result => {
                 if (result && this.$sentry) {
