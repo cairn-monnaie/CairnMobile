@@ -12,18 +12,19 @@
                         borderColor="black"
                         floating="false"
                         secure
-                        height="100"
                         margin="0 10 0 10"
+                        height="80"
                         backgroundColor="white"
                         :col="i - 1"
                         fontSize="50"
                         textAlignment="center"
+                        verticalAlignment="center"
                         verticalTextAlignment="center"
                         isUserInteractionEnabled="false"
-                        :text="((confirmingPassword ? passCodeConfirmationArray : passCodeArray)[i - 1]) !== undefined ? '•':' '"
+                        :text="(currentArray[i - 1]) !== undefined ? '•':' '"
                     />
                     <Label fontSize="18" paddingTop="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="top" :text="title" />
-                    <Label fontSize="16" paddingBottom="30" fontWeight="bold" v-show="creation" colSpan="4" textAlignment="center" color="white" verticalAlignment="bottom" :text="message" />
+                    <Label fontSize="16" paddingBottom="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="bottom" :text="message" />
                 </GridLayout>
                 <MDButton
                     variant="flat"
