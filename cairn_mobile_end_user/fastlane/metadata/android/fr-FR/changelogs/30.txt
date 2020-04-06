@@ -1,0 +1,17 @@
+*Features*
+- better home layouyt
+
+*Bug fixes*
+- *android:* flex prop make it crash
+- profile image no being update
+- *android:* for now class font family not read
+- *android:* multiple bug fixes
+- remove reason, make description more discret
+- switched to nativescript-l
+- filter pros in get users
+- better colors for textfields
+- account history better layout
+- *android:* app build failed
+- locale cleanup
+- *android:* crash if en
+- crash because o...ayout
