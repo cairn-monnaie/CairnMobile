@@ -103,7 +103,7 @@ export default class TransferWindow extends PageComponent {
             }, 0);
             return;
         }
-        const value = parseFloat(e.value) || 0;
+        const value = parseFloat(e.value.replace(/,/g, '.')) || 0;
         this.oldAmountStr = e.value;
         this.amount = value;
         this.checkForm();
