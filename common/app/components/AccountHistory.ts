@@ -16,6 +16,7 @@ export default class AccountHistory extends PageComponent {
     }
     mounted() {
         super.mounted();
+        this.dataItems.splice(0, this.dataItems.length, ...(this.$authService.accountHistory[this.accountInfo.id] || []));
     }
     refresh(args?) {
         if (args && args.object) {
@@ -27,11 +28,11 @@ export default class AccountHistory extends PageComponent {
                 accountId: this.accountInfo.id,
                 limit: 100,
                 sortOrder: 'DESC',
-                sortKey: 'submissionDate'
+                sortKey: 'submissionDate',
             })
-            .then(r => {
+            .then((r) => {
                 // console.log('getAccountHistory', r);
-                this.dataItems = new ObservableArray(r);
+                this.dataItems.splice(0, this.dataItems.length, ...r);
             })
             .catch(this.showError)
             .finally(() => {

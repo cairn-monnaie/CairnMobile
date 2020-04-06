@@ -548,46 +548,46 @@ export default class AuthService extends NetworkService {
     }
 
     accounts: AccountInfo[];
-    lastAccountsUpdateTime: number;
+    // lastAccountsUpdateTime: number;
     async getAccounts() {
-        if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
-            let result = await this.request<AccountInfo[]>({
-                apiPath: '/mobile/accounts.json',
-                method: 'GET'
-            });
+        // if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
+        let result = await this.request<AccountInfo[]>({
+            apiPath: '/mobile/accounts.json',
+            method: 'GET',
+        });
 
-            result = result.map(a => ({
-                balance: parseFloat(a.status.balance),
-                creditLimit: parseFloat(a.status.creditLimit),
-                number: a.number,
-                id: a.id,
-                name: a.type.name
-            }));
-            this.lastAccountsUpdateTime = Date.now();
-            this.accounts = result;
-        }
+        result = result.map((a) => ({
+            balance: parseFloat(a.status.balance),
+            creditLimit: parseFloat(a.status.creditLimit),
+            number: a.number,
+            id: a.id,
+            name: a.type.name,
+        }));
+        // this.lastAccountsUpdateTime = Date.now();
+        this.accounts = result;
+        // }
         this.notify({
             eventName: AccountInfoEvent,
             object: this,
-            data: this.accounts
+            data: this.accounts,
         } as AccountInfoEventData);
         return this.accounts;
     }
     beneficiaries: Benificiary[];
-    lastBenificiariesUpdateTime: number;
+    // lastBenificiariesUpdateTime: number;
     async getBenificiaries() {
-        if (this.beneficiaries && this.lastBenificiariesUpdateTime && Date.now() - this.lastBenificiariesUpdateTime < 3600 * 1000) {
-            return this.beneficiaries;
-        }
+        // if (this.beneficiaries && this.lastBenificiariesUpdateTime && Date.now() - this.lastBenificiariesUpdateTime < 3600 * 1000) {
+        // return this.beneficiaries;
+        // }
         let result = await this.request<Benificiary[]>({
             apiPath: '/mobile/beneficiaries',
-            method: 'GET'
+            method: 'GET',
         });
-        this.beneficiaries = result = result.map(b => {
+        this.beneficiaries = result = result.map((b) => {
             b.user = cleanupUser(b.user);
             return b;
         });
-        this.lastBenificiariesUpdateTime = Date.now();
+        // this.lastBenificiariesUpdateTime = Date.now();
         return result;
     }
     async getUsers({ sortKey, sortOrder, limit, offset, query, mapBounds }: { sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string; mapBounds?: MapBounds }) {
@@ -628,7 +628,7 @@ export default class AuthService extends NetworkService {
         return result.map(cleanupUser);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
-        this.lastBenificiariesUpdateTime = undefined;
+        // this.lastBenificiariesUpdateTime = undefined;
         return this.request({
             apiPath: '/mobile/beneficiaries',
             method: 'POST',
@@ -685,46 +685,34 @@ export default class AuthService extends NetworkService {
         //     })
         // );
     }
-    async getAccountHistory({
-        accountId,
-        sortKey,
-        sortOrder,
-        limit,
-        offset,
-        query
-    }: {
-        accountId: string;
-        sortKey?: string;
-        sortOrder?: string;
-        limit?: number;
-        offset?: number;
-        query?: string;
-    }): Promise<Transaction[]> {
-        const result = await this.request({
+    accountHistory: {
+        [k: string]: Transaction[];
+    } = {};
+    async getAccountHistory({ accountId, sortKey, sortOrder, limit, offset, query }: { accountId: string; sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string }) {
+        const result = await this.request<Transaction[]>({
             apiPath: `/mobile/account/operations/${accountId}`,
             body: {
-                begin: dayjs()
-                    .subtract(2, 'month')
-                    .format('YYYY-MM-DD'),
+                begin: dayjs().subtract(2, 'month').format('YYYY-MM-DD'),
                 end: dayjs().format('YYYY-MM-DD'),
                 // maxAmount: '',
                 // keywords: '',
-                types: {
-                    '0': 'DEPOSIT',
-                    '1': 'TRANSACTION_EXECUTED'
-                },
-                sortOrder: 'ASC',
+                types: '',
+                sortOrder: 'DESC',
                 limit: limit || 100 + '',
-                offset: offset || 0 + ''
+                offset: offset || 0 + '',
                 // orderBy: {
                 //     key: sortKey || '',
                 //     order: sortOrder || ''
                 // },
                 // name: query || ''
             },
-            method: 'POST'
+            method: 'POST',
         });
-        return result.map(cleanupTransaction);
+        const accountHistory = result.map(cleanupTransaction).sort(function (a, b) {
+            return b.executionDate - a.executionDate;
+        });
+        this.accountHistory[accountId] = accountHistory;
+        return accountHistory;
     }
     async fakeSMSPayment(sender: string, message: string) {
         return this.request({
@@ -733,8 +721,8 @@ export default class AuthService extends NetworkService {
             queryParams: {
                 originator: 'blabalcairn',
                 recipient: sender,
-                message
-            }
+                message,
+            },
         });
     }
     async getRefreshToken() {
@@ -746,8 +734,8 @@ export default class AuthService extends NetworkService {
                     client_id: CAIRN_CLIENT_ID,
                     client_secret: CAIRN_CLIENT_SECRET,
                     grant_type: 'refresh_token',
-                    refresh_token: this.refreshToken
-                }
+                    refresh_token: this.refreshToken,
+                },
             });
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
