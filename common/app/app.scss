@@ -230,13 +230,13 @@ mdtextfield {
 }
 
 .menuText {
-    font-weight: 500;
     color: #000000;
     paddingleft: 20;
     font-size: 14;
 }
 
 .menu[active='true'] {
+    font-weight: 500;
     background-color: $primary-color-semi;
 }
 .menuText[active='true'] {
