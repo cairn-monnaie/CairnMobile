@@ -449,15 +449,15 @@ export class NetworkService extends Observable {
                     return this.handleRequestRetry(requestParams, retry);
                 }
                 const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                let message = $t((error.error_description || error.form || error.message || error.error || error).replac(/\s/g, '_').toLowerCase());
+                let message = $t((typeof error === 'string' ? error : error.error_description || error.form || error.message || error.error || error).replace(/\s/g, '_').toLowerCase());
                 if (error.exception && error.exception.length > 0) {
                     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 }
-                this.log('throwing http error', error.code || statusCode, message);
+                // this.log('throwing http error', theErr, Object.keys(theErr), Object.getOwnPropertyNames(theErr));
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
                     message,
-                    requestParams
+                    requestParams,
                 });
             }
         }
