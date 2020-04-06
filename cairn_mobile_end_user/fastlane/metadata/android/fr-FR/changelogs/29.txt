@@ -1,0 +1,16 @@
+*Bug fixes*
+- ios permissions fix
+- better render on ios with bottom safe area
+- pro image is now a res
+- dont save device language or we are fucked if lang change
+- passcode better layout on ios
+- no elevation needed ere
+- ios fix for now
+- res image now
+- better initial layout
+- some fixes for android build failing
+- updated logos. better quality
+- better launchscreen
+- logos
+- *ios:* should not request always gps permission
+- show decimal valu...ayout
