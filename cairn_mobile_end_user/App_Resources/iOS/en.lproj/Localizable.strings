@@ -1,4 +1,4 @@
-"Invalid authentication" = "the username/password specified is not valid";
+"invalid_authentication" = "the username/password specified is not valid";
 "situation" = "home";
 "enter_add_phone_confirmation" = "enter the confirmation code received at %1$@";
 "phone_added" = "phone number %1$@ has been added correctly";
