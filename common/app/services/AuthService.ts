@@ -527,9 +527,6 @@ export default class AuthService extends NetworkService {
             },
             method: 'GET'
         });
-        result.features.forEach(r => {
-            console.log('photon result', r);
-        });
         const newItems = result.features
             .filter(r => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode)
             .map(r => ({

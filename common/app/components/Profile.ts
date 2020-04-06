@@ -153,7 +153,6 @@ export default class Profile extends PageComponent {
     }
     async changeAddress() {
         const result: Address = await this.$showModal(AddressPicker, { fullscreen: true });
-        console.log('changeAddress', result);
         if (result) {
             this.updateUserProfile = this.updateUserProfile || {};
             this.updateUserProfile.address = result;
