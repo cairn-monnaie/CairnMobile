@@ -150,16 +150,29 @@ export default class TransferWindow extends PageComponent {
                 this.close();
                 this.$authService.getAccounts();
                 showSnack({
-                    message: this.$t('transaction_done', this.amount, this.recipient)
+                    message: this.$t('transaction_done', this.amount, this.recipient),
                 });
             }
         });
     }
+
+    get accountBalanceText() {
+        if (this.account) {
+            return `<font color=${this.accentColor}>${formatCurrency(this.account.balance, true)}<font face="${this.cairnFontFamily}">cairn-currency</font></font>`;
+        }
+    }
     async submit() {
+        if (!this.canStartTransfer) {
+            return;
+        }
         if (!this.$authService.connected) {
             return this.showError(new NoNetworkError());
         }
         try {
+            const canSubmit = await this.$securityService.validateSecurity(this, { allowClose: true });
+            if (!canSubmit) {
+                throw new Error(this.$t('wrong_security'));
+            }
             this.showLoading(this.$t('loading'));
             const r = await this.$authService.createTransaction(this.account, this.recipient, this.amount, this.reason, this.description);
             // createTransaction returns a response with 3 fields :
