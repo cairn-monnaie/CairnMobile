@@ -9,8 +9,8 @@ import { ComponentIds } from './App';
 import { TWEEN } from 'nativescript-tween';
 import PageComponent from './PageComponent';
 import InteractiveMap from './InteractiveMap';
+import { getString, setString } from '@nativescript/core/application-settings';
 
-const logoViewHeight = isAndroid ? screenHeightDips : screenHeightDips - statusBarHeight - 0.3;
 @Component({
     components: {
         InteractiveMap
@@ -20,13 +20,13 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: '',
+        username: getString('last.login', ''),
         email: '',
         password: '',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
-    logoViewHeight = Math.min(screenHeightDips* 0.25, 200);
+    logoViewHeight = Math.min(screenHeightDips * 0.25, 200);
     usernameError?: string = null;
     mailError?: string = null;
     passwordError?: string = null;
@@ -58,7 +58,15 @@ export default class Login extends PageComponent {
                     // Object.assign(view.style, object)
                 })
                 .start();
-        }).catch(this.showError);
+        })
+            .then(() => {
+                if (this.user.username.length > 0) {
+                    this.focusPassword();
+                } else {
+                    this.focusUsername();
+                }
+            })
+            .catch(this.showError);
     }
     showMap() {
         // this.animateLogoViewOut();
@@ -156,6 +164,7 @@ export default class Login extends PageComponent {
         // this.animateLogoViewOut();
         return this.$authService
             .login(this.user)
+            .then(() => setString('last.login', this.user.username))
             .catch(err => {
                 // this.animateLogoView();
                 this.showError(err);
@@ -201,7 +210,9 @@ export default class Login extends PageComponent {
             }
         });
     }
-
+    get usernameTF() {
+        return this.getRef('username') as TextField;
+    }
     get passwordTF() {
         return this.getRef('password') as TextField;
     }
@@ -209,6 +220,9 @@ export default class Login extends PageComponent {
         return this.getRef('confirmPassword') as TextField;
     }
 
+    focusUsername() {
+        this.usernameTF.requestFocus();
+    }
     focusPassword() {
         this.passwordTF.requestFocus();
     }

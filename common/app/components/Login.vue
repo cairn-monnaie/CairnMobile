@@ -10,6 +10,7 @@
                 <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" :backgroundColor="themeColor" />
                 <StackLayout class="form" horizontalAlignment="center">
                     <MDTextField
+                        ref="username"
                         class="input"
                         :hint="$t('username') | capitalize"
                         keyboardType="email"
