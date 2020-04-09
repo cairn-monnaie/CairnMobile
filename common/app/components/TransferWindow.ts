@@ -32,6 +32,15 @@ export default class TransferWindow extends PageComponent {
         super();
     }
 
+    get amountKeyboardType() {
+        console.log('ge amountKeyboardType');
+        if (gVars.isAndroid) {
+            return android.text.InputType.TYPE_NUMBER_VARIATION_NORMAL | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
+        } else {
+            return UIKeyboardType.NumbersAndPunctuation;
+        }
+    }
+
     get canSendSMS() {
         return this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0;
     }
@@ -92,15 +101,22 @@ export default class TransferWindow extends PageComponent {
     }
     oldAmountStr = null;
 
-    amountRegexp = /^\d*(,\d{0,2})?$/;
+    amountRegexp = /^\d*([,\.]\d{0,2})?$/;
+
+    get amoutTF() {
+        return this.$refs.amountTF.nativeView as TextField;
+    }
     validateAmount(e) {
+        console.log('validateAmount', e.value);
         if (!e.value) {
             this.amount = 0;
             return;
         }
         if (!this.amountRegexp.test(e.value)) {
             setTimeout(() => {
-                (this.$refs.amountTF.nativeView as TextField).text = this.oldAmountStr;
+                const amountTF = this.amoutTF;
+                amountTF.text = this.oldAmountStr;
+                amountTF.setSelection(this.oldAmountStr.length);
             }, 0);
             return;
         }
@@ -112,7 +128,7 @@ export default class TransferWindow extends PageComponent {
     refresh() {
         this.refreshing = true;
         return Promise.all([
-            this.$authService.getAccounts().then((r) => {
+            this.$authService.getAccounts().then(r => {
                 // console.log('got accounts', r);
                 this.accounts = r;
                 if (r.length === 1) {
@@ -120,15 +136,15 @@ export default class TransferWindow extends PageComponent {
                     this.checkForm();
                 }
             }),
-            this.$authService.getBenificiaries().then((r) => {
+            this.$authService.getBenificiaries().then(r => {
                 this.beneficiaries = r;
                 console.log('got benificiaries', r.length, this.recipient);
                 if (this.beneficiaries.length === 1 && !this.recipient) {
                     this.recipient = this.beneficiaries[0].user;
                 }
-            }),
+            })
         ])
-            .then((r) => {
+            .then(r => {
                 this.refreshing = false;
             })
             .catch(this.showError);
@@ -151,7 +167,7 @@ export default class TransferWindow extends PageComponent {
                 this.close();
                 this.$authService.getAccounts();
                 showSnack({
-                    message: this.$t('transaction_done', this.amount, this.recipient),
+                    message: this.$t('transaction_done', this.amount, this.recipient)
                 });
             }
         });
@@ -208,7 +224,7 @@ export default class TransferWindow extends PageComponent {
             this.hideLoading();
             this.close();
             showSnack({
-                message: this.$t('transaction_done', this.amount, this.recipient),
+                message: this.$t('transaction_done', this.amount, this.recipient)
             });
         } catch (err) {
             this.showError(err);
@@ -220,10 +236,10 @@ export default class TransferWindow extends PageComponent {
     selectRecipient() {
         this.$showModal(UserPicker, {
             props: {
-                beneficiaries: this.beneficiaries,
+                beneficiaries: this.beneficiaries
             },
-            fullscreen: true,
-        }).then((r) => {
+            fullscreen: true
+        }).then(r => {
             this.log('close', 'TransferRecipientPicker', r);
             if (r) {
                 this.recipient = r;
@@ -234,7 +250,7 @@ export default class TransferWindow extends PageComponent {
     handleQRData({ ICC, name, id }: { ICC: string; id: number; name: string }) {
         if (ICC && name) {
             this.log('handleQRData1', ICC, name);
-            const beneficiary = this.beneficiaries && this.beneficiaries.find((b) => b.id === id);
+            const beneficiary = this.beneficiaries && this.beneficiaries.find(b => b.id === id);
             if (beneficiary) {
                 this.recipient = beneficiary.user;
             } else {
@@ -245,6 +261,8 @@ export default class TransferWindow extends PageComponent {
         }
     }
     scanQRCode() {
-        this.$scanQRCode().then(this.handleQRData).catch(this.showError);
+        this.$scanQRCode()
+            .then(this.handleQRData)
+            .catch(this.showError);
     }
 }

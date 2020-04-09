@@ -14,6 +14,7 @@
                 fontSize="40"
                 :hint="$t('amount') | capitalize"
                 keyboardType="number"
+                digits="0123456789.,"
                 :returnKeyType="canStartTransfer ? 'go' : 'done'"
                 :error="amountError"
                 @returnPress="submit"
