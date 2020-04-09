@@ -1,0 +1,5 @@
+*Bug fixes*
+- remember last login + autofocus
+- transferm amount supports ,
+- beter transfer window layout
+- android running on > 4.3.0
