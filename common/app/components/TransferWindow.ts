@@ -138,7 +138,6 @@ export default class TransferWindow extends PageComponent {
             }),
             this.$authService.getBenificiaries().then(r => {
                 this.beneficiaries = r;
-                console.log('got benificiaries', r.length, this.recipient);
                 if (this.beneficiaries.length === 1 && !this.recipient) {
                     this.recipient = this.beneficiaries[0].user;
                 }
