@@ -1,9 +1,9 @@
 <template>
     <CairnPage id="transfer" @navigatedTo="onLoaded" :actionBarShowLogo="false">
-        <GridLayout slot="actionBarSubView" marginTop="20" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="*,auto" rows="auto">
+        <GridLayout slot="actionBarSubView" marginTop="10" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="*,auto" rows="auto">
             <MDTextField
                 col="0"
-                marginLeft="30"
+                marginLeft="44"
                 placeholderColor="white"
                 floatingColor="white"
                 strokeColor="white"
