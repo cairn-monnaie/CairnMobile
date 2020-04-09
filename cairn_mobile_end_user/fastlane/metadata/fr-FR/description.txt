@@ -1,0 +1,5 @@
+L'Application eCairn vous permet de gérer vos eCairn:
+
+* visualisez les commercants acceptant le Cairn sur une carte
+* visualisez l'historique de vos transactions
+* faites un virement à un professionnel ou même à un ami!

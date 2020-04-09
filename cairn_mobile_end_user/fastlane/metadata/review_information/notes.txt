@@ -1,0 +1,1 @@
+This application handles the local currency for Grenoble France. It is a virtual currency which purpose is to try and make people buy local! 
