@@ -108,11 +108,6 @@ fastlane android write_changelog
 fastlane android upload_store
 ```
 
-### android supplyinit
-```
-fastlane android supplyinit
-```
-
 ### android build
 ```
 fastlane android build
