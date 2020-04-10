@@ -69,7 +69,7 @@ mdbutton[variant='contained'] {
 }
 
 mdtextfield[variant='filled'] {
-    background-color: #15000000;
+    background-color: rgba(0, 0, 0, 0.082);
 }
 
 mdtextfield {
@@ -164,7 +164,7 @@ mdtextfield {
     font-size: 32;
     border-radius: $actionbar-height/2;
     color: #ffffff;
-    ripple-color: #88ffffff;
+    ripple-color: rgba(255, 255, 255, 0.533);
 }
 
 .actionBarTitle {
@@ -176,7 +176,7 @@ mdtextfield {
 
 .actionBarSubtitle {
     font-size: 13;
-    color: #88ffffff;
+    color: rgba(255, 255, 255, 0.533);
 }
 
 .icon-btn {
@@ -302,5 +302,5 @@ mdtextfield {
 
 
 .bottom-gradient {
-    background: linear-gradient(to bottom, #00000000, #aa000000, #ff000000);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.667), #000000);
 }
