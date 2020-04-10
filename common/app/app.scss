@@ -33,7 +33,10 @@ mdactivityindicator {
 mdripple {
     ripple-color: $primary-color;
 }
-
+switch[checked=true] {
+    background-color: $accent-color;
+    color: $accent-color;
+}
 page {
     background-color: $dark-color;
     status-bar-style: dark;
@@ -255,7 +258,7 @@ mdtextfield {
 .menuButtons {
     padding-left: 12;
     padding-right: 12;
-    margin-bottom: 10;
+    // margin-bottom: 10;
 }
 
 .menu-btn {

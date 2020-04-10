@@ -33,6 +33,7 @@ import Map from './Map';
 import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
 import Settings from './Settings';
+import About from './About';
 import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
 
 function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
@@ -61,7 +62,7 @@ function fromFontIcon(name: string, style, textColor: string, size: { width: num
             [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
             [NSParagraphStyleAttributeName]: paragraph,
             [NSStrokeWidthAttributeName]: strokeWidth,
-            [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null,
+            [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
         } as any)
     );
 
@@ -99,6 +100,7 @@ export enum ComponentIds {
     Map = 'map',
     Beneficiaries = 'beneficiaries',
     Settings = 'settings',
+    About = 'about'
 }
 // Settings = 'settings',
 // Pairing = 'pairing',
@@ -114,8 +116,8 @@ const mailRegexp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}
         Login,
         Profile,
         MultiDrawer,
-        AppFrame,
-    },
+        AppFrame
+    }
 })
 export default class App extends BaseVueComponent {
     $refs: AppRefs;
@@ -153,37 +155,40 @@ export default class App extends BaseVueComponent {
                 //     swipeCloseTriggerMinDrag: 30
                 // }
                 left: {
-                    swipeOpenTriggerWidth: 5,
-                },
+                    swipeOpenTriggerWidth: 5
+                }
             };
         } else {
             return {
                 left: {
                     enabled: false,
-                    swipeOpenTriggerWidth: 0,
-                },
+                    swipeOpenTriggerWidth: 0
+                }
             };
         }
     }
     protected routes: { [k: string]: { component: typeof Vue } } = {
         [ComponentIds.Situation]: {
-            component: Home,
+            component: Home
         },
         [ComponentIds.Profile]: {
-            component: Profile,
+            component: Profile
         },
         [ComponentIds.Login]: {
-            component: Login,
+            component: Login
         },
         [ComponentIds.Beneficiaries]: {
-            component: Beneficiaries,
+            component: Beneficiaries
         },
         [ComponentIds.Map]: {
-            component: Map,
+            component: Map
         },
         [ComponentIds.Settings]: {
-            component: Settings,
+            component: Settings
         },
+        [ComponentIds.About]: {
+            component: About
+        }
     };
     selectedTabIndex: number = 0;
     public activatedUrl = '';
@@ -203,28 +208,33 @@ export default class App extends BaseVueComponent {
             {
                 title: this.$t('situation'),
                 icon: 'mdi-bank',
-                url: ComponentIds.Situation,
+                url: ComponentIds.Situation
             },
             {
                 title: this.$t('profile'),
                 icon: 'mdi-account',
-                url: ComponentIds.Profile,
+                url: ComponentIds.Profile
             },
             {
                 title: this.$t('beneficiaries'),
                 icon: 'mdi-account-group',
-                url: ComponentIds.Beneficiaries,
+                url: ComponentIds.Beneficiaries
             },
             {
-                title: 'map',
+                title: this.$t('map'),
                 icon: 'mdi-map',
-                url: ComponentIds.Map,
+                url: ComponentIds.Map
             },
             {
-                title: 'settings',
+                title: this.$t('settings'),
                 icon: 'mdi-settings',
-                url: ComponentIds.Settings,
+                url: ComponentIds.Settings
             },
+            {
+                title: this.$t('about'),
+                icon: 'mdi-information-outline',
+                url: ComponentIds.About
+            }
         ];
 
         return result;
@@ -302,7 +312,7 @@ export default class App extends BaseVueComponent {
                         // this.log('messageReceived', msg, sender);
                         // this.$authService.fakeSMSPayment(sender, msg).then(() => {
                         showSnack({
-                            message: this.$t('sms_received', msg, sender),
+                            message: this.$t('sms_received', msg, sender)
                         });
                         new Vibrate().vibrate(1000);
 
@@ -447,7 +457,7 @@ export default class App extends BaseVueComponent {
             this.$refs.menu &&
                 this.$refs.menu.nativeView.eachChildView((c: GridLayout) => {
                     c.notify({ eventName: 'activeChange', object: c });
-                    c.eachChildView((c2) => {
+                    c.eachChildView(c2 => {
                         if (c2.hasOwnProperty('active')) {
                             c2.notify({ eventName: 'activeChange', object: c });
                             return true;
@@ -476,7 +486,7 @@ export default class App extends BaseVueComponent {
         }
     }
     findNavigationUrlIndex(url) {
-        return this.innerFrame.backStack.findIndex((b) => b.resolvedPage[navigateUrlProperty] === url);
+        return this.innerFrame.backStack.findIndex(b => b.resolvedPage[navigateUrlProperty] === url);
     }
     navigateBackToUrl(url) {
         const index = this.findNavigationUrlIndex(url);
@@ -519,23 +529,23 @@ export default class App extends BaseVueComponent {
                                             osVersion: device.osVersion,
                                             region: device.region,
                                             sdkVersion: device.sdkVersion,
-                                            uuid: device.uuid,
+                                            uuid: device.uuid
                                         },
                                         screen: {
                                             widthDIPs: screenWidthDips,
                                             heightDIPs: screenHeightDips,
                                             widthPixels: screen.mainScreen.widthPixels,
                                             heightPixels: screen.mainScreen.heightPixels,
-                                            scale: screen.mainScreen.scale,
-                                        },
+                                            scale: screen.mainScreen.scale
+                                        }
                                     },
                                     null,
                                     4
                                 )
                             )}`,
-                            mimeType: 'application/json',
-                        },
-                    ],
+                            mimeType: 'application/json'
+                        }
+                    ]
                 }).catch(this.showError);
                 break;
             case 'sendBugReport':
@@ -552,14 +562,14 @@ export default class App extends BaseVueComponent {
                         keyboardType: 'email',
                         autocorrect: false,
                         error: this.$tc('email_required'),
-                        hint: this.$tc('email'),
+                        hint: this.$tc('email')
                     },
                     passwordTextFieldProperties: {
                         marginLeft: 10,
                         marginRight: 10,
                         error: this.$tc('please_describe_error'),
                         secure: false,
-                        hint: this.$tc('description'),
+                        hint: this.$tc('description')
                     },
                     beforeShow: (options, usernameTextField: TextField, passwordTextField: TextField) => {
                         usernameTextField.on('textChange', (e: any) => {
@@ -610,7 +620,7 @@ export default class App extends BaseVueComponent {
         options.transition = options.transition || {
             name: 'fade',
             duration: 200,
-            curve: 'easeIn',
+            curve: 'easeIn'
         };
         (options as any).frame = options['frame'] || this.innerFrame.id;
         return super.navigateTo(component, options, cb);
@@ -638,7 +648,7 @@ export default class App extends BaseVueComponent {
         }
         this.navigateToUrl(ComponentIds.Login, {
             // props: { autoConnect: false },
-            clearHistory: true,
+            clearHistory: true
         });
     }
 }
