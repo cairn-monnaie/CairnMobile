@@ -9,6 +9,8 @@ export default class ListItem extends BaseVueComponent {
     title: string;
     @Prop({ default: 1, type: Number })
     sizeFactor: number;
+    @Prop({ default: 2, type: Number })
+    subtitleMaxLines: number;
     @Prop({ type: String })
     subtitle: string;
     @Prop({ type: String })
@@ -25,6 +27,9 @@ export default class ListItem extends BaseVueComponent {
     avatar: string;
     @Prop({ default: true, type: Boolean })
     showBottomLine: boolean;
+
+    @Prop({ default: 12, type: Number })
+    topBottomPadding: number;
 
     @Prop({ default: '#5C5C5C', type: String })
     overlineColor: string;
