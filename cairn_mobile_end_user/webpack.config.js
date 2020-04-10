@@ -98,7 +98,6 @@ module.exports = (env, params = {}) => {
         adhoc // --env.adhoc
     } = env;
 
-
     const useLibs = compileSnapshot;
     const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap || !!inlineSourceMap;
     const externals = nsWebpack.getConvertedExternals(env.externals);
@@ -140,14 +139,18 @@ module.exports = (env, params = {}) => {
         itemsToClean.push(`${join(projectRoot, 'platforms', 'android', 'app', 'build', 'configurations', 'nativescript-android-snapshot')}`);
     }
 
+    const package = require('./package.json');
+    const isIOS = platform === 'ios';
+    const isAndroid = platform === 'android';
+    const APP_STORE_ID = process.env.IOS_APP_ID;
     const defines = mergeOptions(
         {
             PRODUCTION: !!production,
             process: 'global.process',
             'global.TNS_WEBPACK': 'true',
             'gVars.platform': `"${platform}"`,
-            'gVars.isIOS': platform === 'ios',
-            'gVars.isAndroid': platform === 'android',
+            'gVars.isIOS': isIOS,
+            'gVars.isAndroid': isAndroid,
             'gVars.internalApp': false,
             TNS_ENV: JSON.stringify(mode),
             'gVars.sentry': !!sentry,
@@ -158,6 +161,12 @@ module.exports = (env, params = {}) => {
             CAIRN_SMS_NUMBER: `"${process.env.CAIRN_SMS_NUMBER}"`,
             SHA_SECRET_KEY: `"${process.env.CAIRN_SHA_SECRET_KEY}"`,
             SENTRY_PREFIX: `"${!!sentry ? process.env.SENTRY_PREFIX : ''}"`,
+            GIT_URL: `"${package.repository}"`,
+            SUPPORT_URL: `"${package.bugs.url}"`,
+            TERMS_CONDITIONS_URL: `"${process.env.TERMS_CONDITIONS_URL}"`,
+            PRIVACY_POLICY_URL: `"${process.env.PRIVACY_POLICY_URL}"`,
+            STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${package.nativescript.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
+            STORE_REVIEW_LINK: `"${isIOS ? `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review` : `market://details?id=${package.nativescript.id}`}"`,
             LOG_LEVEL: devlog ? '"full"' : '""',
             TEST_LOGS: adhoc || !production
         },
@@ -374,7 +383,11 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                 {
                     test: /\.css$/,
                     exclude: /[\/|\\]app\.css$/,
-                    use: [resolve(__dirname, 'node_modules', 'nativescript-dev-webpack/style-hot-loader'), resolve(__dirname, 'node_modules', 'nativescript-dev-webpack/apply-css-loader.js'), { loader: resolve(__dirname, 'node_modules', 'css-loader'), options: { url: false } }]
+                    use: [
+                        resolve(__dirname, 'node_modules', 'nativescript-dev-webpack/style-hot-loader'),
+                        resolve(__dirname, 'node_modules', 'nativescript-dev-webpack/apply-css-loader.js'),
+                        { loader: resolve(__dirname, 'node_modules', 'css-loader'), options: { url: false } }
+                    ]
                 },
                 {
                     test: /\.scss$/,
