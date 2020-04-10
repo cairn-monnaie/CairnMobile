@@ -4,7 +4,7 @@ import { ComponentIds } from './App';
 import { showSnack } from 'nativescript-material-snackbar';
 
 @Component({
-    components: {},
+    components: {}
 })
 export default class Settings extends PageComponent {
     navigateUrl = ComponentIds.Settings;
@@ -12,7 +12,7 @@ export default class Settings extends PageComponent {
     innerBiometricsEnabled = false;
     mounted() {
         super.mounted();
-        this.$securityService.biometricsAvailable().then((r) => {
+        this.$securityService.biometricsAvailable().then(r => {
             this.biometricsAvailable = r;
         });
         this.innerBiometricsEnabled = this.$securityService.biometricEnabled;
@@ -31,10 +31,10 @@ export default class Settings extends PageComponent {
         if (value) {
             this.$securityService
                 .verifyFingerprint()
-                .then((r) => {
+                .then(r => {
                     this.$securityService.biometricEnabled = this.innerBiometricsEnabled = r;
                 })
-                .catch((err) => {
+                .catch(err => {
                     this.ignoreNextCheckEvent = true;
                     this.innerBiometricsEnabled = false;
                 });
@@ -42,10 +42,10 @@ export default class Settings extends PageComponent {
             if (this.$securityService.biometricEnabled) {
                 this.$securityService
                     .verifyFingerprint()
-                    .then((r) => {
+                    .then(r => {
                         this.$securityService.biometricEnabled = this.innerBiometricsEnabled = false;
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         this.ignoreNextCheckEvent = true;
                         this.innerBiometricsEnabled = true;
                     });
@@ -61,16 +61,23 @@ export default class Settings extends PageComponent {
         console.log('set autoLockEnabled', value);
         this.$securityService.autoLockEnabled = value;
     }
+    get sendCrashReports() {
+        return this.$crashReportService.sentryEnabled;
+    }
+    set sendCrashReports(value: boolean) {
+        console.log('set sendCrashReports', value);
+        this.$crashReportService.sentryEnabled = value;
+    }
 
     destroyed() {
         super.destroyed();
     }
 
     changePinCode() {
-        this.$securityService.changePasscode(this).then((result) => {
+        this.$securityService.changePasscode(this).then(result => {
             if (result) {
                 showSnack({
-                    message: this.$t('pin_changed'),
+                    message: this.$t('pin_changed')
                 });
             }
         });

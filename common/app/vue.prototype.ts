@@ -1,20 +1,17 @@
 import * as application from '@nativescript/core/application';
-import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import * as imageModule from 'nativescript-image';
 import { $t, $tc, $tt, $tu } from '~/helpers/locale';
-// import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { device, screen } from '@nativescript/core/platform';
 import App from '~/components/App';
-import AuthService, { getAuthInstance } from '~/services/AuthService';
+import { getAuthInstance } from '~/services/AuthService';
 import SecurityService from '~/services/SecurityService';
 import { clog } from './utils/logging';
 import { screenHeightDips, screenWidthDips } from './variables';
-import { alert, confirm } from 'nativescript-material-dialogs';
-import { Color } from '@nativescript/core/ui/frame';
+import { alert } from 'nativescript-material-dialogs';
 import { isSimulator } from 'nativescript-extendedinfo';
 import BarCodeBottomSheet from './components/BarCodeBottomSheet';
 import NativescriptVue from 'nativescript-vue';
-import { HTTPError, NoNetworkError } from './services/NetworkService';
+import CrashReportService from './services/CrashReportService';
 
 const Plugin = {
     install(Vue) {
@@ -58,41 +55,9 @@ const Plugin = {
         Vue.prototype.$tc = $tc;
         Vue.prototype.$tt = $tt;
         Vue.prototype.$tu = $tu;
-        Vue.prototype.$showError = function showError(err: Error) {
-            const message = typeof err === 'string' ? err : err.message || err.toString();
-            let title = $tc('error');
-            let showSendBugReport = this.$sentry && !!err.stack;
-            if (err instanceof HTTPError) {
-                title = `${title} (${err.statusCode})`;
-            } else if (err instanceof NoNetworkError) {
-                showSendBugReport = false;
-            }
-            clog('$showError', err, err.stack);
-            const label = new HTMLLabel();
-            label.style.padding = '0 20 20 20';
-            // label.style.backgroundColor = new Color(255, 255,0,0);
-            label.style.fontSize = 14;
-            label.style.color = new Color(255, 138, 138, 138);
-            label.html = $tc(message.trim());
-            return confirm({
-                title,
-                view: label,
-                okButtonText: showSendBugReport ? $tc('send_bug_report') : undefined,
-                cancelButtonText: showSendBugReport ? $tc('cancel') : $tc('ok')
-                // message
-            }).then(result => {
-                if (result && this.$sentry) {
-                    (this as Vue).$sentry.captureException(err);
-                    // .notify({
-                    //     error: err
-                    // })
-                    // .then(() => {
-                    this.$alert(this.$t('bug_report_sent'));
-                    // })
-                    // .catch(this.$showError);
-                }
-            });
-        };
+
+        const crashReporter = Vue.prototype.$crashReportService as CrashReportService;
+
         // Vue.prototype.$showToast = function(text: string, duration?: ToastDuration, position?: ToastPosition) {
         //     const toasty = new Toasty({ text, duration, position });
         //     toasty.show();

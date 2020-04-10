@@ -97,7 +97,7 @@ export default class BaseVueComponent extends Vue {
             return;
         }
         this.hideLoading();
-        this.$showError(err);
+        this.$crashReportService.showError(err);
     }
 
     log(...args) {

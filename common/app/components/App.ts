@@ -333,10 +333,10 @@ export default class App extends BaseVueComponent {
 
         const authService = Vue.prototype.$authService;
 
-        authService.on(LoggedinEvent, (e) => {
+        authService.on(LoggedinEvent, e => {
             this.currentlyLoggedIn = true;
             const profile = (this.userProfile = e.data as UserProfile);
-            this.$sentry && this.$sentry.setExtra('profile', profile);
+            this.$crashReportService.setExtra('profile', profile);
             this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
                 // this.$securityService.createPasscode(this).catch(err => {
                 //     this.showError(err);
@@ -345,7 +345,7 @@ export default class App extends BaseVueComponent {
             });
         });
         authService.on(LoggedoutEvent, () => {
-            this.$sentry && this.$sentry.setExtra('profile', null);
+            this.$crashReportService.setExtra('profile', null);
             this.currentlyLoggedIn = false;
             this.$securityService.clear();
             this.goBackToLogin();
@@ -580,20 +580,20 @@ export default class App extends BaseVueComponent {
                                 passwordTextField.error = null;
                             }
                         });
-                    },
-                }).then((result) => {
-                    if (result.result && this.$sentry) {
+                    }
+                }).then(result => {
+                    if (result.result) {
                         if (!result.userName || !mailRegexp.test(result.userName)) {
-                            this.showError(new Error(this.$tc('email_required')));
+                            this.showError(this.$tc('email_required'));
                             return;
                         }
                         if (!result.password || result.password.length === 0) {
-                            this.showError(new Error(this.$tc('description_required')));
+                            this.showError(this.$tc('description_required'));
                             return;
                         }
-                        this.$sentry.withScope((scope) => {
+                        this.$crashReportService.withScope(scope => {
                             scope.setUser({ email: result.userName });
-                            this.$sentry.captureMessage(result.password);
+                            this.$crashReportService.captureMessage(result.password);
                             this.$alert(this.$t('bug_report_sent'));
                         });
                     }

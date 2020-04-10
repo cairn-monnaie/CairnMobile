@@ -1,19 +1,20 @@
+import CrashReportService from './services/CrashReportService';
+const crashReportService = new CrashReportService();
+// start it as soon as possible
+crashReportService.start();
+
 import { install as installGestures } from 'nativescript-gesturehandler';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
 import { install, themer } from 'nativescript-material-core';
 import Vue from 'nativescript-vue';
 
+Vue.prototype.$crashReportService = crashReportService;
 // import * as trace from '@nativescript/core/trace';
 // trace.addCategories(trace.categories.ViewHierarchy);
 // trace.addCategories(trace.categories.Navigation);
 // trace.addCategories(trace.categories.NativeLifecycle);
 // trace.enable();
-/* DEV-START */
-// const VueDevtools = require('nativescript-vue-devtools');
-// Vue.use(VueDevtools
-// , { host: '192.168.1.43' }
-// );
-/* DEV-END */
+
 import App from '~/components/App';
 import { DEV_LOG, cwarn } from '~/utils/logging';
 import MultiDrawer from './components/MultiDrawer';
@@ -24,25 +25,6 @@ import MixinsPlugin from './vue.mixins';
 // adding to Vue prototype
 import PrototypePlugin from './vue.prototype';
 import ViewsPlugin from './vue.views';
-import { device } from '@nativescript/core/platform';
-
-// setMapPosKeys('lat', 'lon');
-
-import { getBuildNumber, getVersionName } from 'nativescript-extendedinfo';
-if (PRODUCTION || gVars.sentry) {
-    import('nativescript-akylas-sentry').then(Sentry => {
-        Vue.prototype.$sentry = Sentry;
-        Promise.all([getVersionName(), getBuildNumber()]).then(res => {
-            Sentry.init({
-                dsn: SENTRY_DSN,
-                appPrefix: SENTRY_PREFIX,
-                release: `${res[0]}`,
-                dist: `${res[1]}.${gVars.isAndroid ? 'android' : 'ios'}`
-            });
-            Sentry.setTag('locale', device.language);
-        });
-    });
-}
 
 Vue.use(MixinsPlugin);
 
@@ -67,28 +49,11 @@ Vue.use(FiltersPlugin);
 
 Vue.use(PrototypePlugin);
 
-// import { TNSFontIcon } from 'nativescript-akylas-fonticon';
-// // TNSFontIcon.debug = true;
-// TNSFontIcon.paths = {
-//     mdi: './assets/materialdesignicons.min.css',
-//     cairn: './assets/cairn.css'
-// };
-// TNSFontIcon.loadCssSync();
-
-// application.on(application.uncaughtErrorEvent, args => clog('uncaughtErrorEvent', args.error));
-// application.on(application.discardedErrorEvent, args => clog('discardedErrorEvent', args.error));
-
-// import './app.scss'
-
-// Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = !DEV_LOG;
 Vue.config['debug'] = DEV_LOG;
-// Vue.config.silent = true;
-// Vue.config['debug'] = false;
 
 function throwVueError(err) {
-    Vue.prototype.$showError(err);
-    // throw err;
+    crashReportService.showError(err);
 }
 
 Vue.config.errorHandler = (e, vm, info) => {
