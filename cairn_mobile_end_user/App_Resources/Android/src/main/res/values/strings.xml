@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="add_phone_desc">"add a phone to receive notifications.\nYou will receive receive a confirmation sms"</string>
+  <string name="send_crash_reports">"send crash reports"</string>
   <string name="source_code">"source code"</string>
   <string name="source_code_desc">"get the app source code on Github"</string>
   <string name="support_desc">"get help from us or the community"</string>
@@ -102,7 +104,6 @@
   <string name="balance">"balance"</string>
   <string name="app_name">"eCairn"</string>
   <string name="title_activity_kimera">"eCairn"</string>
-  <string name="app.__i18n_ally_root__.name">""</string>
   <string name="amount_required">"an amount is required"</string>
   <string name="amount">"amount"</string>
   <string name="address">"address"</string>
@@ -111,5 +112,4 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
-  <string name="add_phone_desc">"add_phone_desc"</string>
 </resources>

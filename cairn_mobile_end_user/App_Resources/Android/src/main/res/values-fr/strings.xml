@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="send_crash_reports">"envoyer des rapports de bug"</string>
   <string name="source_code_desc">"obtenir le code source de l\'application sur Github"</string>
   <string name="third_party_software_desc">"les logiciels que nous aimons et utilisons"</string>
   <string name="terms_and_conditions_desc">"tout ce que vous avez besoin de savoir"</string>
@@ -111,5 +112,4 @@
   <string name="home">"accueil"</string>
   <string name="app_name">"eCairn"</string>
   <string name="title_activity_kimera">"eCairn"</string>
-  <string name="app.__i18n_ally_root__.name">""</string>
 </resources>
