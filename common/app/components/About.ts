@@ -26,7 +26,7 @@ export default class About extends PageComponent {
 
     onTap(command: string) {
         switch (command) {
-            case 'privacy_policy':
+            case 'privacy':
                 openUrl(PRIVACY_POLICY_URL);
                 break;
             case 'terms':
