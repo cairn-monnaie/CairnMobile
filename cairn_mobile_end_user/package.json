@@ -16,7 +16,9 @@
     "scripts": {
         "run.android.production": "cross-var tns run android --release --keyStorePath $KEYSTORE_PATH --keyStorePassword $KEYSTORE_PASSWORD --keyStoreAlias $KEYSTORE_ALIAS --keyStoreAliasPassword $KEYSTORE_ALIAS_PASSWORD --env.adhoc  --env.snapshot --env.compileSnapshot",
         "pandroid": "cross-var tns build android --release --keyStorePath $KEYSTORE_PATH --keyStorePassword $KEYSTORE_PASSWORD --keyStoreAlias $KEYSTORE_ALIAS --keyStoreAliasPassword $KEYSTORE_ALIAS_PASSWORD --env.adhoc --env.snapshot --env.compileSnapshot",
-        "pios": "tns build ios --release --env.adhoc --env.snapshot --env.compileSnapshot --for-device --provision 'match AppStore com.akylas.cairnmobile'"
+        "pios": "tns build ios --release --env.adhoc --env.snapshot --env.compileSnapshot --for-device --provision 'match AppStore com.akylas.cairnmobile'",
+        "ios.generate_licences":"node generate_ios_licences.js",
+        "android.generate_licences":"platforms/android/gradlew  generateLicenseReport "
     },
     "dependencies": {
         "@mdi/font": "4.9.95",
