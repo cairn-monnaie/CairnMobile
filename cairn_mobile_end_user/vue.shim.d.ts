@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import AuthService from '~/services/AuthService';
 import SecurityService from '~/services/SecurityService';
+import CrashReportService from '~/services/CrashReportService';
 // import { ToastDuration, ToastPosition } from 'nativescript-toasty';
 import App from '~/components/App';
-import * as Sentry from 'nativescript-akylas-sentry';
 
 declare module 'vue/types/vue' {
     // 3. Declare augmentation for Vue
     interface Vue {
         $authService: AuthService;
         $securityService: SecurityService;
-        $sentry: typeof Sentry;
+        $crashReportService: CrashReportService;
 
         $isAndroid: boolean;
         $isIOS: boolean;
@@ -22,7 +22,6 @@ declare module 'vue/types/vue' {
             uppercase(s: string): string;
             L(s: string, ...args): string;
         };
-        $showError(err: Error | string);
         $alert(message: string);
         // $showToast(message: string, duration?: ToastDuration, position?: ToastPosition);
         $setAppComponent(comp: App);
