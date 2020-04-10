@@ -1,7 +1,7 @@
 <template>
     <GridLayout
         :columns="`${16 * sizeFactor},auto,*,auto,${16 * sizeFactor}`"
-        :rows="`${topBottomPadding * sizeFactor},auto,*,auto`"
+        :rows="`${topBottomPadding * sizeFactor / 2},auto,*,auto`"
         :rippleColor="themeColor"
         backgroundColor="white"
         @tap="$emit('tap', $event)"
@@ -50,7 +50,7 @@
             </slot>
         </GridLayout>
 
-        <AbsoluteLayout row="4" colSpan="5"  :marginTop="topBottomPadding * sizeFactor" marginLeft="20" backgroundColor="#EFEFEF" :height="!!showBottomLine ? 1 : 0" verticalAlignment="bottom" />
+        <AbsoluteLayout row="3" colSpan="5"  :marginTop="topBottomPadding * sizeFactor" marginLeft="20" backgroundColor="#EFEFEF" :height="!!showBottomLine ? 1 : 0" verticalAlignment="bottom" />
     </GridLayout>
 </template>
 
