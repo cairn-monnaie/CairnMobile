@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="source_code_desc">"obtenir le code source de l\'application sur Github"</string>
+  <string name="third_party_software_desc">"les logiciels que nous aimons et utilisons"</string>
+  <string name="terms_and_conditions_desc">"tout ce que vous avez besoin de savoir"</string>
+  <string name="privacy_policy_desc">"notes importantes sur la confidentialité de vos données"</string>
+  <string name="support_desc">"obtenir de l\'aide"</string>
+  <string name="source_code">"code source"</string>
+  <string name="version">"version"</string>
+  <string name="third_party_software">"logiciel tiers"</string>
+  <string name="terms_and_conditions">"termes et conditions"</string>
+  <string name="privacy_policy">"politique de confidentialité"</string>
+  <string name="support">"soutien"</string>
+  <string name="share_app">"partager cette application"</string>
+  <string name="review_app">"examen de l\'application"</string>
+  <string name="send_crash_reports_desc">"le rapport d\'erreur contient uniquement des informations pertinentes pour nous aider à identifier les problèmes et les résoudre."</string>
+  <string name="about">"à propos"</string>
   <string name="pin_changed">"votre PIN à bien été changé!"</string>
   <string name="wrong_passcode">"PIN erroné"</string>
   <string name="wrong_security">"erreur d\'authentification"</string>

@@ -8,9 +8,6 @@
   "amount": "amount",
   "amount_required": "an amount is required",
   "app": {
-    "__i18n_ally_root__": {
-      "name": ""
-    },
     "name": "eCairn"
   },
   "balance": "balance",
@@ -106,5 +103,22 @@
   "new_passcode": "new PIN",
   "wrong_security": "authentification error",
   "wrong_passcode": "wrong PIN",
-  "pin_changed": "your PIN has been changed!"
+  "pin_changed": "your PIN has been changed!",
+  "about": "about",
+  "send_crash_reports_desc": "crash report only contains relevant information for us in order to identify problems and fix it.",
+  "review_app": "review app",
+  "share_app": "share this app",
+  "support": "support",
+  "privacy_policy": "privacy policy",
+  "terms_and_conditions": "terms and conditions",
+  "third_party_software": "third party software",
+  "version": "version",
+  "third_party_software_desc": "softwares we love and use",
+  "terms_and_conditions_desc": "everything you need to know",
+  "privacy_policy_desc": "important notes about the privacy of your data",
+  "support_desc": "get help from us or the community",
+  "source_code_desc": "get the app source code on Github",
+  "source_code": "source code",
+  "send_crash_reports": "send crash reports",
+  "add_phone_desc": "add a phone to receive notifications.\nYou will receive receive a confirmation sms"
 }

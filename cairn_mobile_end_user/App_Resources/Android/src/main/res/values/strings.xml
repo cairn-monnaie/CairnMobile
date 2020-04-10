@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="source_code">"source code"</string>
+  <string name="source_code_desc">"get the app source code on Github"</string>
+  <string name="support_desc">"get help from us or the community"</string>
+  <string name="privacy_policy_desc">"important notes about the privacy of your data"</string>
+  <string name="terms_and_conditions_desc">"everything you need to know"</string>
+  <string name="third_party_software_desc">"softwares we love and use"</string>
+  <string name="version">"version"</string>
+  <string name="third_party_software">"third party software"</string>
+  <string name="terms_and_conditions">"terms and conditions"</string>
+  <string name="privacy_policy">"privacy policy"</string>
+  <string name="support">"support"</string>
+  <string name="share_app">"share this app"</string>
+  <string name="review_app">"review app"</string>
+  <string name="send_crash_reports_desc">"crash report only contains relevant information for us in order to identify problems and fix it."</string>
+  <string name="about">"about"</string>
   <string name="pin_changed">"your PIN has been changed!"</string>
   <string name="wrong_passcode">"wrong PIN"</string>
   <string name="wrong_security">"authentification error"</string>

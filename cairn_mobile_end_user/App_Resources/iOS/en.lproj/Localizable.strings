@@ -1,3 +1,4 @@
+"about" = "about";
 "pin_changed" = "your PIN has been changed!";
 "wrong_passcode" = "wrong PIN";
 "wrong_security" = "authentification error";
