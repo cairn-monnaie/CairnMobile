@@ -168,8 +168,6 @@ export default class Home extends PageComponent {
         }
     }
     scanQRCode() {
-        this.$scanQRCode()
-            .then(this.handleQRData)
-            .catch(this.showError);
+        this.$scanQRCode().catch(this.showError);
     }
 }

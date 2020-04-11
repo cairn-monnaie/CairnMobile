@@ -143,6 +143,9 @@ module.exports = (env, params = {}) => {
     const isIOS = platform === 'ios';
     const isAndroid = platform === 'android';
     const APP_STORE_ID = process.env.IOS_APP_ID;
+    const CUSTOM_URL_SCHEME = 'ecairn';
+    const CAIRN_TRANSFER_QRCODE = 'transfer';
+    const CAIRN_TRANSFER_QRCODE_PARAMS = '%(ICC)s#%(id)s#%(name)s';
     const defines = mergeOptions(
         {
             PRODUCTION: !!production,
@@ -165,6 +168,10 @@ module.exports = (env, params = {}) => {
             SUPPORT_URL: `"${package.bugs.url}"`,
             TERMS_CONDITIONS_URL: `"${process.env.TERMS_CONDITIONS_URL}"`,
             PRIVACY_POLICY_URL: `"${process.env.PRIVACY_POLICY_URL}"`,
+            CUSTOM_URL_SCHEME: `"${CUSTOM_URL_SCHEME}"`,
+            CAIRN_TRANSFER_QRCODE: `"${CAIRN_TRANSFER_QRCODE}"`,
+            CAIRN_TRANSFER_QRCODE_PARAMS: `"${CAIRN_TRANSFER_QRCODE_PARAMS}"`,
+            CAIRN_FULL_QRCODE_FORMAT: `"${`${CUSTOM_URL_SCHEME}://${CAIRN_TRANSFER_QRCODE}/${CAIRN_TRANSFER_QRCODE_PARAMS}`}"`,
             STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${package.nativescript.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
             STORE_REVIEW_LINK: `"${isIOS ? `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review` : `market://details?id=${package.nativescript.id}`}"`,
             LOG_LEVEL: devlog ? '"full"' : '""',

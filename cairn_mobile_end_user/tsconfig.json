@@ -15,7 +15,7 @@
         "allowSyntheticDefaultImports": true,
         "noImplicitUseStrict": true,
         "downlevelIteration":true,
-        "lib": ["es6", "dom", "es2015.iterable"],
+        "lib": ["es6", "dom", "es2015.iterable", "es2018.regexp"],
         "baseUrl": ".",
         "paths": {
             "~/*": ["app/*"],

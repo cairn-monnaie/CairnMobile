@@ -12,6 +12,7 @@ import { isSimulator } from 'nativescript-extendedinfo';
 import BarCodeBottomSheet from './components/BarCodeBottomSheet';
 import NativescriptVue from 'nativescript-vue';
 import CrashReportService from './services/CrashReportService';
+import { sprintf } from 'sprintf-js';
 
 const Plugin = {
     install(Vue) {
@@ -70,14 +71,22 @@ const Plugin = {
             });
         };
 
-        Vue.prototype.$scanQRCode = function() {
+        Vue.prototype.$scanQRCode = async function() {
             console.log('scanQRCode');
+            let result;
             if (gVars.isIOS && isSimulator()) {
-                return Promise.resolve({ ICC: '622593501', name: 'La Bonne Pioche' });
+                result = sprintf(CAIRN_FULL_QRCODE_FORMAT, {
+                    ICC: '622593501',
+                    name: 'La Bonne Pioche',
+                    id: 'test'
+                });
+            } else {
+                result = await new Promise(resolve => {
+                    (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent: true });
+                });
             }
-            return new Promise((resolve, reject) => {
-                (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: r => resolve(r || {}), transparent: true });
-            });
+            console.log('scanQRCode result', result);
+            (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
             // return barCodeScanner
             //     .scan({
             //         formats: 'QR_CODE, EAN_13',

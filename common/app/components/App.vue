@@ -24,7 +24,7 @@
                 </GridLayout>
             </GridLayout>
             <!-- <GridLayout> -->
-            <Frame ref="innerFrame">
+            <Frame ref="innerFrame" id="innerFrame">
                 <Home v-if="loggedInOnStart" />
                 <Login v-else />
             </Frame>

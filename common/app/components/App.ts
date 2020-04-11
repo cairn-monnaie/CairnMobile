@@ -14,12 +14,14 @@ import { showSnack } from 'nativescript-material-snackbar';
 import { TextField } from 'nativescript-material-textfield';
 import * as perms from 'nativescript-perms';
 import { Vibrate } from 'nativescript-vibrate';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
+import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { setDrawerInstance } from '~/main';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import { screenHeightDips, screenWidthDips } from '~/variables';
+import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
+import TransferWindow from './TransferWindow';
 
 import { ApplicationEventData, android as androidApp, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from '@nativescript/core/application';
 
@@ -35,43 +37,53 @@ import Profile from './Profile';
 import Settings from './Settings';
 import About from './About';
 import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
+import { Observable } from '@nativescript/core/data/observable';
 
-function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
-    const fontAspectRatio = 1.28571429;
-    // Prevent application crash when passing size where width or height is set equal to or less than zero, by clipping width and height to a minimum of 1 pixel.
-    if (size.width <= 0) {
-        size.width = 1;
-    }
-    if (size.height <= 0) {
-        size.height = 1;
-    }
+// function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
+//     const fontAspectRatio = 1.28571429;
+//     // Prevent application crash when passing size where width or height is set equal to or less than zero, by clipping width and height to a minimum of 1 pixel.
+//     if (size.width <= 0) {
+//         size.width = 1;
+//     }
+//     if (size.height <= 0) {
+//         size.height = 1;
+//     }
 
-    const paragraph = NSMutableParagraphStyle.new();
-    paragraph.alignment = NSTextAlignment.Center;
+//     const paragraph = NSMutableParagraphStyle.new();
+//     paragraph.alignment = NSTextAlignment.Center;
 
-    const fontSize = Math.min(size.width / fontAspectRatio, size.height);
+//     const fontSize = Math.min(size.width / fontAspectRatio, size.height);
 
-    // stroke width expects a whole number percentage of the font size
-    const strokeWidth = fontSize === 0 ? 0 : (-100 * borderWidth) / fontSize;
+//     // stroke width expects a whole number percentage of the font size
+//     const strokeWidth = fontSize === 0 ? 0 : (-100 * borderWidth) / fontSize;
 
-    const attributedString = NSAttributedString.alloc().initWithStringAttributes(
-        name,
-        NSDictionary.dictionaryWithDictionary({
-            [NSFontAttributeName]: null,
-            [NSForegroundColorAttributeName]: textColor ? new Color(textColor).ios : null,
-            [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
-            [NSParagraphStyleAttributeName]: paragraph,
-            [NSStrokeWidthAttributeName]: strokeWidth,
-            [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
-        } as any)
-    );
+//     const attributedString = NSAttributedString.alloc().initWithStringAttributes(
+//         name,
+//         NSDictionary.dictionaryWithDictionary({
+//             [NSFontAttributeName]: null,
+//             [NSForegroundColorAttributeName]: textColor ? new Color(textColor).ios : null,
+//             [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
+//             [NSParagraphStyleAttributeName]: paragraph,
+//             [NSStrokeWidthAttributeName]: strokeWidth,
+//             [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
+//         } as any)
+//     );
 
-    UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
-    attributedString.drawInRect(CGRectMake(0, (size.height - fontSize) / 2, size.width, fontSize));
-    const image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
+//     UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
+//     attributedString.drawInRect(CGRectMake(0, (size.height - fontSize) / 2, size.width, fontSize));
+//     const image = UIGraphicsGetImageFromCurrentImageContext();
+//     UIGraphicsEndImageContext();
+//     return image;
+// }
+
+const observable = new Observable();
+export const QRCodeDataEvent = 'qrcodedata';
+export const on = observable.on.bind(observable);
+export const off = observable.off.bind(observable);
+
+console.log('CAIRN_TRANSFER_QRCODE_PARAMS', CAIRN_TRANSFER_QRCODE_PARAMS);
+console.log('CAIRN_TRANSFER_QRCODE_PARAMS replaced', CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>.*)'));
+const QR_CODE_TRANSFER_REGEXP = new RegExp(CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>.*)'));
 
 function base64Encode(value) {
     if (gVars.isIOS) {
@@ -247,7 +259,9 @@ export default class App extends BaseVueComponent {
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
+        handleOpenURL(this.onAppUrl);
     }
+
     onLoaded() {
         // GC();
     }
@@ -615,17 +629,17 @@ export default class App extends BaseVueComponent {
         }
     }
 
-    navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+    navigateTo(component: VueConstructor, options?: NavigationEntryVue, cb?: () => Page) {
         options = options || {};
-        options.transition = options.transition || {
-            name: 'fade',
-            duration: 200,
-            curve: 'easeIn'
-        };
+        // options.transition = options.transition || {
+        //     name: 'fade',
+        //     duration: 200,
+        //     curve: 'easeIn'
+        // };
         (options as any).frame = options['frame'] || this.innerFrame.id;
         return super.navigateTo(component, options, cb);
     }
-    navigateToUrl(url: ComponentIds, options?: NavigationEntry & { props?: any }, cb?: () => Page): Promise<any> {
+    navigateToUrl(url: ComponentIds, options?: NavigationEntryVue, cb?: () => Page): Promise<any> {
         this.closeDrawer();
         if (this.isActiveUrl(url) || !this.routes[url]) {
             return Promise.reject();
@@ -650,5 +664,30 @@ export default class App extends BaseVueComponent {
             // props: { autoConnect: false },
             clearHistory: true
         });
+    }
+    handleReceivedAppUrl(url: string) {
+        this.log('handleReceivedAppUrl', url);
+        const array = url.substring(CUSTOM_URL_SCHEME.length + 3).split('/');
+        switch (array[0]) {
+            case 'transfer': {
+                const data = array[1].match(QR_CODE_TRANSFER_REGEXP).groups;
+                console.log('test transfer qrcode', data);
+                if (this.activatedUrl === ComponentIds.Transfer) {
+                    observable.notify({ eventName: QRCodeDataEvent, object: observable, data });
+                } else {
+                    this.navigateTo(TransferWindow, {
+                        props: { qrCodeData: data }
+                    });
+                }
+            }
+        }
+    }
+    onAppUrl(appURL: AppURL) {
+        this.log('Got the following appURL', appURL.path, Array.from(appURL.params.entries()));
+        if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
+            this.handleReceivedAppUrl(appURL.path);
+        } else {
+            this.showError(this.$t('unknown_url_command'));
+        }
     }
 }

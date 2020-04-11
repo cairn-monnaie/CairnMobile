@@ -30,6 +30,10 @@ declare const SUPPORT_URL: string;
 declare const GIT_URL: string;
 declare const STORE_LINK: string;
 declare const STORE_REVIEW_LINK: string;
+declare const CUSTOM_URL_SCHEME: string;
+declare const CAIRN_TRANSFER_QRCODE: string;
+declare const CAIRN_TRANSFER_QRCODE_PARAMS: string;
+declare const CAIRN_FULL_QRCODE_FORMAT: string;
 
 declare namespace com {
     export namespace akylas {

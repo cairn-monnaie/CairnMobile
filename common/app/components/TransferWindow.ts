@@ -4,7 +4,7 @@ import { alert, prompt } from 'nativescript-material-dialogs';
 import { AccountInfo, Benificiary, User } from '~/services/AuthService';
 import PageComponent from './PageComponent';
 import UserPicker from './UserPicker';
-import { ComponentIds } from './App';
+import { ComponentIds, QRCodeDataEvent, off as appOff, on as appOn } from './App';
 import { TextField } from 'nativescript-material-textfield';
 import { showSnack } from 'nativescript-material-snackbar';
 import { sms } from 'nativescript-phone';
@@ -69,11 +69,15 @@ export default class TransferWindow extends PageComponent {
         this.checkForm();
     }
     destroyed() {
+        appOff(QRCodeDataEvent, this.onQrCodeDataEvent, this);
         super.destroyed();
+    }
+    onQrCodeDataEvent(e) {
+        this.handleQRData(e.data);
     }
     mounted() {
         super.mounted();
-
+        appOn(QRCodeDataEvent, this.onQrCodeDataEvent, this);
         this.beneficiaries = this.$authService.beneficiaries;
         this.accounts = this.$authService.accounts || [];
         if (this.accounts.length > 0) {
@@ -260,8 +264,6 @@ export default class TransferWindow extends PageComponent {
         }
     }
     scanQRCode() {
-        this.$scanQRCode()
-            .then(this.handleQRData)
-            .catch(this.showError);
+        this.$scanQRCode().catch(this.showError);
     }
 }

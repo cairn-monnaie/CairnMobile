@@ -6,7 +6,7 @@ import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 // import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { BaseError } from 'make-error';
-import * as https from 'nativescript-akylas-https';
+import * as https from 'nativescript-https';
 
 const USE_HTTPS = true;
 
@@ -37,7 +37,7 @@ export interface CacheOptions {
 // function timeout(ms) {
 //     return new Promise(resolve => setTimeout(resolve, ms));
 // }
-type HTTPOptions = http.HttpRequestOptions;
+type HTTPOptions = https.HttpsRequestOptions;
 
 export const NetworkConnectionStateEvent = 'NetworkConnectionStateEvent';
 export interface NetworkConnectionStateEventData extends EventData {
@@ -386,7 +386,7 @@ export class NetworkService extends Observable {
             requestParams.content = JSON.stringify(requestParams.body);
         }
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
-
+        requestParams.useLegacy = true;
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
         return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then((response) =>

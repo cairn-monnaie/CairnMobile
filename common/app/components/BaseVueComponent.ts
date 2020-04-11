@@ -1,16 +1,16 @@
 import { View } from '@nativescript/core/ui/core/view';
-import { Frame, NavigationEntry, topmost } from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame';
 import { Label } from '@nativescript/core/ui/label/label';
 import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
 import { Page } from '@nativescript/core/ui/page';
 import { $t } from '~/helpers/locale';
 import { ActivityIndicator } from 'nativescript-material-activityindicator';
 import { AlertDialog } from 'nativescript-material-dialogs';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
+import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
 import { clog } from '~/utils/logging';
-import { accentColor, actionBarHeight,cairnFontFamily, darkColor, primaryColor } from '../variables';
+import { accentColor, cairnFontFamily, darkColor, primaryColor } from '../variables';
 import { bind } from 'helpful-decorators';
 
 export interface BaseVueComponentRefs {
@@ -81,7 +81,7 @@ export default class BaseVueComponent extends Vue {
     mounted() {}
     destroyed() {}
 
-    navigateTo(component: VueConstructor, options?: NavigationEntry & { props?: any }, cb?: () => Page) {
+    navigateTo(component: VueConstructor, options?: NavigationEntryVue, cb?: () => Page) {
         options = options || {};
         (options as any).frame = options['frame'] || Frame.topmost().id;
         return this.$navigateTo(component, options, cb);

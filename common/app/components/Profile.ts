@@ -16,6 +16,7 @@ import { CartoMap } from 'nativescript-carto/ui';
 import BitmapFactory from 'nativescript-bitmap-factory';
 import { generateBarCode } from 'nativescript-barcodeview';
 import { showSnack } from 'nativescript-material-snackbar';
+import { sprintf } from 'sprintf-js';
 
 @Component({
     components: {
@@ -282,7 +283,11 @@ export default class Profile extends PageComponent {
             if (!this.qrCodeImage) {
                 try {
                     this.qrCodeImage = generateBarCode({
-                        text: `${this.userProfile.mainICC}#${this.userProfile.id}#${this.userProfile.name}`,
+                        text: sprintf(CAIRN_FULL_QRCODE_FORMAT, {
+                            ICC: this.userProfile.mainICC,
+                            id: this.userProfile.id,
+                            name: this.userProfile.name
+                        }),
                         type: 'QR_CODE',
                         width: 400,
                         height: 400,
