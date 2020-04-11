@@ -670,8 +670,11 @@ export default class App extends BaseVueComponent {
         const array = url.substring(CUSTOM_URL_SCHEME.length + 3).split('/');
         switch (array[0]) {
             case 'transfer': {
+                if (!this.$authService.isLoggedIn()) {
+                    this.showError(this.$t('qrcode_loggedin_needed'));
+                    return;
+                }
                 const data = array[1].match(QR_CODE_TRANSFER_REGEXP).groups;
-                console.log('test transfer qrcode', data);
                 if (this.activatedUrl === ComponentIds.Transfer) {
                     observable.notify({ eventName: QRCodeDataEvent, object: observable, data });
                 } else {
@@ -684,10 +687,10 @@ export default class App extends BaseVueComponent {
     }
     onAppUrl(appURL: AppURL) {
         this.log('Got the following appURL', appURL.path, Array.from(appURL.params.entries()));
-        if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
-            this.handleReceivedAppUrl(appURL.path);
-        } else {
-            this.showError(this.$t('unknown_url_command'));
-        }
+        // if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
+        this.handleReceivedAppUrl(CUSTOM_URL_SCHEME + '://' + appURL.path);
+        // } else {
+        // this.showError(this.$t('unknown_url_command'));
+        // }
     }
 }
