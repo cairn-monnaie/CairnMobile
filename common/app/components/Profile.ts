@@ -192,7 +192,7 @@ export default class Profile extends PageComponent {
                     await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text);
                     await this.$authService.getUserProfile();
                     showSnack({
-                        message: this.$t('phone_added',phoneNumber )
+                        message: this.$t('phone_added', phoneNumber)
                     });
                 }
                 // return r;
@@ -280,19 +280,27 @@ export default class Profile extends PageComponent {
     toggleQRCode() {
         if (!this.showingQRCode) {
             if (!this.qrCodeImage) {
-                this.qrCodeImage = generateBarCode({
-                    text: `${this.userProfile.mainICC}#${this.userProfile.id}#${this.userProfile.name}`,
-                    type: 'QR_CODE',
-                    width: 400,
-                    height: 400,
-                    backColor: 'transparent',
-                    frontColor: 'white'
-                });
+                try {
+                    this.qrCodeImage = generateBarCode({
+                        text: `${this.userProfile.mainICC}#${this.userProfile.id}#${this.userProfile.name}`,
+                        type: 'QR_CODE',
+                        width: 400,
+                        height: 400,
+                        backColor: 'transparent',
+                        frontColor: 'white'
+                    });
+                    this.image = this.qrCodeImage;
+                    this.showingQRCode = !this.showingQRCode;
+                } catch (err) {
+                    console.log(err);
+                }
+            } else {
+                this.image = this.qrCodeImage;
+                this.showingQRCode = !this.showingQRCode;
             }
-            this.image = this.qrCodeImage;
         } else {
             this.image = this.userProfile.image;
+            this.showingQRCode = !this.showingQRCode;
         }
-        this.showingQRCode = !this.showingQRCode;
     }
 }
