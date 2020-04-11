@@ -11,6 +11,7 @@ declare const gVars: {
     isIOS: boolean;
     isAndroid: boolean;
     internalApp: boolean;
+    platform: 'ios' | 'android';
 };
 
 declare const TNS_ENV: string;
@@ -43,8 +44,8 @@ declare namespace com {
             }
 
             class OkhttpCallback {
-                onStringResponse( responseString,  statusCode, headers);
-                onFailure(call, error)
+                onStringResponse(responseString, statusCode, headers);
+                onFailure(call, error);
             }
         }
     }
