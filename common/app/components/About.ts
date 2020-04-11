@@ -1,6 +1,7 @@
 import { openUrl } from '@nativescript/core/utils/utils';
 import { Component } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
+import ThirdPartySoftwareBottomSheet from '~/components/ThirdPartySoftwareBottomSheet';
 import { ComponentIds } from './App';
 import { showSnack } from 'nativescript-material-snackbar';
 import { share } from '~/utils/share';
@@ -45,6 +46,9 @@ export default class About extends PageComponent {
                 break;
             case 'review':
                 openUrl(STORE_REVIEW_LINK);
+                break;
+            case 'third_party':
+                this.$showBottomSheet(ThirdPartySoftwareBottomSheet, {});
                 break;
         }
     }
