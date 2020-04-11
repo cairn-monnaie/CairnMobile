@@ -68,7 +68,7 @@ export default class CrashReportService extends Observable {
         const message = isString ? (err as string) : realError.message || realError.toString();
         let title = $tc('error');
         const reporterEnabled = this.sentryEnabled;
-        let showSendBugReport = reporterEnabled && isString && !!realError.stack;
+        let showSendBugReport = reporterEnabled && !isString && !!realError.stack;
         if (realError instanceof HTTPError) {
             title = `${title} (${realError.statusCode})`;
         } else if (realError instanceof NoNetworkError) {
@@ -76,9 +76,9 @@ export default class CrashReportService extends Observable {
         }
         // clog('$showError', err, err.stack);
         const label = new HTMLLabel();
-        label.style.padding = '0 20 20 20';
+        label.style.padding = '10 20 0 26';
         // label.style.backgroundColor = new Color(255, 255,0,0);
-        label.style.fontSize = 14;
+        label.style.fontSize = 16;
         label.style.color = new Color(255, 138, 138, 138);
         label.html = $tc(message.trim());
         return confirm({
