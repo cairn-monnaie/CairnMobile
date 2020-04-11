@@ -1,3 +1,19 @@
+"add_phone_desc" = "add a phone to receive notifications.\nYou will receive receive a confirmation sms";
+"send_crash_reports" = "send crash reports";
+"source_code" = "source code";
+"source_code_desc" = "get the app source code on Github";
+"support_desc" = "get help from us or the community";
+"privacy_policy_desc" = "important notes about the privacy of your data";
+"terms_and_conditions_desc" = "everything you need to know";
+"third_party_software_desc" = "softwares we love and use";
+"version" = "version";
+"third_party_software" = "third party software";
+"terms_and_conditions" = "terms and conditions";
+"privacy_policy" = "privacy policy";
+"support" = "support";
+"share_app" = "share this app";
+"review_app" = "review app";
+"send_crash_reports_desc" = "crash report only contains relevant information for us in order to identify problems and fix it.";
 "about" = "about";
 "pin_changed" = "your PIN has been changed!";
 "wrong_passcode" = "wrong PIN";
@@ -88,7 +104,6 @@
 "beneficiaries" = "beneficiaries";
 "balance" = "balance";
 "app.name" = "eCairn";
-"app.__i18n_ally_root__.name" = "";
 "amount_required" = "an amount is required";
 "amount" = "amount";
 "address" = "address";
@@ -97,4 +112,3 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
-"add_phone_desc" = "add_phone_desc";
