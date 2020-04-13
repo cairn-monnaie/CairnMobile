@@ -67,6 +67,7 @@
         "nativescript-secure-storage": "2.6.0",
         "nativescript-systemui": "1.0.4",
         "nativescript-tween": "0.0.5",
+        "nativescript-urlhandler": "1.3.0",
         "nativescript-vibrate": "3.0.0",
         "sprintf-js": "^1.1.2",
         "vue-string-filter": "2.0.0"
