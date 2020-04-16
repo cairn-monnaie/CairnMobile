@@ -8,8 +8,6 @@ import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
 import * as https from 'nativescript-https';
 
-const USE_HTTPS = true;
-
 import { knownFolders, path } from '@nativescript/core/file-system';
 
 export interface CacheOptions {
@@ -60,7 +58,7 @@ function evalTemplateString(resource: string, obj: {}) {
         return resource;
     }
     const names = Object.keys(obj);
-    const vals = Object.keys(obj).map((key) => obj[key]);
+    const vals = Object.keys(obj).map(key => obj[key]);
     return new Function(...names, `return \`${resource}\`;`)(...vals);
 }
 
@@ -171,9 +169,9 @@ export class CustomError extends BaseError {
 
     toJSON() {
         const error = {
-            message: this.message,
+            message: this.message
         };
-        Object.getOwnPropertyNames(this).forEach((key) => {
+        Object.getOwnPropertyNames(this).forEach(key => {
             if (typeof this[key] !== 'function') {
                 error[key] = this[key];
             }
@@ -199,7 +197,7 @@ export class TimeoutError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'timeout_error',
+                    message: 'timeout_error'
                 },
                 props
             ),
@@ -213,7 +211,7 @@ export class NoNetworkError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'no_network',
+                    message: 'no_network'
                 },
                 props
             ),
@@ -233,7 +231,7 @@ export class HTTPError extends CustomError {
         super(
             Object.assign(
                 {
-                    message: 'httpError',
+                    message: 'httpError'
                 },
                 props
             ),
@@ -250,14 +248,14 @@ function jsonObjectToKeepOrderString(obj) {
     if (Array.isArray(obj)) {
         // console.log('jsonObjectToKeepOrderString array', obj);
         return obj
-            .filter((v) => v !== undefined && v !== null)
-            .map((v) => jsonObjectToKeepOrderString(v))
+            .filter(v => v !== undefined && v !== null)
+            .map(v => jsonObjectToKeepOrderString(v))
             .sort()
             .join('');
     } else if (typeof obj === 'object') {
         return Object.keys(obj)
-            .filter((k) => obj[k] !== undefined && obj[k] !== null)
-            .map((k) => k + ':' + jsonObjectToKeepOrderString(obj[k]))
+            .filter(k => obj[k] !== undefined && obj[k] !== null)
+            .map(k => k + ':' + jsonObjectToKeepOrderString(obj[k]))
             .sort()
             .join('');
     }
@@ -283,8 +281,8 @@ export class NetworkService extends Observable {
                 object: this,
                 data: {
                     connected: value,
-                    connectionType: this._connectionType,
-                },
+                    connectionType: this._connectionType
+                }
             } as NetworkConnectionStateEventData);
         }
     }
@@ -318,7 +316,7 @@ export class NetworkService extends Observable {
         throw new HTTPError({
             statusCode: 401,
             message: 'HTTP error',
-            requestParams,
+            requestParams
         });
     }
 
@@ -355,14 +353,20 @@ export class NetworkService extends Observable {
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
         const time = Date.now().toString();
-        // console.log('buildAuthorization', requestParams);
+        console.log('buildAuthorization', requestParams);
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
+            let bodyStr ;
             if (requestParams.body) {
-                hmacString += md5(jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, ''));
+                bodyStr = jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, '');
             } else if (typeof requestParams.content === 'string') {
-                hmacString += md5(jsonObjectToKeepOrderString(JSON.parse(requestParams.content)).replace(/\s+/g, ''));
+                bodyStr = jsonObjectToKeepOrderString(JSON.parse(requestParams.content).replace(/\s+/g, ''));
+            }
+            console.log('bodyStr', bodyStr);
+            if (bodyStr) {
+                hmacString += md5(bodyStr);
+
             }
         }
         // console.log(hmacString);
@@ -382,14 +386,13 @@ export class NetworkService extends Observable {
             requestParams.url = queryString(requestParams.queryParams, requestParams.url);
             delete requestParams.queryParams;
         }
-        if (!USE_HTTPS && requestParams.body) {
-            requestParams.content = JSON.stringify(requestParams.body);
-        }
+        requestParams.useLegacy = true;
+
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
-        return ((USE_HTTPS ? https : http).request(requestParams as any) as Promise<any>).then((response) =>
+        return https.request(requestParams as HttpRequestOptions).then(response =>
             this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
         ) as Promise<T>;
     }
@@ -407,14 +410,13 @@ export class NetworkService extends Observable {
     //         .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
     // }
 
-    async handleRequestResponse(response: http.HttpResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
+    async handleRequestResponse(response: https.HttpsResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
         // return Promise.resolve()
         // .then(() => {
-        const content = USE_HTTPS ? response['content'] || response['body'] : response['content'] ? response['content'].toString() : response['body'];
-        // const content = response['content'] ? response['content'].toString() : response['body'];
+        const content = response['content'].toJSON() || response['content'].toString();
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        // this.log('handleRequestResponse response', statusCode, Math.round(statusCode / 100), isJSON, typeof content, response['content'], response['body']);
+        // this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isJSON, typeof content, content);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {
@@ -430,7 +432,7 @@ export class NetworkService extends Observable {
                         new HTTPError({
                             statusCode,
                             message: match ? match[1] : 'HTTP error',
-                            requestParams,
+                            requestParams
                         })
                     );
                 }
@@ -453,11 +455,11 @@ export class NetworkService extends Observable {
                 if (error.exception && error.exception.length > 0) {
                     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 }
-                // this.log('throwing http error', theErr, Object.keys(theErr), Object.getOwnPropertyNames(theErr));
+                this.log('throwing http error',error.code || statusCode, message, requestParams);
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
                     message,
-                    requestParams,
+                    requestParams
                 });
             }
         }
@@ -465,12 +467,8 @@ export class NetworkService extends Observable {
             return content;
         }
         try {
-            if (USE_HTTPS) {
-                return JSON.parse(content);
-            } else {
-                return response['content'].toJSON();
-            }
-            // return response['content'].toJSON();
+            // we should never go there anymore
+            return JSON.parse(content);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
             return content;
