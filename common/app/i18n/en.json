@@ -120,5 +120,6 @@
   "source_code_desc": "get the app source code on Github",
   "source_code": "source code",
   "send_crash_reports": "send crash reports",
-  "add_phone_desc": "add a phone to receive notifications.\nYou will receive receive a confirmation sms"
+  "add_phone_desc": "add a phone to receive notifications.\nYou will receive receive a confirmation sms",
+  "cairn_qr_tile_name": "qrcode"
 }

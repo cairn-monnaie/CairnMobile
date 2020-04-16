@@ -120,5 +120,6 @@
   "terms_and_conditions_desc": "tout ce que vous avez besoin de savoir",
   "third_party_software_desc": "les logiciels que nous aimons et utilisons",
   "source_code_desc": "obtenir le code source de l'application sur Github",
-  "send_crash_reports": "envoyer des rapports de bug"
+  "send_crash_reports": "envoyer des rapports de bug",
+  "cairn_qr_tile_name": "qrcode"
 }

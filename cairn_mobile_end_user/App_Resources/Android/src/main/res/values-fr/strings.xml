@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="cairn_qr_tile_name">"qrcode"</string>
   <string name="send_crash_reports">"envoyer des rapports de bug"</string>
   <string name="source_code_desc">"obtenir le code source de l\'application sur Github"</string>
   <string name="third_party_software_desc">"les logiciels que nous aimons et utilisons"</string>
