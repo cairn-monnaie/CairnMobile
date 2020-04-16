@@ -9,6 +9,7 @@ import { ComponentIds } from './App';
 import { TWEEN } from 'nativescript-tween';
 import PageComponent from './PageComponent';
 import InteractiveMap from './InteractiveMap';
+import About from './About';
 import { getString, setString } from '@nativescript/core/application-settings';
 
 @Component({
@@ -67,6 +68,9 @@ export default class Login extends PageComponent {
                 }
             })
             .catch(this.showError);
+    }
+    showAbout() {
+        this.navigateTo(About);
     }
     showMap() {
         // this.animateLogoViewOut();
