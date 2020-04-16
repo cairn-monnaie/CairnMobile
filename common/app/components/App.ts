@@ -81,10 +81,11 @@ export const QRCodeDataEvent = 'qrcodedata';
 export const on = observable.on.bind(observable);
 export const off = observable.off.bind(observable);
 
-console.log('CAIRN_TRANSFER_QRCODE_PARAMS', CAIRN_TRANSFER_QRCODE_PARAMS);
-console.log('CAIRN_TRANSFER_QRCODE_PARAMS replaced', CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>.*)'));
-const QR_CODE_TRANSFER_REGEXP = new RegExp(CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>.*)'));
-
+const XRegExp = require('xregexp');
+const QR_CODE_TRANSFER_REGEXP_STR = CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + '(?:' + CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + ')?';
+const QR_CODE_TRANSFER_REGEXP = XRegExp(QR_CODE_TRANSFER_REGEXP_STR);
+console.log('QR_CODE_TRANSFER_REGEXP_STR', QR_CODE_TRANSFER_REGEXP_STR);
+console.log('QR_CODE_TRANSFER_REGEXP', QR_CODE_TRANSFER_REGEXP);
 function base64Encode(value) {
     if (gVars.isIOS) {
         const text = NSString.stringWithString(value);
