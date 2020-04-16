@@ -1,5 +1,5 @@
 <template>
-    <Page :id="id" ref="page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)">
+    <Page :id="id" ref="page" class="cairn-page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)">
         <GridLayout rows="auto,*,auto,auto">
             <GridLayout row="1" rowSpan="2" class="pageContent">
                 <slot />

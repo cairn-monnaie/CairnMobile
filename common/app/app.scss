@@ -33,11 +33,11 @@ mdactivityindicator {
 mdripple {
     ripple-color: $primary-color;
 }
-switch[checked=true] {
+switch[checked='true'] {
     background-color: $accent-color;
     color: $accent-color;
 }
-page {
+.cairn-page {
     background-color: $dark-color;
     status-bar-style: dark;
     status-bar-color: $primary-color;
@@ -303,7 +303,40 @@ mdtextfield {
     padding-bottom: -5;
 }
 
-
 .bottom-gradient {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.667), #000000);
+}
+
+.listitem {
+    border-bottom-width: 1;
+    border-bottom-color: #efefef;
+    padding: 16;
+    ripple-color: $primary-color;
+    .title-holder {
+        vertical-alignment: center;
+    }
+    .title {
+        font-size: 17;
+        // white-space: normal;
+        // vertical-text-alignment: top;
+        max-lines: 1;
+        line-break: end;
+    }
+    .subtitle {
+        font-size: 14;
+        color: #676767;
+        // vertical-text-alignment: top;
+        max-lines: 2;
+        line-break: end;
+    }
+}
+
+.amount-tf {
+    placeholder-color: white;
+    floating-color: white;
+    stroke-color: white;
+    text-align: right;
+    color: white;
+    font-size: 30;
+    digits: '0123456789,.';
 }
