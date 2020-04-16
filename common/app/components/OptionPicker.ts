@@ -8,7 +8,7 @@ import { clog } from '~/utils/logging';
 @Component({})
 export default class OptionPicker extends Vue {
     @Prop({})
-    public options: Array<{ name: string; checked: boolean }>;
+    public options: { name: string; checked: boolean }[];
 
     // public height = '100%';
     @Prop({ default: Vue.prototype.$t('pick_options') })
