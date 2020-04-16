@@ -44,6 +44,9 @@ module.exports = (env, params = {}) => {
     // Add your custom Activities, Services and other android app components here.
     const appComponents = env.appComponents || [];
     appComponents.push(...['tns-core-modules/ui/frame', 'tns-core-modules/ui/frame/activity']);
+    if (platform === 'android') {
+        appComponents.push(...[resolve(__dirname, 'app/android/floatingactivity.ts'), resolve(__dirname, 'app/android/tileservice.ts')]);
+    }
 
     const platforms = ['ios', 'android'];
     const projectRoot = __dirname;
@@ -146,6 +149,7 @@ module.exports = (env, params = {}) => {
     const CUSTOM_URL_SCHEME = 'ecairn';
     const CAIRN_TRANSFER_QRCODE = 'transfer';
     const CAIRN_TRANSFER_QRCODE_PARAMS = '%(ICC)s#%(id)s#%(name)s';
+    const CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM = '#%(amount)s';
     const defines = mergeOptions(
         {
             PRODUCTION: !!production,
@@ -171,6 +175,7 @@ module.exports = (env, params = {}) => {
             CUSTOM_URL_SCHEME: `"${CUSTOM_URL_SCHEME}"`,
             CAIRN_TRANSFER_QRCODE: `"${CAIRN_TRANSFER_QRCODE}"`,
             CAIRN_TRANSFER_QRCODE_PARAMS: `"${CAIRN_TRANSFER_QRCODE_PARAMS}"`,
+            CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: `"${CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM}"`,
             CAIRN_FULL_QRCODE_FORMAT: `"${`${CUSTOM_URL_SCHEME}://${CAIRN_TRANSFER_QRCODE}/${CAIRN_TRANSFER_QRCODE_PARAMS}`}"`,
             STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${package.nativescript.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
             STORE_REVIEW_LINK: `"${isIOS ? `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review` : `market://details?id=${package.nativescript.id}`}"`,
