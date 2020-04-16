@@ -1,12 +1,9 @@
-import { Color } from '@nativescript/core/color';
 import { device, screen } from '@nativescript/core/platform';
-import { NavigationEntry } from '@nativescript/core/ui/frame';
-import { Frame } from '@nativescript/core/ui/frame/frame';
+import { Frame, View } from '@nativescript/core/ui/frame/frame';
 import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
 import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
 import { Page } from '@nativescript/core/ui/page';
 import { TabView } from '@nativescript/core/ui/tab-view/tab-view';
-import { GC } from '@nativescript/core/utils/utils';
 import { compose } from 'nativescript-email';
 import * as EInfo from 'nativescript-extendedinfo';
 import { login } from 'nativescript-material-dialogs';
@@ -20,10 +17,20 @@ import { Component } from 'vue-property-decorator';
 import { setDrawerInstance } from '~/main';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import { screenHeightDips, screenWidthDips } from '~/variables';
-import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
+import { AppURL, handleOpenURL } from 'nativescript-appurl';
 import TransferWindow from './TransferWindow';
 
-import { ApplicationEventData, android as androidApp, off as applicationOff, on as applicationOn, resumeEvent, suspendEvent } from '@nativescript/core/application';
+import {
+    AndroidActivityResultEventData,
+    AndroidApplication,
+    ApplicationEventData,
+    android as androidApp,
+    off as applicationOff,
+    on as applicationOn,
+    getNativeApplication,
+    resumeEvent,
+    suspendEvent
+} from '@nativescript/core/application';
 
 // import Map from './Map';
 import AppFrame from './AppFrame';
@@ -38,6 +45,8 @@ import Settings from './Settings';
 import About from './About';
 import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
 import { Observable } from '@nativescript/core/data/observable';
+import Floating from './Floating';
+import { MODAL_ROOT_VIEW_CSS_CLASS, getSystemCssClasses } from '@nativescript/core/css/system-classes';
 
 // function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
 //     const fontAspectRatio = 1.28571429;
@@ -268,6 +277,8 @@ export default class App extends BaseVueComponent {
     }
     destroyed() {
         super.destroyed();
+        applicationOff(suspendEvent, this.onAppPause, this);
+        applicationOff(resumeEvent, this.onAppResume, this);
         this.$authService.off(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
         if (gVars.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
@@ -378,19 +389,29 @@ export default class App extends BaseVueComponent {
     }
     appPaused = true;
     onAppResume(args: ApplicationEventData) {
+        console.log('onAppResume', this.appPaused);
         if (!this.appPaused) {
             return;
         }
         this.appPaused = false;
+        // if (gVars.isAndroid) {
+        //     androidApp.foregroundActivity.paused = false;
+        // }
         if (this.$securityService.autoLockEnabled) {
             this.$securityService.validateSecurity(this, { closeOnBack: true });
         }
     }
     onAppPause(args: ApplicationEventData) {
+        console.log('onAppPause', this.appPaused);
         if (this.appPaused) {
             return;
         }
         this.appPaused = true;
+        if (gVars.isAndroid) {
+            const intent = androidApp.foregroundActivity.getIntent();
+            console.log('android app paused', intent && intent.getData() && intent.getData().toString());
+            // androidApp.foregroundActivity.paused = true;
+        }
     }
 
     // onBottomNavigationTabSelected(e) {
@@ -666,16 +687,134 @@ export default class App extends BaseVueComponent {
             clearHistory: true
         });
     }
+    async showOverlayComponent(data) {
+        const activity = this.nativeView._context;
+        if (!android.provider.Settings.canDrawOverlays(activity)) {
+            await this.requestPermission(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        }
+        if (!android.provider.Settings.canDrawOverlays(activity)) {
+            throw new Error('missing_overlay_permission');
+        }
+        const nativeApp = getNativeApplication();
+        const mWindowManager = nativeApp.getSystemService(android.content.Context.WINDOW_SERVICE) as android.view.WindowManager;
+
+        function close() {
+            mWindowManager.removeView(frame);
+            navEntryInstance.$destroy();
+        }
+        const navEntryInstance = new Vue({
+            name: 'FloatingEntry',
+            methods: {
+                close
+            },
+            render: h =>
+                h(Floating, {
+                    props: {
+                        qrCodeData: data
+                    }
+                    // key: serializeModalOptions(options)
+                })
+        });
+        const rootView = (navEntryInstance.$mount().$el as any).nativeView as View;
+        rootView.cssClasses.add(MODAL_ROOT_VIEW_CSS_CLASS);
+        const modalRootViewCssClasses = getSystemCssClasses();
+        modalRootViewCssClasses.forEach(c => rootView.cssClasses.add(c));
+        rootView._setupAsRootView(activity);
+        rootView._isAddedToNativeVisualTree = true;
+        rootView.callLoaded();
+        const frame = new android.widget.RelativeLayout(androidApp.context);
+        frame.addView(rootView.nativeViewProtected);
+        const params = new android.view.WindowManager.LayoutParams(
+            android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+            android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+            android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            0,
+            android.graphics.PixelFormat.TRANSLUCENT
+        );
+        params.gravity = android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.CENTER_VERTICAL;
+        params.x = 0;
+        params.y = 0;
+        mWindowManager.addView(frame, params);
+    }
+
+    requestPermission(permission) {
+        const activity = androidApp.foregroundActivity || androidApp.startActivity;
+        return new Promise((resolve, reject) => {
+            if (android.provider.Settings.canDrawOverlays(activity)) {
+                return resolve();
+            }
+            const REQUEST_CODE = 123;
+            const onActivityResultHandler = (data: AndroidActivityResultEventData) => {
+                if (data.requestCode === REQUEST_CODE) {
+                    androidApp.off(AndroidApplication.activityResultEvent, onActivityResultHandler);
+                    resolve();
+                }
+            };
+            androidApp.on(AndroidApplication.activityResultEvent, onActivityResultHandler);
+            const intent = new android.content.Intent(permission);
+            intent.setData(android.net.Uri.parse('package:' + activity.getPackageName()));
+            activity.startActivityForResult(intent, REQUEST_CODE);
+            // android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION/
+        });
+    }
+
+    isVisisble() {
+        if (gVars.isAndroid) {
+            const activity = androidApp.startActivity;
+            return activity
+                .getWindow()
+                .getDecorView()
+                .getRootView()
+                .isShown();
+        }
+    }
+
     handleReceivedAppUrl(url: string) {
-        this.log('handleReceivedAppUrl', url);
         const array = url.substring(CUSTOM_URL_SCHEME.length + 3).split('/');
+        this.log('handleReceivedAppUrl', CUSTOM_URL_SCHEME, url, this.appPaused, array);
         switch (array[0]) {
             case 'transfer': {
                 if (!this.$authService.isLoggedIn()) {
                     this.showError(this.$t('qrcode_loggedin_needed'));
                     return;
                 }
-                const data = array[1].match(QR_CODE_TRANSFER_REGEXP).groups;
+
+                console.log(' transfer str', array[1]);
+                const data = XRegExp.exec(array[1], QR_CODE_TRANSFER_REGEXP);
+                console.log(' XRegExp res', data);
+                const result = {};
+                Object.keys(data).forEach(k => {
+                    if (isNaN(parseFloat(k)) && k !== 'index' && k !== 'input' && k !== 'groups') {
+                        result[k] = data[k];
+                    }
+                });
+                console.log('transfer data', result);
+                if (gVars.isAndroid) {
+                    const visible = this.isVisisble();
+                    console.log('android transfer data', result, visible);
+                    if (!visible) {
+                        const context = this.nativeView._context;
+
+                        // setTimeout(()=>{
+                        // const context = this.nativeView._context;
+                        try {
+                            const intent = new android.content.Intent(context, com.akylas.cairnmobile.FloatingActivity.class);
+                            intent.putExtra('data', JSON.stringify(result));
+                            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                            console.log('starting FloatingActivity activity');
+                            context.startActivity(intent);
+                            context.overridePendingTransition(0, 0);
+                            context.moveTaskToBack(true);
+                            return;
+                        } catch (e) {
+                            console.log('error starting activity', e, e.stack);
+                        }
+                        // }},500);
+                        return;
+                    }
+                }
+
                 if (this.activatedUrl === ComponentIds.Transfer) {
                     observable.notify({ eventName: QRCodeDataEvent, object: observable, data });
                 } else {
@@ -686,12 +825,36 @@ export default class App extends BaseVueComponent {
             }
         }
     }
-    onAppUrl(appURL: AppURL) {
-        this.log('Got the following appURL', appURL.path, Array.from(appURL.params.entries()));
+    onAppUrl(appURL: AppURL, args) {
+        this.log('Got the following appURL', appURL, args);
         // if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
-        this.handleReceivedAppUrl(CUSTOM_URL_SCHEME + '://' + appURL.path);
+
+        if (gVars.isAndroid) {
+            const activity = androidApp.startActivity;
+            const visible = activity
+                .getWindow()
+                .getDecorView()
+                .getRootView()
+                .isShown();
+            if (!visible) {
+                if (args && args.eventName === AndroidApplication.activityStartedEvent) {
+                    //ignoring newIntent in background as we already received start activity event with intent
+                    return;
+                } else {
+                }
+            }
+        }
+        try {
+            this.handleReceivedAppUrl(CUSTOM_URL_SCHEME + '://' + appURL.path);
+        } catch (err) {
+            console.log(err);
+        }
         // } else {
         // this.showError(this.$t('unknown_url_command'));
         // }
+    }
+
+    askToScanQrCode() {
+        this.$scanQRCode().catch(this.showError);
     }
 }

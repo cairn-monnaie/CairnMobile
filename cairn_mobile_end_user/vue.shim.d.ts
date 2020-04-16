@@ -26,9 +26,6 @@ declare module 'vue/types/vue' {
         // $showToast(message: string, duration?: ToastDuration, position?: ToastPosition);
         $setAppComponent(comp: App);
         $getAppComponent(): App;
-        $scanQRCode(): Promise<{
-            ICC: string;
-            name: string;
-        }>;
+        $scanQRCode(): Promise<string>;
     }
 }

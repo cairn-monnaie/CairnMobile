@@ -34,6 +34,7 @@ declare const STORE_REVIEW_LINK: string;
 declare const CUSTOM_URL_SCHEME: string;
 declare const CAIRN_TRANSFER_QRCODE: string;
 declare const CAIRN_TRANSFER_QRCODE_PARAMS: string;
+declare const CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: string;
 declare const CAIRN_FULL_QRCODE_FORMAT: string;
 
 declare namespace com {
@@ -46,6 +47,9 @@ declare namespace com {
             class OkhttpCallback {
                 onStringResponse(responseString, statusCode, headers);
                 onFailure(call, error);
+            }
+            class FloatingActivity extends androidx.appcompat.app.AppCompatActivity{
+
             }
         }
     }
