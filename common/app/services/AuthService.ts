@@ -75,6 +75,10 @@ export interface SmsId {
     identifier: string;
 }
 
+export interface QrCodeTransferData
+{ ICC: string; id: number; name: string; amount?: string }
+
+
 export class User {
     // webPushSubscriptions: string[] = null;
     phoneNumbers: PhoneNumber[] = null;
@@ -617,18 +621,15 @@ export default class AuthService extends NetworkService {
             apiPath,
             method: 'POST',
             body: {
-                limit: limit || 100 + '',
-                offset: offset || 0 + '',
+                limit: limit || 100,
+                offset: offset || 0 ,
                 orderBy: {
                     key: sortKey || '',
                     order: sortOrder || '',
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: {
-                    // TODO: Later on, an admin should be able to choose betwwen ROLE_PRO & ROLE_PERSON if desired
-                    '0': 'ROLE_PRO',
-                },
+                roles: ['ROLE_PRO'],
             },
         });
         return result.map(cleanupUser);
@@ -645,19 +646,22 @@ export default class AuthService extends NetworkService {
     }
     async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
+        const body = {
+            fromAccount: account.number,
+            toAccount: user.email || user.mainICC,
+            amount,
+            executionDate: date,
+            // executionDate: dayjs().format('YYYY-MM-DD'),
+            reason,
+            // api_secret: sha(date)
+        } as any;
+        if (!!description) {
+            body.description = description;
+        }
         return this.request({
             apiPath: '/mobile/payment/request',
             method: 'POST',
-            body: {
-                fromAccount: account.number,
-                toAccount: user.email || user.mainICC,
-                amount: amount + '',
-                executionDate: date,
-                // executionDate: dayjs().format('YYYY-MM-DD'),
-                reason,
-                description,
-                // api_secret: sha(date)
-            },
+            body
         });
     }
     async confirmOperation(operationId, code?: string) {
@@ -704,8 +708,8 @@ export default class AuthService extends NetworkService {
                 // keywords: '',
                 types: '',
                 sortOrder: 'DESC',
-                limit: limit || 100 + '',
-                offset: offset || 0 + '',
+                limit: limit || 100 ,
+                offset: offset || 0 ,
                 // orderBy: {
                 //     key: sortKey || '',
                 //     order: sortOrder || ''
