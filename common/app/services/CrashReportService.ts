@@ -74,7 +74,7 @@ export default class CrashReportService extends Observable {
         } else if (realError instanceof NoNetworkError) {
             showSendBugReport = false;
         }
-        // clog('$showError', err, err.stack);
+        console.log('$showError', err, err['stack']);
         const label = new HTMLLabel();
         label.style.padding = '10 20 0 26';
         // label.style.backgroundColor = new Color(255, 255,0,0);

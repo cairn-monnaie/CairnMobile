@@ -13,6 +13,10 @@ import { clog } from '~/utils/logging';
 import { accentColor, cairnFontFamily, darkColor, primaryColor } from '../variables';
 import { bind } from 'helpful-decorators';
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export interface BaseVueComponentRefs {
     [key: string]: any;
     page: NativeScriptVue<Page>;
@@ -87,17 +91,17 @@ export default class BaseVueComponent extends Vue {
         return this.$navigateTo(component, options, cb);
     }
     @bind
-    showError(err: Error | string) {
-        this.showErrorInternal(err);
+    async showError(err: Error | string) {
+        return this.showErrorInternal(err);
     }
-    showErrorInternal(err: Error | string) {
+    async showErrorInternal(err: Error | string) {
         const delta = this.showLoadingStartTime ? Date.now() - this.showLoadingStartTime : -1;
         if (delta >= 0 && delta < 1000) {
-            setTimeout(() => this.showErrorInternal(err), 1000 - delta);
-            return;
+            await timeout(1000 - delta);
+            return this.showErrorInternal(err);
         }
         this.hideLoading();
-        this.$crashReportService.showError(err);
+        return this.$crashReportService.showError(err);
     }
 
     log(...args) {
