@@ -92,10 +92,11 @@ module.exports = {
         'linebreak-style': 'off',
         'max-classes-per-file': 'off',
         'max-len': [
-            'off',
+            1,
             {
-                ignorePattern: '^import |^export {(.*?)}',
-                code: 200
+                // ignorePattern: '^import |^export {(.*?)}',
+                code: 130,
+                "ignoreComments": true
             }
         ],
         'new-parens': 'off',
