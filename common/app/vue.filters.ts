@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-// import { fonticon } from 'nativescript-akylas-fonticon';
 import { $t } from '~/helpers/locale';
 import VueStringFilter from 'vue-string-filter';
 import { convertTime, formatAddress, formatCurrency, formatOsmAddress } from '~/helpers/formatter';
