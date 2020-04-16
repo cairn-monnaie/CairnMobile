@@ -110,7 +110,7 @@ module.exports = (env, params = {}) => {
     const alias = env.alias || {};
     alias['~'] = appFullPath;
     alias['@'] = appFullPath;
-    alias['nativescript-vue'] = 'nativescript-akylas-vue';
+    alias['nativescript-https'] = 'nativescript-akylas-https';
     alias['vue'] = 'nativescript-vue';
 
     if (hasRootLevelScopedModules) {
