@@ -35,9 +35,9 @@
             :borderRadius="20 * sizeFactor"
             :android:roundAsCircle="true"
         />
-        <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
 
         <StackLayout col="2" row="1" rowSpan="2" verticalAlignment="center">
+            <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
             <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="top"  maxLines="2" lineBreak="end" />
             <Label v-show="!!subtitle" :fontSize="14 * sizeFactor" :html="subtitle" verticalTextAlignment="top" :color="subtitleColor" :maxLines="subtitleMaxLines" lineBreak="end" />
         </StackLayout>
@@ -46,7 +46,7 @@
         <GridLayout col="3" row="1" rowSpan="2" verticalAlignment="center" >
             <slot name="rightView">
                 <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" color="#757575" :text="rightIcon" verticalAlignment="center" />
-                <MDButton variant="flat" v-show="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
+                <Button variant="flat" v-show="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
             </slot>
         </GridLayout>
 
