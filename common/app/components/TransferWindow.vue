@@ -1,7 +1,7 @@
 <template>
     <CairnPage id="transfer" @navigatedTo="onLoaded" :actionBarShowLogo="false">
         <GridLayout slot="actionBarSubView" marginTop="10" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="*,auto" rows="auto">
-            <MDTextField
+            <TextField
                 col="0"
                 marginLeft="44"
                 placeholderColor="white"

@@ -2,14 +2,15 @@
     <CairnPage @navigatedTo="onLoaded" actionBarHidden :actionBarHeight="logoViewHeight">
         <InteractiveMap />
         <StackLayout>
-            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" :backgroundColor="themeColor" />
-            <MDButton v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignment="center" verticalTextAlignment="center" :backgroundColor="themeColor" />
+            <Button v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
         </StackLayout>
+        <Button verticalAlignment="top" horizontalAlignment="right" rippleColor="white" variant="flat" class="icon-btn" text="mdi-information-outline" @tap="showAbout" />
         <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
             <StackLayout>
-                <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignmen="center" verticalAlignment="center" :backgroundColor="themeColor" />
+            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignment="center" verticalTextAlignment="center" :backgroundColor="themeColor" />
                 <StackLayout class="form" horizontalAlignment="center">
-                    <MDTextField
+                    <TextField
                         ref="username"
                         class="input"
                         :hint="$t('username') | capitalize"
@@ -23,7 +24,7 @@
                         :error="usernameError"
                     />
 
-                    <MDTextField
+                    <TextField
                         ref="password"
                         class="input"
                         :hint="$t('password') | capitalize"
@@ -35,7 +36,7 @@
                         :error="passwordError"
                     />
 
-                    <MDTextField
+                    <TextField
                         v-show="!isLoggingIn"
                         ref="confirmPassword"
                         class="input"
@@ -48,8 +49,8 @@
                         :error="passwordError"
                     />
 
-                    <MDButton v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
-                    <MDButton v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
+                    <Button v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
+                    <Button v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
                     <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 

@@ -25,7 +25,7 @@
                 <slot name="bottomActionBarLeftButtons" slot="leftButtons" />
             </CActionBar>
             <Label  row="2" v-if="mdiAction" height="24"/>
-            <MDButton v-if="mdiAction" class="floating-btn" row="2" rowSpan="2" :fontSize="mdiActionFontSize" :class="mdiActionClass" :text="mdiAction" horizontalAlignment="center" verticalAlignment="top" @tap="$emit('actionTap', $event)"/>
+            <Button v-if="mdiAction" class="floating-btn" row="2" rowSpan="2" :fontSize="mdiActionFontSize" :class="mdiActionClass" :text="mdiAction" horizontalAlignment="center" verticalAlignment="top" @tap="$emit('actionTap', $event)"/>
 
             <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
         </GridLayout>

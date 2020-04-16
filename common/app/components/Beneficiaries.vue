@@ -8,7 +8,7 @@
                     </v-template>
                 </CollectionView>
             </PullToRefresh>
-            <MDButton row="1" :text="$tc('add_beneficiary')" @tap="addBeneficiary" />
+            <Button row="1" :text="$tc('add_beneficiary')" @tap="addBeneficiary" />
         </GridLayout>
     </CairnPage>
 </template>

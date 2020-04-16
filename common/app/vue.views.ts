@@ -5,7 +5,7 @@ installUIMixins();
 import { Label as HTMLLabel } from 'nativescript-htmllabel'; // require first to get Font res loading override
 
 import ActivityIndicatorPlugin from 'nativescript-material-activityindicator/vue';
-import ButtonPlugin from 'nativescript-material-button/vue';
+// import ButtonPlugin from 'nativescript-material-button/vue';
 // import CardViewPlugin from 'nativescript-material-cardview/vue';
 // import ProgressPlugin from 'nativescript-material-progress/vue';
 // import RipplePlugin from 'nativescript-material-ripple/vue';
@@ -30,7 +30,7 @@ const Plugin = {
         Vue.component('CairnPage', CairnPage);
         Vue.use(ActivityIndicatorPlugin);
         Vue.use(ImagePlugin);
-        Vue.use(ButtonPlugin);
+        // Vue.use(ButtonPlugin);
         // Vue.use(CardViewPlugin);
         // Vue.use(ProgressPlugin);
         // Vue.use(RipplePlugin);
@@ -42,6 +42,8 @@ const Plugin = {
         Vue.use(CollectionViewPlugin);
         Vue.use(Pager);
 
+        Vue.registerElement('Button',() => require('nativescript-material-button').Button);
+        Vue.registerElement('TextField',() => require('nativescript-material-textfield').TextField);
         Vue.registerElement('Label', () => HTMLLabel);
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('nativescript-barcodeview').BarcodeView);

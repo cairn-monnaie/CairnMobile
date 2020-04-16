@@ -1,9 +1,9 @@
 <template>
     <CairnPage @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
         <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" v-if="editable">
-            <MDButton variant="flat" class="icon-btn" v-show="myProfile && !editing" text="mdi-qrcode" @tap="toggleQRCode()" />
-            <MDButton variant="flat" class="icon-btn" v-show="canSave" text="mdi-content-save" @tap="saveProfile()" />
-            <MDButton variant="flat" class="icon-btn" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
+            <Button variant="flat" class="icon-btn" v-show="myProfile && !editing" text="mdi-qrcode" @tap="toggleQRCode()" />
+            <Button variant="flat" class="icon-btn" v-show="canSave" text="mdi-content-save" @tap="saveProfile()" />
+            <Button variant="flat" class="icon-btn" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
         </StackLayout>
         <GridLayout slot="actionBarSubView" height="150" col="0" colSpan="3" verticalAlignment="top" rows="*,3*,*,*">
             <Label
@@ -47,7 +47,7 @@
                             @rightTap="deletePhoneNumber(phone)"
                             :key="phone.phoneNumber"
                         />
-                        <MDButton :text="$tc('add_phone')" @tap="addPhoneNumber" />
+                        <Button :text="$tc('add_phone')" @tap="addPhoneNumber" />
 
                         <!-- <EditableListItem leftIcon="mdi-map-marker" :title="userProfile.address.street1" :overText="$t('street')" @textChange="onTextChange($event.value, 'address.street1')" /> -->
 
@@ -60,7 +60,7 @@
                             :title="((updateUserProfile && updateUserProfile.address) || userProfile.address) | address"
                             :overText="$t('address')"
                         />
-                        <MDButton :text="$tc('change_address')" @tap="changeAddress" />
+                        <Button :text="$tc('change_address')" @tap="changeAddress" />
                     </StackLayout>
                     <StackLayout v-else>
                         <MapComponent v-if="!myProfile && userProfile.address && userProfile.address.latitude" ref="mapComp" @mapReady="onMapReady" rowSpan="4" :zoom="16" width="100%" height="150" />

@@ -26,7 +26,7 @@
                     <Label fontSize="18" paddingTop="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="top" :text="title" />
                     <Label fontSize="16" paddingBottom="30" fontWeight="bold" colSpan="4" textAlignment="center" color="white" verticalAlignment="bottom" :text="message" />
                 </GridLayout>
-                <MDButton
+                <Button
                     variant="flat"
                     :row="j === 1 ? 4 : 1 + Math.floor((j - 2) / 3)"
                     :col="j === 1 ? 1 : (j - 2) % 3"
@@ -43,7 +43,7 @@
                     :color="themeColor"
                     fontSize="30"
                 />
-                <MDButton
+                <Button
                     variant="flat"
                     class="mdi"
                     row="4"

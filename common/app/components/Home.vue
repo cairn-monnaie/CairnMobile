@@ -50,7 +50,7 @@
             </Fab> -->
         </StackLayout>
         <StackLayout slot="bottomActionBarRightButtons" verticalAlignment="center" orientation="horizontal">
-            <MDButton variant="flat" class="icon-btn" text="mdi-qrcode-scan" @tap="scanQRCode" />
+            <Button variant="flat" class="icon-btn" text="mdi-qrcode-scan" @tap="scanQRCode" />
         </StackLayout>
     </CairnPage>
 </template>

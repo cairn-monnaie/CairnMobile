@@ -3,7 +3,7 @@
         <MultiDrawer ref="drawer" :options="drawerOptions">
             <GridLayout slot="left" rows="auto,*,auto" height="100%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
-                    <MDButton variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
+                    <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
                     <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
                     <Image :src="userProfile.image" v-show="!!userProfile.image" />
                     <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
@@ -19,8 +19,8 @@
                 </ScrollView>
                 <GridLayout columns="*,auto" row="2" width="100%" class="menuInfos menuButtons">
                     <Label :text="'App version: ' + (appVersion || '')" padding="10 0 10 0" verticalTextAlignment="center"/>
-                    <!-- <MDButton variant="flat" text="mdi-email" @tap="onTap('sendFeedback')" /> -->
-                    <MDButton col="1" variant="flat" v-if="$crashReportService.sentryEnabled" text="mdi-bug" @tap="onTap('sendBugReport')" />
+                    <!-- <Button variant="flat" text="mdi-email" @tap="onTap('sendFeedback')" /> -->
+                    <Button col="1" variant="flat" v-if="$crashReportService.sentryEnabled" text="mdi-bug" @tap="onTap('sendBugReport')" />
                 </GridLayout>
             </GridLayout>
             <!-- <GridLayout> -->
