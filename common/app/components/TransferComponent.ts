@@ -1,4 +1,3 @@
-import Vue from 'nativescript-vue';
 import BaseVueComponent from './BaseVueComponent';
 import { AccountInfo, Benificiary, QrCodeTransferData, User } from '~/services/AuthService';
 import { NoNetworkError } from '~/services/NetworkService';
@@ -10,6 +9,8 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import { PropertyChangeData } from '@nativescript/core/ui/frame';
 import { TextField } from 'nativescript-material-textfield';
 import UserPicker from './UserPicker';
+
+import { Vibrate } from 'nativescript-vibrate';
 
 @Component({})
 export default class TransferComponent extends BaseVueComponent {
@@ -34,7 +35,6 @@ export default class TransferComponent extends BaseVueComponent {
     public constructor() {
         super();
     }
-
 
     get canSendSMS() {
         return this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0;
@@ -75,7 +75,6 @@ export default class TransferComponent extends BaseVueComponent {
         // appOn(QRCodeDataEvent, this.onQrCodeDataEvent, this);
         this.beneficiaries = this.$authService.beneficiaries;
         this.accounts = this.$authService.accounts || [];
-
     }
     onLoaded() {
         // cant do this on mounted because subclass would class because inheritance does not seem to be up
@@ -96,7 +95,7 @@ export default class TransferComponent extends BaseVueComponent {
     chooseAccount() {}
 
     get amountTF() {
-        return this.$refs.amountTF && this.$refs.amountTF.nativeView as TextField;
+        return this.$refs.amountTF && (this.$refs.amountTF.nativeView as TextField);
     }
     ignoreNextTextChange = false;
     setTextFieldValue(value, tf?: TextField) {
@@ -107,9 +106,9 @@ export default class TransferComponent extends BaseVueComponent {
             amountTF.setSelection(value.length);
         }
     }
-    validateAmount({value}, forceSetText =false) {
-        if (this.ignoreNextTextChange ) {
-            this.ignoreNextTextChange =false;
+    validateAmount({ value }, forceSetText = false) {
+        if (this.ignoreNextTextChange) {
+            this.ignoreNextTextChange = false;
             return;
         }
         if (!value) {
@@ -121,7 +120,7 @@ export default class TransferComponent extends BaseVueComponent {
             return;
         }
         const realvalue = parseFloat(value.replace(/,/g, '.')) || 0;
-        const realvalueStr = this.oldAmountStr = realvalue + '';
+        const realvalueStr = (this.oldAmountStr = realvalue + '');
         this.amount = realvalue;
         this.checkForm();
         if (forceSetText) {
@@ -174,7 +173,9 @@ export default class TransferComponent extends BaseVueComponent {
 
     get accountBalanceText() {
         if (this.account) {
-            return `<font color=${this.accentColor}>${formatCurrency(this.account.balance, true)}<font face="${this.cairnFontFamily}">cairn-currency</font></font>`;
+            return `<font color=${this.accentColor}>${formatCurrency(this.account.balance, true)}<font face="${
+                this.cairnFontFamily
+            }">cairn-currency</font></font>`;
         }
     }
     async submit() {
@@ -190,7 +191,13 @@ export default class TransferComponent extends BaseVueComponent {
                 throw new Error(this.$t('wrong_security'));
             }
             this.showLoading(this.$t('loading'));
-            const r = await this.$authService.createTransaction(this.account, this.recipient, this.amount, this.reason, this.description);
+            const r = await this.$authService.createTransaction(
+                this.account,
+                this.recipient,
+                this.amount,
+                this.reason,
+                this.description
+            );
             // createTransaction returns a response with 3 fields :
             // * confirmation_url
             // * operation object
@@ -223,6 +230,7 @@ export default class TransferComponent extends BaseVueComponent {
             this.hideLoading();
             this.close();
             this.showTransactionDone(this.amount, this.recipient);
+            new Vibrate().vibrate(500);
         } catch (err) {
             this.showError(err);
         } finally {
@@ -233,11 +241,9 @@ export default class TransferComponent extends BaseVueComponent {
         showSnack({
             message: this.$t('transaction_done', amount, recipient)
         });
-
     }
     close() {
         this.$emit('close');
-
     }
     selectAccount() {}
     selectRecipient() {
@@ -255,7 +261,7 @@ export default class TransferComponent extends BaseVueComponent {
     }
     handleQRData({ ICC, name, id, amount }: QrCodeTransferData) {
         if (amount) {
-            this.validateAmount({value:amount}, true);
+            this.validateAmount({ value: amount }, true);
         }
         if (ICC && name) {
             // this.log('handleQRData1', ICC, name);
