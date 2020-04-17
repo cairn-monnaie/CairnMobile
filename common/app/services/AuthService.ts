@@ -75,9 +75,12 @@ export interface SmsId {
     identifier: string;
 }
 
-export interface QrCodeTransferData
-{ ICC: string; id: number; name: string; amount?: string }
-
+export interface QrCodeTransferData {
+    ICC: string;
+    id: number;
+    name: string;
+    amount?: string;
+}
 
 export class User {
     // webPushSubscriptions: string[] = null;
@@ -110,7 +113,7 @@ const UserKeys = Object.getOwnPropertyNames(new User());
 
 function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
     const ret: any = {};
-    keys.forEach((key) => {
+    keys.forEach(key => {
         ret[key] = obj[key];
     });
     return ret;
@@ -130,17 +133,17 @@ function cleanupUser(user: any) {
     if (user.phones) {
         result.phoneNumbers = [];
         result.smsIds = [];
-        user.phones.forEach((p) => {
+        user.phones.forEach(p => {
             if (p.phoneNumber) {
                 result.phoneNumbers.push({
                     id: p.id,
-                    phoneNumber: p.phoneNumber,
+                    phoneNumber: p.phoneNumber
                 });
             }
             if (p.identifier) {
                 result.smsIds.push({
                     id: p.id,
-                    identifier: p.identifier,
+                    identifier: p.identifier
                 });
             }
         });
@@ -154,8 +157,8 @@ function cleanupUser(user: any) {
             zipCity: {
                 zipCode: result.address.zipCity.zipCode,
                 city: result.address.zipCity.city,
-                name: result.address.zipCity.name,
-            },
+                name: result.address.zipCity.name
+            }
         };
     }
 
@@ -173,7 +176,10 @@ function cleanupTransaction(transaction: any) {
     }
     result.reason = result.reason.split('\n')[0];
     // t.executionDate = dayjs(t.executionDate).valueOf();
-    result.credit = result.type === TransactionType.CONVERSION_BDC || result.type === TransactionType.CONVERSION_HELLOASSO || result.type === TransactionType.DEPOSIT;
+    result.credit =
+        result.type === TransactionType.CONVERSION_BDC ||
+        result.type === TransactionType.CONVERSION_HELLOASSO ||
+        result.type === TransactionType.DEPOSIT;
     if (result.creditor) {
         result.creditor = cleanupUser(result.creditor);
     }
@@ -191,7 +197,7 @@ export interface LoginParams {
 export enum Roles {
     PRO = 'ROLE_PRO',
     PERSON = 'ROLE_PERSON',
-    USER = 'ROLE_USER',
+    USER = 'ROLE_USER'
 }
 
 export interface ZipCity {
@@ -281,7 +287,7 @@ export enum TransactionType {
     SCHEDULED_FAILED, // virement programmé échoué)
     SMS_PAYMENT, // paiement par SMS)
     ONLINE_PAYMENT, // achat en ligne)
-    MOBILE_APP,
+    MOBILE_APP
 }
 export class Transaction {
     credit: boolean = null;
@@ -353,35 +359,35 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
     });
 }
 function flatten(arr) {
-    return arr.reduce(function (flat, toFlatten) {
+    return arr.reduce(function(flat, toFlatten) {
         return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
     }, []);
 }
 function getFormData(actualData, prefix?: string) {
     return Promise.all(
-        Object.keys(actualData).map((k) => {
+        Object.keys(actualData).map(k => {
             const value = actualData[k];
             if (!!value) {
                 if (value instanceof ImageAsset || value instanceof ImageSource) {
-                    return getImageData(value).then((data) => ({
+                    return getImageData(value).then(data => ({
                         data,
                         contentType: 'image/jpeg',
                         fileName: 'image.jpeg',
-                        parameterName: `cairn_user_profile_edit[${k}][file]`,
+                        parameterName: `cairn_user_profile_edit[${k}][file]`
                     }));
                 } else if (typeof value === 'object') {
                     return getFormData(value, `${prefix || ''}[${k}]`);
                 } else {
                     return Promise.resolve({
                         data: value.toString(),
-                        parameterName: `cairn_user_profile_edit${prefix || ''}[${k}]`,
+                        parameterName: `cairn_user_profile_edit${prefix || ''}[${k}]`
                     });
                 }
             }
 
             return Promise.resolve(null);
         })
-    ).then((result) => flatten(result));
+    ).then(result => flatten(result));
 }
 
 export default class AuthService extends NetworkService {
@@ -419,7 +425,7 @@ export default class AuthService extends NetworkService {
             throw new HTTPError({
                 statusCode: 401,
                 message: 'not_authorized',
-                requestParams,
+                requestParams
             });
         }
         await this.getRefreshToken();
@@ -429,13 +435,13 @@ export default class AuthService extends NetworkService {
     async getUserProfile(userId?: number) {
         const result = await this.request({
             apiPath: `/mobile/users/${userId || this.userId}`,
-            method: 'GET',
+            method: 'GET'
         });
         this.userProfile = cleanupUser(result);
         this.notify({
             eventName: UserProfileEvent,
             object: this,
-            data: this.userProfile,
+            data: this.userProfile
         } as UserProfileEventData);
         return this.userProfile;
     }
@@ -468,11 +474,11 @@ export default class AuthService extends NetworkService {
         const params = await getFormData(actualData);
         const result = await this.request({
             headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'multipart/form-data'
             },
             apiPath: `/mobile/users/profile/${userId || this.userId}`,
-            body: params.filter((s) => !!s),
-            method: 'POST',
+            body: params.filter(s => !!s),
+            method: 'POST'
         });
         // if it succeeds we need to update the user profile
         await this.getUserProfile();
@@ -485,8 +491,8 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             body: {
                 phoneNumber,
-                paymentEnabled: false,
-            },
+                paymentEnabled: false
+            }
         });
     }
     async confirmPhone(validationUrl: string, activationCode: string) {
@@ -494,8 +500,8 @@ export default class AuthService extends NetworkService {
             apiPath: validationUrl,
             method: 'POST',
             body: {
-                activationCode,
-            },
+                activationCode
+            }
         });
     }
 
@@ -506,8 +512,8 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/phones/${phoneNumber.id}`,
             method: 'DELETE',
             body: {
-                save: 'true',
-            },
+                save: 'true'
+            }
         }).then(() => this.getUserProfile());
     }
 
@@ -515,9 +521,9 @@ export default class AuthService extends NetworkService {
         return this.request({
             apiPath: '/zipcities',
             body: {
-                search: `${zipCity.zipCode} ${zipCity.city}`,
+                search: `${zipCity.zipCode} ${zipCity.city}`
             },
-            method: 'POST',
+            method: 'POST'
         });
     }
     async autocompleteAddress(query: string) {
@@ -533,26 +539,30 @@ export default class AuthService extends NetworkService {
                 // namedetails: 0,
                 // addressdetails: 1,
                 // dedupe: true,
-                limit: 20,
+                limit: 20
             },
-            method: 'GET',
+            method: 'GET'
         });
         const newItems = result.features
-            .filter((r) => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode)
-            .map((r) => ({
+            .filter(
+                r => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode
+            )
+            .map(r => ({
                 longitude: r.geometry && r.geometry.coordinates[0],
                 latitude: r.geometry && r.geometry.coordinates[1],
-                display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
-                street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name}`,
+                display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
+                    r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
+                street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
+                    r.properties.name}`,
                 zipCity: {
                     name: `${r.properties.postcode} ${r.properties.city}`,
                     zipCode: r.properties.postcode,
-                    city: r.properties.city,
-                },
+                    city: r.properties.city
+                }
             }));
         // const newItems = result.filter(s => s.address && (s.address.pedestrian || s.address.road || s.address.street) && (s.address.city || s.address.village));
         // newItems.forEach(s => (s.display_name = formatOsmAddress(s.address)));
-        const displayNames = newItems.map((s) => s.display_name);
+        const displayNames = newItems.map(s => s.display_name);
         return newItems.filter((el, i, a) => i === displayNames.indexOf(el.display_name)) as Address[];
         // return newItems;
     }
@@ -563,15 +573,15 @@ export default class AuthService extends NetworkService {
         // if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
         let result = await this.request<AccountInfo[]>({
             apiPath: '/mobile/accounts.json',
-            method: 'GET',
+            method: 'GET'
         });
 
-        result = result.map((a) => ({
+        result = result.map(a => ({
             balance: parseFloat(a.status.balance),
             creditLimit: parseFloat(a.status.creditLimit),
             number: a.number,
             id: a.id,
-            name: a.type.name,
+            name: a.type.name
         }));
         // this.lastAccountsUpdateTime = Date.now();
         this.accounts = result;
@@ -579,7 +589,7 @@ export default class AuthService extends NetworkService {
         this.notify({
             eventName: AccountInfoEvent,
             object: this,
-            data: this.accounts,
+            data: this.accounts
         } as AccountInfoEventData);
         return this.accounts;
     }
@@ -591,28 +601,42 @@ export default class AuthService extends NetworkService {
         // }
         let result = await this.request<Benificiary[]>({
             apiPath: '/mobile/beneficiaries',
-            method: 'GET',
+            method: 'GET'
         });
-        this.beneficiaries = result = result.map((b) => {
+        this.beneficiaries = result = result.map(b => {
             b.user = cleanupUser(b.user);
             return b;
         });
         // this.lastBenificiariesUpdateTime = Date.now();
         return result;
     }
-    async getUsers({ sortKey, sortOrder, limit, offset, query, mapBounds }: { sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string; mapBounds?: MapBounds }) {
+    async getUsers({
+        sortKey,
+        sortOrder,
+        limit,
+        offset,
+        query,
+        mapBounds
+    }: {
+        sortKey?: string;
+        sortOrder?: string;
+        limit?: number;
+        offset?: number;
+        query?: string;
+        mapBounds?: MapBounds;
+    }) {
         let boundingBox = {
             minLon: '',
             maxLon: '',
             minLat: '',
-            maxLat: '',
+            maxLat: ''
         };
         if (mapBounds) {
             boundingBox = {
                 minLon: mapBounds.southwest.longitude + '',
                 maxLon: mapBounds.northeast.longitude + '',
                 minLat: mapBounds.southwest.latitude + '',
-                maxLat: mapBounds.northeast.latitude + '',
+                maxLat: mapBounds.northeast.latitude + ''
             };
         }
 
@@ -622,15 +646,15 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             body: {
                 limit: limit || 100,
-                offset: offset || 0 ,
+                offset: offset || 0,
                 orderBy: {
                     key: sortKey || '',
-                    order: sortOrder || '',
+                    order: sortOrder || ''
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: ['ROLE_PRO'],
-            },
+                roles: ['ROLE_PRO']
+            }
         });
         return result.map(cleanupUser);
     }
@@ -640,11 +664,17 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/beneficiaries',
             method: 'POST',
             body: {
-                cairn_user: cairn_user_email,
-            },
+                cairn_user: cairn_user_email
+            }
         });
     }
-    async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
+    async createTransaction(
+        account: AccountInfo,
+        user: User,
+        amount: number,
+        reason: string,
+        description: string
+    ): Promise<TransactionConfirmation> {
         const date = Date.now();
         const body = {
             fromAccount: account.number,
@@ -652,7 +682,7 @@ export default class AuthService extends NetworkService {
             amount,
             executionDate: date,
             // executionDate: dayjs().format('YYYY-MM-DD'),
-            reason,
+            reason
             // api_secret: sha(date)
         } as any;
         if (!!description) {
@@ -670,9 +700,9 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             body: {
                 save: 'true',
-                confirmationCode: '1111',
+                confirmationCode: '1111'
                 // api_secret: sha(oprationId)
-            },
+            }
         });
         // .then(r => {
         // we need to refresh accounts for he whole UI to update
@@ -698,27 +728,43 @@ export default class AuthService extends NetworkService {
     accountHistory: {
         [k: string]: Transaction[];
     } = {};
-    async getAccountHistory({ accountId, sortKey, sortOrder, limit, offset, query }: { accountId: string; sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string }) {
+    async getAccountHistory({
+        accountId,
+        sortKey,
+        sortOrder,
+        limit,
+        offset,
+        query
+    }: {
+        accountId: string;
+        sortKey?: string;
+        sortOrder?: string;
+        limit?: number;
+        offset?: number;
+        query?: string;
+    }) {
         const result = await this.request<Transaction[]>({
             apiPath: `/mobile/account/operations/${accountId}`,
             body: {
-                begin: dayjs().subtract(2, 'month').format('YYYY-MM-DD'),
+                begin: dayjs()
+                    .subtract(2, 'month')
+                    .format('YYYY-MM-DD'),
                 end: dayjs().format('YYYY-MM-DD'),
                 // maxAmount: '',
                 // keywords: '',
                 types: '',
                 sortOrder: 'DESC',
-                limit: limit || 100 ,
-                offset: offset || 0 ,
+                limit: limit || 100,
+                offset: offset || 0
                 // orderBy: {
                 //     key: sortKey || '',
                 //     order: sortOrder || ''
                 // },
                 // name: query || ''
             },
-            method: 'POST',
+            method: 'POST'
         });
-        const accountHistory = result.map(cleanupTransaction).sort(function (a, b) {
+        const accountHistory = result.map(cleanupTransaction).sort(function(a, b) {
             return b.executionDate - a.executionDate;
         });
         this.accountHistory[accountId] = accountHistory;
@@ -731,8 +777,8 @@ export default class AuthService extends NetworkService {
             queryParams: {
                 originator: 'blabalcairn',
                 recipient: sender,
-                message,
-            },
+                message
+            }
         });
     }
     async getRefreshToken() {
@@ -744,8 +790,8 @@ export default class AuthService extends NetworkService {
                     client_id: CAIRN_CLIENT_ID,
                     client_secret: CAIRN_CLIENT_SECRET,
                     grant_type: 'refresh_token',
-                    refresh_token: this.refreshToken,
-                },
+                    refresh_token: this.refreshToken
+                }
             });
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
@@ -771,8 +817,8 @@ export default class AuthService extends NetworkService {
                     client_secret: CAIRN_CLIENT_SECRET,
                     grant_type: 'password',
                     username: user.username,
-                    password: user.password,
-                },
+                    password: user.password
+                }
             });
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
@@ -795,10 +841,11 @@ export default class AuthService extends NetworkService {
             // .then(() => {
             this.loginParams = user;
             if (!wasLoggedin) {
+                console.log('emitting loggedin event');
                 this.notify({
                     eventName: LoggedinEvent,
                     object: this,
-                    data: this.userProfile,
+                    data: this.userProfile
                 } as UserProfileEventData);
             }
             // })
@@ -817,7 +864,7 @@ export default class AuthService extends NetworkService {
         if (wasLoggedin) {
             this.notify({
                 eventName: LoggedoutEvent,
-                object: this,
+                object: this
             });
         }
     }
@@ -827,8 +874,8 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/users/registration',
             method: 'POST',
             queryParams: {
-                type,
-            },
+                type
+            }
         });
     }
 
@@ -840,9 +887,9 @@ export default class AuthService extends NetworkService {
                 current_password: currentPassword,
                 plainPassword: {
                     first: newPassword,
-                    second: confirmPassword,
-                },
-            },
+                    second: confirmPassword
+                }
+            }
         });
 
         // const result = await firebase.createUser({
