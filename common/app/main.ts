@@ -7,7 +7,6 @@ import { install as installGestures } from 'nativescript-gesturehandler';
 import { install as installBottomSheets } from 'nativescript-material-bottomsheet';
 import { install, themer } from 'nativescript-material-core';
 import Vue from 'nativescript-vue';
-import firebase from 'nativescript-plugin-firebase';
 
 Vue.prototype.$crashReportService = crashReportService;
 // import * as trace from '@nativescript/core/trace';
@@ -57,27 +56,27 @@ function throwVueError(err) {
     crashReportService.showError(err);
 }
 
-firebase.init({
-  // Optionally pass in properties for database, authentication and cloud messaging,
-  // see their respective docs.
-      showNotifications: true,
-      showNotificationsWhenInForeground: true,
+// firebase.init({
+//     // Optionally pass in properties for database, authentication and cloud messaging,
+//     // see their respective docs.
+//     showNotifications: true,
+//     showNotificationsWhenInForeground: true,
 
-      onPushTokenReceivedCallback: (token) => {
-        console.log('[Firebase] onPushTokenReceivedCallback:', { token });
-      },
+//     onPushTokenReceivedCallback: (token) => {
+//         console.log('[Firebase] onPushTokenReceivedCallback:', { token });
+//     },
 
-      onMessageReceivedCallback: (message: firebase.Message) => {
-        console.log('[Firebase] onMessageReceivedCallback:', { message });
-      }
-}).then(
-  () => {
-    console.log("firebase.init done");
-  },
-  error => {
-    console.log(`firebase.init error: ${error}`);
-  }
-);
+//     onMessageReceivedCallback: (message: firebase.Message) => {
+//         console.log('[Firebase] onMessageReceivedCallback:', { message });
+//     }
+// }).then(
+//     () => {
+//         console.log('firebase.init done');
+//     },
+//     error => {
+//         console.log(`firebase.init error: ${error}`);
+//     }
+// );
 
 Vue.config.errorHandler = (e, vm, info) => {
     if (e) {
@@ -89,6 +88,7 @@ Vue.config.errorHandler = (e, vm, info) => {
 Vue.config.warnHandler = function(msg, vm, trace) {
     cwarn(msg, trace);
 };
+
 
 new Vue({
     render: h => h(App)

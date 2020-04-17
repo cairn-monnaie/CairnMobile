@@ -44,6 +44,8 @@ import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/
 import { Observable } from '@nativescript/core/data/observable';
 import Floating from './Floating';
 import { MODAL_ROOT_VIEW_CSS_CLASS, getSystemCssClasses } from '@nativescript/core/css/system-classes';
+import { Message, registerForPushNotifications } from 'nativescript-push';
+import { VueConstructor } from 'vue/types/umd';
 
 // function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
 //     const fontAspectRatio = 1.28571429;
@@ -269,6 +271,28 @@ export default class App extends BaseVueComponent {
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
+
+        if (this.loggedInOnStart) {
+            // added this here so we can do some wiring
+            console.log('registerForPushNotifications');
+            registerForPushNotifications({
+                onPushTokenReceivedCallback: (token: string): void => {
+                    console.log('Firebase plugin received a push token: ' + token);
+                },
+
+                onMessageReceivedCallback: (message: Message) => {
+                    console.log('Push message received: ' + message.title);
+                },
+
+                // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
+                showNotifications: true,
+
+                // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
+                showNotificationsWhenInForeground: true
+            })
+                .then(() => console.log('Registered for push'))
+                .catch(this.showError);
+        }
         handleOpenURL(this.onAppUrl);
     }
 
