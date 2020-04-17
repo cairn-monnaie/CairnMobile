@@ -345,7 +345,9 @@ export class NetworkService extends Observable {
         // }
         const signature = this.buildAuthorization(requestParams);
 
-        headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${signature[1]}`;
+        headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${
+            signature[1]
+        }`;
         // if (this.token) {
         //     headers['Authorization'] = `Bearer ${this.token}`;
         // }
@@ -353,20 +355,19 @@ export class NetworkService extends Observable {
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
         const time = Date.now().toString();
-        console.log('buildAuthorization', requestParams);
+        // console.log('buildAuthorization', requestParams);
 
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
-            let bodyStr ;
+            let bodyStr;
             if (requestParams.body) {
                 bodyStr = jsonObjectToKeepOrderString(requestParams.body).replace(/\s+/g, '');
             } else if (typeof requestParams.content === 'string') {
                 bodyStr = jsonObjectToKeepOrderString(JSON.parse(requestParams.content).replace(/\s+/g, ''));
             }
-            console.log('bodyStr', bodyStr);
+            // console.log('bodyStr', bodyStr);
             if (bodyStr) {
                 hmacString += md5(bodyStr);
-
             }
         }
         // console.log(hmacString);
@@ -392,9 +393,11 @@ export class NetworkService extends Observable {
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
-        return https.request(requestParams as HttpRequestOptions).then(response =>
-            this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
-        ) as Promise<T>;
+        return https
+            .request(requestParams as HttpRequestOptions)
+            .then(response =>
+                this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)
+            ) as Promise<T>;
     }
 
     // requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -446,16 +449,24 @@ export class NetworkService extends Observable {
                     (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
                     (statusCode === 400 &&
                         jsonReturn.error &&
-                        jsonReturn.error.message === 'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
+                        jsonReturn.error.message ===
+                            'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
                 ) {
                     return this.handleRequestRetry(requestParams, retry);
                 }
                 const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                let message = $t((typeof error === 'string' ? error : error.error_description || error.form || error.message || error.error || error).replace(/\s/g, '_').toLowerCase());
+                let message = $t(
+                    (typeof error === 'string'
+                        ? error
+                        : error.error_description || error.form || error.message || error.error || error
+                    )
+                        .replace(/\s/g, '_')
+                        .toLowerCase()
+                );
                 if (error.exception && error.exception.length > 0) {
                     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 }
-                this.log('throwing http error',error.code || statusCode, message, requestParams);
+                this.log('throwing http error', error.code || statusCode, message, requestParams);
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
                     message,
