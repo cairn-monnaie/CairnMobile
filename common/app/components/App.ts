@@ -3,7 +3,6 @@ import { Frame, View } from '@nativescript/core/ui/frame/frame';
 import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
 import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
 import { Page } from '@nativescript/core/ui/page';
-import { TabView } from '@nativescript/core/ui/tab-view/tab-view';
 import { compose } from 'nativescript-email';
 import * as EInfo from 'nativescript-extendedinfo';
 import { login } from 'nativescript-material-dialogs';
@@ -12,14 +11,12 @@ import { TextField } from 'nativescript-material-textfield';
 import * as perms from 'nativescript-perms';
 import { Vibrate } from 'nativescript-vibrate';
 import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
-import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { setDrawerInstance } from '~/main';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
 import { screenHeightDips, screenWidthDips } from '~/variables';
 import { AppURL, handleOpenURL } from 'nativescript-appurl';
 import TransferWindow from './TransferWindow';
-
 import {
     AndroidActivityResultEventData,
     AndroidApplication,
@@ -91,10 +88,13 @@ export const on = observable.on.bind(observable);
 export const off = observable.off.bind(observable);
 
 const XRegExp = require('xregexp');
-const QR_CODE_TRANSFER_REGEXP_STR = CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + '(?:' + CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + ')?';
+const QR_CODE_TRANSFER_REGEXP_STR =
+    CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
+    '(?:' +
+    CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
+    ')?';
 const QR_CODE_TRANSFER_REGEXP = XRegExp(QR_CODE_TRANSFER_REGEXP_STR);
-console.log('QR_CODE_TRANSFER_REGEXP_STR', QR_CODE_TRANSFER_REGEXP_STR);
-console.log('QR_CODE_TRANSFER_REGEXP', QR_CODE_TRANSFER_REGEXP);
+
 function base64Encode(value) {
     if (gVars.isIOS) {
         const text = NSString.stringWithString(value);
@@ -276,10 +276,14 @@ export default class App extends BaseVueComponent {
         // GC();
     }
     destroyed() {
+        this.innerFrame.off(Page.navigatingToEvent, this.onPageNavigation, this);
         super.destroyed();
         applicationOff(suspendEvent, this.onAppPause, this);
         applicationOff(resumeEvent, this.onAppResume, this);
-        this.$authService.off(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
+        const authService = this.$authService;
+        authService.off(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
+        authService.off(LoggedinEvent, this.onLoggedIn, this);
+        authService.off(LoggedoutEvent, this.onLoggedOut, this);
         if (gVars.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
@@ -293,11 +297,16 @@ export default class App extends BaseVueComponent {
     }
     mounted(): void {
         super.mounted();
+        applicationOn(resumeEvent, this.onAppResume, this);
+        applicationOn(suspendEvent, this.onAppPause, this);
+        const authService = Vue.prototype.$authService;
+        authService.on(LoggedinEvent, this.onLoggedIn, this);
+        authService.on(LoggedoutEvent, this.onLoggedOut, this);
+        authService.on(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
+
+        this.innerFrame.on(Page.navigatingToEvent, this.onPageNavigation, this);
 
         // this.networkConnected = this.$authService.connected;
-        this.$authService.on(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
-        applicationOn(suspendEvent, this.onAppPause, this);
-        applicationOn(resumeEvent, this.onAppResume, this);
         if (gVars.isAndroid && gVars.internalApp) {
             perms
                 .request('receiveSms')
@@ -365,29 +374,27 @@ export default class App extends BaseVueComponent {
         //         this.activatedUrl = event.urlAfterRedirects;
         //     }
         // });
-        this.innerFrame.on(Page.navigatingToEvent, this.onPageNavigation, this);
-
-        const authService = Vue.prototype.$authService;
-
-        authService.on(LoggedinEvent, e => {
-            this.currentlyLoggedIn = true;
-            const profile = (this.userProfile = e.data as UserProfile);
-            this.$crashReportService.setExtra('profile', profile);
-            this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
-                // this.$securityService.createPasscode(this).catch(err => {
-                //     this.showError(err);
-                //     this.$authService.logout();
-                // });
-            });
-        });
-        authService.on(LoggedoutEvent, () => {
-            this.$crashReportService.setExtra('profile', null);
-            this.currentlyLoggedIn = false;
-            this.$securityService.clear();
-            this.goBackToLogin();
-        });
     }
     appPaused = true;
+    onLoggedIn(e) {
+        this.currentlyLoggedIn = true;
+        console.log('we loggedin', this.currentlyLoggedIn);
+        const profile = (this.userProfile = e.data as UserProfile);
+        this.$crashReportService.setExtra('profile', profile);
+        this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
+            // this.$securityService.createPasscode(this).catch(err => {
+            //     this.showError(err);
+            //     this.$authService.logout();
+            // });
+        });
+    }
+    onLoggedOut() {
+        console.log('we logged out');
+        this.$crashReportService.setExtra('profile', null);
+        this.currentlyLoggedIn = false;
+        this.$securityService.clear();
+        this.goBackToLogin();
+    }
     onAppResume(args: ApplicationEventData) {
         console.log('onAppResume', this.appPaused);
         if (!this.appPaused) {
