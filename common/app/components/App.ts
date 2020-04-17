@@ -280,14 +280,18 @@ export default class App extends BaseVueComponent {
         super.destroyed();
         applicationOff(suspendEvent, this.onAppPause, this);
         applicationOff(resumeEvent, this.onAppResume, this);
+
         const authService = this.$authService;
         authService.off(NetworkConnectionStateEvent, this.onNetworkStateChange, this);
         authService.off(LoggedinEvent, this.onLoggedIn, this);
         authService.off(LoggedoutEvent, this.onLoggedOut, this);
+
         if (gVars.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
-                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(this.mMessageReceiver);
+                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(
+                    this.mMessageReceiver
+                );
                 this.mMessageReceiver = null;
             }
         }
@@ -311,48 +315,17 @@ export default class App extends BaseVueComponent {
             perms
                 .request('receiveSms')
                 .then(() => {
-                    // class BroadcastReceiver extends android.content.BroadcastReceiver {
-                    //     private _onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void;
-
-                    //     constructor(onReceiveCallback: (context: android.content.Context, intent: android.content.Intent) => void) {
-                    //         super();
-                    //         this._onReceiveCallback = onReceiveCallback;
-
-                    //         return global.__native(this);
-                    //     }
-
-                    //     public onReceive(context: android.content.Context, intent: android.content.Intent) {
-                    //         console.log('onReceive', intent.getAction());
-                    //         if (this._onReceiveCallback) {
-                    //             this._onReceiveCallback(context, intent);
-                    //         }
-                    //     }
-                    // }
-                    // this.mMessageReceiver = new BroadcastReceiver((context: android.content.Context, intent: android.content.Intent) => {
-                    //     const msg = intent.getStringExtra('message');
-                    //     const sender = intent.getStringExtra('sender');
-                    //     this.log('messageReceived', msg, sender);
-                    //     showSnack({
-                    //         message: this.$t('sms_received', msg, sender)
-                    //     });
-                    // });
-                    // console.log('registerReceiver', 'com.akylas.cairnmobile.SMS_RECEIVED');
-                    // androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(application.android.context).registerReceiver(
-                    //     this.mMessageReceiver,
-                    //     new globalAndroid.content.IntentFilter('com.akylas.cairnmobile.SMS_RECEIVED')
-                    // );
-                    androidApp.registerBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
-                        const msg = intent.getStringExtra('message');
-                        const sender = intent.getStringExtra('sender');
-                        // this.log('messageReceived', msg, sender);
-                        // this.$authService.fakeSMSPayment(sender, msg).then(() => {
-                        showSnack({
-                            message: this.$t('sms_received', msg, sender)
-                        });
-                        new Vibrate().vibrate(1000);
-
-                        // });
-                    });
+                    androidApp.registerBroadcastReceiver(
+                        'com.akylas.cairnmobile.SMS_RECEIVED',
+                        (context: android.content.Context, intent: android.content.Intent) => {
+                            const msg = intent.getStringExtra('message');
+                            const sender = intent.getStringExtra('sender');
+                            showSnack({
+                                message: this.$t('sms_received', msg, sender)
+                            });
+                            new Vibrate().vibrate(1000);
+                        }
+                    );
                 })
                 .catch(this.showError);
         }
@@ -434,9 +407,6 @@ export default class App extends BaseVueComponent {
     //         tabview._ios.tabBar.hidden = true
     //     }
     // }
-    getTabView() {
-        return this.getRef('tabView') as TabView;
-    }
     // getCurrenFrame() {
     //     const tabView = this.getTabView();
     //     return tabView.items[tabView.selectedIndex].getViewById('frame');
@@ -695,74 +665,80 @@ export default class App extends BaseVueComponent {
         });
     }
     async showOverlayComponent(data) {
-        const activity = this.nativeView._context;
-        if (!android.provider.Settings.canDrawOverlays(activity)) {
-            await this.requestPermission(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        }
-        if (!android.provider.Settings.canDrawOverlays(activity)) {
-            throw new Error('missing_overlay_permission');
-        }
-        const nativeApp = getNativeApplication();
-        const mWindowManager = nativeApp.getSystemService(android.content.Context.WINDOW_SERVICE) as android.view.WindowManager;
+        if (gVars.isAndroid) {
+            const activity = this.nativeView._context;
+            if (!android.provider.Settings.canDrawOverlays(activity)) {
+                await this.requestPermission(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            }
+            if (!android.provider.Settings.canDrawOverlays(activity)) {
+                throw new Error('missing_overlay_permission');
+            }
+            const nativeApp = getNativeApplication();
+            const mWindowManager = nativeApp.getSystemService(
+                android.content.Context.WINDOW_SERVICE
+            ) as android.view.WindowManager;
 
-        function close() {
-            mWindowManager.removeView(frame);
-            navEntryInstance.$destroy();
+            const close = function() {
+                mWindowManager.removeView(frame);
+                navEntryInstance.$destroy();
+            };
+            const navEntryInstance = new Vue({
+                name: 'FloatingEntry',
+                methods: {
+                    close
+                },
+                render: h =>
+                    h(Floating, {
+                        props: {
+                            qrCodeData: data
+                        }
+                        // key: serializeModalOptions(options)
+                    })
+            });
+            const rootView = (navEntryInstance.$mount().$el as any).nativeView as View;
+            rootView.cssClasses.add(MODAL_ROOT_VIEW_CSS_CLASS);
+            const modalRootViewCssClasses = getSystemCssClasses();
+            modalRootViewCssClasses.forEach(c => rootView.cssClasses.add(c));
+            rootView._setupAsRootView(activity);
+            rootView._isAddedToNativeVisualTree = true;
+            rootView.callLoaded();
+            const frame = new android.widget.RelativeLayout(androidApp.context);
+            frame.addView(rootView.nativeViewProtected);
+            const params = new android.view.WindowManager.LayoutParams(
+                android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+                android.view.WindowManager.LayoutParams.WRAP_CONTENT,
+                android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                0,
+                android.graphics.PixelFormat.TRANSLUCENT
+            );
+            params.gravity = android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.CENTER_VERTICAL;
+            params.x = 0;
+            params.y = 0;
+            mWindowManager.addView(frame, params);
         }
-        const navEntryInstance = new Vue({
-            name: 'FloatingEntry',
-            methods: {
-                close
-            },
-            render: h =>
-                h(Floating, {
-                    props: {
-                        qrCodeData: data
-                    }
-                    // key: serializeModalOptions(options)
-                })
-        });
-        const rootView = (navEntryInstance.$mount().$el as any).nativeView as View;
-        rootView.cssClasses.add(MODAL_ROOT_VIEW_CSS_CLASS);
-        const modalRootViewCssClasses = getSystemCssClasses();
-        modalRootViewCssClasses.forEach(c => rootView.cssClasses.add(c));
-        rootView._setupAsRootView(activity);
-        rootView._isAddedToNativeVisualTree = true;
-        rootView.callLoaded();
-        const frame = new android.widget.RelativeLayout(androidApp.context);
-        frame.addView(rootView.nativeViewProtected);
-        const params = new android.view.WindowManager.LayoutParams(
-            android.view.WindowManager.LayoutParams.WRAP_CONTENT,
-            android.view.WindowManager.LayoutParams.WRAP_CONTENT,
-            android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            0,
-            android.graphics.PixelFormat.TRANSLUCENT
-        );
-        params.gravity = android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.CENTER_VERTICAL;
-        params.x = 0;
-        params.y = 0;
-        mWindowManager.addView(frame, params);
     }
 
     requestPermission(permission) {
-        const activity = androidApp.foregroundActivity || androidApp.startActivity;
-        return new Promise((resolve, reject) => {
-            if (android.provider.Settings.canDrawOverlays(activity)) {
-                return resolve();
-            }
-            const REQUEST_CODE = 123;
-            const onActivityResultHandler = (data: AndroidActivityResultEventData) => {
-                if (data.requestCode === REQUEST_CODE) {
-                    androidApp.off(AndroidApplication.activityResultEvent, onActivityResultHandler);
-                    resolve();
+        if (gVars.isAndroid) {
+            const activity = androidApp.foregroundActivity || androidApp.startActivity;
+            return new Promise((resolve, reject) => {
+                if (android.provider.Settings.canDrawOverlays(activity)) {
+                    return resolve();
                 }
-            };
-            androidApp.on(AndroidApplication.activityResultEvent, onActivityResultHandler);
-            const intent = new android.content.Intent(permission);
-            intent.setData(android.net.Uri.parse('package:' + activity.getPackageName()));
-            activity.startActivityForResult(intent, REQUEST_CODE);
-            // android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION/
-        });
+                const REQUEST_CODE = 123;
+                const onActivityResultHandler = (data: AndroidActivityResultEventData) => {
+                    if (data.requestCode === REQUEST_CODE) {
+                        androidApp.off(AndroidApplication.activityResultEvent, onActivityResultHandler);
+                        resolve();
+                    }
+                };
+                androidApp.on(AndroidApplication.activityResultEvent, onActivityResultHandler);
+                const intent = new android.content.Intent(permission);
+                intent.setData(android.net.Uri.parse('package:' + activity.getPackageName()));
+                activity.startActivityForResult(intent, REQUEST_CODE);
+                // android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION/
+            });
+        }
     }
 
     isVisisble() {
