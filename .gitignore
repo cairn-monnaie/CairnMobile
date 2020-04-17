@@ -16,3 +16,4 @@ pnpm-lock.yaml
 report.xml
 /cairn_mobile_end_user/dist
 /cairn_mobile_end_user/times.html
+google-services.json
