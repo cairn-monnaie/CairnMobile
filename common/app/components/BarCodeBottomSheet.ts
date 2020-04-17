@@ -12,7 +12,7 @@ export default class BarCodeBottomSheet extends BaseVueComponent {
         super.destroyed();
     }
     onShownInBottomSheet() {
-        console.log('onShownInBottomSheet');
+        // console.log('onShownInBottomSheet');
         setTimeout(() => {
             this.$refs.cameraView.nativeView.resumeScanning();
         }, 10);
