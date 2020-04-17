@@ -82,6 +82,23 @@ export interface QrCodeTransferData {
     amount?: string;
 }
 
+export enum TransactionType {
+    EXECUTED = 0,
+    RECURRING = 1,
+    SCHEDULED = 2,
+    BDC = 3,
+    HELLOASSO = 4,
+    DEPOSIT = 5,
+    WITHDRAWAL = 6,
+    SCHEDULED_FAILED = 7,
+    SMS_PAYMENT = 8,
+    MANDATE = 9,
+    ONLINE_PAYMENT = 10,
+    RECONVERSION = 11,
+    MOBILE_APP = 12,
+    DIRECT_DEBITING = 13
+}
+
 export class User {
     // webPushSubscriptions: string[] = null;
     phoneNumbers: PhoneNumber[] = null;
@@ -177,8 +194,8 @@ function cleanupTransaction(transaction: any) {
     result.reason = result.reason.split('\n')[0];
     // t.executionDate = dayjs(t.executionDate).valueOf();
     result.credit =
-        result.type === TransactionType.CONVERSION_BDC ||
-        result.type === TransactionType.CONVERSION_HELLOASSO ||
+        result.type === TransactionType.BDC ||
+        result.type === TransactionType.HELLOASSO ||
         result.type === TransactionType.DEPOSIT;
     if (result.creditor) {
         result.creditor = cleanupUser(result.creditor);
@@ -277,18 +294,7 @@ export interface TransactionConfirmation {
     };
 }
 
-export enum TransactionType {
-    TRANSACTION_EXECUTED = 1, // virement exécuté)
-    TRANSACTION_SCHEDULED, // virement programmé, en attente )
-    CONVERSION_BDC, // conversion physique)
-    CONVERSION_HELLOASSO, // conversion par virement helloasso)
-    DEPOSIT, // dépôt)
-    WITHDRAWAL, // retrait)
-    SCHEDULED_FAILED, // virement programmé échoué)
-    SMS_PAYMENT, // paiement par SMS)
-    ONLINE_PAYMENT, // achat en ligne)
-    MOBILE_APP
-}
+
 export class Transaction {
     credit: boolean = null;
     smsPayment: boolean = null;
