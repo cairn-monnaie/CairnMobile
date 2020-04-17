@@ -49,18 +49,13 @@ export default class Home extends PageComponent {
             this.refresh();
         }
         const loggedInOnStart = this.$authService.isLoggedIn();
-        // this.log('onLoaded', loggedInOnStart, this.$securityService.passcodeSet());
+        // console.log('onNavigatedTo', loggedInOnStart, new Error().stack);
         if (loggedInOnStart) {
             if (!this.$securityService.passcodeSet()) {
                 this.$securityService.createPasscode(this).catch(err => {
                     this.showError(err);
                     this.$authService.logout();
                 });
-                // } else {
-                //     this.$securityService.shouldReAuth().then(r => {
-                //         this.$authService.logout();
-                //         this.$alert(this.$t('fingerprint_changed_logout'));
-                //     });
             }
         }
     }
