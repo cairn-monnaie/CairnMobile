@@ -1,32 +1,49 @@
-import { android as androidApp, } from '@nativescript/core/application';
+import { android as androidApp } from '@nativescript/core/application';
 import Vue from 'nativescript-vue';
 import App from '~/components/App';
 @JavaProxy('com.akylas.cairnmobile.QRCodeTileService')
 class QRCodeTileService extends android.service.quicksettings.TileService {
-
     onClick() {
         super.onClick();
         if (!this.isSecure()) {
             this.handleClick();
         } else {
-            this.unlockAndRun(new java.lang.Runnable({
-                run: ()=>this.handleClick()
-            }));
+            this.unlockAndRun(
+                new java.lang.Runnable({
+                    run: () => this.handleClick()
+                })
+            );
         }
 
         // androidApp.context.overridePendingTransition(0,0);
     }
+
+    showApp() {
+        const activityClass = (com as any).tns.NativeScriptActivity.class;
+        const tapActionIntent = new android.content.Intent(this, activityClass);
+        tapActionIntent.setAction(android.content.Intent.ACTION_MAIN);
+        tapActionIntent.addCategory(android.content.Intent.CATEGORY_LAUNCHER);
+        tapActionIntent.setFlags(
+            android.content.Intent.FLAG_ACTIVITY_NEW_TASK |
+                android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+        );
+        this.startActivityAndCollapse(tapActionIntent);
+    }
     handleClick() {
         const appComp = Vue.prototype.$getAppComponent() as App;
-        console.log('handleClick', appComp.isVisisble());
+        if (!appComp.$authService.isLoggedIn()) {
+            this.showApp();
+            android.widget.Toast.makeText(
+                androidApp.context,
+                appComp.$t('loggedin_needed'),
+                android.widget.Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
         if (appComp && appComp.isVisisble()) {
+            this.showApp();
             appComp.askToScanQrCode();
-            const activityClass = (com as any).tns.NativeScriptActivity.class;
-            const tapActionIntent = new android.content.Intent(this, activityClass);
-            tapActionIntent.setAction(android.content.Intent.ACTION_MAIN);
-            tapActionIntent.addCategory(android.content.Intent.CATEGORY_LAUNCHER);
-            tapActionIntent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP | android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            this.startActivityAndCollapse(tapActionIntent);
             return;
         }
         // Called when the user click the tile
