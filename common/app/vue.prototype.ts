@@ -72,7 +72,7 @@ const Plugin = {
         };
 
         Vue.prototype.$scanQRCode = async function() {
-            console.log('scanQRCode');
+            // console.log('scanQRCode');
             let result;
             if (gVars.isIOS && isSimulator()) {
                 result = sprintf(CAIRN_FULL_QRCODE_FORMAT, {
@@ -85,7 +85,7 @@ const Plugin = {
                     (this as NativescriptVue).$showBottomSheet(BarCodeBottomSheet, { closeCallback: resolve, transparent: true });
                 });
             }
-            console.log('scanQRCode result', result);
+            // console.log('scanQRCode result', result);
             if (result) {
                 (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
             }
