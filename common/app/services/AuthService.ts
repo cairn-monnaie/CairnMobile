@@ -1,4 +1,4 @@
-import { numberProperty, objectProperty } from './BackendService';
+import { numberProperty, objectProperty, stringProperty } from './BackendService';
 import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core';
@@ -294,7 +294,6 @@ export interface TransactionConfirmation {
     };
 }
 
-
 export class Transaction {
     credit: boolean = null;
     smsPayment: boolean = null;
@@ -400,6 +399,7 @@ export default class AuthService extends NetworkService {
     @numberProperty userId: number;
     @objectProperty userProfile: UserProfile;
     @objectProperty loginParams: LoginParams;
+    @stringProperty pushToken: string;
     authority = CAIRN_URL;
 
     getMessage() {
@@ -410,6 +410,36 @@ export default class AuthService extends NetworkService {
 
     isLoggedIn() {
         return !!this.token && !!this.loginParams && !!this.userId;
+    }
+
+    // registerPushToken(pushToken: string) {
+    //     this.pushToken = pushToken;
+    //     if (this.token) {
+    //         this.registerPushToken(pushToken);
+    //     }
+    // }
+    async registerPushToken(pushToken: string) {
+        this.pushToken = pushToken;
+        return this.request<{ validation_url: string }>({
+            apiPath: '/mobile/token-subscription',
+            method: 'POST',
+            body: {
+                'device-token': pushToken
+            }
+        });
+    }
+    async unregisterPushToken() {
+        if (this.pushToken) {
+            const token = this.pushToken;
+            this.pushToken = undefined;
+            return this.request<{ validation_url: string }>({
+                apiPath: '/mobile/token-subscription',
+                method: 'DELETE',
+                body: {
+                    'device-token': token
+                }
+            });
+        }
     }
 
     // getUserId() {

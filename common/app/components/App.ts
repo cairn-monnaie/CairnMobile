@@ -272,28 +272,31 @@ export default class App extends BaseVueComponent {
         this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
 
-        if (this.loggedInOnStart) {
-            // added this here so we can do some wiring
-            console.log('registerForPushNotifications');
-            registerForPushNotifications({
-                onPushTokenReceivedCallback: (token: string): void => {
-                    console.log('Firebase plugin received a push token: ' + token);
-                },
-
-                onMessageReceivedCallback: (message: Message) => {
-                    console.log('Push message received: ' + message.title);
-                },
-
-                // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
-                showNotifications: true,
-
-                // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
-                showNotificationsWhenInForeground: true
-            })
-                .then(() => console.log('Registered for push'))
-                .catch(this.showError);
-        }
         handleOpenURL(this.onAppUrl);
+        if (this.loggedInOnStart) {
+            this.onLoggedIn();
+        }
+    }
+    onPushMessage(message: Message) {
+        console.log('Push message received: ' + message.title);
+    }
+    onPushToken(token: string) {
+        this.$authService.registerPushToken(token);
+        console.log('Firebase plugin received a push token: ' + token);
+    }
+    registerForPushNotifs() {
+        // added this here so we can do some wiring
+        console.log('registerForPushNotifications');
+        return registerForPushNotifications({
+            onPushTokenReceivedCallback: this.onPushToken.bind(this),
+            onMessageReceivedCallback: this.onPushMessage.bind(this),
+            // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
+            showNotifications: true,
+            // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
+            showNotificationsWhenInForeground: true
+        })
+            .then(() => console.log('Registered for push'))
+            .catch(this.showError);
     }
 
     onLoaded() {
@@ -373,19 +376,20 @@ export default class App extends BaseVueComponent {
         // });
     }
     appPaused = true;
-    onLoggedIn(e) {
+    onLoggedIn() {
+        if (WITH_PUSH_NOTIFICATIONS) {
+            this.registerForPushNotifs();
+        }
         this.currentlyLoggedIn = true;
         console.log('we loggedin', this.currentlyLoggedIn);
-        const profile = (this.userProfile = e.data as UserProfile);
-        this.$crashReportService.setExtra('profile', profile);
-        this.navigateToUrl(ComponentIds.Situation, { clearHistory: true }).then(() => {
-            // this.$securityService.createPasscode(this).catch(err => {
-            //     this.showError(err);
-            //     this.$authService.logout();
-            // });
-        });
+        this.userProfile = this.$authService.userProfile;
+        this.$crashReportService.setExtra('profile', this.userProfile);
+        this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
     }
     onLoggedOut() {
+        if (WITH_PUSH_NOTIFICATIONS) {
+            this.$authService.unregisterPushToken();
+        }
         console.log('we logged out');
         this.$crashReportService.setExtra('profile', null);
         this.currentlyLoggedIn = false;

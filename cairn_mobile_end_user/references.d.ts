@@ -36,6 +36,7 @@ declare const CAIRN_TRANSFER_QRCODE: string;
 declare const CAIRN_TRANSFER_QRCODE_PARAMS: string;
 declare const CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: string;
 declare const CAIRN_FULL_QRCODE_FORMAT: string;
+declare const WITH_PUSH_NOTIFICATIONS: boolean;
 
 declare namespace com {
     export namespace akylas {
