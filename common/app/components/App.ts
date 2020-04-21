@@ -281,8 +281,7 @@ export default class App extends BaseVueComponent {
         console.log('Push message received: ' + message.title);
     }
     onPushToken(token: string) {
-        this.$authService.registerPushToken(token);
-        console.log('Firebase plugin received a push token: ' + token);
+        this.$authService.registerPushToken(token).catch(this.showError);
     }
     registerForPushNotifs() {
         // added this here so we can do some wiring
@@ -376,7 +375,7 @@ export default class App extends BaseVueComponent {
         // });
     }
     appPaused = true;
-    onLoggedIn() {
+    onLoggedIn(e?) {
         if (WITH_PUSH_NOTIFICATIONS) {
             this.registerForPushNotifs();
         }
@@ -384,7 +383,10 @@ export default class App extends BaseVueComponent {
         console.log('we loggedin', this.currentlyLoggedIn);
         this.userProfile = this.$authService.userProfile;
         this.$crashReportService.setExtra('profile', this.userProfile);
-        this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
+        if (e) {
+            // means received as event
+            this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
+        }
     }
     onLoggedOut() {
         if (WITH_PUSH_NOTIFICATIONS) {

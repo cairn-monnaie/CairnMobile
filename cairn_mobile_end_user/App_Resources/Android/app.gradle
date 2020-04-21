@@ -15,8 +15,6 @@ android {
   }  
 }
 
-
-
 apply from: '../../../App_Resources/Android/dependency-report.gradle'
 
 task printDependencies {

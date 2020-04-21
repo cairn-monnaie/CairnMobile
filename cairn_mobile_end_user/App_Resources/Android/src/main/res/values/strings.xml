@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="loggedin_needed">"you must be logged in"</string>
   <string name="cairn_qr_tile_name">"qrcode"</string>
   <string name="add_phone_desc">"add a phone to receive notifications.\nYou will receive receive a confirmation sms"</string>
   <string name="send_crash_reports">"send crash reports"</string>

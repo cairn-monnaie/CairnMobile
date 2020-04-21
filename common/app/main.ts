@@ -15,6 +15,9 @@ Vue.prototype.$crashReportService = crashReportService;
 // trace.addCategories(trace.categories.NativeLifecycle);
 // trace.enable();
 
+import { init } from 'nativescript-push';
+init();
+
 import App from '~/components/App';
 import { DEV_LOG, cwarn } from '~/utils/logging';
 import MultiDrawer from './components/MultiDrawer';
@@ -88,7 +91,6 @@ Vue.config.errorHandler = (e, vm, info) => {
 Vue.config.warnHandler = function(msg, vm, trace) {
     cwarn(msg, trace);
 };
-
 
 new Vue({
     render: h => h(App)
