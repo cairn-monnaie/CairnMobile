@@ -5,6 +5,7 @@ import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { QrCodeTransferData } from '~/services/AuthService';
 import { QRCodeDataEvent, off as appOff, on as appOn } from './App';
 import { android as androidApp } from '@nativescript/core/application';
+import { parseUrlScheme } from '~/utils/urlscheme';
 
 @Component({})
 export default class Floating extends TransferComponent {
@@ -57,10 +58,17 @@ export default class Floating extends TransferComponent {
             this.showFloatingWindow();
         } else {
             // try {
-            this.$scanQRCode()
+            this.$scanQRCode(true)
                 .then(result => {
                     if (!result) {
                         this.close();
+                    }
+                    const parsed = parseUrlScheme(result);
+                    if (!parsed) {
+                        this.showError(this.$t('non_ecairn_qrcode'));
+                    }
+                    if (parsed.command === 'transfer') {
+                        this.handleFloatingQRData(parsed.data);
                     }
                 })
                 .catch(err => {

@@ -1,6 +1,13 @@
 import { android as androidApp } from '@nativescript/core/application';
 import Vue from 'nativescript-vue';
 import App from '~/components/App';
+import AuthService from '~/services/AuthService';
+import { $t, $tc, $tt, $tu } from '~/helpers/locale';
+
+function isOnUiThread() {
+    return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
+}
+
 @JavaProxy('com.akylas.cairnmobile.QRCodeTileService')
 class QRCodeTileService extends android.service.quicksettings.TileService {
     onClick() {
@@ -32,13 +39,11 @@ class QRCodeTileService extends android.service.quicksettings.TileService {
     }
     handleClick() {
         const appComp = Vue.prototype.$getAppComponent() as App;
-        if (!appComp.$authService.isLoggedIn()) {
+        const authService = Vue.prototype.$authService as AuthService;
+        console.log('handleClick', isOnUiThread, !!authService);
+        if (!authService.isLoggedIn()) {
             this.showApp();
-            android.widget.Toast.makeText(
-                androidApp.context,
-                appComp.$t('loggedin_needed'),
-                android.widget.Toast.LENGTH_SHORT
-            ).show();
+            android.widget.Toast.makeText(androidApp.context, $t('loggedin_needed'), android.widget.Toast.LENGTH_SHORT).show();
             return;
         }
         if (appComp && appComp.isVisisble()) {

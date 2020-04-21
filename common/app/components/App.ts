@@ -46,6 +46,7 @@ import Floating from './Floating';
 import { MODAL_ROOT_VIEW_CSS_CLASS, getSystemCssClasses } from '@nativescript/core/css/system-classes';
 import { Message, registerForPushNotifications } from 'nativescript-push';
 import { VueConstructor } from 'vue/types/umd';
+import { parseUrlScheme } from '~/utils/urlscheme';
 
 // function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
 //     const fontAspectRatio = 1.28571429;
@@ -88,14 +89,6 @@ const observable = new Observable();
 export const QRCodeDataEvent = 'qrcodedata';
 export const on = observable.on.bind(observable);
 export const off = observable.off.bind(observable);
-
-const XRegExp = require('xregexp');
-const QR_CODE_TRANSFER_REGEXP_STR =
-    CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
-    '(?:' +
-    CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
-    ')?';
-const QR_CODE_TRANSFER_REGEXP = XRegExp(QR_CODE_TRANSFER_REGEXP_STR);
 
 function base64Encode(value) {
     if (gVars.isIOS) {
@@ -677,7 +670,7 @@ export default class App extends BaseVueComponent {
         // options.props = options.props || {};
         // options.props[navigateUrlProperty] = url;
 
-        // console.log('navigateToUrl', url);
+        console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
             return this.navigateTo(this.routes[url].component, options);
@@ -774,37 +767,32 @@ export default class App extends BaseVueComponent {
     isVisisble() {
         if (gVars.isAndroid) {
             const activity = androidApp.startActivity;
-            return activity
-                .getWindow()
-                .getDecorView()
-                .getRootView()
-                .isShown();
+            return (
+                activity &&
+                activity
+                    .getWindow()
+                    .getDecorView()
+                    .getRootView()
+                    .isShown()
+            );
         }
     }
 
     handleReceivedAppUrl(url: string) {
-        const array = url.substring(CUSTOM_URL_SCHEME.length + 3).split('/');
-        this.log('handleReceivedAppUrl', CUSTOM_URL_SCHEME, url, this.appPaused, array);
-        switch (array[0]) {
+        const parsed = parseUrlScheme(url);
+        if (!parsed) {
+            this.showError(this.$t('non_ecairn_qrcode'));
+        }
+        switch (parsed.command) {
             case 'transfer': {
                 if (!this.$authService.isLoggedIn()) {
-                    this.showError(this.$t('qrcode_loggedin_needed'));
+                    this.showError(this.$t('loggedin_needed'));
                     return;
                 }
-
-                console.log(' transfer str', array[1]);
-                const data = XRegExp.exec(array[1], QR_CODE_TRANSFER_REGEXP);
-                console.log(' XRegExp res', data);
-                const result = {};
-                Object.keys(data).forEach(k => {
-                    if (isNaN(parseFloat(k)) && k !== 'index' && k !== 'input' && k !== 'groups') {
-                        result[k] = data[k];
-                    }
-                });
-                console.log('transfer data', result);
+                const data = parsed.data;
                 if (gVars.isAndroid) {
                     const visible = this.isVisisble();
-                    console.log('android transfer data', result, visible);
+                    console.log('android transfer data', data, visible);
                     if (!visible) {
                         const context = this.nativeView._context;
 
@@ -812,7 +800,7 @@ export default class App extends BaseVueComponent {
                         // const context = this.nativeView._context;
                         try {
                             const intent = new android.content.Intent(context, com.akylas.cairnmobile.FloatingActivity.class);
-                            intent.putExtra('data', JSON.stringify(result));
+                            intent.putExtra('data', JSON.stringify(data));
                             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 
                             console.log('starting FloatingActivity activity');
@@ -844,11 +832,13 @@ export default class App extends BaseVueComponent {
 
         if (gVars.isAndroid) {
             const activity = androidApp.startActivity;
-            const visible = activity
-                .getWindow()
-                .getDecorView()
-                .getRootView()
-                .isShown();
+            const visible =
+                activity &&
+                activity
+                    .getWindow()
+                    .getDecorView()
+                    .getRootView()
+                    .isShown();
             if (!visible) {
                 if (args && args.eventName === AndroidApplication.activityStartedEvent) {
                     //ignoring newIntent in background as we already received start activity event with intent

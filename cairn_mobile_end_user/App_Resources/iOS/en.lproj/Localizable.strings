@@ -1,3 +1,4 @@
+"cairn_qr_tile_name" = "qrcode";
 "add_phone_desc" = "add a phone to receive notifications.\nYou will receive receive a confirmation sms";
 "send_crash_reports" = "send crash reports";
 "source_code" = "source code";

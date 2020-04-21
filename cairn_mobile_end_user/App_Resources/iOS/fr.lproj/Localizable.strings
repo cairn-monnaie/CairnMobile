@@ -1,3 +1,4 @@
+"cairn_qr_tile_name" = "qrcode";
 "send_crash_reports" = "envoyer des rapports de bug";
 "source_code_desc" = "obtenir le code source de l'application sur Github";
 "third_party_software_desc" = "les logiciels que nous aimons et utilisons";

@@ -13,6 +13,7 @@ import BarCodeBottomSheet from './components/BarCodeBottomSheet';
 import NativescriptVue from 'nativescript-vue';
 import CrashReportService from './services/CrashReportService';
 import { sprintf } from 'sprintf-js';
+import { openUrl } from '@nativescript/core/utils/utils';
 
 const Plugin = {
     install(Vue) {
@@ -71,7 +72,7 @@ const Plugin = {
             });
         };
 
-        Vue.prototype.$scanQRCode = async function() {
+        Vue.prototype.$scanQRCode = async function(manualHandle = false) {
             // console.log('scanQRCode');
             let result;
             if (gVars.isIOS && isSimulator()) {
@@ -87,7 +88,11 @@ const Plugin = {
             }
             // console.log('scanQRCode result', result);
             if (result) {
-                (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
+                if (!manualHandle) {
+                    openUrl(result);
+
+                }
+                // (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
             }
             return result;
         };
