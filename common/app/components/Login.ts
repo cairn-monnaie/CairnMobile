@@ -21,9 +21,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: getString('last.login', ''),
+        username: getString('last.login', PRODUCTION?'':'nico_faus_perso'),
         email: '',
-        password: '',
+        password: PRODUCTION?'':'@@bbccdd',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
@@ -61,9 +61,9 @@ export default class Login extends PageComponent {
                 .start();
         })
             .then(() => {
-                if (this.user.username.length > 0) {
+                if (this.user.username.length > 0 && this.user.password.length === 0) {
                     this.focusPassword();
-                } else {
+                } else if (this.user.username.length  === 0) {
                     this.focusUsername();
                 }
             })
