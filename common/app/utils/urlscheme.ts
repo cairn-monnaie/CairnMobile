@@ -6,7 +6,7 @@ const QR_CODE_TRANSFER_REGEXP_STR =
     ')?';
 const QR_CODE_TRANSFER_REGEXP = XRegExp(QR_CODE_TRANSFER_REGEXP_STR);
 export function parseUrlScheme(url: string) {
-    if (!url.startsWith(CUSTOM_URL_SCHEME)) {
+    if (!url || !url.startsWith(CUSTOM_URL_SCHEME)) {
         return null;
     }
     const array = url.substring(CUSTOM_URL_SCHEME.length + 3).split('/');
