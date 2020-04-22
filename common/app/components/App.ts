@@ -1,22 +1,3 @@
-import { device, screen } from '@nativescript/core/platform';
-import { Frame, View } from '@nativescript/core/ui/frame/frame';
-import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
-import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
-import { Page } from '@nativescript/core/ui/page';
-import { compose } from 'nativescript-email';
-import * as EInfo from 'nativescript-extendedinfo';
-import { login } from 'nativescript-material-dialogs';
-import { showSnack } from 'nativescript-material-snackbar';
-import { TextField } from 'nativescript-material-textfield';
-import * as perms from 'nativescript-perms';
-import { Vibrate } from 'nativescript-vibrate';
-import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
-import { Component } from 'vue-property-decorator';
-import { setDrawerInstance } from '~/main';
-import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
-import { screenHeightDips, screenWidthDips } from '~/variables';
-import { AppURL, handleOpenURL } from 'nativescript-appurl';
-import TransferWindow from './TransferWindow';
 import {
     AndroidActivityResultEventData,
     AndroidApplication,
@@ -28,25 +9,45 @@ import {
     resumeEvent,
     suspendEvent
 } from '@nativescript/core/application';
-
+import { MODAL_ROOT_VIEW_CSS_CLASS, getSystemCssClasses } from '@nativescript/core/css/system-classes';
+import { Observable } from '@nativescript/core/data/observable';
+import { device, screen } from '@nativescript/core/platform';
+import { Frame, View } from '@nativescript/core/ui/frame/frame';
+import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
+import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
+import { ad } from '@nativescript/core/utils/utils';
+import { Page } from '@nativescript/core/ui/page';
+import { AppURL, handleOpenURL } from 'nativescript-appurl';
+import { compose } from 'nativescript-email';
+import * as EInfo from 'nativescript-extendedinfo';
+import { login } from 'nativescript-material-dialogs';
+import { showSnack } from 'nativescript-material-snackbar';
+import { TextField } from 'nativescript-material-textfield';
+import * as perms from 'nativescript-perms';
+import { Message, registerForPushNotifications } from 'nativescript-push';
+import { Vibrate } from 'nativescript-vibrate';
+import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
+import { Component } from 'vue-property-decorator';
+import { VueConstructor } from 'vue/types/umd';
+import { setDrawerInstance } from '~/main';
+import { LoggedinEvent, LoggedoutEvent, UserProfile } from '~/services/AuthService';
+import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
+import { parseUrlScheme } from '~/utils/urlscheme';
+import { primaryColor, screenHeightDips, screenWidthDips } from '~/variables';
+import About from './About';
 // import Map from './Map';
 import AppFrame from './AppFrame';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
 import Beneficiaries from './Beneficiaries';
+import Floating from './Floating';
 import Home from './Home';
 import Login from './Login';
 import Map from './Map';
 import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
 import Settings from './Settings';
-import About from './About';
-import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '~/services/NetworkService';
-import { Observable } from '@nativescript/core/data/observable';
-import Floating from './Floating';
-import { MODAL_ROOT_VIEW_CSS_CLASS, getSystemCssClasses } from '@nativescript/core/css/system-classes';
-import { Message, registerForPushNotifications } from 'nativescript-push';
-import { VueConstructor } from 'vue/types/umd';
-import { parseUrlScheme } from '~/utils/urlscheme';
+import TransferWindow from './TransferWindow';
+import { $t } from '~/helpers/locale';
 
 // function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
 //     const fontAspectRatio = 1.28571429;
@@ -271,9 +272,10 @@ export default class App extends BaseVueComponent {
         }
     }
     onPushMessage(message: Message) {
-        console.log('Push message received: ' + message.title);
+        console.log('Push message received', message);
     }
     onPushToken(token: string) {
+        console.log('onPushToken', token);
         this.$authService.registerPushToken(token).catch(this.showError);
     }
     registerForPushNotifs() {
@@ -287,7 +289,42 @@ export default class App extends BaseVueComponent {
             // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
             showNotificationsWhenInForeground: true
         })
-            .then(() => console.log('Registered for push'))
+            .then(result => {
+                console.log('Registered for push', result);
+                if (gVars.isAndroid) {
+                    if (android.os.Build.VERSION.SDK_INT >= 26) {
+                        const color = android.graphics.Color.parseColor(primaryColor);
+                        const context = androidApp.context;
+                        // API level 26 ("Android O") supports notification channels.
+
+                        const service = context.getSystemService(
+                            android.content.Context.NOTIFICATION_SERVICE
+                        ) as android.app.NotificationManager;
+
+                        // create channel
+                        let channel = new android.app.NotificationChannel(
+                            context.getString(ad.resources.getStringId('payment_channel_id')),
+                            $t('payment_channel_name'),
+                            android.app.NotificationManager.IMPORTANCE_HIGH
+                        );
+                        // channel.setDescription($t('payment_channel_description'));
+                        channel.setLightColor(color);
+                        service.createNotificationChannel(channel);
+
+                        channel = new android.app.NotificationChannel(
+                            context.getString(ad.resources.getStringId('newpro_channel_id')),
+                            $t('newpro_channel_name'),
+                            android.app.NotificationManager.IMPORTANCE_DEFAULT
+                        );
+                        // channel.setDescription($t('newpro_channel_description'));
+                        channel.setLightColor(color);
+                        service.createNotificationChannel(channel);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            })
             .catch(this.showError);
     }
 

@@ -1,0 +1,59 @@
+@host = https://test.cairn-monnaie.com
+@client_id = 1_1vr46xqj1fmswgw0kkgw0os8okow8wcoow040sws8wsoc4kkk0
+@client_secret = 3xh9mdtavh44ws888w88s88osc8cgskoko
+@username = nico_faus_perso
+@password = @@bbccdd
+
+###
+
+POST  https://fcm.googleapis.com/fcm/send  HTTP/1.1
+authorization: key=AAAAkJ_jGAU:APA91bEOaZwCuQZqiYuslPkYDlIuz9jgYCAsHQzDFMyaAlq4ytk5TEKl8vcrnyQunKU8VfBcZEJWsWfd_0SbGpr_GEH74EaOtd5MOBToUdhs-ZXLFsdmd3qK6kX6-wTjumBJdh8WdZjw
+content-type: application/json
+
+{
+     "notification": {
+        "body_loc_key": "received_paiement_body",
+        "body_loc_args": ["Martin", "100"],
+        "title_loc_key": "received_paiement_title"
+     },
+     "data":{
+        "test":"1"
+     },
+     "channel_id":0,
+     "priority": "High",
+     "registration_ids": ["APA91bHnWMoWJSIOWsoLBhSpjABoIJyOuZPuVGlk7IpNQ_a9QsHOVkcQHkLEcF11B4ehk7vfR2OnZuCB61kJlYfoyd0AX7Fu-zbGbaobQy4CJJAXfvZ3fbSHrxQuQqeZQJChr2kY0pSK"]
+}
+
+###
+POST {{host}}/oauth/tokens
+
+{
+	"client_id": "{{ client_id  }}",
+	"client_secret": "{{ client_secret  }}",
+	"username": "{{ username  }}",
+	"password": "{{ password  }}",
+	"grant_type": "password"
+}
+###
+
+POST {{host}}/mobile/notifications/{user_id}
+
+  {
+   "pushNotifications": [
+    {
+      "radius": "5",
+      "webPushEnabled": "false",
+      "appPushEnabled": "false",
+      "emailEnabled": "false",
+      "smsEnabled": "false"
+    },
+    {
+      "types": [8,12],
+      "minAmount": "0",
+      "webPushEnabled": "false",
+      "appPushEnabled": "false",
+      "emailEnabled": "false",
+      "smsEnabled": "false"
+    }
+  ]
+}

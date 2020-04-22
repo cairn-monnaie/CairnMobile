@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="received_paiement_body">"You received a paiement from %1$s of %2$s cairns!"</string>
+  <string name="received_paiement_title">"Nouveau paiement"</string>
+  <string name="newpro_channel_description">"default channel description"</string>
+  <string name="newpro__channel_name">"default channel name"</string>
+  <string name="payment_channel_description">"default channel description"</string>
+  <string name="payment_channel_name">"default channel name"</string>
   <string name="loggedin_needed">"you must be logged in"</string>
   <string name="cairn_qr_tile_name">"qrcode"</string>
   <string name="add_phone_desc">"add a phone to receive notifications.\nYou will receive receive a confirmation sms"</string>

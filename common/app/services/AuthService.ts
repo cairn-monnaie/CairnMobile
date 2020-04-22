@@ -424,7 +424,8 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/token-subscription',
             method: 'POST',
             body: {
-                'device-token': pushToken
+                platform:gVars.platform,
+                'device_token': pushToken
             }
         });
     }
@@ -436,7 +437,7 @@ export default class AuthService extends NetworkService {
                 apiPath: '/mobile/token-subscription',
                 method: 'DELETE',
                 body: {
-                    'device-token': token
+                    'device_token': token
                 }
             });
         }

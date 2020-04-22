@@ -122,5 +122,11 @@
   "send_crash_reports": "send crash reports",
   "add_phone_desc": "add a phone to receive notifications.\nYou will receive receive a confirmation sms",
   "cairn_qr_tile_name": "qrcode",
-  "loggedin_needed": "you must be logged in"
+  "loggedin_needed": "you must be logged in",
+  "payment_channel_name": "payment notifications",
+  "payment_channel_description": "default channel description",
+  "newpro_channel_name": "notifications for new pros around you",
+  "newpro_channel_description": "default channel description",
+  "received_paiement_title":"Nouveau paiement",
+  "received_paiement_body":"You received a paiement from %1$s of %2$s cairns!"
 }

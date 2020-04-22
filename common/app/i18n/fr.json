@@ -122,5 +122,11 @@
   "source_code_desc": "obtenir le code source de l'application sur Github",
   "send_crash_reports": "envoyer des rapports de bug",
   "cairn_qr_tile_name": "qrcode",
-  "loggedin_needed": "il vous faut être connecté"
+  "loggedin_needed": "il vous faut être connecté",
+  "payment_channel_name": "notifications de paiements",
+  "payment_channel_description": "default channel description",
+  "newpro_channel_name": "notifications de nouveau pro près de chez vous",
+  "newpro_channel_description": "default channel description",
+  "received_paiement_title":"Nouveau paiement",
+  "received_paiement_body":"Vous avez reçu un paiement de %1$s de %2$s cairns!"
 }

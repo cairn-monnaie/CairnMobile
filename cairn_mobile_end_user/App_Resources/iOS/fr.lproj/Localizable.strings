@@ -1,3 +1,8 @@
+"received_paiement_body" = "Vous avez reçu un paiement de %1$@ de %2$@ cairns!";
+"received_paiement_title" = "Nouveau paiement";
+"efault_channel_description" = "default channel description";
+"default_channel_name" = "default channel name";
+"loggedin_needed" = "il vous faut être connecté";
 "cairn_qr_tile_name" = "qrcode";
 "send_crash_reports" = "envoyer des rapports de bug";
 "source_code_desc" = "obtenir le code source de l'application sur Github";

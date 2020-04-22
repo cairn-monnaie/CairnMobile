@@ -1,3 +1,8 @@
+"received_paiement_body" = "You received a paiement from %1$@ of %2$@ cairns!";
+"received_paiement_title" = "Nouveau paiement";
+"efault_channel_description" = "default channel description";
+"default_channel_name" = "default channel name";
+"loggedin_needed" = "you must be logged in";
 "cairn_qr_tile_name" = "qrcode";
 "add_phone_desc" = "add a phone to receive notifications.\nYou will receive receive a confirmation sms";
 "send_crash_reports" = "send crash reports";
