@@ -127,6 +127,15 @@
   "payment_channel_description": "default channel description",
   "newpro_channel_name": "notifications de nouveau pro près de chez vous",
   "newpro_channel_description": "default channel description",
-  "received_paiement_title":"Nouveau paiement",
-  "received_paiement_body":"Vous avez reçu un paiement de %1$s de %2$s cairns!"
+  "received_paiement_title": "Nouveau paiement",
+  "received_paiement_body": "Vous avez reçu un paiement de %1$s de %2$s cairns!",
+  "newpro_notifications_desc": "recevez une notification quand un nouvel adhérent pro arrive près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse",
+  "webpush_notifications": "notifications dans le navigateur",
+  "sms_notifications": "notifications sms",
+  "mail_notifications": "notifications e-mail",
+  "push_notifications": "notifications push",
+  "payment_notifications": "notifications de paiement",
+  "payment_notifications_desc": "recevez des notifications lorsque que vous recevez paiement un virement",
+  "newpro_notifications": "notifications de nouveau Pro",
+  "distance": "distance"
 }

@@ -1,7 +1,14 @@
+"push_notifications" = "notifications push";
+"mail_notifications" = "notifications e-mail";
+"sms_notifications" = "notifications sms";
+"webpush_notifications" = "notifications dans le navigateur";
+"newpro_notifications_desc" = "recevez une notification quand un nouvel adhérent pro arrive près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse";
 "received_paiement_body" = "Vous avez reçu un paiement de %1$@ de %2$@ cairns!";
 "received_paiement_title" = "Nouveau paiement";
-"efault_channel_description" = "default channel description";
-"default_channel_name" = "default channel name";
+"newpro_channel_description" = "default channel description";
+"newpro_channel_name" = "notifications de nouveau pro près de chez vous";
+"payment_channel_description" = "default channel description";
+"payment_channel_name" = "notifications de paiements";
 "loggedin_needed" = "il vous faut être connecté";
 "cairn_qr_tile_name" = "qrcode";
 "send_crash_reports" = "envoyer des rapports de bug";

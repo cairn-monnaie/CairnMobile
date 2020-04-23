@@ -28,7 +28,8 @@ export default class Beneficiaries extends PageComponent {
             .then(r => {
                 this.dataItems = r.map(b => b.user);
             })
-            .catch(this.showError).finally(()=>{
+            .catch(this.showError)
+            .finally(() => {
                 this.loading = false;
             });
     }
@@ -69,12 +70,14 @@ export default class Beneficiaries extends PageComponent {
     }
 
     onItemTap(userProfile: User) {
-        // const accountInfo = this.dataItems[args.index];
-        this.navigateTo(Profile, {
-            props: {
-                propUserProfile: userProfile,
-                editable: false
-            }
-        });
+        if (this.$authService.isProUser(userProfile)) {
+            // const accountInfo = this.dataItems[args.index];
+            this.navigateTo(Profile, {
+                props: {
+                    propUserProfile: userProfile,
+                    editable: false
+                }
+            });
+        }
     }
 }

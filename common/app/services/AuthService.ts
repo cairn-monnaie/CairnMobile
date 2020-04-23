@@ -259,6 +259,29 @@ export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
     image?: ImageAsset | ImageSource;
 }
 
+export interface UserSettings {
+    baseNotifications: [
+        {
+            types: TransactionType[];
+            minAmount: number;
+            id: number;
+            webPushEnabled: boolean;
+            appPushEnabled: boolean;
+            emailEnabled: boolean;
+            smsEnabled: boolean;
+            keyword: string;
+        },
+        {
+            radius: number;
+            id: number;
+            webPushEnabled: boolean;
+            appPushEnabled: boolean;
+            emailEnabled: boolean;
+            smsEnabled: boolean;
+            keyword: string;
+        }
+    ];
+}
 export interface Benificiary {
     autocompleteLabel: string;
     id: number;
@@ -424,8 +447,8 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/token-subscription',
             method: 'POST',
             body: {
-                platform:gVars.platform,
-                'device_token': pushToken
+                platform: gVars.platform,
+                device_token: pushToken
             }
         });
     }
@@ -437,7 +460,7 @@ export default class AuthService extends NetworkService {
                 apiPath: '/mobile/token-subscription',
                 method: 'DELETE',
                 body: {
-                    'device_token': token
+                    device_token: token
                 }
             });
         }
@@ -455,7 +478,7 @@ export default class AuthService extends NetworkService {
         return profile.roles.indexOf(Roles.PRO) !== -1;
     }
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
-        console.log('handleRequestRetry', retry);
+        // console.log('handleRequestRetry', retry);
         // refresh token
         if (retry === 2) {
             this.logout();
@@ -481,6 +504,31 @@ export default class AuthService extends NetworkService {
             data: this.userProfile
         } as UserProfileEventData);
         return this.userProfile;
+    }
+    async getUserSettings() {
+        const result = await this.request<UserSettings>({
+            apiPath: `/mobile/notifications/${this.userId}`,
+            method: 'GET'
+        });
+        // this.notify({
+        //     eventName: UserProfileEvent,
+        //     object: this,
+        //     data: this.userProfile
+        // } as UserProfileEventData);
+        return result;
+    }
+    async postUserSettings(userSettings: UserSettings) {
+        const result = await this.request<UserSettings>({
+            apiPath: `/mobile/notifications/${this.userId}`,
+            method: 'POST',
+            body:{baseNotifications:userSettings.baseNotifications}
+        });
+        // this.notify({
+        //     eventName: UserProfileEvent,
+        //     object: this,
+        //     data: this.userProfile
+        // } as UserProfileEventData);
+        return result;
     }
 
     async updateUserProfile(data: UpdateUserProfile, userId?: number): Promise<any> {
@@ -653,7 +701,8 @@ export default class AuthService extends NetworkService {
         limit,
         offset,
         query,
-        mapBounds
+        mapBounds,
+        roles
     }: {
         sortKey?: string;
         sortOrder?: string;
@@ -661,6 +710,7 @@ export default class AuthService extends NetworkService {
         offset?: number;
         query?: string;
         mapBounds?: MapBounds;
+        roles?: string[];
     }) {
         let boundingBox = {
             minLon: '',
@@ -690,7 +740,7 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: ['ROLE_PRO']
+                roles: roles || ['ROLE_PRO']
             }
         });
         return result.map(cleanupUser);

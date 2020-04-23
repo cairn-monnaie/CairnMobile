@@ -1,10 +1,13 @@
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import BaseVueComponent from '~/components/BaseVueComponent';
+import { listBorderColor, subtitleColor } from '~/variables';
 
 @Component({
     inheritAttrs: false
 })
 export default class ListItem extends BaseVueComponent {
+    public listBorderColor = listBorderColor;
+
     @Prop({ type: String })
     title: string;
     @Prop({ default: 1, type: Number })
@@ -33,7 +36,7 @@ export default class ListItem extends BaseVueComponent {
 
     @Prop({ default: '#5C5C5C', type: String })
     overlineColor: string;
-    @Prop({ default: '#676767', type: String })
+    @Prop({ default: subtitleColor, type: String })
     subtitleColor: string;
 
     @Watch('avatar')
@@ -43,7 +46,6 @@ export default class ListItem extends BaseVueComponent {
     }
 
     get showAvatar() {
-        // console.log('showAvatar', !!this.avatar);
         return !!this.avatar;
     }
 
@@ -53,10 +55,4 @@ export default class ListItem extends BaseVueComponent {
     destroyed() {
         super.destroyed();
     }
-
-    // get height() {
-    //     if (this.leftIcon) {
-    //         return 72;
-    //     }
-    // }
 }

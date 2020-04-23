@@ -50,7 +50,7 @@
             </slot>
         </GridLayout>
 
-        <AbsoluteLayout row="3" colSpan="5"  :marginTop="topBottomPadding * sizeFactor" marginLeft="20" backgroundColor="#EFEFEF" :height="!!showBottomLine ? 1 : 0" verticalAlignment="bottom" />
+        <AbsoluteLayout row="3" colSpan="5"  :marginTop="topBottomPadding * sizeFactor" marginLeft="20" :backgroundColor="listBorderColor" :height="!!showBottomLine ? 1 : 0" verticalAlignment="bottom" />
     </GridLayout>
 </template>
 

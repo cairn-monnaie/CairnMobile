@@ -59,6 +59,7 @@
         "nativescript-material-bottomsheet": "3.2.2",
         "nativescript-material-button": "3.2.2",
         "nativescript-material-dialogs": "3.2.2",
+        "nativescript-material-slider": "^3.2.2",
         "nativescript-material-snackbar": "3.2.2",
         "nativescript-material-textfield": "3.2.2",
         "nativescript-pager": "12.0.0-alpha.8",

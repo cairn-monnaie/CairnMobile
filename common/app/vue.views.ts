@@ -9,7 +9,7 @@ import ActivityIndicatorPlugin from 'nativescript-material-activityindicator/vue
 // import CardViewPlugin from 'nativescript-material-cardview/vue';
 // import ProgressPlugin from 'nativescript-material-progress/vue';
 // import RipplePlugin from 'nativescript-material-ripple/vue';
-// import SliderPlugin from 'nativescript-material-slider/vue';
+import SliderPlugin from 'nativescript-material-slider/vue';
 import TextFieldPlugin from 'nativescript-material-textfield/vue';
 import BottomSheetPlugin from 'nativescript-material-bottomsheet/vue';
 import CartoPlugin from 'nativescript-carto/vue';
@@ -34,7 +34,7 @@ const Plugin = {
         // Vue.use(CardViewPlugin);
         // Vue.use(ProgressPlugin);
         // Vue.use(RipplePlugin);
-        // Vue.use(SliderPlugin);
+        Vue.use(SliderPlugin);
         Vue.use(TextFieldPlugin);
         Vue.use(BottomSheetPlugin);
         Vue.use(CartoPlugin);
@@ -44,6 +44,7 @@ const Plugin = {
 
         Vue.registerElement('Button',() => require('nativescript-material-button').Button);
         Vue.registerElement('TextField',() => require('nativescript-material-textfield').TextField);
+        Vue.registerElement('Slider',() => require('nativescript-material-slider').Slider);
         Vue.registerElement('Label', () => HTMLLabel);
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('nativescript-barcodeview').BarcodeView);

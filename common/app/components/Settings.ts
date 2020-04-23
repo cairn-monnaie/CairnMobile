@@ -1,21 +1,53 @@
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
 import { ComponentIds } from './App';
 import { showSnack } from 'nativescript-material-snackbar';
+import { UserSettings } from '~/services/AuthService';
+import SettingSwitch from './SettingSwitch';
+import SettingSwitchWithSubtitle from './SettingSwitchWithSubtitle';
+import { throttle } from 'helpful-decorators';
 
 @Component({
-    components: {}
+    components: {
+        SettingSwitch,
+        SettingSwitchWithSubtitle
+    }
 })
 export default class Settings extends PageComponent {
     navigateUrl = ComponentIds.Settings;
     biometricsAvailable = false;
     innerBiometricsEnabled = false;
+    userSettings: UserSettings = null;
     mounted() {
         super.mounted();
         this.$securityService.biometricsAvailable().then(r => {
             this.biometricsAvailable = r;
         });
         this.innerBiometricsEnabled = this.$securityService.biometricEnabled;
+        this.refreshSettings();
+    }
+
+    @Watch('userSettings', { deep: true })
+    onUserSettingsChanged() {
+        this.log('onUserSettingsChanged', this.userSettings);
+        this.saveUserSettings();
+    }
+
+    @throttle(2000)
+    saveUserSettings() {
+        this.log('saveUserSettings');
+        this.$authService.postUserSettings(this.userSettings);
+    }
+
+    async refreshSettings() {
+        this.userSettings = await this.$authService.getUserSettings();
+    }
+
+    get paymentNotifSettings() {
+        return this.userSettings && this.userSettings.baseNotifications[0];
+    }
+    get newproNotifSettings() {
+        return this.userSettings && this.userSettings.baseNotifications[1];
     }
 
     ignoreNextCheckEvent = false;
@@ -51,21 +83,17 @@ export default class Settings extends PageComponent {
                     });
             }
         }
-
-        console.log('set biometricsEnabled', value);
     }
     get autoLockEnabled() {
         return this.$securityService.autoLockEnabled;
     }
     set autoLockEnabled(value: boolean) {
-        console.log('set autoLockEnabled', value);
         this.$securityService.autoLockEnabled = value;
     }
     get sendCrashReports() {
         return this.$crashReportService.sentryEnabled;
     }
     set sendCrashReports(value: boolean) {
-        console.log('set sendCrashReports', value);
         this.$crashReportService.sentryEnabled = value;
     }
 

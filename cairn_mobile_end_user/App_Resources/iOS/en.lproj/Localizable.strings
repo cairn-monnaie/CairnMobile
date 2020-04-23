@@ -1,7 +1,9 @@
 "received_paiement_body" = "You received a paiement from %1$@ of %2$@ cairns!";
 "received_paiement_title" = "Nouveau paiement";
-"efault_channel_description" = "default channel description";
-"default_channel_name" = "default channel name";
+"newpro_channel_description" = "default channel description";
+"newpro_channel_name" = "notifications for new pros around you";
+"payment_channel_description" = "default channel description";
+"payment_channel_name" = "payment notifications";
 "loggedin_needed" = "you must be logged in";
 "cairn_qr_tile_name" = "qrcode";
 "add_phone_desc" = "add a phone to receive notifications.\nYou will receive receive a confirmation sms";
@@ -118,3 +120,8 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
+"push_notifications" = "push_notifications";
+"mail_notifications" = "mail_notifications";
+"sms_notifications" = "sms_notifications";
+"webpush_notifications" = "webpush_notifications";
+"newpro_notifications_desc" = "newpro_notifications_desc";

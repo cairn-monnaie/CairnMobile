@@ -7,6 +7,8 @@ export const primaryColor: string = locals.primaryColor;
 export const accentColor: string = locals.accentColor;
 export const darkColor: string = locals.darkColor;
 export const backgroundColor: string = locals.backgroundColor;
+export const subtitleColor: string = locals.subtitleColor;
+export const listBorderColor: string = locals.listBorderColor;
 export const latoFontFamily: string = locals.latoFontFamily;
 export const cairnFontFamily: string = locals.cairnFontFamily;
 export const actionBarHeight: number = parseFloat(locals.actionBarHeight);
@@ -16,7 +18,6 @@ export const screenHeightDips = screen.mainScreen.heightDIPs;
 export const screenWidthDips = screen.mainScreen.widthDIPs;
 export let navigationBarHeight: number = parseFloat(locals.navigationBarHeight);
 
-console.log('cairnFontFamily', cairnFontFamily);
 if (gVars.isAndroid) {
     const context: android.content.Context = ad.getApplicationContext();
     const hasPermanentMenuKey = android.view.ViewConfiguration.get(context).hasPermanentMenuKey();
@@ -25,7 +26,7 @@ if (gVars.isAndroid) {
     }
 } else {
     navigationBarHeight = 0;
-    const onAppLaunch = function () {
+    const onAppLaunch = function() {
         navigationBarHeight = iosApp.window.safeAreaInsets.bottom;
         appOff(launchEvent, onAppLaunch);
     };

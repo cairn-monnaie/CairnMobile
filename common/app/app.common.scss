@@ -1,5 +1,6 @@
 @import './variables';
 @import './animations';
+@import './animations';
 // @import '~nativescript-vue-fab/style';
 
 .lato {
@@ -17,14 +18,14 @@ label {
     color: $text-color;
 }
 
-label,
-htmllabel,
-button,
-tabview,
-tabviewitem,
-mdbutton {
-    @extend .lato;
-}
+// label,
+// htmllabel,
+// button,
+// tabview,
+// tabviewitem,
+// mdbutton {
+//     @extend .lato;
+// }
 
 mdactivityindicator {
     color: $primary-color;
@@ -33,10 +34,10 @@ mdactivityindicator {
 mdripple {
     ripple-color: $primary-color;
 }
-switch[checked='true'] {
-    background-color: $accent-color;
-    color: $accent-color;
-}
+// switch[checked='true'] {
+//     // background-color: $accent-color;
+//     color: $accent-color;
+// }
 .cairn-page {
     background-color: $dark-color;
     status-bar-style: dark;
@@ -172,7 +173,7 @@ mdtextfield {
 
 .actionBarTitle {
     vertical-alignment: center;
-    font-size: 18;
+    font-size: 20;
     font-weight: bold;
     color: white;
 }
@@ -339,4 +340,25 @@ mdtextfield {
     color: white;
     font-size: 30;
     digits: '0123456789,.';
+}
+
+
+.list_section_title {
+    font-size: 22;
+    font-weight: bold;
+    text-align: center;
+    padding:5;
+}
+.list_section_subtitle {
+    font-size: 17;
+    font-weight: bold;
+    text-align: center;
+    padding:5;
+}
+.list_section_subsubtitle {
+    font-size: 15;
+    // font-weight: bold;
+    text-align: center;
+    color:#676767;
+    padding-bottom:5;
 }
