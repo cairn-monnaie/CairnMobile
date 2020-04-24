@@ -131,5 +131,6 @@
   "received_paiement_body": "You received a paiement from %1$s of %2$s cairns!",
   "password_change": "Password change",
   "password_change_required": "for security reasons it is necessary for you to change the temporary password which was given to you during your account creation",
-  "new_password": "New Password"
+  "new_password": "New Password",
+  "no_google_play_services": "Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications"
 }
