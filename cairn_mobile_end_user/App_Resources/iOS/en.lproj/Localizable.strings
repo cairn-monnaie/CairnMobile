@@ -120,6 +120,10 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
+"distance" = "distance";
+"newpro_notifications" = "newpro_notifications";
+"payment_notifications_desc" = "payment_notifications_desc";
+"payment_notifications" = "payment_notifications";
 "push_notifications" = "push_notifications";
 "mail_notifications" = "mail_notifications";
 "sms_notifications" = "sms_notifications";

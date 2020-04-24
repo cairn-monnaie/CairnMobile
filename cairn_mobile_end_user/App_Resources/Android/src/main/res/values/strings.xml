@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="new_password">"New Password"</string>
+  <string name="password_change_required">"for security reasons it is necessary for you to change the temporary password which was given to you during your account creation"</string>
+  <string name="password_change">"Password change"</string>
   <string name="received_paiement_body">"You received a paiement from %1$s of %2$s cairns!"</string>
   <string name="received_paiement_title">"Nouveau paiement"</string>
   <string name="newpro_channel_description">"default channel description"</string>
-  <string name="newpro__channel_name">"default channel name"</string>
+  <string name="newpro_channel_name">"notifications for new pros around you"</string>
   <string name="payment_channel_description">"default channel description"</string>
-  <string name="payment_channel_name">"default channel name"</string>
+  <string name="payment_channel_name">"payment notifications"</string>
   <string name="loggedin_needed">"you must be logged in"</string>
   <string name="cairn_qr_tile_name">"qrcode"</string>
   <string name="add_phone_desc">"add a phone to receive notifications.\nYou will receive receive a confirmation sms"</string>
@@ -120,4 +123,14 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
+  <string name="wrong_password_confirmation">"wrong_password_confirmation"</string>
+  <string name="distance">"distance"</string>
+  <string name="newpro_notifications">"newpro_notifications"</string>
+  <string name="payment_notifications_desc">"payment_notifications_desc"</string>
+  <string name="payment_notifications">"payment_notifications"</string>
+  <string name="push_notifications">"push_notifications"</string>
+  <string name="mail_notifications">"mail_notifications"</string>
+  <string name="sms_notifications">"sms_notifications"</string>
+  <string name="webpush_notifications">"webpush_notifications"</string>
+  <string name="newpro_notifications_desc">"newpro_notifications_desc"</string>
 </resources>

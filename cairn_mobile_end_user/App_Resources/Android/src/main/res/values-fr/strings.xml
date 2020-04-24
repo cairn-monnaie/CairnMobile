@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="wrong_password_confirmation">"erreur lors du changement de mot de passe. Vérifiez que vous avez bien confirmé le mot de passe"</string>
+  <string name="new_password">"nouveau mot de passe"</string>
+  <string name="password_change_required">"pour des raisons de sécurité il vous est nécessaire de changer le mot de passe temporaire qui vous a été donné lors de votre création de compte"</string>
+  <string name="password_change">"changement de mot de passe"</string>
+  <string name="distance">"distance"</string>
+  <string name="newpro_notifications">"notifications de nouveau Pro"</string>
+  <string name="payment_notifications_desc">"recevez des notifications lorsque que vous recevez paiement un virement"</string>
+  <string name="payment_notifications">"notifications de paiement"</string>
+  <string name="push_notifications">"notifications push"</string>
+  <string name="mail_notifications">"notifications e-mail"</string>
+  <string name="sms_notifications">"notifications sms"</string>
+  <string name="webpush_notifications">"notifications dans le navigateur"</string>
+  <string name="newpro_notifications_desc">"recevez une notification quand un nouvel adhérent pro arrive près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse"</string>
   <string name="received_paiement_body">"Vous avez reçu un paiement de %1$s de %2$s cairns!"</string>
   <string name="received_paiement_title">"Nouveau paiement"</string>
   <string name="newpro_channel_description">"default channel description"</string>
-  <string name="newpro__channel_name">"default channel name"</string>
+  <string name="newpro_channel_name">"notifications de nouveau pro près de chez vous"</string>
   <string name="payment_channel_description">"default channel description"</string>
-  <string name="payment_channel_name">"default channel name"</string>
+  <string name="payment_channel_name">"notifications de paiements"</string>
   <string name="loggedin_needed">"il vous faut être connecté"</string>
   <string name="cairn_qr_tile_name">"qrcode"</string>
   <string name="send_crash_reports">"envoyer des rapports de bug"</string>
@@ -21,7 +34,7 @@
   <string name="privacy_policy">"politique de confidentialité"</string>
   <string name="support">"soutien"</string>
   <string name="share_app">"partager cette application"</string>
-  <string name="review_app">"examen de l\'application"</string>
+  <string name="review_app">"noter l\'application"</string>
   <string name="send_crash_reports_desc">"le rapport d\'erreur contient uniquement des informations pertinentes pour nous aider à identifier les problèmes et les résoudre."</string>
   <string name="about">"à propos"</string>
   <string name="pin_changed">"votre PIN à bien été changé!"</string>

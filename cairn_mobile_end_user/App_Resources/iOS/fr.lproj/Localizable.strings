@@ -1,3 +1,7 @@
+"distance" = "distance";
+"newpro_notifications" = "notifications de nouveau Pro";
+"payment_notifications_desc" = "recevez des notifications lorsque que vous recevez paiement un virement";
+"payment_notifications" = "notifications de paiement";
 "push_notifications" = "notifications push";
 "mail_notifications" = "notifications e-mail";
 "sms_notifications" = "notifications sms";
@@ -24,7 +28,7 @@
 "privacy_policy" = "politique de confidentialité";
 "support" = "soutien";
 "share_app" = "partager cette application";
-"review_app" = "examen de l'application";
+"review_app" = "noter l'application";
 "send_crash_reports_desc" = "le rapport d'erreur contient uniquement des informations pertinentes pour nous aider à identifier les problèmes et les résoudre.";
 "about" = "à propos";
 "pin_changed" = "votre PIN à bien été changé!";
