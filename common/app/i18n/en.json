@@ -127,6 +127,9 @@
   "payment_channel_description": "default channel description",
   "newpro_channel_name": "notifications for new pros around you",
   "newpro_channel_description": "default channel description",
-  "received_paiement_title":"Nouveau paiement",
-  "received_paiement_body":"You received a paiement from %1$s of %2$s cairns!"
+  "received_paiement_title": "Nouveau paiement",
+  "received_paiement_body": "You received a paiement from %1$s of %2$s cairns!",
+  "password_change": "Password change",
+  "password_change_required": "for security reasons it is necessary for you to change the temporary password which was given to you during your account creation",
+  "new_password": "New Password"
 }

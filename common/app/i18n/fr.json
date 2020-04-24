@@ -107,7 +107,7 @@
   "pin_changed": "votre PIN à bien été changé!",
   "about": "à propos",
   "send_crash_reports_desc": "le rapport d'erreur contient uniquement des informations pertinentes pour nous aider à identifier les problèmes et les résoudre.",
-  "review_app": "examen de l'application",
+  "review_app": "noter l'application",
   "share_app": "partager cette application",
   "support": "soutien",
   "privacy_policy": "politique de confidentialité",
@@ -137,5 +137,9 @@
   "payment_notifications": "notifications de paiement",
   "payment_notifications_desc": "recevez des notifications lorsque que vous recevez paiement un virement",
   "newpro_notifications": "notifications de nouveau Pro",
-  "distance": "distance"
+  "distance": "distance",
+  "password_change": "changement de mot de passe",
+  "password_change_required": "pour des raisons de sécurité il vous est nécessaire de changer le mot de passe temporaire qui vous a été donné lors de votre création de compte",
+  "new_password": "nouveau mot de passe",
+  "wrong_password_confirmation": "erreur lors du changement de mot de passe. Vérifiez que vous avez bien confirmé le mot de passe"
 }

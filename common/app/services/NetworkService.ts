@@ -388,7 +388,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
-        console.log('request', requestParams);
+        // console.log('request', requestParams);
         return https
             .request(requestParams as HttpRequestOptions)
             .then(response =>
@@ -415,7 +415,7 @@ export class NetworkService extends Observable {
         // .then(() => {
         const content = response['content'].toJSON() || response['content'].toString();
         const isJSON = typeof content === 'object' || Array.isArray(content);
-        this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isJSON, typeof content, content);
+        // this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isJSON, typeof content, content);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn;
             if (isJSON) {

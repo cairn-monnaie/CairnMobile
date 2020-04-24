@@ -3,11 +3,11 @@ import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from 'nativescript-carto/core';
 import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
-// import { TNSHttpFormData, TNSHttpFormDataParam, TNSHttpFormDataResponse } from 'nativescript-http-formdata';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { formatOsmAddress } from '~/helpers/formatter';
+import { alert, login } from 'nativescript-material-dialogs';
+import { $t, $tc, $tt, $tu } from '~/helpers/locale';
 
 const tokenEndpoint = '/oauth/tokens';
 
@@ -15,6 +15,7 @@ export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 export const AccountInfoEvent = 'accountinfo';
 export const UserProfileEvent = 'userprofile';
+export const UserNeedsPasswordChangeEvent = 'userneedspasswordchange';
 
 // const sha256 = require('hash.js');
 // export function sha256(text: string) {
@@ -147,6 +148,10 @@ function cleanupUser(user: any) {
         // } else {
         // result.image = ``;
     }
+    if (user.account_number) {
+        // in case of perso user returned we might have account_number instead of mainICC
+        result.mainICC = user.account_number;
+    }
     if (user.phones) {
         result.phoneNumbers = [];
         result.smsIds = [];
@@ -214,7 +219,9 @@ export interface LoginParams {
 export enum Roles {
     PRO = 'ROLE_PRO',
     PERSON = 'ROLE_PERSON',
-    USER = 'ROLE_USER'
+    // USER = 'ROLE_USER',
+    ADMIN = 'ROLE_ADMIN',
+    SUPER_ADMIN = 'ROLE_SUPER_ADMIN'
 }
 
 export interface ZipCity {
@@ -315,6 +322,16 @@ export interface TransactionConfirmation {
         };
         debitorName: string;
     };
+}
+
+interface TokenRequestResult {
+    access_token: string;
+    expires_in: number;
+    token_type: string;
+    scope: string;
+    refresh_token: string;
+    user_id: number;
+    first_login: boolean;
 }
 
 export class Transaction {
@@ -425,12 +442,6 @@ export default class AuthService extends NetworkService {
     @stringProperty pushToken: string;
     authority = CAIRN_URL;
 
-    getMessage() {
-        // firebase.addOnMessageReceivedCallback(function (data) {
-        //   alert(JSON.stringify(data));
-        // })
-    }
-
     isLoggedIn() {
         return !!this.token && !!this.loginParams && !!this.userId;
     }
@@ -497,13 +508,18 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/users/${userId || this.userId}`,
             method: 'GET'
         });
-        this.userProfile = cleanupUser(result);
-        this.notify({
-            eventName: UserProfileEvent,
-            object: this,
-            data: this.userProfile
-        } as UserProfileEventData);
-        return this.userProfile;
+        const profile = cleanupUser(result);
+        if (!userId) {
+            this.userProfile = profile;
+            console.log('getUserProfile', result);
+            this.notify({
+                eventName: UserProfileEvent,
+                object: this,
+                data: profile
+            } as UserProfileEventData);
+        }
+
+        return profile;
     }
     async getUserSettings() {
         const result = await this.request<UserSettings>({
@@ -521,13 +537,30 @@ export default class AuthService extends NetworkService {
         const result = await this.request<UserSettings>({
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'POST',
-            body:{baseNotifications:userSettings.baseNotifications}
+            body: { baseNotifications: userSettings.baseNotifications }
         });
         // this.notify({
         //     eventName: UserProfileEvent,
         //     object: this,
         //     data: this.userProfile
         // } as UserProfileEventData);
+        return result;
+    }
+    async changePassword(currentPassword: string, newPassword: string) {
+        const result = await this.request({
+            apiPath: '/mobile/users/change-password',
+            method: 'POST',
+            body: {
+                current_password: currentPassword,
+                plainPassword: {
+                    first: newPassword,
+                    second: newPassword
+                }
+            }
+        });
+        if (this.loginParams) {
+            this.loginParams.password = newPassword;
+        }
         return result;
     }
 
@@ -688,6 +721,7 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/beneficiaries',
             method: 'GET'
         });
+        console.log('beneficiaries', result);
         this.beneficiaries = result = result.map(b => {
             b.user = cleanupUser(b.user);
             return b;
@@ -728,7 +762,7 @@ export default class AuthService extends NetworkService {
         }
 
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
-        const result = await this.request<User[]>({
+        let result = await this.request<User[]>({
             apiPath,
             method: 'POST',
             body: {
@@ -743,6 +777,9 @@ export default class AuthService extends NetworkService {
                 roles: roles || ['ROLE_PRO']
             }
         });
+        if (!Array.isArray(result)) {
+            result = [result];
+        }
         return result.map(cleanupUser);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
@@ -868,34 +905,9 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    async getRefreshToken() {
-        try {
-            const result = await this.request({
-                apiPath: tokenEndpoint,
-                method: 'POST',
-                body: {
-                    client_id: CAIRN_CLIENT_ID,
-                    client_secret: CAIRN_CLIENT_SECRET,
-                    grant_type: 'refresh_token',
-                    refresh_token: this.refreshToken
-                }
-            });
-            this.token = result.access_token;
-            this.refreshToken = result.refresh_token;
-        } catch (err) {
-            // for now we try to get a new token there, should we?
-            // Yes, we should !
-            console.log('error getting refresh token', err);
-            await this.getToken(this.loginParams);
-
-            // this.token = undefined;
-            // this.refreshToken = undefined;
-            // return Promise.reject(err);
-        }
-    }
     async getToken(user: LoginParams) {
         try {
-            const result = await this.request({
+            const result = await this.request<TokenRequestResult>({
                 cachePolicy: 'noCache',
                 apiPath: tokenEndpoint,
                 method: 'POST',
@@ -910,10 +922,38 @@ export default class AuthService extends NetworkService {
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
             this.userId = result.user_id;
+            return result;
         } catch (err) {
             this.token = undefined;
             this.refreshToken = undefined;
             return Promise.reject(err);
+        }
+    }
+    async getRefreshToken() {
+        try {
+            const result = await this.request<TokenRequestResult>({
+                apiPath: tokenEndpoint,
+                method: 'POST',
+                body: {
+                    client_id: CAIRN_CLIENT_ID,
+                    client_secret: CAIRN_CLIENT_SECRET,
+                    grant_type: 'refresh_token',
+                    refresh_token: this.refreshToken
+                }
+            });
+            console.log('getRefreshToken', result);
+            this.token = result.access_token;
+            this.refreshToken = result.refresh_token;
+            return result;
+        } catch (err) {
+            // for now we try to get a new token there, should we?
+            // Yes, we should !
+            console.log('error getting refresh token', err);
+            return this.getToken(this.loginParams);
+
+            // this.token = undefined;
+            // this.refreshToken = undefined;
+            // return Promise.reject(err);
         }
     }
     async login(user: LoginParams = this.loginParams) {
@@ -922,7 +962,32 @@ export default class AuthService extends NetworkService {
         }
         const wasLoggedin = this.isLoggedIn();
         try {
-            const result = await this.getToken(user);
+            const tokenResult = await this.getToken(user);
+
+            if (tokenResult.first_login) {
+                // we actually ask for a refresh token to see if the user needs
+                // to change its password. The restult contains first_login which tells us.
+                const result = await login({
+                    title: $tc('password_change'),
+                    message: $tc('password_change_required'),
+                    userNameHint: $tc('new_password'),
+                    usernameTextFieldProperties: {
+                        secure: true,
+                        marginBottom: 10
+                    },
+                    passwordHint: $tc('confirm_password')
+                });
+                if (!result || !result.result || result.password !== result.userName) {
+                    this.onLoggedOut();
+                    if (!result) {
+                        return Promise.reject();
+                    }
+                    return Promise.reject($tc('wrong_password_confirmation'));
+                } else {
+                    await this.changePassword(user.password, result.password);
+                    user.password = result.password;
+                }
+            }
             await this.getUserProfile();
             // .then(() => this.getUserProfile())
             // .then(() => {
@@ -964,26 +1029,6 @@ export default class AuthService extends NetworkService {
                 type
             }
         });
-    }
-
-    async changePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
-        return this.request({
-            apiPath: '/mobile/users/change-password',
-            method: 'POST',
-            body: {
-                current_password: currentPassword,
-                plainPassword: {
-                    first: newPassword,
-                    second: confirmPassword
-                }
-            }
-        });
-
-        // const result = await firebase.createUser({
-        //   email: user.email,
-        //   password: user.password
-        // })
-        // return JSON.stringify(result);
     }
 
     async resetPassword(email) {
