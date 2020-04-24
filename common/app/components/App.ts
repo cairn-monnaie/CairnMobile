@@ -278,54 +278,57 @@ export default class App extends BaseVueComponent {
         console.log('onPushToken', token);
         this.$authService.registerPushToken(token).catch(this.showError);
     }
-    registerForPushNotifs() {
+    async registerForPushNotifs() {
         // added this here so we can do some wiring
-        console.log('registerForPushNotifications');
-        return registerForPushNotifications({
-            onPushTokenReceivedCallback: this.onPushToken.bind(this),
-            onMessageReceivedCallback: this.onPushMessage.bind(this),
-            // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
-            showNotifications: true,
-            // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
-            showNotificationsWhenInForeground: true
-        })
-            .then(result => {
-                console.log('Registered for push', result);
-                if (gVars.isAndroid) {
-                    if (android.os.Build.VERSION.SDK_INT >= 26) {
-                        const color = android.graphics.Color.parseColor(primaryColor);
-                        const context = androidApp.context;
-                        // API level 26 ("Android O") supports notification channels.
+        try {
+            const result = await registerForPushNotifications({
+                onPushTokenReceivedCallback: this.onPushToken.bind(this),
+                onMessageReceivedCallback: this.onPushMessage.bind(this),
+                // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
+                showNotifications: true,
+                // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
+                showNotificationsWhenInForeground: true
+            });
+            console.log('Registered for push', result);
+            if (gVars.isAndroid) {
+                if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    const color = android.graphics.Color.parseColor(primaryColor);
+                    const context = androidApp.context;
+                    // API level 26 ("Android O") supports notification channels.
 
-                        const service = context.getSystemService(
-                            android.content.Context.NOTIFICATION_SERVICE
-                        ) as android.app.NotificationManager;
+                    const service = context.getSystemService(
+                        android.content.Context.NOTIFICATION_SERVICE
+                    ) as android.app.NotificationManager;
 
-                        // create channel
-                        let channel = new android.app.NotificationChannel(
-                            context.getString(ad.resources.getStringId('payment_channel_id')),
-                            $t('payment_channel_name'),
-                            android.app.NotificationManager.IMPORTANCE_HIGH
-                        );
-                        // channel.setDescription($t('payment_channel_description'));
-                        channel.setLightColor(color);
-                        service.createNotificationChannel(channel);
+                    // create channel
+                    let channel = new android.app.NotificationChannel(
+                        context.getString(ad.resources.getStringId('payment_channel_id')),
+                        $t('payment_channel_name'),
+                        android.app.NotificationManager.IMPORTANCE_HIGH
+                    );
+                    // channel.setDescription($t('payment_channel_description'));
+                    channel.setLightColor(color);
+                    service.createNotificationChannel(channel);
 
-                        channel = new android.app.NotificationChannel(
-                            context.getString(ad.resources.getStringId('newpro_channel_id')),
-                            $t('newpro_channel_name'),
-                            android.app.NotificationManager.IMPORTANCE_DEFAULT
-                        );
-                        // channel.setDescription($t('newpro_channel_description'));
-                        channel.setLightColor(color);
-                        service.createNotificationChannel(channel);
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    channel = new android.app.NotificationChannel(
+                        context.getString(ad.resources.getStringId('newpro_channel_id')),
+                        $t('newpro_channel_name'),
+                        android.app.NotificationManager.IMPORTANCE_DEFAULT
+                    );
+                    // channel.setDescription($t('newpro_channel_description'));
+                    channel.setLightColor(color);
+                    service.createNotificationChannel(channel);
+                    return true;
+                } else {
+                    return false;
                 }
-            })
-            .catch(this.showError);
+            }
+        } catch (err) {
+            if (err.toString().endsWith('MISSING_INSTANCEID_SERVICE')) {
+                err = new Error('no_google_play_services');
+            }
+            this.showError(err);
+        }
     }
 
     onLoaded() {
