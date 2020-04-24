@@ -72,8 +72,8 @@ mdbutton[variant='contained'] {
     ripple-color: $accent-color-dark;
 }
 
-mdtextfield[variant='filled'] {
-    background-color: rgba(0, 0, 0, 0.082);
+mdtextfield[variant=filled] {
+    background-color: rgba(0, 0, 0, 0.032);
 }
 
 mdtextfield {
@@ -225,7 +225,7 @@ mdtextfield {
 
 .menuIcon {
     @extend .mdi;
-    color: #757575;
+    color: $icon-color;
     text-align: center;
     font-size: 24;
 }
