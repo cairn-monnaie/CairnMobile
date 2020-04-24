@@ -1,13 +1,16 @@
 import { openUrl } from '@nativescript/core/utils/utils';
 import { Component } from 'vue-property-decorator';
 import PageComponent from '~/components/PageComponent';
+import SettingLabelIcon from '~/components/SettingLabelIcon';
 import ThirdPartySoftwareBottomSheet from '~/components/ThirdPartySoftwareBottomSheet';
 import { ComponentIds } from './App';
 import { showSnack } from 'nativescript-material-snackbar';
 import { share } from '~/utils/share';
 
 @Component({
-    components: {}
+    components: {
+        SettingLabelIcon
+    }
 })
 export default class About extends PageComponent {
     navigateUrl = ComponentIds.About;

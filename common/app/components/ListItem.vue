@@ -17,7 +17,7 @@
             :text="leftIcon"
             horizontalAlignment="left"
             verticalAlignment="center"
-            color="#757575"
+            :color="iconColor"
             class="mdi"
         />
         <NSImg
@@ -45,7 +45,7 @@
         <Label col="3" row="1" :fontSize="10 * sizeFactor" v-show="!!date" :text="date" verticalAlignment="top" />
         <GridLayout col="3" row="1" rowSpan="2" verticalAlignment="center" >
             <slot name="rightView">
-                <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" color="#757575" :text="rightIcon" verticalAlignment="center" />
+                <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" :color="iconColor" :text="rightIcon" verticalAlignment="center" />
                 <Button variant="flat" v-show="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
             </slot>
         </GridLayout>

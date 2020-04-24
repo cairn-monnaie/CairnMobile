@@ -216,7 +216,6 @@ module.exports = (env, params = {}) => {
     );
 
     const scssPrepend = `$lato-fontFamily: ${platform === 'android' ? 'res/lato' : 'Lato'};
-$forecastfont-fontFamily: ${platform === 'android' ? 'iconvault_forecastfont' : 'iconvault'};
 $cairn-fontFamily: cairn;
 $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Material Design Icons'};`;
 

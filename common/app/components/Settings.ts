@@ -29,17 +29,21 @@ export default class Settings extends PageComponent {
 
     @Watch('userSettings', { deep: true })
     onUserSettingsChanged() {
-        this.log('onUserSettingsChanged', this.userSettings);
         this.saveUserSettings();
     }
-
+    ignoreNextChange = false;
     @throttle(2000)
     saveUserSettings() {
-        this.log('saveUserSettings');
+        if (this.ignoreNextChange) {
+            this.ignoreNextChange = false;
+            return;
+        }
+        // this.log('saveUserSettings');
         this.$authService.postUserSettings(this.userSettings);
     }
 
     async refreshSettings() {
+        this.ignoreNextChange = true;
         this.userSettings = await this.$authService.getUserSettings();
     }
 

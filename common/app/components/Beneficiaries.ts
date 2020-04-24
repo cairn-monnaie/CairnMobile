@@ -54,10 +54,9 @@ export default class Beneficiaries extends PageComponent {
     addBeneficiary() {
         this.$showModal(UserPicker, { fullscreen: true })
             .then((r: User) => {
-                console.log('addBeneficiary done');
                 if (r) {
                     this.showLoading(this.$t('loading'));
-                    return this.$authService.addBeneficiary(r.email).then(() => {
+                    return this.$authService.addBeneficiary(r.email || r.mainICC).then(() => {
                         this.hideLoading();
                         showSnack({
                             message: this.$t('beneficiary_added', r.name)
@@ -70,6 +69,7 @@ export default class Beneficiaries extends PageComponent {
     }
 
     onItemTap(userProfile: User) {
+        console.log('onItemTap', userProfile);
         if (this.$authService.isProUser(userProfile)) {
             // const accountInfo = this.dataItems[args.index];
             this.navigateTo(Profile, {

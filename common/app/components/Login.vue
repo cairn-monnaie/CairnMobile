@@ -1,14 +1,45 @@
 <template>
     <CairnPage @navigatedTo="onLoaded" actionBarHidden :actionBarHeight="logoViewHeight">
         <InteractiveMap />
-        <StackLayout>
-            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignment="center" verticalTextAlignment="center" :backgroundColor="themeColor" />
-            <Button v-show="!showLogin" verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+        <StackLayout verticalAlignment="top">
+            <Label
+                :height="logoViewHeight"
+                :fontFamily="cairnFontFamily"
+                :fontSize="logoViewHeight"
+                color="white"
+                text="cairn-full_logo"
+                textAlignment="center"
+                verticalTextAlignment="center"
+                :backgroundColor="themeColor"
+            />
+            <Button
+                v-show="!showLogin"
+                verticalAlignment="top"
+                :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize"
+                @tap="hideMap"
+            />
         </StackLayout>
-        <Button verticalAlignment="top" horizontalAlignment="right" rippleColor="white" variant="flat" class="icon-btn" text="mdi-information-outline" @tap="showAbout" />
+        <Button
+            verticalAlignment="top"
+            horizontalAlignment="right"
+            rippleColor="white"
+            variant="flat"
+            class="icon-btn"
+            text="mdi-information-outline"
+            @tap="showAbout"
+        />
         <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
             <StackLayout>
-            <Label :height="logoViewHeight" :fontFamily="cairnFontFamily" :fontSize="logoViewHeight" color="white" text="cairn-full_logo" textAlignment="center" verticalTextAlignment="center" :backgroundColor="themeColor" />
+                <Label
+                    :height="logoViewHeight"
+                    :fontFamily="cairnFontFamily"
+                    :fontSize="logoViewHeight"
+                    color="white"
+                    text="cairn-full_logo"
+                    textAlignment="center"
+                    verticalTextAlignment="center"
+                    :backgroundColor="themeColor"
+                />
                 <StackLayout class="form" horizontalAlignment="center">
                     <TextField
                         ref="username"
@@ -49,9 +80,19 @@
                         :error="passwordError"
                     />
 
-                    <Button v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
+                    <Button
+                        v-show="!loading"
+                        :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize"
+                        @tap="submit"
+                        :isEnabled="canLoginOrRegister"
+                    />
                     <Button v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
-                    <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
+                    <Label
+                        v-show="isLoggingIn"
+                        :text="$t('forgot_password') | capitalize"
+                        class="login-label"
+                        @tap="forgotPassword"
+                    />
                 </StackLayout>
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">

@@ -1,6 +1,6 @@
 import { TextField } from 'nativescript-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
-import { Benificiary, User } from '~/services/AuthService';
+import { Benificiary, Roles, User } from '~/services/AuthService';
 import PageComponent from './PageComponent';
 
 interface Recipient extends User {
@@ -69,7 +69,8 @@ export default class UserPicker extends PageComponent {
         }
         this.$authService
             .getUsers({
-                query
+                query,
+                roles: [Roles.PRO, Roles.PERSON]
             })
             .then(r => {
                 // r.forEach(user => {

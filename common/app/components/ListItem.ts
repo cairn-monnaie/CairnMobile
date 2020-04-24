@@ -1,12 +1,13 @@
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import BaseVueComponent from '~/components/BaseVueComponent';
-import { listBorderColor, subtitleColor } from '~/variables';
+import { iconColor, listBorderColor, subtitleColor } from '~/variables';
 
 @Component({
     inheritAttrs: false
 })
 export default class ListItem extends BaseVueComponent {
     public listBorderColor = listBorderColor;
+    public iconColor = iconColor;
 
     @Prop({ type: String })
     title: string;

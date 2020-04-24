@@ -15,8 +15,8 @@ import BaseVueComponent from './BaseVueComponent';
     components: {
         MapComponent,
         MapBottomSheet,
-        BottomSheetHolder,
-    },
+        BottomSheetHolder
+    }
 })
 export default class InteractiveMap extends BaseVueComponent {
     @Prop({ default: 1 }) opacity: number;
@@ -28,7 +28,6 @@ export default class InteractiveMap extends BaseVueComponent {
     bottomSheetPercentage = 0;
     shownUsers: User[] = [];
     loading = false;
-
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
@@ -68,6 +67,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     // map: Mapbox;
     onMapReady(e) {
+        this.log('onMapReady');
         const map = (this._cartoMap = e.object as CartoMap);
         // this.refresh();
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
@@ -91,7 +91,10 @@ export default class InteractiveMap extends BaseVueComponent {
     onMapStable(e) {
         this.saveSettings();
         const map = e.object as CartoMap;
-        const currentBounds = new MapBounds(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
+        const currentBounds = new MapBounds(
+            map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }),
+            map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() })
+        );
         if (!this.currentBounds || !currentBounds.equals(this.currentBounds)) {
             this.currentBounds = currentBounds;
             this.refresh(currentBounds);
@@ -106,7 +109,7 @@ export default class InteractiveMap extends BaseVueComponent {
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
-            const user = this.shownUsers.find((u) => u.id === (featureData.id as any));
+            const user = this.shownUsers.find(u => u.id === (featureData.id as any));
             if (user) {
                 this.selectItem(user);
             }
@@ -119,7 +122,7 @@ export default class InteractiveMap extends BaseVueComponent {
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds)
-            .then((r) => {
+            .then(r => {
                 // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {

@@ -253,7 +253,10 @@ export default class MapComponent extends BaseVueComponent {
         return this._localVectorTileDataSource;
     }
     addGeoJSONPoints(points: any[]) {
-        const geojson = GeoJSON.parse(points, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
+        const geojson = GeoJSON.parse(points, {
+            Point: ['address.latitude', 'address.longitude'],
+            include: ['name', 'id']
+        }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
@@ -277,12 +280,27 @@ export default class MapComponent extends BaseVueComponent {
             return;
         }
 
-        const position = { latitude: geoPos.latitude, longitude: geoPos.longitude, horizontalAccuracy: geoPos.horizontalAccuracy };
+        const position = {
+            latitude: geoPos.latitude,
+            longitude: geoPos.longitude,
+            horizontalAccuracy: geoPos.horizontalAccuracy
+        };
         // console.log('updateUserLocation', position, this.userFollow);
         if (this.userMarker) {
-            const currentLocation = { latitude: this.lastUserLocation.latitude, longitude: this.lastUserLocation.longitude, horizontalAccuracy: this.lastUserLocation.horizontalAccuracy };
+            const currentLocation = {
+                latitude: this.lastUserLocation.latitude,
+                longitude: this.lastUserLocation.longitude,
+                horizontalAccuracy: this.lastUserLocation.horizontalAccuracy
+            };
             new TWEEN.Tween(currentLocation)
-                .to({ latitude: position.latitude, longitude: position.longitude, horizontalAccuracy: position.horizontalAccuracy }, LOCATION_ANIMATION_DURATION)
+                .to(
+                    {
+                        latitude: position.latitude,
+                        longitude: position.longitude,
+                        horizontalAccuracy: position.horizontalAccuracy
+                    },
+                    LOCATION_ANIMATION_DURATION
+                )
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(newPos => {
                     this.userBackMarker.position = newPos;

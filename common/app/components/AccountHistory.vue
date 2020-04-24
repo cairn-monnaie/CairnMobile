@@ -18,11 +18,11 @@
                                 color="black"
                                 verticalAlignment="top"
                                 row="0"
-                                fontSize="14"
+                                fontSize="16"
                                 maxLines="3"
                                 textWrap="false"
                             />
-                            <Label row="1" :text="item.reason" fontSize="12" verticalAlignment="bottom" />
+                            <Label row="1" :text="item.reason" fontSize="14" verticalTextAlignment="top" />
                             <Label row="2" marginTop="0" v-show="!!item.description" :text="item.description" color="#6F6F6F" fontSize="12" verticalAlignment="bottom" />
 
                             <Label col="1" row="0" verticalAlignment="bottom" :text="item.executionDate | dateRelative" fontSize="14" color="#6F6F6F" horizontalAlignment="right" />
