@@ -47,7 +47,7 @@ import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
 import Settings from './Settings';
 import TransferWindow from './TransferWindow';
-import { $t } from '~/helpers/locale';
+import { $t, $tc } from '~/helpers/locale';
 
 // function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
 //     const fontAspectRatio = 1.28571429;
@@ -325,7 +325,7 @@ export default class App extends BaseVueComponent {
             }
         } catch (err) {
             if (err.toString().endsWith('MISSING_INSTANCEID_SERVICE')) {
-                err = new Error('no_google_play_services');
+                err = $tc('no_google_play_services');
             }
             this.showError(err);
         }
