@@ -17,23 +17,6 @@ export const AccountInfoEvent = 'accountinfo';
 export const UserProfileEvent = 'userprofile';
 export const UserNeedsPasswordChangeEvent = 'userneedspasswordchange';
 
-// const sha256 = require('hash.js');
-// export function sha256(text: string) {
-//     if (gVars.isAndroid) {
-//         const md = java.security.MessageDigest.getInstance('SHA-256');
-//         md.update(new java.lang.String(text).getBytes());
-//         const digest = md.digest();
-//         return android.util.Base64.encodeToString(digest, android.util.Base64.DEFAULT);
-//     } else {
-//         const data = NSString.stringWithString(text).dataUsingEncoding(NSUTF8StringEncoding);
-
-//         unsigned char result[CC_SHA256_DIGEST_LENGTH];
-//         CC_SHA256(data.bytes, data.length, result);
-
-//         return [TiUtils convertToHex:(unsigned char *)&result length:CC_SHA256_DIGEST_LENGTH];
-//     }
-// }
-
 export interface NominatimAddress {
     city?: string;
     village?: string;
