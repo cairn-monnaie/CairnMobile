@@ -1,0 +1,18 @@
+*Features*
+- allow to disable sentry
+- new about window
+- more options for the listitem
+- full qrcode rewrite, we now use ecairn:// url scheme
+- third party software
+- url scheme
+- *android:* tile + show modal dialog when outside app
+- vibrate on transfer success
+- force the user to change its password if necessary
+
+*Bug fixes*
+- colors not rendering correctly
+- color fix for webpack
+- vue typings fix
+- privacy link
+- prevent vue error
+- layout i...ssage
