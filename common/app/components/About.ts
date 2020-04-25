@@ -51,7 +51,10 @@ export default class About extends PageComponent {
                 openUrl(STORE_REVIEW_LINK);
                 break;
             case 'third_party':
-                this.$showBottomSheet(ThirdPartySoftwareBottomSheet, {});
+                this.$showBottomSheet(ThirdPartySoftwareBottomSheet, {
+                    ignoreTopSafeArea:true,
+                    trackingScrollView:'trackingScrollView'
+                });
                 break;
         }
     }
