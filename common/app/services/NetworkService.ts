@@ -4,7 +4,7 @@ import { clog } from '~/utils/logging';
 import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
-import * as https from 'nativescript-https';
+import * as https from 'nativescript-akylas-https';
 
 export interface CacheOptions {
     diskLocation: string;
@@ -413,7 +413,13 @@ export class NetworkService extends Observable {
         const statusCode = response.statusCode;
         // return Promise.resolve()
         // .then(() => {
-        const content = response['content'].toJSON() || response['content'].toString();
+        // this.log('handleRequestResponse1', statusCode, response.reason, response.headers);
+        let content = await response.content.toJSONAsync();
+        if (!content) {
+            content = await response.content.toStringAsync();
+        }
+        // this.log('handleRequestResponse2', content);
+        // const content = response['content'].toJSON() || response['content'].toString();
         const isJSON = typeof content === 'object' || Array.isArray(content);
         // this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isJSON, typeof content, content);
         if (Math.round(statusCode / 100) !== 2) {
