@@ -1,3 +1,8 @@
+"no_google_play_services" = "Votre téléphone ne semble pas supporter Google Play Services. Par conséquent vous ne pouvez recevoir de notifications";
+"wrong_password_confirmation" = "erreur lors du changement de mot de passe. Vérifiez que vous avez bien confirmé le mot de passe";
+"new_password" = "nouveau mot de passe";
+"password_change_required" = "pour des raisons de sécurité il vous est nécessaire de changer le mot de passe temporaire qui vous a été donné lors de votre création de compte";
+"password_change" = "changement de mot de passe";
 "distance" = "distance";
 "newpro_notifications" = "notifications de nouveau Pro";
 "payment_notifications_desc" = "recevez des notifications lorsque que vous recevez paiement un virement";

@@ -1,3 +1,7 @@
+"no_google_play_services" = "Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications";
+"new_password" = "New Password";
+"password_change_required" = "for security reasons it is necessary for you to change the temporary password which was given to you during your account creation";
+"password_change" = "Password change";
 "received_paiement_body" = "You received a paiement from %1$@ of %2$@ cairns!";
 "received_paiement_title" = "Nouveau paiement";
 "newpro_channel_description" = "default channel description";
@@ -120,6 +124,7 @@
 "add" = "add";
 "account_history" = "account history";
 "account" = "account";
+"wrong_password_confirmation" = "wrong_password_confirmation";
 "distance" = "distance";
 "newpro_notifications" = "newpro_notifications";
 "payment_notifications_desc" = "payment_notifications_desc";
