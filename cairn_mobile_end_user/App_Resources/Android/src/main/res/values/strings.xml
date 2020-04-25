@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="no_google_play_services">"Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications"</string>
   <string name="new_password">"New Password"</string>
   <string name="password_change_required">"for security reasons it is necessary for you to change the temporary password which was given to you during your account creation"</string>
   <string name="password_change">"Password change"</string>

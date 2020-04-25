@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="no_google_play_services">"Votre téléphone ne semble pas supporter Google Play Services. Par conséquent vous ne pouvez recevoir de notifications"</string>
   <string name="wrong_password_confirmation">"erreur lors du changement de mot de passe. Vérifiez que vous avez bien confirmé le mot de passe"</string>
   <string name="new_password">"nouveau mot de passe"</string>
   <string name="password_change_required">"pour des raisons de sécurité il vous est nécessaire de changer le mot de passe temporaire qui vous a été donné lors de votre création de compte"</string>
