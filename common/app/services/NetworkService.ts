@@ -468,7 +468,7 @@ export class NetworkService extends Observable {
                 if (error.exception && error.exception.length > 0) {
                     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 }
-                this.log('throwing http error', error.code || statusCode, message, requestParams);
+                this.log('throwing http error', error.code || statusCode, message, requestParams.url);
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
                     message,
