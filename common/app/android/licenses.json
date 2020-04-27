@@ -1,9 +1,9 @@
 {
     "dependencies": [
         {
-            "moduleName": "com.akylas:carto-mobile-sdk",
+            "moduleName": "com.carto:carto-mobile-sdk",
             "moduleUrl": "https://github.com/CartoDB/mobile-sdk",
-            "moduleVersion": "4.2.2RC2",
+            "moduleVersion": "4.3.0-rc.3",
             "moduleLicense": "The 3-Clause BSD License",
             "moduleLicenseUrl": "https://opensource.org/licenses/BSD-3-Clause"
         },
@@ -166,9 +166,57 @@
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         {
+            "moduleName": "com.google.android.datatransport:transport-api",
+            "moduleVersion": "2.2.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.android.datatransport:transport-backend-cct",
+            "moduleVersion": "2.2.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.android.datatransport:transport-runtime",
+            "moduleVersion": "2.2.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.android.gms:play-services-base",
+            "moduleVersion": "17.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.android.gms:play-services-basement",
+            "moduleVersion": "17.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.android.gms:play-services-stats",
+            "moduleVersion": "17.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.android.gms:play-services-tasks",
+            "moduleVersion": "17.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
             "moduleName": "com.google.android.material:material",
             "moduleUrl": "http://developer.android.com/tools/extras/support-library.html",
             "moduleVersion": "1.2.0-alpha02",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.auto.value:auto-value-annotations",
+            "moduleVersion": "1.6.5",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
@@ -186,10 +234,65 @@
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         {
+            "moduleName": "com.google.dagger:dagger",
+            "moduleUrl": "https://github.com/google/dagger",
+            "moduleVersion": "2.24",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
             "moduleName": "com.google.errorprone:error_prone_annotations",
             "moduleVersion": "2.2.0",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-common",
+            "moduleVersion": "19.3.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-components",
+            "moduleVersion": "16.0.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-datatransport",
+            "moduleVersion": "17.0.3",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-encoders-json",
+            "moduleVersion": "16.0.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-iid",
+            "moduleVersion": "20.0.2",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-iid-interop",
+            "moduleVersion": "17.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-measurement-connector",
+            "moduleVersion": "18.0.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
+        },
+        {
+            "moduleName": "com.google.firebase:firebase-messaging",
+            "moduleVersion": "20.1.0",
+            "moduleLicense": "Android Software Development Kit License",
+            "moduleLicenseUrl": "https://developer.android.com/studio/terms.html"
         },
         {
             "moduleName": "com.google.guava:failureaccess",
@@ -202,6 +305,12 @@
             "moduleName": "com.google.guava:guava",
             "moduleUrl": "https://github.com/google/guava/",
             "moduleVersion": "27.0.1-jre",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.google.guava:listenablefuture",
+            "moduleVersion": "1.0",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
@@ -271,13 +380,13 @@
         },
         {
             "moduleName": "com.squareup.okhttp3:okhttp",
-            "moduleVersion": "3.14.7",
+            "moduleVersion": "3.12.10",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         {
             "moduleName": "com.squareup.okio:okio",
-            "moduleVersion": "1.17.2",
+            "moduleVersion": "1.15.0",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
@@ -369,7 +478,7 @@
             "moduleUrl": "http://code.google.com/p/atinject/",
             "moduleVersion": "1",
             "moduleLicense": "Apache License, Version 2.0",
-            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0"
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         {
             "moduleName": "javax.xml.bind:jaxb-api",
