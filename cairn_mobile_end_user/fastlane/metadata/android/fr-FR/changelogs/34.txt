@@ -1,0 +1,11 @@
+*Bug fixes*
+- *android:* animated passcode window
+- *android:* send image as PNG to keep alpha
+- profile not updating
+- changed transfer layout
+- max distance to 200km for notifs
+- noCache profile image to see update
+- Editable fields not working
+- show number keyboard for phones
+- better account history layout
+- *ios:* push notifs should work
