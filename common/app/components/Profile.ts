@@ -171,25 +171,27 @@ export default class Profile extends PageComponent {
                 okButtonText: this.$tc('add'),
                 cancelButtonText: this.$tc('cancel'),
                 textFieldProperties: {
-                    keyboardType: 'number'
+                    margin: 20,
+                    keyboardType: 'phone'
                 }
             });
             // .then(r => {
             if (r && r.text && r.text.length > 0) {
                 const phoneNumber = r.text;
                 const addResult = await this.$authService.addPhone(phoneNumber, this.userProfile.id);
-                console.log('addResult', addResult);
+                // console.log('addResult', addResult);
                 const resultPConfirm = await prompt({
                     // title: localize('stop_session'),
                     message: this.$tc('enter_add_phone_confirmation', phoneNumber),
                     okButtonText: this.$tc('confirm'),
                     cancelButtonText: this.$tc('cancel'),
                     textFieldProperties: {
-                        keyboardType: 'number'
+                        margin: 20,
+                        keyboardType: 'phone'
                     }
                 });
                 if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
-                    console.log('resultPConfirm', resultPConfirm.text);
+                    // console.log('resultPConfirm', resultPConfirm.text);
                     await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text);
                     await this.$authService.getUserProfile();
                     showSnack({
