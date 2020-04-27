@@ -29,6 +29,7 @@
                         <Label verticalTextAlignment="center" fontSize="14" color="#676767" :text="$tc('distance')" />
                         <Slider
                             col="1"
+                            maxValue="200"
                             :value="newproNotifSettings.radius"
                             @valueChange="newproNotifSettings.radius = Math.floor(parseFloat($event.value))"
                         />
