@@ -52,6 +52,7 @@ export default class SecurityService extends Observable {
     showPasscodeWindow(parent: NativeScriptVue, options?: PasscodeWindowOptions) {
         return parent.$showModal(PasscodeWindow, {
             fullscreen: true,
+            animated: true,
             props: options,
         }) as Promise<{ passcode: string; oldPasscode?: string }>;
     }
