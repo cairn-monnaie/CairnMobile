@@ -23,7 +23,7 @@
                 @tap="chooseImage"
                 :isUserInteractionEnabled="editing"
             />
-            <NSImg row="0" rowSpan="4" margin="20" v-show="!!image" :src="image" @tap="chooseImage" :isUserInteractionEnabled="editing" stretch="aspectFit" />
+            <NSImg row="0" rowSpan="4" margin="20" v-show="!!image" :src="image" @tap="chooseImage" :isUserInteractionEnabled="editing" stretch="aspectFit" noCache/>
             <Label row="2" rowSpan="2" fontSize="20" fontWeight="500" horizontalAlignment="center" verticalAlignment="center" color="white" :text="userProfile.name" v-show="!image" />
         </GridLayout>
         <GridLayout columns="*,50,*" rows="*,50,*">

@@ -5,7 +5,7 @@
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
                     <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
                     <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
-                    <Image :src="userProfile.image" v-show="!!userProfile.image" />
+                    <NSImg :src="userProfile.image" v-show="!!userProfile.image" noCache/>
                     <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />
                 </GridLayout>
