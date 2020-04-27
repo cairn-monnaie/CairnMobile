@@ -188,7 +188,7 @@ module.exports = (env, params = {}) => {
             }"`,
             STORE_REVIEW_LINK: `"${
                 isIOS
-                    ? `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review`
+                    ? ` itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=${APP_STORE_ID}&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software`
                     : `market://details?id=${package.nativescript.id}`
             }"`,
             LOG_LEVEL: devlog ? '"full"' : '""',
