@@ -496,9 +496,8 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         const profile = cleanupUser(result);
-        if (!userId) {
+        if (!userId || userId === this.userId) {
             this.userProfile = profile;
-            console.log('getUserProfile', result);
             this.notify({
                 eventName: UserProfileEvent,
                 object: this,
