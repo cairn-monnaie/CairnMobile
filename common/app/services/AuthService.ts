@@ -357,11 +357,15 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
                         imageData = UIImagePNGRepresentation(image);
                     } else {
                         // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
-                        const bitmapImage: android.graphics.Bitmap = image;
+                        const bitmap: android.graphics.Bitmap = image;
                         const stream = new java.io.ByteArrayOutputStream();
-                        bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
+                        // const size = bitmap.getRowBytes() * bitmap.getHeight();
+                        // const byteBuffer = java.nio.ByteBuffer.allocate(size);
+                        // bitmap.copyPixelsToBuffer(byteBuffer);
+                        // const byteArray = byteBuffer.array();
+                        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
                         const byteArray = stream.toByteArray();
-                        bitmapImage.recycle();
+                        bitmap.recycle();
 
                         imageData = byteArray;
                     }
@@ -376,7 +380,7 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
                 // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
                 const bitmapImage: android.graphics.Bitmap = asset.android;
                 const stream = new java.io.ByteArrayOutputStream();
-                bitmapImage.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, stream);
+                bitmapImage.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
                 const byteArray = stream.toByteArray();
                 bitmapImage.recycle();
 
@@ -399,8 +403,8 @@ function getFormData(actualData, prefix?: string) {
                 if (value instanceof ImageAsset || value instanceof ImageSource) {
                     return getImageData(value).then(data => ({
                         data,
-                        contentType: 'image/jpeg',
-                        fileName: 'image.jpeg',
+                        contentType: 'image/png',
+                        fileName: 'image.png',
                         parameterName: `cairn_user_profile_edit[${k}][file]`
                     }));
                 } else if (typeof value === 'object') {
