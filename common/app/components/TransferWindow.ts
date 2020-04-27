@@ -46,7 +46,7 @@ export default class TransferWindow extends PageComponent {
     onAmountTFLoaded(e) {
         const textField = e.object as TextField;
         const amount = this.getTransferComponent().amount;
-        console.log('onAmountTFLoaded', amount, !!textField);
+        // console.log('onAmountTFLoaded', amount, !!textField);
         if (amount === undefined || amount === null) {
             textField.requestFocus();
         }else {
