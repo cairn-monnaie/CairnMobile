@@ -1,6 +1,14 @@
 import { NavigatedData } from '@nativescript/core/ui/frame';
 import { Component, Prop } from 'vue-property-decorator';
-import { Address, NominatimResult, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '~/services/AuthService';
+import {
+    Address,
+    NominatimResult,
+    PhoneNumber,
+    UpdateUserProfile,
+    UserProfile,
+    UserProfileEvent,
+    UserProfileEventData
+} from '~/services/AuthService';
 import { ComponentIds } from './App';
 import PageComponent from './PageComponent';
 import * as imagepicker from 'nativescript-imagepicker';
@@ -96,7 +104,7 @@ export default class Profile extends PageComponent {
             this.toggleQRCode();
         }
     }
-    refresh(args?) {
+    async refresh(args?) {
         if (args && args.object) {
             args.object.refreshing = false;
         }
@@ -104,7 +112,12 @@ export default class Profile extends PageComponent {
             return;
         }
         this.loading = true;
-        this.$authService.getUserProfile(this.userProfile.id).catch(this.showError);
+        try {
+            await this.$authService.getUserProfile(this.userProfile.id);
+            this.loading = false;
+        } catch (err) {
+            this.showError(err);
+        }
     }
     async saveProfile() {
         this.loading = true;
@@ -112,7 +125,7 @@ export default class Profile extends PageComponent {
             // if (this.updateUserProfile.address && this.updateUserProfile.address.zipCity) {
             //     const zipCities = await this.$authService.getZipCities(Object.assign(this.userProfile.address.zipCity, this.updateUserProfile.address.zipCity));
             // }
-            const result = await this.$authService.updateUserProfile(this.updateUserProfile);
+            await this.$authService.updateUserProfile(this.updateUserProfile);
             this.editing = false;
             this.updateUserProfile = null;
         } catch (err) {
