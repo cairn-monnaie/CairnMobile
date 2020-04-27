@@ -13,15 +13,16 @@ content-type: application/json
 {
      "notification": {
         "body_loc_key": "received_paiement_body",
-        "body_loc_args": ["Martin", "100"],
+        "body_loc_args": ["Martin", "10"],
         "title_loc_key": "received_paiement_title"
      },
      "data":{
         "test":"1"
      },
-     "channel_id":0,
+     "collapse_key": "newpro",
+     "channel_id":"newpro",
      "priority": "High",
-     "registration_ids": ["APA91bHnWMoWJSIOWsoLBhSpjABoIJyOuZPuVGlk7IpNQ_a9QsHOVkcQHkLEcF11B4ehk7vfR2OnZuCB61kJlYfoyd0AX7Fu-zbGbaobQy4CJJAXfvZ3fbSHrxQuQqeZQJChr2kY0pSK"]
+     "registration_ids": ["eiAvN3DiDZ8:APA91bHCtKan3q1n2rb12AC9dRN2MbRBXuYHU20IkJsIn_lsTWQmd41FFs4RqF7sg_XpRdhyhvgKqjEULHQsrJ3HJTsQ8k9Cs_u1qn3NNemf0nQ0oQDUgitVvqhmGEDaLo4nRqp5Yte6"]
 }
 
 ###
