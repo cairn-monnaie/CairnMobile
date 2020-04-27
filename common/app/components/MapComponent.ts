@@ -22,6 +22,8 @@ import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
 const GeoJSON = require('geojson');
 import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
+import { setShowDebug, setShowError, setShowInfo, setShowWarn } from 'nativescript-carto/utils';
+import { DEV_LOG } from '~/utils/logging';
 
 interface GeoJSONProperties {
     name: string;
@@ -104,6 +106,11 @@ export default class MapComponent extends BaseVueComponent {
     }
     onMapReady(e) {
         const cartoMap = (this._cartoMap = e.object as CartoMap);
+
+        setShowDebug(DEV_LOG);
+        setShowInfo(DEV_LOG);
+        setShowWarn(DEV_LOG);
+        setShowError(true);
 
         this.mapProjection = cartoMap.projection;
 
