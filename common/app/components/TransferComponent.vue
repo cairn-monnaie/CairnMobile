@@ -1,15 +1,10 @@
 <template>
-    
     <GridLayout rows="auto,auto" @loaded="onLoaded">
         <ScrollView row="0">
             <StackLayout margin="0">
-                <GridLayout columns="*,auto" row="1" margin="10 10 0 10">
-                    <Button :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
-                    <Button padding="0" col="1" fontSize="24" class="mdi" text="mdi-cellphone-message" @tap="sendSMS" :isEnabled="canSendSMS" />
-                </GridLayout>
                 <GridLayout columns="*,auto">
                     <ListItem
-                        margin="0 0 10 20"
+                        margin="20 0 10 20"
                         :height="80"
                         class="cardView"
                         :showBottomLine="false"
@@ -18,7 +13,15 @@
                         rightIcon="mdi-chevron-right"
                         @tap="selectRecipient"
                     />
-                    <Button col="1" textAlignment="center" marginRight="10" variant="flat" class="big-icon-themed-btn" text="mdi-qrcode-scan" @tap="scanQRCode()" />
+                    <Button
+                        col="1"
+                        textAlignment="center"
+                        marginRight="10"
+                        variant="flat"
+                        class="big-icon-themed-btn"
+                        text="mdi-qrcode-scan"
+                        @tap="scanQRCode()"
+                    />
                 </GridLayout>
 
                 <ListItem
@@ -33,7 +36,18 @@
                     :rightIcon="accounts.length > 1 ? 'mdi-chevron-right' : undefined"
                     @tap="selectAccount"
                 />
-
+                <GridLayout columns="*,auto" margin="0 10 0 10">
+                    <Button :text="$t('confirm') | capitalize" @tap="submit" :isEnabled="canStartTransfer" />
+                    <Button
+                        padding="0"
+                        col="1"
+                        fontSize="24"
+                        class="mdi"
+                        text="mdi-cellphone-message"
+                        @tap="sendSMS"
+                        :isEnabled="canSendSMS"
+                    />
+                </GridLayout>
                 <!-- <TextField
                         backgroundColor="#ffffff"
                         margin="0 20 0 20"
@@ -56,8 +70,20 @@
 
         <!-- <MDActivityIndicator row="3" v-show="loading" :busy="loading" width="45" height="45" /> -->
 
-        <StackLayout row="1" v-show="refreshing" backgroundColor="#88ffffff" horizontalAlignment="center" verticalAlignment="center">
-            <MDActivityIndicator :busy="refreshing" width="75" height="75" horizontalAlignment="center" verticalAlignment="center" />
+        <StackLayout
+            row="1"
+            v-show="refreshing"
+            backgroundColor="#88ffffff"
+            horizontalAlignment="center"
+            verticalAlignment="center"
+        >
+            <MDActivityIndicator
+                :busy="refreshing"
+                width="75"
+                height="75"
+                horizontalAlignment="center"
+                verticalAlignment="center"
+            />
         </StackLayout>
     </GridLayout>
 </template>
