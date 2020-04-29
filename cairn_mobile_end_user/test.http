@@ -11,18 +11,19 @@ authorization: key=AAAAkJ_jGAU:APA91bEOaZwCuQZqiYuslPkYDlIuz9jgYCAsHQzDFMyaAlq4y
 content-type: application/json
 
 {
-     "notification": {
+      "to": "cs8K6TTdp7Y:APA91bG0yDfUU9KIhGrfbbrD5vD754NbSx2VztSqI6pRCbfcFjtTD7o57gPC_pqqqtYTsjRQiC8gipvHp_gXSjVbhYrTW03fT1-kv_H6f4b0yzo6No1LcBI04odIPIEfJUV9ndZwDRnf",
+    "notification":  {
+        "title": "TEST",
+        "body": "BODY",
         "body_loc_key": "received_paiement_body",
-        "body_loc_args": ["Martin", "10"],
-        "title_loc_key": "received_paiement_title"
-     },
-     "data":{
-        "test":"1"
-     },
-     "collapse_key": "newpro",
-     "channel_id":"newpro",
-     "priority": "High",
-     "registration_ids": ["eiAvN3DiDZ8:APA91bHCtKan3q1n2rb12AC9dRN2MbRBXuYHU20IkJsIn_lsTWQmd41FFs4RqF7sg_XpRdhyhvgKqjEULHQsrJ3HJTsQ8k9Cs_u1qn3NNemf0nQ0oQDUgitVvqhmGEDaLo4nRqp5Yte6"]
+    "body_loc_args": ["Martin","10"],
+    "title_loc_key": "received_paiement_title"
+    },
+  "collapse_key": "payment",
+  "android": {
+        "ttl": "86400",
+    "priority": "high"
+    }
 }
 
 ###
