@@ -1,8 +1,16 @@
 // import { getBoolean, getNumber, getString, remove, setBoolean, setNumber, setString } from '@nativescript/core/application-settings';
 import { Observable } from '@nativescript/core/data/observable';
 import { SecureStorage } from 'nativescript-secure-storage';
+import { getBoolean, setBoolean } from '@nativescript/core/application-settings/application-settings';
 
 const secureStorage = new SecureStorage();
+
+const firstRun = getBoolean('firstRun', true);
+if (firstRun) {
+    secureStorage.removeAllSync();
+    setBoolean('firstRun', false);
+}
+
 
 export const stringProperty = (target: Object, key: string | symbol) => {
     // property value
