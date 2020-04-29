@@ -21,7 +21,10 @@ export default class Floating extends TransferComponent {
         super.destroyed();
     }
 
-    onAmountTFLoaded(e) {}
+    onAmountTFLoaded(e) {
+        this.setTextField(e.object);
+
+    }
 
     async close() {
         await this.hideFloatingWindow();

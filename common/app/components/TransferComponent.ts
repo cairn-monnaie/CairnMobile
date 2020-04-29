@@ -12,6 +12,8 @@ import UserPicker from './UserPicker';
 
 import { Vibrate } from 'nativescript-vibrate';
 
+const amountRegexp = /^\d*([,\.]\d{0,2})?$/;
+
 @Component({})
 export default class TransferComponent extends BaseVueComponent {
     @Prop() qrCodeData: QrCodeTransferData;
@@ -28,7 +30,6 @@ export default class TransferComponent extends BaseVueComponent {
     amountError: string = null;
     reasonError: string = this.$t('reason_required');
     oldAmountStr = null;
-    amountRegexp = /^\d*([,\.]\d{0,2})?$/;
     // loading = false;
 
     // public height = '100%';
@@ -94,19 +95,21 @@ export default class TransferComponent extends BaseVueComponent {
     }
     chooseAccount() {}
 
-    get amountTF() {
-        return this.$refs.amountTF && (this.$refs.amountTF.nativeView as TextField);
-    }
+    amountTF: TextField;
     ignoreNextTextChange = false;
+    setTextField(tf: TextField) {
+        this.amountTF = tf;
+    }
     setTextFieldValue(value, tf?: TextField) {
         const amountTF = tf || this.amountTF;
+        // console.log('setTextFieldValue', value, amountTF);
         if (amountTF) {
             this.ignoreNextTextChange = true;
             amountTF.text = value;
             amountTF.setSelection(value.length);
         }
     }
-    validateAmount({ value }, forceSetText = false) {
+    validateAmount({ value, object }, forceSetText = false) {
         if (this.ignoreNextTextChange) {
             this.ignoreNextTextChange = false;
             return;
@@ -115,8 +118,9 @@ export default class TransferComponent extends BaseVueComponent {
             this.amount = 0;
             return;
         }
-        if (!this.amountRegexp.test(value)) {
-            setTimeout(() => this.setTextFieldValue(this.oldAmountStr), 0);
+        if (!amountRegexp.test(value)) {
+            // we need to delay a bit for the cursor position to be correct
+            setTimeout(() => this.setTextFieldValue(this.oldAmountStr, object), 0);
             return;
         }
         const realvalue = parseFloat(value.replace(/,/g, '.')) || 0;
@@ -124,7 +128,7 @@ export default class TransferComponent extends BaseVueComponent {
         this.amount = realvalue;
         this.checkForm();
         if (forceSetText) {
-            this.setTextFieldValue(realvalueStr);
+            this.setTextFieldValue(realvalueStr, object);
             // this.setTextFieldValue(realvalueStr);
         }
     }
@@ -261,7 +265,7 @@ export default class TransferComponent extends BaseVueComponent {
     }
     handleQRData({ ICC, name, id, amount }: QrCodeTransferData) {
         if (amount) {
-            this.validateAmount({ value: amount }, true);
+            this.validateAmount({ value: amount, object:this.amountTF }, true);
         }
         if (ICC && name) {
             // this.log('handleQRData1', ICC, name);
