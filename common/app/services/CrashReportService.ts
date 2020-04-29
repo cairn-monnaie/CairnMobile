@@ -6,7 +6,7 @@ import { device } from '@nativescript/core/platform';
 import { alert, confirm } from 'nativescript-material-dialogs';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from 'nativescript-l';
-import { HTTPError, NoNetworkError, CustomError } from './NetworkService';
+import { CustomError, HTTPError, NoNetworkError } from './NetworkService';
 import { Color } from '@nativescript/core/ui/frame';
 
 export default class CrashReportService extends Observable {
