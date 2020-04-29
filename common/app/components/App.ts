@@ -49,43 +49,6 @@ import Settings from './Settings';
 import TransferWindow from './TransferWindow';
 import { $t, $tc } from '~/helpers/locale';
 
-// function fromFontIcon(name: string, style, textColor: string, size: { width: number; height: number }, backgroundColor: string = null, borderWidth: number = 0, borderColor: string = null) {
-//     const fontAspectRatio = 1.28571429;
-//     // Prevent application crash when passing size where width or height is set equal to or less than zero, by clipping width and height to a minimum of 1 pixel.
-//     if (size.width <= 0) {
-//         size.width = 1;
-//     }
-//     if (size.height <= 0) {
-//         size.height = 1;
-//     }
-
-//     const paragraph = NSMutableParagraphStyle.new();
-//     paragraph.alignment = NSTextAlignment.Center;
-
-//     const fontSize = Math.min(size.width / fontAspectRatio, size.height);
-
-//     // stroke width expects a whole number percentage of the font size
-//     const strokeWidth = fontSize === 0 ? 0 : (-100 * borderWidth) / fontSize;
-
-//     const attributedString = NSAttributedString.alloc().initWithStringAttributes(
-//         name,
-//         NSDictionary.dictionaryWithDictionary({
-//             [NSFontAttributeName]: null,
-//             [NSForegroundColorAttributeName]: textColor ? new Color(textColor).ios : null,
-//             [NSBackgroundColorAttributeName]: backgroundColor ? new Color(backgroundColor).ios : null,
-//             [NSParagraphStyleAttributeName]: paragraph,
-//             [NSStrokeWidthAttributeName]: strokeWidth,
-//             [NSStrokeColorAttributeName]: borderColor ? new Color(borderColor).ios : null
-//         } as any)
-//     );
-
-//     UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
-//     attributedString.drawInRect(CGRectMake(0, (size.height - fontSize) / 2, size.width, fontSize));
-//     const image = UIGraphicsGetImageFromCurrentImageContext();
-//     UIGraphicsEndImageContext();
-//     return image;
-// }
-
 const observable = new Observable();
 export const QRCodeDataEvent = 'qrcodedata';
 export const on = observable.on.bind(observable);
@@ -272,7 +235,8 @@ export default class App extends BaseVueComponent {
         }
     }
     onPushMessage(message: Message) {
-        console.log('Push message received', message);
+        console.log('Push message received ', message);
+        observable.notify({eventName:'pushMessage', object: observable, message});
     }
     onPushToken(token: string) {
         console.log('onPushToken', token);

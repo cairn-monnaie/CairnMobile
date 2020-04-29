@@ -4,7 +4,7 @@ import { ItemEventData } from '@nativescript/core/ui/list-view';
 import { Component } from 'vue-property-decorator';
 import { AccountInfo, AccountInfoEvent, AccountInfoEventData, User } from '~/services/AuthService';
 import { Color, NavigatedData } from '@nativescript/core/ui/frame';
-import { ComponentIds } from './App';
+import { ComponentIds, off as appOff, on as appOn } from './App';
 import PageComponent from './PageComponent';
 import TransferWindow from './TransferWindow';
 import UserPicker from './UserPicker';
@@ -30,6 +30,7 @@ export default class Home extends PageComponent {
         super.mounted();
         // this.$on('navigatedTo', this.onNavigatedTo)
         this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
+        appOn('pushMessage', this.refresh);
         // if (this.$securityService.biometricEnabled) {
         //     if (this.$securityService.shouldReAuth()) {
         //         this.$authService.logout();
@@ -38,6 +39,7 @@ export default class Home extends PageComponent {
         // }
     }
     destroyed() {
+        appOff('pushMessage', this.refresh);
         super.destroyed();
         this.$authService.off(AccountInfoEvent, this.onAccountsData, this);
     }
