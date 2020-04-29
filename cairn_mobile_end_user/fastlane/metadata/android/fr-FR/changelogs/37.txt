@@ -1,0 +1,5 @@
+*Bug fixes*
+- update home on push message. Good for now
+- clear ALL settings upon uninstall/reinstall
+- clear autolock on logout
+- transfer textfield not forcing format
