@@ -24,6 +24,7 @@ export default class SecurityService extends Observable {
     }
     clear() {
         this.storedPassword = null;
+        this.autoLockEnabled = false;
         this.biometricEnabled = false;
     }
     passcodeSet() {
