@@ -228,11 +228,6 @@ export default class App extends BaseVueComponent {
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
-
-        handleOpenURL(this.onAppUrl);
-        if (this.loggedInOnStart) {
-            this.onLoggedIn();
-        }
     }
     onPushMessage(message: Message) {
         console.log('Push message received ', message);
