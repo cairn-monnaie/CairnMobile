@@ -231,7 +231,7 @@ export default class App extends BaseVueComponent {
     }
     onPushMessage(message: Message) {
         console.log('Push message received ', message);
-        observable.notify({eventName:'pushMessage', object: observable, message});
+        observable.notify({ eventName: 'pushMessage', object: observable, message });
     }
     onPushToken(token: string) {
         console.log('onPushToken', token);
