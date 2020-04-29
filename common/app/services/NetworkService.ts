@@ -4,6 +4,7 @@ import { clog } from '~/utils/logging';
 import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
+import {Headers} from '@nativescript/core/http';
 import * as https from 'nativescript-akylas-https';
 
 export interface CacheOptions {
@@ -217,11 +218,13 @@ export class NoNetworkError extends CustomError {
 }
 export interface HTTPErrorProps {
     statusCode: number;
+    responseHeaders?: Headers;
     message: string;
     requestParams: HTTPOptions;
 }
 export class HTTPError extends CustomError {
     statusCode: number;
+    responseHeaders?: Headers;
     requestParams: HTTPOptions;
     constructor(props: HTTPErrorProps | HTTPError) {
         super(
@@ -436,6 +439,7 @@ export class NetworkService extends Observable {
                     return Promise.reject(
                         new HTTPError({
                             statusCode,
+                            responseHeaders: response.headers,
                             message: match ? match[1] : 'HTTP error',
                             requestParams
                         })
@@ -471,6 +475,7 @@ export class NetworkService extends Observable {
                 this.log('throwing http error', error.code || statusCode, message, requestParams.url);
                 throw new HTTPError({
                     statusCode: error.code || statusCode,
+                    responseHeaders: response.headers,
                     message,
                     requestParams
                 });

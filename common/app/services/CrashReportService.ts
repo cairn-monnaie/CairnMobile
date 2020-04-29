@@ -6,7 +6,7 @@ import { device } from '@nativescript/core/platform';
 import { alert, confirm } from 'nativescript-material-dialogs';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from 'nativescript-l';
-import { HTTPError, NoNetworkError } from './NetworkService';
+import { HTTPError, NoNetworkError, CustomError } from './NetworkService';
 import { Color } from '@nativescript/core/ui/frame';
 
 export default class CrashReportService extends Observable {
@@ -41,9 +41,17 @@ export default class CrashReportService extends Observable {
         this.sentryEnabled = false;
     }
 
-    captureException(err: Error) {
+    captureException(err: Error | CustomError) {
         if (this.sentryEnabled && this.sentry) {
-            return this.sentry.captureException(err);
+            if (err instanceof CustomError) {
+                this.withScope(scope => {
+                    scope.setUser({ errorData: err.assignedLocalData });
+                    this.sentry.captureException(err);
+                });
+            } else {
+                return this.sentry.captureException(err);
+
+            }
         }
     }
     captureMessage(message: string, level?: Sentry.Severity) {
