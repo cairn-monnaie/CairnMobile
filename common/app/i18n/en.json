@@ -132,5 +132,16 @@
   "password_change": "Password change",
   "password_change_required": "for security reasons it is necessary for you to change the temporary password which was given to you during your account creation",
   "new_password": "New Password",
-  "no_google_play_services": "Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications"
+  "no_google_play_services": "Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications",
+  "push_notifications": "push notifications",
+  "mail_notifications": "email notifications",
+  "webpush_notifications": "browser notifications",
+  "newpro_notifications_desc": "receive a notification when a new professional member arrives near you. \nYou can limit these notifications by distance to your address",
+  "newpro_notifications": "new pro notifications",
+  "payment_notifications_desc": "receive notifications when you receive payment a transfer",
+  "payment_notifications": "payment notifications",
+  "distance": "distance",
+  "notifications": "notifications",
+  "sms_notifications": "sms notifications",
+  "wrong_password_confirmation": "error when changing password. \nCheck that you have confirmed the password"
 }
