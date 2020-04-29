@@ -395,6 +395,7 @@ export default class App extends BaseVueComponent {
         this.$securityService.clear();
         this.goBackToLogin();
     }
+    firstResume = true;
     onAppResume(args: ApplicationEventData) {
         console.log('onAppResume', this.appPaused);
         if (!this.appPaused) {
@@ -407,9 +408,16 @@ export default class App extends BaseVueComponent {
         if (this.$securityService.autoLockEnabled) {
             this.$securityService.validateSecurity(this, { closeOnBack: true });
         }
+        if (this.firstResume) {
+            handleOpenURL(this.onAppUrl);
+            if (this.loggedInOnStart) {
+                this.onLoggedIn();
+            }
+        }
     }
     onAppPause(args: ApplicationEventData) {
         console.log('onAppPause', this.appPaused);
+
         if (this.appPaused) {
             return;
         }
