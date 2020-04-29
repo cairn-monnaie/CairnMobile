@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="wrong_password_confirmation">"error when changing password. \nCheck that you have confirmed the password"</string>
+  <string name="sms_notifications">"sms notifications"</string>
+  <string name="notifications">"notifications"</string>
+  <string name="distance">"distance"</string>
+  <string name="payment_notifications">"payment notifications"</string>
+  <string name="payment_notifications_desc">"receive notifications when you receive payment a transfer"</string>
+  <string name="newpro_notifications">"new pro notifications"</string>
+  <string name="newpro_notifications_desc">"receive a notification when a new professional member arrives near you. \nYou can limit these notifications by distance to your address"</string>
+  <string name="webpush_notifications">"browser notifications"</string>
+  <string name="mail_notifications">"email notifications"</string>
+  <string name="push_notifications">"push notifications"</string>
   <string name="no_google_play_services">"Your phone does not appear to support Google Play Services.\nTherefore you cannot receive notifications"</string>
   <string name="new_password">"New Password"</string>
   <string name="password_change_required">"for security reasons it is necessary for you to change the temporary password which was given to you during your account creation"</string>
@@ -124,14 +135,4 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
-  <string name="wrong_password_confirmation">"wrong_password_confirmation"</string>
-  <string name="distance">"distance"</string>
-  <string name="newpro_notifications">"newpro_notifications"</string>
-  <string name="payment_notifications_desc">"payment_notifications_desc"</string>
-  <string name="payment_notifications">"payment_notifications"</string>
-  <string name="push_notifications">"push_notifications"</string>
-  <string name="mail_notifications">"mail_notifications"</string>
-  <string name="sms_notifications">"sms_notifications"</string>
-  <string name="webpush_notifications">"webpush_notifications"</string>
-  <string name="newpro_notifications_desc">"newpro_notifications_desc"</string>
 </resources>
