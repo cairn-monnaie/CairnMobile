@@ -279,4 +279,7 @@ export default class TransferComponent extends BaseVueComponent {
             this.checkForm();
         }
     }
+    scanQRCode() {
+        this.$scanQRCode().catch(this.showError);
+    }
 }
