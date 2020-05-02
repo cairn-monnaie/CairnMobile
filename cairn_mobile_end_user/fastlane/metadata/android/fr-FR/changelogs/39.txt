@@ -1,0 +1,5 @@
+*Features*
+- allow to click on pro on the home page
+
+*Bug fixes*
+- *android:* rollback carto to fix android crashes
