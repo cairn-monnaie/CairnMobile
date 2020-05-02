@@ -13,7 +13,7 @@
         <StackLayout>
             <Pager :items="users" height="30%" :backgroundColor="themeColor" showIndicator>
                 <v-template>
-                    <GridLayout rows="*" columns="*">
+                    <GridLayout rows="*" columns="*" @tap="showProfile(item)">
                         <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
                         <NSImg stretch="center" :src="item.image || DEFAULT_IMAGE_URL" width="100%" height="100%" backgroundColor="#E86A45" />
                         <Label

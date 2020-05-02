@@ -11,6 +11,7 @@ import UserPicker from './UserPicker';
 import { showSnack } from 'nativescript-material-snackbar';
 import { formatAddress } from '~/helpers/formatter';
 import MapComponent from './MapComponent';
+import Profile from './Profile';
 
 @Component({
     components: {
@@ -166,5 +167,13 @@ export default class Home extends PageComponent {
     }
     scanQRCode() {
         this.$scanQRCode().catch(this.showError);
+    }
+    showProfile(item: User) {
+        this.navigateTo(Profile, {
+            props: {
+                propUserProfile: item,
+                editable: false
+            }
+        });
     }
 }
