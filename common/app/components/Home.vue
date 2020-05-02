@@ -11,7 +11,7 @@
         @actionTap="openTransferWindow"
     >
         <StackLayout>
-            <Pager :items="users" height="30%" :backgroundColor="themeColor">
+            <Pager :items="users" height="30%" :backgroundColor="themeColor" showIndicator>
                 <v-template>
                     <GridLayout rows="*" columns="*">
                         <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
@@ -20,11 +20,13 @@
                             textAlignment="left"
                             verticalAlignment="bottom"
                             class="bottom-gradient"
-                            padding="10 10 10 10"
+                            padding="10 10 30 10"
                             fontSize="14"
                             color="white"
-                            :html="`<big><b>${item.name}</b></big><br>${item.description}<br> ${formatAddress(item.address)}`"
-                        />
+                        >
+                        <Span fontSize="16" fontWeight="bold" :text="item.name + '\n'"/>
+                        <Span :text="item.description + '\n' + formatAddress(item.address)"/>
+                        </Label>
                     </GridLayout>
                 </v-template>
             </Pager>
