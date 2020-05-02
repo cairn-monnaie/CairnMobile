@@ -2,7 +2,7 @@ import { installMixins } from 'nativescript-material-core';
 installMixins();
 import { installMixins as installUIMixins } from 'nativescript-systemui';
 installUIMixins();
-import { Label as HTMLLabel } from 'nativescript-htmllabel'; // require first to get Font res loading override
+import { Label as HTMLLabel, enableIOSDTCoreText } from 'nativescript-htmllabel'; // require first to get Font res loading override
 
 import ActivityIndicatorPlugin from 'nativescript-material-activityindicator/vue';
 // import ButtonPlugin from 'nativescript-material-button/vue';
@@ -42,10 +42,11 @@ const Plugin = {
         Vue.use(CollectionViewPlugin);
         Vue.use(Pager);
 
-        Vue.registerElement('Button',() => require('nativescript-material-button').Button);
-        Vue.registerElement('TextField',() => require('nativescript-material-textfield').TextField);
-        Vue.registerElement('Slider',() => require('nativescript-material-slider').Slider);
+        Vue.registerElement('Button', () => require('nativescript-material-button').Button);
+        Vue.registerElement('TextField', () => require('nativescript-material-textfield').TextField);
+        Vue.registerElement('Slider', () => require('nativescript-material-slider').Slider);
         Vue.registerElement('Label', () => HTMLLabel);
+        enableIOSDTCoreText();
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('nativescript-barcodeview').BarcodeView);
         // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
