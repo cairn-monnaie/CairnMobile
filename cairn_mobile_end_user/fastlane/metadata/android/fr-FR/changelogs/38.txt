@@ -1,0 +1,5 @@
+*Features*
+- show page indicator on the home widget
+
+*Bug fixes*
+- error on scan button from transfer component
