@@ -140,7 +140,8 @@ export default class MapComponent extends BaseVueComponent {
                 maxZoom: 20,
                 url: 'http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'
             }),
-            databasePath: cacheFolder.path
+            capacity: 300 * 1024 * 1024,
+            databasePath: path.join(cacheFolder.path, 'cache.db')
         });
         this.rasterLayer = new RasterTileLayer({
             zoomLevelBias: 1,
