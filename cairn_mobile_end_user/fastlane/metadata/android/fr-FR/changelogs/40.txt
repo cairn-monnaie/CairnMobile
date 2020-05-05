@@ -1,0 +1,6 @@
+*Bug fixes*
+- locales
+- handle NPE
+- map now cached
+- label about new pros
+- confirm logout
