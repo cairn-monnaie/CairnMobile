@@ -495,6 +495,9 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/users/${userId || this.userId}`,
             method: 'GET'
         });
+        if (!result) {
+            return null;
+        }
         const profile = cleanupUser(result);
         if (!userId || userId === this.userId) {
             this.userProfile = profile;
@@ -708,10 +711,12 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         console.log('beneficiaries', result);
-        this.beneficiaries = result = result.map(b => {
-            b.user = cleanupUser(b.user);
-            return b;
-        });
+        this.beneficiaries = result = result
+            .filter(b => !!b.user)
+            .map(b => {
+                b.user = cleanupUser(b.user);
+                return b;
+            });
         // this.lastBenificiariesUpdateTime = Date.now();
         return result;
     }
@@ -722,7 +727,8 @@ export default class AuthService extends NetworkService {
         offset,
         query,
         mapBounds,
-        roles
+        roles,
+        payment_context = true
     }: {
         sortKey?: string;
         sortOrder?: string;
@@ -731,6 +737,7 @@ export default class AuthService extends NetworkService {
         query?: string;
         mapBounds?: MapBounds;
         roles?: string[];
+        payment_context?: boolean;
     }) {
         let boundingBox = {
             minLon: '',
@@ -760,13 +767,14 @@ export default class AuthService extends NetworkService {
                 },
                 bounding_box: boundingBox,
                 name: query || '',
-                roles: roles || ['ROLE_PRO']
+                roles: roles || ['ROLE_PRO'],
+                payment_context
             }
         });
         if (!Array.isArray(result)) {
             result = [result];
         }
-        return result.map(cleanupUser);
+        return result.filter(b => !!b).map(cleanupUser);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         // this.lastBenificiariesUpdateTime = undefined;
@@ -822,7 +830,7 @@ export default class AuthService extends NetworkService {
     }
     async getUsersForMap(mapBounds: MapBounds) {
         // console.log('getUserForMap', mapBounds);
-        return this.getUsers({ mapBounds });
+        return this.getUsers({ mapBounds, payment_context: false });
         // .then(r =>
         //     r.filter(u => {
         //         // console.log('getUserForMap', 'filter', u.address);
