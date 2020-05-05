@@ -20,7 +20,7 @@ import { Page } from '@nativescript/core/ui/page';
 import { AppURL, handleOpenURL } from 'nativescript-appurl';
 import { compose } from 'nativescript-email';
 import * as EInfo from 'nativescript-extendedinfo';
-import { login } from 'nativescript-material-dialogs';
+import { confirm, login } from 'nativescript-material-dialogs';
 import { showSnack } from 'nativescript-material-snackbar';
 import { TextField } from 'nativescript-material-textfield';
 import * as perms from 'nativescript-perms';
@@ -653,7 +653,18 @@ export default class App extends BaseVueComponent {
                 });
                 break;
             case 'logout': {
-                this.$authService.logout();
+                confirm({
+                    // title: localize('stop_session'),
+                    message: this.$tc('confirm_logout'),
+                    okButtonText: this.$tc('logout'),
+                    cancelButtonText: this.$tc('cancel')
+                })
+                    .then(r => {
+                        if (r) {
+                            this.$authService.logout();
+                        }
+                    })
+                    .catch(this.showError);
             }
         }
     }
