@@ -63,5 +63,6 @@
         <!-- disable ad id collection -->
         <meta-data android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
+		<meta-data android:name="io.sentry.anr.enable" android:value="false" />
     </application>
 </manifest>
