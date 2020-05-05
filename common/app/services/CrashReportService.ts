@@ -45,7 +45,7 @@ export default class CrashReportService extends Observable {
         if (this.sentryEnabled && this.sentry) {
             if (err instanceof CustomError) {
                 this.withScope(scope => {
-                    scope.setUser({ errorData: err.assignedLocalData });
+                    scope.setExtra('errorData', JSON.stringify(err.assignedLocalData) );
                     this.sentry.captureException(err);
                 });
             } else {
