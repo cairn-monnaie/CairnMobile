@@ -1,3 +1,6 @@
+"logout" = "logout";
+"confirm_logout" = "Are you sure you want to logout?";
+"aucun_compte_ne_correspond_à_votre_saisie" = "no account matches your entry";
 "wrong_password_confirmation" = "error when changing password. \nCheck that you have confirmed the password";
 "sms_notifications" = "sms notifications";
 "notifications" = "notifications";

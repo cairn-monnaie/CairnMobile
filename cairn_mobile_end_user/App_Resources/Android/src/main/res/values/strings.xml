@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="discover_your_pros">"new traders"</string>
+  <string name="logout">"logout"</string>
+  <string name="confirm_logout">"Are you sure you want to logout?"</string>
+  <string name="aucun_compte_ne_correspond_à_votre_saisie">"no account matches your entry"</string>
   <string name="wrong_password_confirmation">"error when changing password. \nCheck that you have confirmed the password"</string>
   <string name="sms_notifications">"sms notifications"</string>
   <string name="notifications">"notifications"</string>

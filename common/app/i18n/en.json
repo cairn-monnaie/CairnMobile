@@ -143,5 +143,9 @@
   "distance": "distance",
   "notifications": "notifications",
   "sms_notifications": "sms notifications",
-  "wrong_password_confirmation": "error when changing password. \nCheck that you have confirmed the password"
+  "wrong_password_confirmation": "error when changing password. \nCheck that you have confirmed the password",
+  "aucun_compte_ne_correspond_à_votre_saisie": "no account matches your entry",
+  "confirm_logout": "Are you sure you want to logout?",
+  "logout": "logout",
+  "discover_your_pros": "new traders"
 }

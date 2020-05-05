@@ -143,5 +143,9 @@
   "new_password": "nouveau mot de passe",
   "wrong_password_confirmation": "erreur lors du changement de mot de passe. Vérifiez que vous avez bien confirmé le mot de passe",
   "no_google_play_services": "Votre téléphone ne semble pas supporter Google Play Services. Par conséquent vous ne pouvez recevoir de notifications",
-  "notifications": "notifications"
+  "notifications": "notifications",
+  "aucun_compte_ne_correspond_à_votre_saisie": "aucun compte ne correspond à votre saisie",
+  "confirm_logout": "Etes-vous sûr de vouloir vous déconnecter?",
+  "logout": "se déconnecter",
+  "discover_your_pros": "nouveaux commercants"
 }
