@@ -1,0 +1,2 @@
+*Bug fixes*
+- *android:* rollback for now to fix the map
