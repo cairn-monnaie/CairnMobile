@@ -1,5 +1,5 @@
 <template>
-    <CairnPage
+    <CairnPage id="home"
         @navigatedTo="onNavigatedTo"
         showMenuIcon
         @loaded="onLoaded"

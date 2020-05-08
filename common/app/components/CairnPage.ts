@@ -42,13 +42,15 @@ export default class CairnPage extends BaseVueComponent {
     @Prop({ default: actionBarHeight, type: Number })
     public actionBarHeight: number;
 
+    @Prop({ default: null, type: String })
+    public id: string;
+
     public actionBarButtonHeight = actionBarButtonHeight;
 
     @Prop({ type: Number })
     public actionBarElevation: number;
 
     public navigateUrl = null;
-    public id = null;
 
     public loading = false;
 

@@ -1,5 +1,5 @@
 <template>
-    <CairnPage @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
+    <CairnPage id="profile" @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
         <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" v-if="editable">
             <Button variant="flat" class="icon-btn" v-show="myProfile && !editing" text="mdi-qrcode" @tap="toggleQRCode()" />
             <Button variant="flat" class="icon-btn" v-show="canSave" text="mdi-content-save" @tap="saveProfile()" />
