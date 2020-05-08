@@ -5,7 +5,6 @@ import { CartoMap } from 'nativescript-carto/ui';
 import * as appSettings from '@nativescript/core/application-settings';
 import { Component, Prop } from 'vue-property-decorator';
 import { User } from '~/services/AuthService';
-import { navigationBarHeight } from '~/variables';
 import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
 import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
