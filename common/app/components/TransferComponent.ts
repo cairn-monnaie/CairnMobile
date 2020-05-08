@@ -177,9 +177,10 @@ export default class TransferComponent extends BaseVueComponent {
 
     get accountBalanceText() {
         if (this.account) {
-            return `<font color=${this.accentColor}>${formatCurrency(this.account.balance, true)}<font face="${
-                this.cairnFontFamily
-            }">cairn-currency</font></font>`;
+            return `<span style="color:${this.accentColor};">${formatCurrency(
+                this.account.balance,
+                true
+            )}</span><span style="color:${this.accentColor}; font-family:${this.cairnFontFamily};">cairn-currency</span>`;
         }
     }
     async submit() {
@@ -265,7 +266,7 @@ export default class TransferComponent extends BaseVueComponent {
     }
     handleQRData({ ICC, name, id, amount }: QrCodeTransferData) {
         if (amount) {
-            this.validateAmount({ value: amount, object:this.amountTF }, true);
+            this.validateAmount({ value: amount, object: this.amountTF }, true);
         }
         if (ICC && name) {
             // this.log('handleQRData1', ICC, name);
