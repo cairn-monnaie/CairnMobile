@@ -67,13 +67,13 @@ lane :build_flavor do |params|
   sentry_create_release(
     version: version, # release version to create
   )
-  sentry_set_commits(
-    version: version,
-    # app_identifier: '...', # pass in the bundle_identifer of your app
-    auto: true, # enable completely automated commit management
-    # clear: false, # clear all current commits from the release
-    # commit: '...', # commit spec, see `sentry-cli releases help set-commits` for more information
-  )
+  # sentry_set_commits(
+  #   version: version,
+  #   # app_identifier: '...', # pass in the bundle_identifer of your app
+  #   auto: true, # enable completely automated commit management
+  #   # clear: false, # clear all current commits from the release
+  #   # commit: '...', # commit spec, see `sentry-cli releases help set-commits` for more information
+  # )
 
   # sentry_upload_sourcemaps(platform:platform, version: version, versionCode: versionCode);
   
