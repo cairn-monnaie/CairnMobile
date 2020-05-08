@@ -1,29 +1,25 @@
 import { PersistentCacheTileDataSource } from 'nativescript-carto/datasources/cache';
-import { Point, PointStyleBuilder } from 'nativescript-carto/vectorelements/point';
+import { Point } from 'nativescript-carto/vectorelements/point';
 import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
 import { LocalVectorDataSource } from 'nativescript-carto/datasources/vector';
 import { RasterTileLayer } from 'nativescript-carto/layers/raster';
 import { VectorElementEventData, VectorLayer, VectorTileLayer } from 'nativescript-carto/layers/vector';
 import { Projection } from 'nativescript-carto/projections';
 import { CartoMap } from 'nativescript-carto/ui';
-import { Line, LineEndType, LineJointType, LineStyleBuilder } from 'nativescript-carto/vectorelements/line';
-import { DefaultLatLonKeys, MapPosVector, toNativeScreenPos } from 'nativescript-carto/core';
-import { Polygon, PolygonStyleBuilder } from 'nativescript-carto/vectorelements/polygon';
-import * as appSettings from '@nativescript/core/application-settings';
+import { DefaultLatLonKeys, MapPosVector } from 'nativescript-carto/core';
+import { Polygon } from 'nativescript-carto/vectorelements/polygon';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
 import { Color } from '@nativescript/core/color/color';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { TWEEN } from 'nativescript-tween';
-import { GeoHandler, GeoLocation, Session, UserLocationdEvent, UserLocationdEventData } from '~/handlers/GeoHandler';
+import { GeoHandler, GeoLocation, UserLocationdEvent, UserLocationdEventData } from '~/handlers/GeoHandler';
 import BaseVueComponent from './BaseVueComponent';
-import { getBoundsZoomLevel, getCenter } from '~/helpers/geo';
-import { screen } from '@nativescript/core/platform';
 import { MBVectorTileDecoder } from 'nativescript-carto/vectortiles';
 import { GeoJSONVectorTileDataSource } from 'nativescript-carto/datasources';
-const GeoJSON = require('geojson');
 import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
 import { setShowDebug, setShowError, setShowInfo, setShowWarn } from 'nativescript-carto/utils';
 import { DEV_LOG } from '~/utils/logging';
+const GeoJSON = require('geojson');
 
 interface GeoJSONProperties {
     name: string;
@@ -78,31 +74,10 @@ export default class MapComponent extends BaseVueComponent {
     destroyed() {
         super.destroyed();
         this.geoHandler.off(UserLocationdEvent, this.onLocation, this);
-        if (this._localVectorDataSource) {
-            this._localVectorDataSource.clear();
-            this.userBackMarker = null;
-            this.userMarker = null;
-            this.accuracyMarker = null;
-        }
     }
     mounted() {
         super.mounted();
         this.geoHandler.on(UserLocationdEvent, this.onLocation, this);
-
-        // console.log('map component mounted');
-        // if (!this.$getAppComponent().cartoLicenseRegistered) {
-        //     if (gVars.isAndroid) {
-        //         registerLicense(gVars.CARTO_ANDROID_TOKEN, result => {
-        //             clog('registerLicense done', result);
-        //             this.$getAppComponent().cartoLicenseRegistered = result;
-        //         });
-        //     } else {
-        //         registerLicense(gVars.CARTO_IOS_TOKEN, result => {
-        //             clog('registerLicense done', result);
-        //             this.$getAppComponent().cartoLicenseRegistered = result;
-        //         });
-        //     }
-        // }
     }
     onMapReady(e) {
         const cartoMap = (this._cartoMap = e.object as CartoMap);
