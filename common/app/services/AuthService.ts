@@ -458,6 +458,7 @@ export default class AuthService extends NetworkService {
                 apiPath: '/mobile/token-subscription',
                 method: 'DELETE',
                 body: {
+                    platform: gVars.platform,
                     device_token: token
                 }
             });
@@ -987,7 +988,7 @@ export default class AuthService extends NetworkService {
             // .then(() => {
             this.loginParams = user;
             if (!wasLoggedin) {
-                console.log('emitting loggedin event');
+                // console.log('emitting loggedin event', new Error().stack);
                 this.notify({
                     eventName: LoggedinEvent,
                     object: this,
