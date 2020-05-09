@@ -21,6 +21,8 @@ import { setShowDebug, setShowError, setShowInfo, setShowWarn } from 'nativescri
 import { DEV_LOG } from '~/utils/logging';
 const GeoJSON = require('geojson');
 
+const perimeterGeoJSON = require('~/assets/perimeter.json');
+
 interface GeoJSONProperties {
     name: string;
     id: string;
@@ -101,6 +103,8 @@ export default class MapComponent extends BaseVueComponent {
 
         cartoMap.setZoom(this.zoom, 0);
         cartoMap.setFocusPos({ latitude: 45.2002, longitude: 5.7222 }, 0);
+
+
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
         //     console.log('saved focusPos', appSettings.getString('mapFocusPos'));
@@ -124,6 +128,10 @@ export default class MapComponent extends BaseVueComponent {
             dataSource
         });
         cartoMap.addLayer(this.rasterLayer);
+
+        this.getOrCreateLocalVectorTileLayer();
+        this.ignoreStable = true;
+        this.localVectorTileDataSource.setLayerGeoJSON(1, perimeterGeoJSON);
 
         // console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
         // setTimeout(() => {
@@ -240,6 +248,7 @@ export default class MapComponent extends BaseVueComponent {
             Point: ['address.latitude', 'address.longitude'],
             include: ['name', 'id']
         }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
+        geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
