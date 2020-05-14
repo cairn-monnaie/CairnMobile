@@ -1,5 +1,5 @@
 <template>
-        <CollectionView for="item in options" rowHeight="50" height="200">
+        <CollectionView for="item in options" rowHeight="50" height="200" :itemIdGenerator="(item,i)=>i">
             <v-template>
                 <GridLayout columns="*, auto" class="list-group-item" orientation="horizontal" padding="10">
                     <Label fontSize="18" :text="$t(item.name)" col="0" verticalAlignment="center" />

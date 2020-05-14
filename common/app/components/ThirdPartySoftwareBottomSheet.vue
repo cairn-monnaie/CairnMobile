@@ -1,6 +1,6 @@
 <template>
     <GridLayout height="400" @shownInBottomSheet="onShownInBottomSheet()" borderRadius="10">
-        <CollectionView id="trackingScrollView" :items="dataItems" rowHeight="60">
+        <CollectionView id="trackingScrollView" :items="dataItems" rowHeight="60" :itemIdGenerator="(item,i)=>i">
             <v-template>
                 <GridLayout @tap="onTap(item)" class="listitem" padding="10">
                     <StackLayout class="title-holder">

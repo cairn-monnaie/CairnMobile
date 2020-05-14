@@ -9,7 +9,7 @@
         </StackLayout>
         <GridLayout columns="*,50,*" rows="*,50,*" zIndex="0">
             <PullToRefresh @refresh="refresh" colSpan="3" rowSpan="3">
-                <CollectionView :items="dataItems" rowHeight="80">
+                <CollectionView :items="dataItems" rowHeight="80" :itemIdGenerator="(item,i)=>i">
                     <v-template>
                         <GridLayout width="100%" columns="*,auto" rows="auto,auto,*" padding="12 16 12 16" borderBottomWidth="1" borderBottomColor="lightgray" backgroundColor="white">
                             <Label
