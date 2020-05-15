@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="non_sufficient_funds">"insufficient funds"</string>
   <string name="discover_your_pros">"new traders"</string>
   <string name="logout">"logout"</string>
   <string name="confirm_logout">"Are you sure you want to logout?"</string>

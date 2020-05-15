@@ -147,5 +147,6 @@
   "aucun_compte_ne_correspond_à_votre_saisie": "no account matches your entry",
   "confirm_logout": "Are you sure you want to logout?",
   "logout": "logout",
-  "discover_your_pros": "new traders"
+  "discover_your_pros": "new traders",
+  "non_sufficient_funds": "insufficient funds"
 }

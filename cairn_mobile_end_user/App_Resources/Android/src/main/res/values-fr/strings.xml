@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="discover_your_pros">"nouveaux commercants"</string>
+  <string name="non_sufficient_funds">"insuffisance de fonds"</string>
+  <string name="discover_your_pros">"derniers commercants"</string>
   <string name="logout">"se déconnecter"</string>
   <string name="confirm_logout">"Etes-vous sûr de vouloir vous déconnecter?"</string>
   <string name="aucun_compte_ne_correspond_à_votre_saisie">"aucun compte ne correspond à votre saisie"</string>

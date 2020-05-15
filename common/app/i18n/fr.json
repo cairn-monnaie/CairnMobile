@@ -147,5 +147,6 @@
   "aucun_compte_ne_correspond_à_votre_saisie": "aucun compte ne correspond à votre saisie",
   "confirm_logout": "Etes-vous sûr de vouloir vous déconnecter?",
   "logout": "se déconnecter",
-  "discover_your_pros": "nouveaux commercants"
+  "discover_your_pros": "derniers commercants",
+  "non_sufficient_funds": "insuffisance de fonds"
 }
