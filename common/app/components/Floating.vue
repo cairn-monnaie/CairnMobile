@@ -8,7 +8,6 @@
             verticalAlignment="center"
             marginLeft="20"
             marginRight="20"
-            height="300"
             borderRadius="10"
         >
             <GridLayout :backgroundColor="themeColor" colSpan="3" orientation="horizontal" padding="10 20 5 0" columns="auto,*,auto" rows="auto" borderTopLeftRadius="10" borderTopRightRadius="10">

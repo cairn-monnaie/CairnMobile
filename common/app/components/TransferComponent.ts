@@ -27,7 +27,15 @@ export default class TransferComponent extends BaseVueComponent {
     beneficiaries: Benificiary[] = [];
     refreshing = false;
     canStartTransfer = false;
-    amountError: string = null;
+    _amountError: string = null;
+
+    get amountError() {
+        return this._amountError;
+    }
+    set amountError(error) {
+        this._amountError = error;
+        this.$emit('amountError', error);
+    }
     reasonError: string = this.$t('reason_required');
     oldAmountStr = null;
     // loading = false;
@@ -52,20 +60,18 @@ export default class TransferComponent extends BaseVueComponent {
             this.reasonError = null;
             // this.showError(this.reasonError);
         }
-        // if (this.amount <= 0) {
-        //     this.amountError = this.$t('amount_required');
-        // } else {
-        //     this.amountError = null;
-        // }
-        // if (!this.account) {
-        // }
-        this.canStartTransfer = this.amount > 0 && !!this.account && !!this.recipient && !this.reasonError;
+        if (this.account && this.account.balance === 0) {
+            this.amountError = this.$t('non_sufficient_funds');
+        } else {
+            this.amountError = null;
+        }
+        this.canStartTransfer =
+            this.amount > 0 && !!this.account && this.account.balance > 0 && !!this.recipient && !this.reasonError;
     }
     onInputChange(e: PropertyChangeData, value) {
         this.checkForm();
     }
     destroyed() {
-        // appOff(QRCodeDataEvent, this.onQrCodeDataEvent, this);
         super.destroyed();
     }
     onQrCodeDataEvent(e) {
@@ -73,7 +79,6 @@ export default class TransferComponent extends BaseVueComponent {
     }
     mounted() {
         super.mounted();
-        // appOn(QRCodeDataEvent, this.onQrCodeDataEvent, this);
         this.beneficiaries = this.$authService.beneficiaries;
         this.accounts = this.$authService.accounts || [];
     }
@@ -87,8 +92,6 @@ export default class TransferComponent extends BaseVueComponent {
             this.handleQRData(this.qrCodeData);
         }
 
-        // console.log('created', this.qrCodeData, this.account, this.recipient);
-        // this.log('mounted', this.account, this.beneficiaries);
         if (!this.account || !this.beneficiaries) {
             this.refresh();
         }
@@ -102,7 +105,6 @@ export default class TransferComponent extends BaseVueComponent {
     }
     setTextFieldValue(value, tf?: TextField) {
         const amountTF = tf || this.amountTF;
-        // console.log('setTextFieldValue', value, amountTF);
         if (amountTF) {
             this.ignoreNextTextChange = true;
             amountTF.text = value;
@@ -129,7 +131,6 @@ export default class TransferComponent extends BaseVueComponent {
         this.checkForm();
         if (forceSetText) {
             this.setTextFieldValue(realvalueStr, object);
-            // this.setTextFieldValue(realvalueStr);
         }
     }
     refresh() {
@@ -154,17 +155,6 @@ export default class TransferComponent extends BaseVueComponent {
                 this.refreshing = false;
             })
             .catch(this.showError);
-        // this.$authService
-        //     .getAccounts()
-        //     .then(r => {
-        //         console.log('got accounts', r);
-        //         this.accounts = r;
-        //         if (r.length === 1) {
-        //             this.account = r[0];
-        //         }
-        //         this.refreshing = false;
-        //     })
-        //     .catch(this.showError);
     }
     async sendSMS() {
         const response: any = await sms([CAIRN_SMS_NUMBER], `PAYER ${this.amount} ${this.recipient.smsIds[0].identifier}`);
@@ -177,10 +167,11 @@ export default class TransferComponent extends BaseVueComponent {
 
     get accountBalanceText() {
         if (this.account) {
-            return `<span style="color:${this.accentColor};">${formatCurrency(
+            const color = this.account.balance === 0 ? 'red' : this.accentColor;
+            return `<span style="color:${color};">${formatCurrency(
                 this.account.balance,
                 true
-            )}</span><span style="color:${this.accentColor}; font-family:${this.cairnFontFamily};">cairn-currency</span>`;
+            )}</span><span style="color:${color}; font-family:${this.cairnFontFamily};">cairn-currency</span>`;
         }
     }
     async submit() {

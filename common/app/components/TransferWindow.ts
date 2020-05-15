@@ -6,13 +6,13 @@ import { TextField } from 'nativescript-material-textfield';
 import { QrCodeTransferData } from '~/services/AuthService';
 
 @Component({
-    components:{
+    components: {
         TransferComponent
     }
 })
 export default class TransferWindow extends PageComponent {
     @Prop() qrCodeData: QrCodeTransferData;
-
+    amountError: string = null;
     navigateUrl = ComponentIds.Transfer;
     onLoaded() {}
 
@@ -22,6 +22,7 @@ export default class TransferWindow extends PageComponent {
         const transferComponent = this.getTransferComponent();
         transferComponent.showLoading = this.showLoading.bind(this);
         transferComponent.hideLoading = this.hideLoading.bind(this);
+        // this.amountError = transferComponent.amountError;
     }
 
     destroyed() {
@@ -31,13 +32,6 @@ export default class TransferWindow extends PageComponent {
 
     getTransferComponent() {
         return this.$refs['transferComponent'] as TransferComponent;
-    }
-
-    get canStartTransfer() {
-        return this.getTransferComponent() && this.getTransferComponent().canStartTransfer;
-    }
-    get amountError() {
-        return this.getTransferComponent() && this.getTransferComponent().amountError;
     }
     submit() {
         this.getTransferComponent().submit();
@@ -50,13 +44,12 @@ export default class TransferWindow extends PageComponent {
         // console.log('onAmountTFLoaded', amount, !!textField);
         if (amount === undefined || amount === null) {
             textField.requestFocus();
-        }else {
-            this.getTransferComponent().setTextFieldValue(amount+'', textField);
+        } else {
+            this.getTransferComponent().setTextFieldValue(amount + '', textField);
         }
         if (gVars.isIOS) {
             textField.nativeTextViewProtected.keyboardType = 8;
         }
-
     }
     validateAmount(e) {
         this.getTransferComponent().validateAmount(e);
@@ -65,4 +58,3 @@ export default class TransferWindow extends PageComponent {
         this.getTransferComponent().onQrCodeDataEvent(e);
     }
 }
-

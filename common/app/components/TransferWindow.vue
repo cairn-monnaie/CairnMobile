@@ -1,6 +1,15 @@
 <template>
     <CairnPage id="transfer" @navigatedTo="onLoaded" :actionBarShowLogo="false">
-        <GridLayout slot="actionBarSubView" marginTop="10" row="0" colSpan="3" orientation="horizontal" padding="0 20 5 5" columns="*,auto" rows="auto">
+        <GridLayout
+            slot="actionBarSubView"
+            marginTop="10"
+            row="0"
+            colSpan="3"
+            orientation="horizontal"
+            padding="0 20 5 5"
+            columns="*,auto"
+            rows="auto"
+        >
             <TextField
                 col="0"
                 marginLeft="44"
@@ -16,13 +25,22 @@
                 keyboardType="number"
                 digits="0123456789.,"
                 returnKeyType="done"
+                errorColor="white"
                 :error="amountError"
                 @loaded="onAmountTFLoaded"
                 @textChange="validateAmount"
             />
-            <Label col="1" class="cairn" text="cairn-currency" fontSize="42" color="white" verticalAlignment="bottom" paddingBottom="8" />
+            <Label
+                col="1"
+                class="cairn"
+                text="cairn-currency"
+                fontSize="42"
+                color="white"
+                verticalAlignment="bottom"
+                paddingBottom="8"
+            />
         </GridLayout>
-        <TransferComponent ref="transferComponent"  @close="close" :qrCodeData="qrCodeData"/>
+        <TransferComponent ref="transferComponent" @close="close" :qrCodeData="qrCodeData" @amountError="amountError = $event"/>
     </CairnPage>
 </template>
 
