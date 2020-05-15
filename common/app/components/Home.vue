@@ -56,7 +56,7 @@
                                 @tap="onItemTap(item)"
                             >
                                 <Label row="0" :text="item.name | capitalize" fontWeight="bold" fontSize="18" />
-                                <Label row="1" class="balance" paddingTop="20">
+                                <Label row="1" class="balance" paddingTop="20" :color="item.balance === 0 ? 'red':themeColor">
                                     <Span :text="item.balance | currency(true)" />
                                     <Span :fontFamily="cairnFontFamily" text="cairn-currency" />
                                 </Label>
