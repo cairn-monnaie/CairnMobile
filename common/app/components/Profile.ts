@@ -26,6 +26,10 @@ import { generateBarCode } from 'nativescript-barcodeview';
 import { showSnack } from 'nativescript-material-snackbar';
 import { sprintf } from 'sprintf-js';
 
+const ImageComp = Vue.component('ImageComp', {
+    props: ['src'],
+    template: '<nsimg :src="src" backgroundColor="black" stretch="center" noCache/>'
+});
 @Component({
     components: {
         InteractiveMap,
@@ -294,33 +298,38 @@ export default class Profile extends PageComponent {
     showingQRCode = false;
     qrCodeImage: ImageSource;
     toggleQRCode() {
-        if (!this.showingQRCode) {
-            if (!this.qrCodeImage) {
-                try {
-                    this.qrCodeImage = generateBarCode({
-                        text: sprintf(CAIRN_FULL_QRCODE_FORMAT, {
-                            ICC: this.userProfile.mainICC,
-                            id: this.userProfile.id,
-                            name: this.userProfile.name
-                        }),
-                        type: 'QR_CODE',
-                        width: 400,
-                        height: 400,
-                        backColor: 'transparent',
-                        frontColor: 'white'
-                    });
-                    this.image = this.qrCodeImage;
-                    this.showingQRCode = !this.showingQRCode;
-                } catch (err) {
-                    console.log(err);
-                }
-            } else {
-                this.image = this.qrCodeImage;
-                this.showingQRCode = !this.showingQRCode;
+        // if (!this.showingQRCode) {
+        if (!this.qrCodeImage) {
+            try {
+                this.qrCodeImage = generateBarCode({
+                    text: sprintf(CAIRN_FULL_QRCODE_FORMAT, {
+                        ICC: this.userProfile.mainICC,
+                        id: this.userProfile.id,
+                        name: this.userProfile.name
+                    }),
+                    type: 'QR_CODE',
+                    width: 400,
+                    height: 400,
+                    // backColor: 'transparent',
+                    // frontColor: 'white'
+                });
+                // this.image = this.qrCodeImage;
+                // this.showingQRCode = !this.showingQRCode;
+            } catch (err) {
+                console.log(err);
             }
-        } else {
-            this.image = this.userProfile.image;
-            this.showingQRCode = !this.showingQRCode;
+            // } else {
+            //     this.image = this.qrCodeImage;
+            //     this.showingQRCode = !this.showingQRCode;
         }
+        this.$showBottomSheet(ImageComp, {
+            props: {
+                src: this.qrCodeImage
+            }
+        });
+        // } else {
+        //     this.image = this.userProfile.image;
+        //     this.showingQRCode = !this.showingQRCode;
+        // }
     }
 }
