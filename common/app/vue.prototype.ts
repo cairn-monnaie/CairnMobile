@@ -89,10 +89,14 @@ const Plugin = {
             // console.log('scanQRCode result', result);
             if (result) {
                 if (!manualHandle) {
-                    openUrl(result);
+                    if (gVars.isAndroid) {
+                        // ios does not seem to allow to call openURL with our own scheme
+                        openUrl(result);
+                    } else {
+                        (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
+                    }
 
                 }
-                // (this as NativescriptVue).$getAppComponent().handleReceivedAppUrl(result);
             }
             return result;
         };
