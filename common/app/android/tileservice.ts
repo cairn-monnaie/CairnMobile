@@ -5,10 +5,6 @@ import App from '~/components/App';
 import AuthService from '~/services/AuthService';
 import { $t } from '~/helpers/locale';
 
-function isOnUiThread() {
-    return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
-}
-
 const _sdkVersion = parseInt(device.sdkVersion, 10);
 if (_sdkVersion >= 24) {
     @JavaProxy('com.akylas.cairnmobile.QRCodeTileService')
@@ -43,7 +39,6 @@ if (_sdkVersion >= 24) {
         handleClick() {
             const appComp = Vue.prototype.$getAppComponent() as App;
             const authService = Vue.prototype.$authService as AuthService;
-            console.log('handleClick', isOnUiThread, !!authService);
             if (!authService.isLoggedIn()) {
                 this.showApp();
                 android.widget.Toast.makeText(
