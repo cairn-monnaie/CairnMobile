@@ -1,0 +1,5 @@
+*Bug fixes*
+- easier qrcode to scan
+- *ios:* qrcode reading fix
+- better transfer layout and error reporting
+- red balance when 0cairns
