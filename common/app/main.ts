@@ -52,8 +52,8 @@ Vue.use(FiltersPlugin);
 
 Vue.use(PrototypePlugin);
 
-Vue.config.silent = !DEV_LOG;
-Vue.config['debug'] = DEV_LOG;
+Vue.config.silent = true;
+Vue.config['debug'] = false;
 
 function throwVueError(err) {
     crashReportService.showError(err);

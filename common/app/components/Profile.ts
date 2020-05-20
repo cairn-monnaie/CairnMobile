@@ -28,7 +28,7 @@ import { sprintf } from 'sprintf-js';
 
 const ImageComp = Vue.component('ImageComp', {
     props: ['src'],
-    template: '<nsimg :src="src" backgroundColor="black" stretch="center" noCache/>'
+    template: '<nsimg :src="src" height="300" backgroundColor="black" stretch="center" noCache/>'
 });
 @Component({
     components: {
@@ -310,7 +310,7 @@ export default class Profile extends PageComponent {
                     type: 'QR_CODE',
                     width: 400,
                     height: 400,
-                    // backColor: 'transparent',
+                    // backColor: 'black',
                     // frontColor: 'white'
                 });
                 // this.image = this.qrCodeImage;

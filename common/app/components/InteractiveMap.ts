@@ -9,6 +9,7 @@ import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomShe
 import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
 import BaseVueComponent from './BaseVueComponent';
+import { layout } from '@nativescript/core/utils/utils';
 
 @Component({
     components: {
@@ -66,15 +67,27 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     // map: Mapbox;
     onMapReady(e) {
-        this.log('onMapReady');
+        // this.log('onMapReady');
         const map = (this._cartoMap = e.object as CartoMap);
-        // this.refresh();
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
-        // this.log('onMapReady', pos, zoom);
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
-        this.mapComp.getOrCreateLocalVectorTileLayer().setVectorTileEventListener(this);
+    }
+    onLayoutChange() {
+        // sometimes onMapStable is not called at first so we need this
+        // to make sure the map refreshes
+        if (!this.currentBounds && this._cartoMap) {
+            // we need to delay a bit or the map wont have its size
+            setTimeout(() => {
+                const map = this._cartoMap;
+                this.currentBounds = new MapBounds(
+                    map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }),
+                    map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() })
+                );
+                this.refresh(this.currentBounds);
+            }, 10);
+        }
     }
 
     @throttle(100)
@@ -94,6 +107,7 @@ export default class InteractiveMap extends BaseVueComponent {
             map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }),
             map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() })
         );
+        // console.log('onMapStable', currentBounds);
         if (!this.currentBounds || !currentBounds.equals(this.currentBounds)) {
             this.currentBounds = currentBounds;
             this.refresh(currentBounds);

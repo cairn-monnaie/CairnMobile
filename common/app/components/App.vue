@@ -1,5 +1,5 @@
 <template>
-    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" :statusBarColor="darkColor" ios:barStyle="light" :navigationBarColor="themeColor" @loaded="onLoaded">
+    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" :statusBarColor="themeColor" ios:barStyle="light" :navigationBarColor="themeColor" @loaded="onLoaded">
         <MultiDrawer ref="drawer" :options="drawerOptions">
             <GridLayout slot="left" rows="auto,*,auto" height="100%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
