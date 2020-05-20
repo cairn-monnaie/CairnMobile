@@ -252,8 +252,7 @@ export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
 export interface UserSettings {
     baseNotifications: [
         {
-            types: TransactionType[];
-            minAmount: number;
+            radius: number;
             id: number;
             webPushEnabled: boolean;
             appPushEnabled: boolean;
@@ -262,7 +261,8 @@ export interface UserSettings {
             keyword: string;
         },
         {
-            radius: number;
+            types: TransactionType[];
+            minAmount: number;
             id: number;
             webPushEnabled: boolean;
             appPushEnabled: boolean;

@@ -48,10 +48,10 @@ export default class Settings extends PageComponent {
     }
 
     get paymentNotifSettings() {
-        return this.userSettings && this.userSettings.baseNotifications[0];
+        return this.userSettings && this.userSettings.baseNotifications[1];
     }
     get newproNotifSettings() {
-        return this.userSettings && this.userSettings.baseNotifications[1];
+        return this.userSettings && this.userSettings.baseNotifications[0];
     }
 
     ignoreNextCheckEvent = false;
