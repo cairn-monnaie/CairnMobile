@@ -368,9 +368,6 @@ export default class App extends BaseVueComponent {
     }
     appPaused = true;
     onLoggedIn(e?) {
-        if (WITH_PUSH_NOTIFICATIONS) {
-            this.registerForPushNotifs();
-        }
         this.currentlyLoggedIn = true;
         console.log('we loggedin', this.currentlyLoggedIn);
         this.userProfile = this.$authService.userProfile;

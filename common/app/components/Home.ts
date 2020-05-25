@@ -47,18 +47,23 @@ export default class Home extends PageComponent {
 
     onLoaded() {}
 
-    onNavigatedTo(args: NavigatedData) {
-        if (!args.isBackNavigation && this.$authService.isLoggedIn()) {
+    async onNavigatedTo(args: NavigatedData) {
+        const loggedInOnStart = this.$authService.isLoggedIn();
+        if (!args.isBackNavigation && loggedInOnStart) {
             this.refresh();
         }
-        const loggedInOnStart = this.$authService.isLoggedIn();
         // console.log('onNavigatedTo', loggedInOnStart, new Error().stack);
         if (loggedInOnStart) {
             if (!this.$securityService.passcodeSet()) {
-                this.$securityService.createPasscode(this).catch(err => {
+                try {
+                    await this.$securityService.createPasscode(this);
+                } catch (err) {
                     this.showError(err);
                     this.$authService.logout();
-                });
+                }
+            }
+            if (WITH_PUSH_NOTIFICATIONS && !args.isBackNavigation) {
+                this.$getAppComponent().registerForPushNotifs();
             }
         }
     }
