@@ -207,7 +207,7 @@ module.exports = (env, params = {}) => {
         `{${mdiSymbols.variables[mdiSymbols.variables.length - 1].value.replace(/" (F|0)(.*?)([,\n]|$)/g, '": "$1$2"$3')}}`
     );
 
-    const cairnSymbols = symbolsParser.parseSymbols(readFileSync(resolve(appFullPath, 'css/cairn.scss')).toString());
+    const cairnSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'css/cairn.scss')).toString());
     const cairnIcons = JSON.parse(
         `{${cairnSymbols.variables[cairnSymbols.variables.length - 1].value.replace(
             /'cairn-([a-zA-Z0-9-_]+)' (F|f|e|0)(.*?)([,\n]+|$)/g,
