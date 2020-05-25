@@ -243,7 +243,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
             hashSalt
         },
         resolve: {
-            extensions: ['.vue', '.mjs', '.ts', '.js', '.scss', '.css'],
+            extensions: ['.vue', '.ts', '.js', '.scss', '.css'],
             // Resolve {N} system modules from tns-core-modules
             modules: [
                 resolve(__dirname, `node_modules/${coreModulesPackageName}`),
