@@ -169,7 +169,7 @@ function cleanupUser(user: any) {
 
     return result as User;
 }
-function cleanupTransaction(transaction: any) {
+function cleanupTransaction(transaction: any, myUserId) {
     const result = pick(transaction, TransactionKeys) as Transaction;
     result.submissionDate = dayjs(result.submissionDate).valueOf();
     result.executionDate = dayjs(result.executionDate).valueOf();
@@ -181,10 +181,7 @@ function cleanupTransaction(transaction: any) {
     }
     result.reason = result.reason.split('\n')[0];
     // t.executionDate = dayjs(t.executionDate).valueOf();
-    result.credit =
-        result.type === TransactionType.BDC ||
-        result.type === TransactionType.HELLOASSO ||
-        result.type === TransactionType.DEPOSIT;
+    result.credit = !result.creditor || result.creditor.id === myUserId;
     if (result.creditor) {
         result.creditor = cleanupUser(result.creditor);
     }
@@ -883,7 +880,7 @@ export default class AuthService extends NetworkService {
             },
             method: 'POST'
         });
-        const accountHistory = result.map(cleanupTransaction).sort(function(a, b) {
+        const accountHistory = result.map(t=>cleanupTransaction(t, this.userId)).sort(function(a, b) {
             return b.executionDate - a.executionDate;
         });
         this.accountHistory[accountId] = accountHistory;
