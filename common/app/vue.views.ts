@@ -34,8 +34,8 @@ const Plugin = {
         // Vue.use(CardViewPlugin);
         // Vue.use(ProgressPlugin);
         // Vue.use(RipplePlugin);
-        Vue.use(SliderPlugin);
-        Vue.use(TextFieldPlugin);
+        // Vue.use(SliderPlugin);
+        // Vue.use(TextFieldPlugin);
         Vue.use(BottomSheetPlugin);
         Vue.use(CartoPlugin);
         // Vue.use(FabPlugin);
@@ -43,8 +43,18 @@ const Plugin = {
         Vue.use(Pager);
 
         Vue.registerElement('Button', () => require('nativescript-material-button').Button);
-        Vue.registerElement('TextField', () => require('nativescript-material-textfield').TextField);
-        Vue.registerElement('Slider', () => require('nativescript-material-slider').Slider);
+        Vue.registerElement('TextField', () => require('nativescript-material-textfield').TextField, {
+            model: {
+                prop: 'text',
+                event: 'textChange'
+            }
+        });
+        Vue.registerElement('Slider', () => require('nativescript-material-slider').Slider, {
+            model: {
+                prop: 'value',
+                event: 'valueChange'
+            }
+        });
         Vue.registerElement('Label', () => HTMLLabel);
         enableIOSDTCoreText();
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);

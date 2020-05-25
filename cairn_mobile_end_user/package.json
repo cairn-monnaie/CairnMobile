@@ -93,7 +93,7 @@
         "merge-options": "^2.0.0",
         "nativescript-dev-webpack": "1.5.1",
         "nativescript-set-version": "0.2.1",
-        "nativescript-vue-template-compiler": "2.6.1",
+        "nativescript-vue-template-compiler": "2.6.3",
         "node-sass": "^4.14.1",
         "sass-loader": "8.0.2",
         "scss-symbols-parser": "^2.0.1",
