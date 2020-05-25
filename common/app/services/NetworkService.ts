@@ -4,7 +4,7 @@ import { clog } from '~/utils/logging';
 import { $t } from '~/helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
-import {Headers} from '@nativescript/core/http';
+import { Headers } from '@nativescript/core/http';
 import * as https from 'nativescript-akylas-https';
 
 export interface CacheOptions {
@@ -392,6 +392,12 @@ export class NetworkService extends Observable {
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
         // console.log('request', requestParams);
+
+        // log for VSCode http plugin
+        // console.log(requestParams.method, requestParams.url);
+        // requestParams.headers && Object.keys(requestParams.headers).forEach(k => console.log(k + ':', requestParams.headers[k]));
+        // console.log(requestParams.body);
+
         return https
             .request(requestParams as HttpRequestOptions)
             .then(response =>
