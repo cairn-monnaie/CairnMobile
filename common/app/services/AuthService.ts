@@ -442,6 +442,7 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/token-subscription',
             method: 'POST',
             body: {
+                action: 'POST',
                 platform: gVars.platform,
                 device_token: pushToken
             }
@@ -453,8 +454,9 @@ export default class AuthService extends NetworkService {
             this.pushToken = undefined;
             return this.request<{ validation_url: string }>({
                 apiPath: '/mobile/token-subscription',
-                method: 'DELETE',
+                method: 'POST',
                 body: {
+                    action: 'DELETE',
                     platform: gVars.platform,
                     device_token: token
                 }
@@ -880,9 +882,11 @@ export default class AuthService extends NetworkService {
             },
             method: 'POST'
         });
-        const accountHistory = result.map(t=>cleanupTransaction(t, this.userId)).sort(function(a, b) {
-            return b.executionDate - a.executionDate;
-        });
+        const accountHistory = result
+            .map(t => cleanupTransaction(t, this.userId))
+            .sort(function(a, b) {
+                return b.executionDate - a.executionDate;
+            });
         this.accountHistory[accountId] = accountHistory;
         return accountHistory;
     }
