@@ -392,7 +392,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
-        // console.log('request', requestParams);
+        console.log('request ', requestParams);
 
         // log for VSCode http plugin
         // console.log(requestParams.method, requestParams.url);
@@ -459,7 +459,7 @@ export class NetworkService extends Observable {
                 }
                 // we try to handle all cases where a refreshed token would suffice
                 if (
-                    (statusCode === 401 && jsonReturn.error === 'invalid_grant') ||
+                    (statusCode === 401 && (jsonReturn.error === 'invalid_grant' || jsonReturn.error === 'Invalid authentication')) ||
                     (statusCode === 400 &&
                         jsonReturn.error &&
                         jsonReturn.error.message ===

@@ -476,7 +476,7 @@ export default class AuthService extends NetworkService {
         return profile.roles.indexOf(Roles.PRO) !== -1;
     }
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
-        // console.log('handleRequestRetry', retry);
+        console.log('handleRequestRetry ', retry, requestParams);
         // refresh token
         if (requestParams.canRetry === false || retry === 2) {
             this.logout();
@@ -930,7 +930,6 @@ export default class AuthService extends NetworkService {
         try {
             const result = await this.request<TokenRequestResult>({
                 apiPath: tokenEndpoint,
-                canRetry:false,
                 method: 'POST',
                 body: {
                     client_id: CAIRN_CLIENT_ID,
@@ -939,7 +938,7 @@ export default class AuthService extends NetworkService {
                     refresh_token: this.refreshToken
                 }
             });
-            console.log('getRefreshToken', result);
+            // console.log('getRefreshToken', result);
             this.token = result.access_token;
             this.refreshToken = result.refresh_token;
             return result;
@@ -947,7 +946,9 @@ export default class AuthService extends NetworkService {
             // for now we try to get a new token there, should we?
             // Yes, we should !
             console.log('error getting refresh token', err);
-            return this.getToken(this.loginParams);
+            if (err.statusCode !== 'not_authorized' && this.loginParams) {
+                return this.getToken(this.loginParams);
+            }
 
             // this.token = undefined;
             // this.refreshToken = undefined;
