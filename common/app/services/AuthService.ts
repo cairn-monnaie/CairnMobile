@@ -476,7 +476,7 @@ export default class AuthService extends NetworkService {
         return profile.roles.indexOf(Roles.PRO) !== -1;
     }
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
-        console.log('handleRequestRetry ', retry, requestParams);
+        // console.log('handleRequestRetry ', retry, requestParams);
         // refresh token
         if (requestParams.canRetry === false || retry === 2) {
             this.logout();

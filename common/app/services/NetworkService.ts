@@ -392,7 +392,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
-        console.log('request ', requestParams);
+        // console.log('request ', requestParams);
 
         // log for VSCode http plugin
         // console.log(requestParams.method, requestParams.url);
