@@ -478,7 +478,7 @@ export default class AuthService extends NetworkService {
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
         // console.log('handleRequestRetry', retry);
         // refresh token
-        if (retry === 2) {
+        if (requestParams.canRetry === false || retry === 2) {
             this.logout();
             throw new HTTPError({
                 statusCode: 401,
@@ -929,6 +929,7 @@ export default class AuthService extends NetworkService {
         try {
             const result = await this.request<TokenRequestResult>({
                 apiPath: tokenEndpoint,
+                canRetry:false,
                 method: 'POST',
                 body: {
                     client_id: CAIRN_CLIENT_ID,

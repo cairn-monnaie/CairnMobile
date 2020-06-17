@@ -48,6 +48,7 @@ export interface HttpRequestOptions extends HTTPOptions {
     queryParams?: {};
     apiPath?: string;
     multipartParams?;
+    canRetry?;
 }
 
 function evalTemplateString(resource: string, obj: {}) {
