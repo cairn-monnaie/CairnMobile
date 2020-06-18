@@ -931,6 +931,7 @@ export default class AuthService extends NetworkService {
             const result = await this.request<TokenRequestResult>({
                 apiPath: tokenEndpoint,
                 method: 'POST',
+                canRetry: false,
                 body: {
                     client_id: CAIRN_CLIENT_ID,
                     client_secret: CAIRN_CLIENT_SECRET,
