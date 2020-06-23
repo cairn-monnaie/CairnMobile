@@ -13,9 +13,7 @@ export default class SecurityService extends Observable {
     @booleanProperty biometricEnabled: boolean;
     @booleanProperty autoLockEnabled: boolean;
     biometricsAvailable() {
-        console.log('biometricsAvailable');
         return this.fingerprintAuth.available().then((r) => {
-            console.log('fingerprintAuth', 'available', r);
             if (!r.touch && !r.face) {
                 return false;
             }

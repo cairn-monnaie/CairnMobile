@@ -21,9 +21,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: getString('last.login', PRODUCTION?'':'claire_dode'),
+        username: getString('last.login', PRODUCTION ? '' : 'claire_dode'),
         email: '',
-        password: PRODUCTION?'':'@@bbccdd',
+        password: PRODUCTION ? '' : '@@bbccdd',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
