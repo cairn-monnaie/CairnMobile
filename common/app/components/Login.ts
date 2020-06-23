@@ -61,10 +61,12 @@ export default class Login extends PageComponent {
                 .start();
         })
             .then(() => {
-                if (this.user.username.length > 0 && this.user.password.length === 0) {
-                    this.focusPassword();
-                } else if (this.user.username.length  === 0) {
-                    this.focusUsername();
+                if (this.user && this.user.username) {
+                    if (this.user && this.user.username && this.user.username.length > 0 && this.user.password.length === 0) {
+                        this.focusPassword();
+                    } else if (this.user.username.length === 0) {
+                        this.focusUsername();
+                    }
                 }
             })
             .catch(this.showError);
