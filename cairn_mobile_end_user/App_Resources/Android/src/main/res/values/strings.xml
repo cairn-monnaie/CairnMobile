@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="no_favorite">"no favorites"</string>
+  <string name="favorites">"favorites"</string>
   <string name="non_sufficient_funds">"insufficient funds"</string>
   <string name="discover_your_pros">"new traders"</string>
   <string name="logout">"logout"</string>
@@ -80,6 +82,7 @@
   <string name="send_bug_report_desc">"enter an email and a description of the bug encountered"</string>
   <string name="send_bug_report">"send bug report"</string>
   <string name="send">"send"</string>
+  <string name="saved_favorite">"registered favorite"</string>
   <string name="saved_beneficiary">"registered beneficiary"</string>
   <string name="register">"register"</string>
   <string name="recipient">"recipient"</string>
@@ -127,6 +130,7 @@
   <string name="choose_account">"choice of account"</string>
   <string name="cancel">"cancel"</string>
   <string name="bug_report_sent">"bug report sent"</string>
+  <string name="favorite_added">"registered favorite"</string>
   <string name="beneficiary_added">"registered beneficiary"</string>
   <string name="beneficiaries">"beneficiaries"</string>
   <string name="balance">"balance"</string>
@@ -136,6 +140,7 @@
   <string name="amount">"amount"</string>
   <string name="address">"address"</string>
   <string name="add_phone">"add phone"</string>
+  <string name="add_favorite">"add a favorite"</string>
   <string name="add_beneficiary">"add a beneficiary"</string>
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>

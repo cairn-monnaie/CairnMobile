@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="no_favorite">"aucun favoris"</string>
+  <string name="favorites">"favoris"</string>
   <string name="non_sufficient_funds">"insuffisance de fonds"</string>
   <string name="discover_your_pros">"derniers commercants"</string>
   <string name="logout">"se déconnecter"</string>
@@ -20,7 +22,7 @@
   <string name="sms_notifications">"notifications sms"</string>
   <string name="webpush_notifications">"notifications dans le navigateur"</string>
   <string name="newpro_notifications_desc">"recevez une notification quand un nouvel adhérent pro arrive près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse"</string>
-  <string name="received_paiement_body">"Vous avez reçu un paiement de %1$s de %2$s cairns!"</string>
+  <string name="received_paiement_body">"Vous avez reçu un paiement de %1$s cairns de %2$s!"</string>
   <string name="received_paiement_title">"Nouveau paiement"</string>
   <string name="newpro_channel_description">"default channel description"</string>
   <string name="newpro_channel_name">"notifications de nouveau pro près de chez vous"</string>
@@ -69,8 +71,8 @@
   <string name="loading">"chargement"</string>
   <string name="map">"carte"</string>
   <string name="default_reason">"paiement eCairn Mobile"</string>
-  <string name="password_creation">"Créez un mot de passe"</string>
-  <string name="enter_password">"rentrez votre passcode"</string>
+  <string name="password_creation">"Créez un PIN"</string>
+  <string name="enter_password">"rentrez votre PIN"</string>
   <string name="wrong_confirmation_code">"code de confirmation érroné"</string>
   <string name="wrong_scancode">"le code scanne n\'est pas un code eCairn"</string>
   <string name="close">"fermer"</string>
@@ -92,11 +94,14 @@
   <string name="beneficiaries">"bénéficiaires"</string>
   <string name="account_history">"historique du compte"</string>
   <string name="balance">"balance"</string>
-  <string name="profile">"profile"</string>
+  <string name="profile">"profil"</string>
+  <string name="favorite_added">"favoris enregistré"</string>
   <string name="beneficiary_added">"bénéficiaire enregistré"</string>
   <string name="transfer">"effectuer un virement"</string>
+  <string name="add_favorite">"ajouter un favoris"</string>
   <string name="add_beneficiary">"ajouter un bénéficiaire"</string>
   <string name="pick_options">"choisissez une option"</string>
+  <string name="saved_favorite">"favoris enregistré"</string>
   <string name="saved_beneficiary">"bénéficiaire enregistré"</string>
   <string name="amount_required">"un montant est nécessaire"</string>
   <string name="confirm">"confirmer"</string>
