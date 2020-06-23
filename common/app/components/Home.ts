@@ -153,7 +153,7 @@ export default class Home extends PageComponent {
                     return this.$authService.addBeneficiary(r.email).then(() => {
                         this.hideLoading();
                         showSnack({
-                            message: this.$t('beneficiary_added', r.name)
+                            message: this.$t('favorite_added', r.name)
                         });
                     });
                 }

@@ -59,7 +59,7 @@ export default class Beneficiaries extends PageComponent {
                     return this.$authService.addBeneficiary(r.email || r.mainICC).then(() => {
                         this.hideLoading();
                         showSnack({
-                            message: this.$t('beneficiary_added', r.name)
+                            message: this.$t('favorite_added', r.name)
                         });
                     });
                 }

@@ -197,7 +197,7 @@ export default class App extends BaseVueComponent {
                 url: ComponentIds.Profile
             },
             {
-                title: this.$t('beneficiaries'),
+                title: this.$t('favorites'),
                 icon: 'mdi-account-group',
                 url: ComponentIds.Beneficiaries
             },

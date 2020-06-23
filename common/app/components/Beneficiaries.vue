@@ -8,7 +8,8 @@
                     </v-template>
                 </CollectionView>
             </PullToRefresh>
-            <Button row="1" :text="$tc('add_beneficiary')" @tap="addBeneficiary" />
+            <Label textAlignment="center" verticalTextAlignment="center" color="#888" :text="$tc('no_favorite')"/>
+            <Button row="1" :text="$tc('add_favorite')" @tap="addBeneficiary" />
         </GridLayout>
     </CairnPage>
 </template>

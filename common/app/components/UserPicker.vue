@@ -10,7 +10,7 @@
                     </StackLayout>
                     <CollectionView row="1" :items="dataItems" rowHeight="80" :itemIdGenerator="(item,i)=>i">
                         <v-template>
-                            <ListItem :avatar="item.image" :title="item.name" :subtitle="item.address | address" :overText="(!!item.isBeneficiary? $t('saved_beneficiary') : null)" @tap="chooseRecipient(item)" />
+                            <ListItem :avatar="item.image" :title="item.name" :subtitle="item.address | address" :overText="(!!item.isBeneficiary? $t('saved_favorite') : null)" @tap="chooseRecipient(item)" />
                         </v-template>
                     </CollectionView>
                 </GridLayout>
