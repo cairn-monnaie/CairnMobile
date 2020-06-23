@@ -371,7 +371,7 @@ export default class App extends BaseVueComponent {
         this.currentlyLoggedIn = true;
         console.log('we loggedin', this.currentlyLoggedIn);
         this.userProfile = this.$authService.userProfile;
-        this.$crashReportService.setExtra('profile', this.userProfile);
+        this.$crashReportService.setExtra('profile', JSON.stringify(this.userProfile));
         if (e) {
             // means received as event
             this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
