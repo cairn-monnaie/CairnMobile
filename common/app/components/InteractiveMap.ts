@@ -119,12 +119,17 @@ export default class InteractiveMap extends BaseVueComponent {
     }
 
     onVectorTileClicked(data: VectorTileEventData) {
+        // this.log('onVectorTileClicked', data);
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
-            const user = this.shownUsers.find(u => u.id === (featureData.id as any));
-            if (user) {
+            const user = this.shownUsers.find(u => u.id+'' === (featureData.id as any));
+            if (user === this.selectedItem) {
+                return false;
+            } else if (user) {
                 this.selectItem(user);
+            } else {
+                this.unselectItem();
             }
         }
         return true;

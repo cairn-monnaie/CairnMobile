@@ -1,4 +1,6 @@
 @name: [nuti::lang] ? ([name:[nuti::lang]] ? [name:[nuti::lang]] : ([name:[nuti::fallback_lang]] ? [name:[nuti::fallback_lang]] : [name])) : [name];
+@markerIcon: [nuti::selected_id] = [id] ? url(images/cairn_selected.png) : url(images/cairn.png);
+@markerOverlap: [nuti::selected_id] = [id] ? false : true;
 
 #cairn {
 	['mapnik::geometry_type'=3] {
@@ -11,7 +13,7 @@
 
 		::icon {
 			marker-placement: [nuti::markers3d];
-			marker-file: url(images/cairn.png);
+			marker-file: @markerIcon;
 			marker-width: 24;
 			marker-height: 24;
 			marker-allow-overlap: true;

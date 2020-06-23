@@ -3,7 +3,7 @@ import { Point } from 'nativescript-carto/vectorelements/point';
 import { HTTPTileDataSource } from 'nativescript-carto/datasources/http';
 import { LocalVectorDataSource } from 'nativescript-carto/datasources/vector';
 import { RasterTileLayer } from 'nativescript-carto/layers/raster';
-import { VectorElementEventData, VectorLayer, VectorTileLayer } from 'nativescript-carto/layers/vector';
+import { VectorElementEventData, VectorLayer, VectorTileEventData, VectorTileLayer } from 'nativescript-carto/layers/vector';
 import { Projection } from 'nativescript-carto/projections';
 import { CartoMap } from 'nativescript-carto/ui';
 import { DefaultLatLonKeys, MapPosVector } from 'nativescript-carto/core';
@@ -61,6 +61,7 @@ export default class MapComponent extends BaseVueComponent {
     @Prop({ default: false }) readonly showLocationButton!: boolean;
     @Prop({ default: 16 }) readonly zoom!: number;
     @Prop({ default: 1 }) readonly layerOpacity!: number;
+    @Prop() readonly vectorTileClicked!: Function;
 
     get cartoMap() {
         return this._cartoMap;
@@ -103,7 +104,6 @@ export default class MapComponent extends BaseVueComponent {
 
         cartoMap.setZoom(this.zoom, 0);
         cartoMap.setFocusPos({ latitude: 45.2002, longitude: 5.7222 }, 0);
-
 
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -207,7 +207,7 @@ export default class MapComponent extends BaseVueComponent {
         if (!this.localVectorLayer && this._cartoMap) {
             this.localVectorLayer = new VectorLayer({ visibleZoomRange: [0, 24], dataSource: this.localVectorDataSource });
             // this.localVectorLayer.setVectorElementEventListener(null);
-            // this.localVectorLayer.setVectorElementEventListener(this, this.mapProjection);
+            // this.localVectorLayer.setVectorElementEventListener(this);
 
             // always add it at 1 to respect local order
             this._cartoMap.addLayer(this.localVectorLayer);
@@ -220,15 +220,15 @@ export default class MapComponent extends BaseVueComponent {
                 liveReload: TNS_ENV !== 'production',
                 dirPath: '~/assets/styles/cairn'
             });
-            this.localVectorTileLayer = new VectorTileLayer({
+            const layer = (this.localVectorTileLayer = new VectorTileLayer({
                 preloading: true,
-
                 dataSource: this.localVectorTileDataSource,
                 decoder
-            });
+            }));
 
+            layer.setVectorTileEventListener(this);
             // always add it at 1 to respect local order
-            this._cartoMap.addLayer(this.localVectorTileLayer);
+            this._cartoMap.addLayer(layer);
         }
         return this.localVectorTileLayer;
     }
@@ -248,6 +248,7 @@ export default class MapComponent extends BaseVueComponent {
             Point: ['address.latitude', 'address.longitude'],
             include: ['name', 'id']
         }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
+        geojson.features.forEach(f => (f.properties.id = f.properties.id + ''));
         geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
@@ -255,10 +256,19 @@ export default class MapComponent extends BaseVueComponent {
     }
     onVectorElementClicked(data: VectorElementEventData<DefaultLatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;
+        // console.log('onVectorElementClicked');
         Object.keys(metaData).forEach(k => {
             metaData[k] = JSON.parse(metaData[k]);
         });
         this.$emit('elementClick', position, metaData);
+    }
+    onVectorTileClicked(data: VectorTileEventData) {
+        this.$emit('tileElementClick', data);
+        // this.log('onVectorTileClicked', this.vectorTileClicked);
+        if (this.vectorTileClicked) {
+            return this.vectorTileClicked(data);
+        }
+        return true;
     }
     updateUserLocation(geoPos: GeoLocation) {
         if (
