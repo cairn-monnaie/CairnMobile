@@ -3,6 +3,7 @@
   "account_history": "account history",
   "add": "add",
   "add_beneficiary": "add a beneficiary",
+  "add_favorite": "add a favorite",
   "add_phone": "add phone",
   "address": "address",
   "amount": "amount",
@@ -13,6 +14,7 @@
   "balance": "balance",
   "beneficiaries": "beneficiaries",
   "beneficiary_added": "registered beneficiary",
+  "favorite_added": "registered favorite",
   "bug_report_sent": "bug report sent",
   "cancel": "cancel",
   "choose_account": "choice of account",
@@ -69,6 +71,7 @@
   "recipient": "recipient",
   "register": "register",
   "saved_beneficiary": "registered beneficiary",
+  "saved_favorite": "registered favorite",
   "send": "send",
   "send_bug_report": "send bug report",
   "send_bug_report_desc": "enter an email and a description of the bug encountered",
@@ -148,5 +151,7 @@
   "confirm_logout": "Are you sure you want to logout?",
   "logout": "logout",
   "discover_your_pros": "new traders",
-  "non_sufficient_funds": "insufficient funds"
+  "non_sufficient_funds": "insufficient funds",
+  "favorites": "favorites",
+  "no_favorite": "no favorites"
 }
