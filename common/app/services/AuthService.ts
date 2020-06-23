@@ -906,7 +906,7 @@ export default class AuthService extends NetworkService {
             const result = await this.request<TokenRequestResult>({
                 cachePolicy: 'noCache',
                 apiPath: tokenEndpoint,
-                canRetry:false,
+                canRetry: false,
                 method: 'POST',
                 body: {
                     client_id: CAIRN_CLIENT_ID,
@@ -1032,10 +1032,10 @@ export default class AuthService extends NetworkService {
     }
 
     async resetPassword(email) {
-        // const result = await firebase.resetPassword({
-        //   email: email
-        // })
-        // return JSON.stringify(result);
+        return this.request({
+            url: `https://test.cairn-monnaie.com/resetting/check-email?username=${email}`,
+            method: 'GET'
+        });
     }
 
     logout() {
