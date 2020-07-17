@@ -1,3 +1,5 @@
+"no_favorite" = "no favorites";
+"favorites" = "favorites";
 "non_sufficient_funds" = "insufficient funds";
 "discover_your_pros" = "new traders";
 "logout" = "logout";
@@ -78,6 +80,7 @@
 "send_bug_report_desc" = "enter an email and a description of the bug encountered";
 "send_bug_report" = "send bug report";
 "send" = "send";
+"saved_favorite" = "registered favorite";
 "saved_beneficiary" = "registered beneficiary";
 "register" = "register";
 "recipient" = "recipient";
@@ -128,6 +131,7 @@
 "choose_account" = "choice of account";
 "cancel" = "cancel";
 "bug_report_sent" = "bug report sent";
+"favorite_added" = "registered favorite";
 "beneficiary_added" = "registered beneficiary";
 "beneficiaries" = "beneficiaries";
 "balance" = "balance";
@@ -136,6 +140,7 @@
 "amount" = "amount";
 "address" = "address";
 "add_phone" = "add phone";
+"add_favorite" = "add a favorite";
 "add_beneficiary" = "add a beneficiary";
 "add" = "add";
 "account_history" = "account history";

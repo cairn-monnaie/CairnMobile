@@ -1,3 +1,5 @@
+"no_favorite" = "aucun favoris";
+"favorites" = "favoris";
 "non_sufficient_funds" = "insuffisance de fonds";
 "discover_your_pros" = "derniers commercants";
 "logout" = "se déconnecter";
@@ -18,7 +20,7 @@
 "sms_notifications" = "notifications sms";
 "webpush_notifications" = "notifications dans le navigateur";
 "newpro_notifications_desc" = "recevez une notification quand un nouvel adhérent pro arrive près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse";
-"received_paiement_body" = "Vous avez reçu un paiement de %1$@ de %2$@ cairns!";
+"received_paiement_body" = "Vous avez reçu un paiement de %1$@ cairns de %2$@!";
 "received_paiement_title" = "Nouveau paiement";
 "newpro_channel_description" = "default channel description";
 "newpro_channel_name" = "notifications de nouveau pro près de chez vous";
@@ -67,8 +69,8 @@
 "loading" = "chargement";
 "map" = "carte";
 "default_reason" = "paiement eCairn Mobile";
-"password_creation" = "Créez un mot de passe";
-"enter_password" = "rentrez votre passcode";
+"password_creation" = "Créez un PIN";
+"enter_password" = "rentrez votre PIN";
 "wrong_confirmation_code" = "code de confirmation érroné";
 "wrong_scancode" = "le code scanne n'est pas un code eCairn";
 "close" = "fermer";
@@ -90,11 +92,14 @@
 "beneficiaries" = "bénéficiaires";
 "account_history" = "historique du compte";
 "balance" = "balance";
-"profile" = "profile";
+"profile" = "profil";
+"favorite_added" = "favoris enregistré";
 "beneficiary_added" = "bénéficiaire enregistré";
 "transfer" = "effectuer un virement";
+"add_favorite" = "ajouter un favoris";
 "add_beneficiary" = "ajouter un bénéficiaire";
 "pick_options" = "choisissez une option";
+"saved_favorite" = "favoris enregistré";
 "saved_beneficiary" = "bénéficiaire enregistré";
 "amount_required" = "un montant est nécessaire";
 "confirm" = "confirmer";
