@@ -6,7 +6,7 @@ import { device } from '@nativescript/core/platform';
 import { alert, confirm } from 'nativescript-material-dialogs';
 import { Label as HTMLLabel } from 'nativescript-htmllabel';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from 'nativescript-l';
-import { CustomError, HTTPError, NoNetworkError } from './NetworkService';
+import { CustomError, HTTPError, MessageError, NoNetworkError } from './NetworkService';
 import { Color } from '@nativescript/core/ui/frame';
 
 export default class CrashReportService extends Observable {
@@ -79,7 +79,7 @@ export default class CrashReportService extends Observable {
         let showSendBugReport = reporterEnabled && !isString && !!realError.stack;
         if (realError instanceof HTTPError) {
             title = `${title} (${realError.statusCode})`;
-        } else if (realError instanceof NoNetworkError) {
+        } else if (realError instanceof NoNetworkError || realError instanceof MessageError) {
             showSendBugReport = false;
         }
         console.log('showError', err, err['stack']);
