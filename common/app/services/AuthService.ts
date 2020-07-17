@@ -515,18 +515,21 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'GET'
         });
-        // this.notify({
-        //     eventName: UserProfileEvent,
-        //     object: this,
-        //     data: this.userProfile
-        // } as UserProfileEventData);
+        result.baseNotifications = result.baseNotifications.sort(function(a, b) {
+            return a.id - b.id;
+        });
         return result;
     }
     async postUserSettings(userSettings: UserSettings) {
+        const body = JSON.parse(JSON.stringify({ baseNotifications: userSettings.baseNotifications })) as UserSettings;
+        body.baseNotifications = body.baseNotifications.sort(function(a, b) {
+            return a.id - b.id;
+        });
+        body.baseNotifications.forEach(n => delete n.id);
         const result = await this.request<UserSettings>({
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'POST',
-            body: { baseNotifications: userSettings.baseNotifications }
+            body
         });
         // this.notify({
         //     eventName: UserProfileEvent,

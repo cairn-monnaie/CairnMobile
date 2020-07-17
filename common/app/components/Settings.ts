@@ -39,7 +39,7 @@ export default class Settings extends PageComponent {
             return;
         }
         // this.log('saveUserSettings');
-        this.$authService.postUserSettings(this.userSettings);
+        this.$authService.postUserSettings(this.userSettings).catch(this.showError);
     }
 
     async refreshSettings() {
