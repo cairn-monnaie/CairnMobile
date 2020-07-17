@@ -1,0 +1,16 @@
+*Features*
+- resetPassword
+
+*Bug fixes*
+- make sure we logout on refreshToken error
+- getToken should not allow rettry
+- correctly log out when login/mdp changed
+- trying to prevent endless refresh token
+- local fixes
+- favorite instead of beneficiary
+- map selection fix
+- crash report fix
+- error on logout
+- updated error handling
+- dont show send bug report when not a real “error”
+- correctly read / save user notif settings
