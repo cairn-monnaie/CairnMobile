@@ -413,7 +413,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                             loader: resolve(__dirname, 'node_modules', 'sass-loader'),
                             options: {
                                 sourceMap: false,
-                                prependData: scssPrepend
+                                additionalData: scssPrepend
                             }
                         }
                     ]
@@ -438,7 +438,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                             loader: resolve(__dirname, 'node_modules', 'sass-loader'),
                             options: {
                                 sourceMap: false,
-                                prependData: scssPrepend
+                                additionalData: scssPrepend
                             }
                         }
                     ]
