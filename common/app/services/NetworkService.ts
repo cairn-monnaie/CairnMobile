@@ -12,26 +12,6 @@ export interface CacheOptions {
     diskSize: number;
     memorySize?: number;
 }
-// export type CachePolicy = 'noCache' | 'onlyCache' | 'ignoreCache';
-// export function setCache(options?: CacheOptions) {
-//     if (gVars.isIOS) {
-//         NSURLCache.sharedURLCache = NSURLCache.alloc().initWithMemoryCapacityDiskCapacityDirectoryURL(options.memorySize, options.diskSize, NSURL.URLWithString(options.diskLocation));
-//     } else {
-//         try {
-//             const httpCacheDir = new java.io.File(options.diskLocation);
-//             android.net.http.HttpResponseCache.install(httpCacheDir, options.diskSize);
-//         } catch (e) {
-//             console.log('error creating cache', e);
-//         }
-//     }
-// }
-// https.setCache({
-//     diskLocation: path.join(knownFolders.documents().path, 'httpcache'),
-//     diskSize: 10 * 1024 * 1024 // 10 MiB
-// });
-// function timeout(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
 type HTTPOptions = https.HttpsRequestOptions;
 
 export const NetworkConnectionStateEvent = 'NetworkConnectionStateEvent';
@@ -70,7 +50,6 @@ export function queryString(params, location) {
     }
 
     const locSplit = location.split(/[?&]/);
-    // _params[0] is the url
 
     const parts = [];
     for (i = 0, len = locSplit.length; i < len; i++) {
@@ -128,8 +107,6 @@ export class CustomError extends BaseError {
 
         this.silent = props.silent;
         delete props.silent;
-        // Error.captureStackTrace && Error.captureStackTrace(this, (this as any).constructor);
-        // console.log('creating custom error', props, typeof props, props instanceof Error, props instanceof CustomError);
 
         // we need to understand if we are duplicating or not
         const isError = props instanceof Error;
@@ -137,18 +114,11 @@ export class CustomError extends BaseError {
             // duplicating
             // use getOwnPropertyNames to get hidden Error props
             const keys = Object.getOwnPropertyNames(props);
-            // if (isError) {
-            //     keys = keys.concat(['fileName', 'stack', 'lineNumber', 'type']);
-            // }
-            // console.log('duplicating error', keys, props.stack);
             for (let index = 0; index < keys.length; index++) {
                 const k = keys[index];
                 if (!props[k] || typeof props[k] === 'function') continue;
-                // console.log('assigning', k, props[k], this[k]);
                 this[k] = props[k];
             }
-            // } else {
-            // console.log('creating new CustomError', props);
         }
         this.assignedLocalData = props;
 
@@ -180,12 +150,7 @@ export class CustomError extends BaseError {
         return JSON.stringify(this.toJSON());
     }
     toString() {
-        // console.log('customError to string', this.message, this.assignedLocalData, localize);
-        const result = evalTemplateString($t(this.message), Object.assign({ localize: $t }, this.assignedLocalData));
-        // console.log('customError to string2', result);
-        return result;
-        // return evalMessageInContext.call(Object.assign({localize}, this.assignedLocalData), localize(this.message))
-        // return this.message || this.stack;
+        return evalTemplateString($t(this.message), Object.assign({ localize: $t }, this.assignedLocalData));
     }
 
     getMessage() {}
@@ -220,6 +185,7 @@ export class NoNetworkError extends CustomError {
 export interface HTTPErrorProps {
     statusCode: number;
     responseHeaders?: Headers;
+    title?: string;
     message: string;
     requestParams: HTTPOptions;
 }
@@ -239,14 +205,34 @@ export class HTTPError extends CustomError {
         );
     }
 }
+export class MessageError extends CustomError {
+    constructor(props: { title?: string; message: string }) {
+        super(
+            Object.assign(
+                {
+                    message: 'error'
+                },
+                props
+            ),
+            'MessageError'
+        );
+    }
+}
+
+interface ReturnMessageFormat {
+    type: string;
+    key: string;
+    message: string;
+    args: any[];
+}
+
+function getMessageFromErrorMessageObject(obj: ReturnMessageFormat) {
+    obj = (obj as any).error || obj;
+    return $t(obj.key ? $t(obj.key, ...obj.args) : obj.message);
+}
 
 function jsonObjectToKeepOrderString(obj) {
-    // console.log('jsonObjectToKeepOrderString', typeof obj, obj);
-    // if (typeof obj === 'string') {
-    //     return obj;
-    // }
     if (Array.isArray(obj)) {
-        // console.log('jsonObjectToKeepOrderString array', obj);
         return obj
             .filter(v => v !== undefined && v !== null)
             .map(v => jsonObjectToKeepOrderString(v))
@@ -348,15 +334,10 @@ export class NetworkService extends Observable {
         headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${
             signature[1]
         }`;
-        // if (this.token) {
-        //     headers['Authorization'] = `Bearer ${this.token}`;
-        // }
         return headers;
     }
     buildAuthorization(requestParams: HttpRequestOptions) {
         const time = Date.now().toString();
-        // console.log('buildAuthorization', requestParams);
-
         let hmacString = time + (requestParams.method || 'GET') + requestParams.apiPath;
         if (!requestParams.headers || requestParams.headers['Content-Type'] !== 'multipart/form-data') {
             let bodyStr;
@@ -365,12 +346,10 @@ export class NetworkService extends Observable {
             } else if (typeof requestParams.content === 'string') {
                 bodyStr = jsonObjectToKeepOrderString(JSON.parse(requestParams.content).replace(/\s+/g, ''));
             }
-            // console.log('bodyStr', bodyStr);
             if (bodyStr) {
                 hmacString += md5(bodyStr);
             }
         }
-        // console.log(hmacString);
         return [time, hmacSHA256(hmacString, SHA_SECRET_KEY)];
     }
     request<T = any>(requestParams: Partial<HttpRequestOptions>, retry = 0) {
@@ -406,38 +385,37 @@ export class NetworkService extends Observable {
             ) as Promise<T>;
     }
 
-    // requestMultipart(requestParams: Partial<HttpRequestOptions>, retry = 0) {
-    //     this.log('requestMultipart', requestParams);
-    //     if (requestParams.apiPath) {
-    //         requestParams.url = this.authority + requestParams.apiPath;
-    //     }
-    //     const requestStartTime = Date.now();
-    //     return new TNSHttpFormData()
-    //         .post(requestParams.url, requestParams.multipartParams, {
-    //             headers: this.getRequestHeaders(requestParams as HttpRequestOptions)
-    //         })
-    //         .then(response => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry));
-    // }
-
     async handleRequestResponse(response: https.HttpsResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
-        // return Promise.resolve()
-        // .then(() => {
-        // this.log('handleRequestResponse1', statusCode, response.reason, response.headers);
-        let content = await response.content.toJSONAsync();
+        let content: {
+            data?: any;
+            errors: ReturnMessageFormat[];
+            messages: ReturnMessageFormat[];
+        } = await response.content.toJSONAsync();
         if (!content) {
             content = await response.content.toStringAsync();
         }
-        // this.log('handleRequestResponse2', content);
-        // const content = response['content'].toJSON() || response['content'].toString();
-        const isJSON = typeof content === 'object' || Array.isArray(content);
-        // this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isJSON, typeof content, content);
+        const isString = typeof content === 'string';
+        this.log(
+            'handleRequestResponse response',
+            statusCode,
+            response.reason,
+            response.headers,
+            isString,
+            typeof content,
+            content
+        );
         if (Math.round(statusCode / 100) !== 2) {
-            let jsonReturn;
-            if (isJSON) {
-                jsonReturn = content;
+            let jsonReturn: {
+                data?: any;
+                error?: string;
+                errors: ReturnMessageFormat[];
+                messages: ReturnMessageFormat[];
+            };
+            if (!isString) {
+                jsonReturn = content as any;
             } else {
-                const responseStr = content.replace('=>', ':');
+                const responseStr = ((content as any) as string).replace('=>', ':');
                 try {
                     jsonReturn = JSON.parse(responseStr);
                 } catch (err) {
@@ -457,43 +435,48 @@ export class NetworkService extends Observable {
                 if (Array.isArray(jsonReturn)) {
                     jsonReturn = jsonReturn[0];
                 }
+                const error = jsonReturn.errors && jsonReturn.errors[0];
+                const messageObj = jsonReturn.messages && jsonReturn.messages[0];
                 // we try to handle all cases where a refreshed token would suffice
                 if (
-                    (statusCode === 401 && (jsonReturn.error === 'invalid_grant' || jsonReturn.error === 'Invalid authentication')) ||
+                    (statusCode === 401 &&
+                        (jsonReturn.error === 'invalid_grant' || jsonReturn.error === 'Invalid authentication')) ||
                     (statusCode === 400 &&
-                        jsonReturn.error &&
-                        jsonReturn.error.message ===
+                        error.message ===
                             'Un problème technique est survenu. Notre service technique en a été informé et traitera le problème dans les plus brefs délais.')
                 ) {
                     return this.handleRequestRetry(requestParams, retry);
                 }
-                const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                let message = $t(
-                    (typeof error === 'string'
-                        ? error
-                        : error.error_description || error.form || error.message || error.error || error
-                    )
-                        .replace(/\s/g, '_')
-                        .toLowerCase()
-                );
-                if (error.exception && error.exception.length > 0) {
-                    message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
-                }
-                this.log('throwing http error', error.code || statusCode, message, requestParams.url);
+                // const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
+                const message = getMessageFromErrorMessageObject(error);
+                // if (error.exception && error.exception.length > 0) {
+                //     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
+                // }
+                this.log('throwing http error', statusCode, message, requestParams.url);
                 throw new HTTPError({
-                    statusCode: error.code || statusCode,
+                    statusCode,
                     responseHeaders: response.headers,
-                    message,
+                    title: messageObj ? message : undefined,
+                    message: messageObj ? getMessageFromErrorMessageObject(messageObj) : message,
                     requestParams
                 });
             }
         }
-        if (isJSON) {
-            return content;
+        if (!isString) {
+            const error = content.errors && content.errors[0];
+            if (error) {
+                const message = getMessageFromErrorMessageObject(error);
+                const messageObj = content.messages && content.messages[0];
+                throw new MessageError({
+                    title: messageObj ? message : undefined,
+                    message: messageObj ? getMessageFromErrorMessageObject(messageObj) : message
+                });
+            }
+            return content && content.data;
         }
         try {
             // we should never go there anymore
-            return JSON.parse(content);
+            return JSON.parse((content as any) as string);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
             return content;
