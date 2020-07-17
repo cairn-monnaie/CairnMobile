@@ -1,7 +1,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import { TextField } from 'nativescript-material-textfield';
 import TransferComponent from './TransferComponent';
-import { AnimationCurve } from 'tns-core-modules/ui/enums';
+import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { QrCodeTransferData } from '~/services/AuthService';
 import { QRCodeDataEvent, off as appOff, on as appOn } from './App';
 import { android as androidApp } from '@nativescript/core/application';

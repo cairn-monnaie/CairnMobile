@@ -2,7 +2,7 @@ import { prompt } from 'nativescript-material-dialogs';
 import { TextField } from 'nativescript-material-textfield';
 import { PropertyChangeData } from '@nativescript/core/data/observable';
 import { isAndroid } from '@nativescript/core/platform/platform';
-import { NavigatedData } from '@nativescript/core/ui/page/page';
+import { NavigatedData } from '@nativescript/core/ui/page';
 import { Component, Watch } from 'vue-property-decorator';
 import { actionBarHeight, screenHeightDips, statusBarHeight } from '../variables';
 import { ComponentIds } from './App';

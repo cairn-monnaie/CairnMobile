@@ -9,7 +9,7 @@ import { CartoMap } from 'nativescript-carto/ui';
 import { DefaultLatLonKeys, MapPosVector } from 'nativescript-carto/core';
 import { Polygon } from 'nativescript-carto/vectorelements/polygon';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Component, Prop } from 'vue-property-decorator';
 import { TWEEN } from 'nativescript-tween';
 import { GeoHandler, GeoLocation, UserLocationdEvent, UserLocationdEventData } from '~/handlers/GeoHandler';
