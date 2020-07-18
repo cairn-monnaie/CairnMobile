@@ -605,13 +605,18 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    async confirmPhone(validationUrl: string, activationCode: string) {
+    async confirmPhone(validationUrl: string, activationCode: string, save: boolean) {
+        const body = {
+            activationCode
+        };
+
+        if(! save){//cancel button has been click
+            body.cancel= "";
+        };
         return this.request<{ validation_url: string }>({
             apiPath: validationUrl,
             method: 'POST',
-            body: {
-                activationCode
-            }
+            body: body
         });
     }
 
@@ -820,8 +825,8 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/transaction/confirm/${operationId}.json`,
             method: 'POST',
             body: {
-                save: 'true',
-                confirmationCode: '1111'
+                save: 'true'
+                //confirmationCode: '1111'
                 // api_secret: sha(oprationId)
             }
         });

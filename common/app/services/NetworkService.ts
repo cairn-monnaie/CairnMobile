@@ -396,15 +396,15 @@ export class NetworkService extends Observable {
             content = await response.content.toStringAsync();
         }
         const isString = typeof content === 'string';
-        // this.log(
-        //     'handleRequestResponse response',
-        //     statusCode,
-        //     response.reason,
-        //     response.headers,
-        //     isString,
-        //     typeof content,
-        //     content
-        // );
+        //this.log(
+        //    'handleRequestResponse response',
+        //    statusCode,
+        //    response.reason,
+        //    response.headers,
+        //    isString,
+        //    typeof content,
+        //    content
+        //);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn: {
                 data?: any;
@@ -472,7 +472,11 @@ export class NetworkService extends Observable {
                     message: messageObj ? getMessageFromErrorMessageObject(messageObj) : message
                 });
             }
-            return content && content.data;
+            if(content.data){//our API returns content in "data" object field, but not your localization API
+                return content.data;
+            }
+            return content;
+            //return content && content.data;
         }
         try {
             // we should never go there anymore

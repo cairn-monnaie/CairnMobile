@@ -42,7 +42,7 @@
                         />
                     </GridLayout>
                     <SettingSwitch :title="$tc('push_notifications')" v-model="newproNotifSettings.appPushEnabled" />
-                    <SettingSwitch :title="$tc('mail_notifications')" v-model="newproNotifSettings.emailEnabled" />
+                    <SettingSwitch :title="$tc('webpush_notifications')" v-model="newproNotifSettings.webPushEnabled" />
                 </StackLayout>
             </StackLayout>
         </ScrollView>
