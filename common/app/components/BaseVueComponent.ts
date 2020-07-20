@@ -12,6 +12,8 @@ import { Prop } from 'vue-property-decorator';
 import { clog } from '~/utils/logging';
 import { accentColor, cairnFontFamily, darkColor, primaryColor } from '../variables';
 import { bind } from 'helpful-decorators';
+import InAppBrowser from 'nativescript-inappbrowser';
+import { openUrl } from '@nativescript/core/utils/utils';
 
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -110,5 +112,55 @@ export default class BaseVueComponent extends Vue {
 
     goBack() {
         this.$getAppComponent().goBack();
+    }
+    async openLink(url: string) {
+        try {
+            const available = await InAppBrowser.isAvailable();
+            if (available) {
+                const result = await InAppBrowser.open(url, {
+                    // iOS Properties
+                    dismissButtonStyle: 'close',
+                    preferredBarTintColor: primaryColor,
+                    preferredControlTintColor: 'white',
+                    readerMode: false,
+                    animated: true,
+                    // modalPresentationStyle: 'fullScreen',
+                    // modalTransitionStyle: 'partialCurl',
+                    // modalEnabled: true,
+                    enableBarCollapsing: false,
+                    // Android Properties
+                    showTitle: true,
+                    toolbarColor: primaryColor,
+                    secondaryToolbarColor: 'white',
+                    enableUrlBarHiding: true,
+                    enableDefaultShare: true,
+                    forceCloseOnRedirection: false
+                    // Specify full animation resource identifier(package:anim/name)
+                    // or only resource name(in case of animation bundled with app).
+                    // animations: {
+                    //     startEnter: 'slide_in_right',
+                    //     startExit: 'slide_out_left',
+                    //     endEnter: 'slide_in_left',
+                    //     endExit: 'slide_out_right'
+                    // },
+                    // headers: {
+                    //     'my-custom-header': 'my custom header value'
+                    // }
+                });
+                // alert({
+                //     title: 'Response',
+                //     message: JSON.stringify(result),
+                //     okButtonText: 'Ok'
+                // });
+            } else {
+                openUrl(url);
+            }
+        } catch (error) {
+            alert({
+                title: 'Error',
+                message: error.message,
+                okButtonText: 'Ok'
+            });
+        }
     }
 }

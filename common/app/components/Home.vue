@@ -46,7 +46,7 @@
             <PullToRefresh row="2" @refresh="refresh">
                 <CollectionView :items="accounts" rowHeight="180">
                     <v-template>
-                        <StackLayout>
+                        <!-- <StackLayout> -->
                             <GridLayout
                                 class="cardView"
                                 margin="20"
@@ -69,8 +69,9 @@
                                     color="gray"
                                     verticalAlignment="center"
                                 />
+                                <Button variant="flat" class="icon-btn" col="1" verticalAlignment="top" text="mdi-credit-card-plus-outline" :color="accentColor" :rippleColor="accentColor" @tap="creditAccount" :visibility="isPro ? 'visible' : 'hidden'"/>
                             </GridLayout>
-                        </StackLayout>
+                        <!-- </StackLayout> -->
                     </v-template>
                 </CollectionView>
             </PullToRefresh>

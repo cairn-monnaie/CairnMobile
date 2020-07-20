@@ -181,6 +181,7 @@ module.exports = (env, params = {}) => {
             CAIRN_TRANSFER_QRCODE_PARAMS: `"${CAIRN_TRANSFER_QRCODE_PARAMS}"`,
             CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: `"${CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM}"`,
             CAIRN_FULL_QRCODE_FORMAT: `"${`${CUSTOM_URL_SCHEME}://${CAIRN_TRANSFER_QRCODE}/${CAIRN_TRANSFER_QRCODE_PARAMS}`}"`,
+            CREDIT_URL: '"https://www.helloasso.com/associations/le-cairn-monnaie-locale-et-citoyenne/formulaires/3"',
             STORE_LINK: `"${
                 isAndroid
                     ? `https://play.google.com/store/apps/details?id=${package.nativescript.id}`
@@ -649,8 +650,9 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                 async: false,
                 useTypescriptIncrementalApi: true,
                 checkSyntacticErrors: true,
-                memoryLimit: 4096
-                // workers: 1
+                measureCompilationTime: true,
+                memoryLimit: 4096,
+                workers: 2
             })
         );
     }

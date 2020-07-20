@@ -12,6 +12,7 @@ import { showSnack } from 'nativescript-material-snackbar';
 import { formatAddress } from '~/helpers/formatter';
 import MapComponent from './MapComponent';
 import Profile from './Profile';
+import CreditAccount from './CreditAccount';
 
 @Component({
     components: {
@@ -26,6 +27,10 @@ export default class Home extends PageComponent {
     constructor() {
         super();
         // this.showMenuIcon = true;
+    }
+
+    get isPro() {
+        return this.$authService.isProUser();
     }
     mounted() {
         super.mounted();
@@ -180,5 +185,12 @@ export default class Home extends PageComponent {
                 editable: false
             }
         });
+    }
+    creditAccount() {
+        // this.openLink(CREDIT_URL);
+
+        this.navigateTo(CreditAccount);
+        // .then(r => {})
+        // .catch(this.showError);
     }
 }

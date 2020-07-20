@@ -21,6 +21,7 @@ import ListItem from '~/components/ListItem';
 import EditableListItem from '~/components/EditableListItem';
 import CairnPage from '~/components/CairnPage';
 import Pager from 'nativescript-pager/vue';
+// import CanvasLabelPlugin from 'nativescript-canvaslabel/vue';
 
 const Plugin = {
     install(Vue) {
@@ -40,6 +41,7 @@ const Plugin = {
         Vue.use(CartoPlugin);
         // Vue.use(FabPlugin);
         Vue.use(CollectionViewPlugin);
+        // Vue.use(CanvasLabelPlugin);
         Vue.use(Pager);
 
         Vue.registerElement('Button', () => require('nativescript-material-button').Button);
@@ -59,6 +61,7 @@ const Plugin = {
         enableIOSDTCoreText();
         Vue.registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('nativescript-barcodeview').BarcodeView);
+        Vue.registerElement('AWebView', () => require('nativescript-webview-plus').AWebView);
         // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
     }
 };

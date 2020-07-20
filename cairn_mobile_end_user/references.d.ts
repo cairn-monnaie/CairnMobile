@@ -28,6 +28,7 @@ declare const CAIRN_SMS_NUMBER: string;
 declare const PRIVACY_POLICY_URL: string;
 declare const TERMS_CONDITIONS_URL: string;
 declare const SUPPORT_URL: string;
+declare const CREDIT_URL: string;
 declare const GIT_URL: string;
 declare const STORE_LINK: string;
 declare const STORE_REVIEW_LINK: string;
