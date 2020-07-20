@@ -179,8 +179,10 @@ export default class Profile extends PageComponent {
             this.updateUserProfile = JSON.parse(JSON.stringify(this.updateUserProfile));
         }
     }
+
+
     async addPhoneNumber() {
-        try {
+        //try{
             const r = await prompt({
                 // title: localize('stop_session'),
                 title: this.$tc('add_phone'),
@@ -192,44 +194,69 @@ export default class Profile extends PageComponent {
                     keyboardType: 'phone'
                 }
             });
-            // .then(r => {
-            if (r && r.text && r.text.length > 0) {
+            if (r.result && r.text && r.text.length > 0) {
                 const phoneNumber = r.text;
-                const addResult = await this.$authService.addPhone(phoneNumber, this.userProfile.id);
-                // console.log('addResult', addResult);
-                const resultPConfirm = await prompt({
-                    // title: localize('stop_session'),
-                    message: this.$tc('enter_add_phone_confirmation', phoneNumber),
-                    okButtonText: this.$tc('confirm'),
-                    cancelButtonText: this.$tc('cancel'),
-                    textFieldProperties: {
-                        margin: 20,
-                        keyboardType: 'phone'
-                    }
-                });
-                if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
-                    // console.log('resultPConfirm', resultPConfirm.text);
-                    await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text);
-                    await this.$authService.getUserProfile();
-                    showSnack({
-                        message: this.$t('phone_added', phoneNumber)
-                    });
+
+                try{
+                    const addResult = await this.$authService.addPhone(phoneNumber, this.userProfile.id);
+                } catch (err) {
+                    this.showError(err);
+                    return;
                 }
-                // return r;
-                // } else {
-                // return Promise.reject();
+
+                //a valid result is either a valid confirmation code or "cancel button clicked"
+                let isValidConfirmResult = false;
+                while(! isValidConfirmResult){
+                    let resultPConfirm = await prompt({
+                        // title: localize('stop_session'),
+                        message: this.$tc('enter_add_phone_confirmation', phoneNumber),
+                        okButtonText: this.$tc('confirm'),
+                        cancelButtonText: this.$tc('cancel'),
+                        cancelable: false,
+                        textFieldProperties: {
+                            margin: 20,
+                            keyboardType: 'phone'
+                        }
+                    });
+
+                    if (resultPConfirm.result){//confirm button
+                        if(resultPConfirm.text && resultPConfirm.text.length > 0){
+                            try{
+                                const result = await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text, true);
+                                console.log('result', result);
+                                isValidConfirmResult = true;
+                                console.log('test 1', isValidConfirmResult);
+                                await this.$authService.getUserProfile();
+                                showSnack({
+                                    message: this.$t('phone_added', phoneNumber)
+                                }); 
+                            }catch(err){//TODO: if err key contains 'too_many_errors', break while loop
+                                if(err == 'too_many_errors_block'){
+                                    ;
+                                }else{
+                                    await alert({
+                                        title: "Attention",
+                                        message: this.$t(err),
+                                        okButtonText: "Compris"
+                                    });
+                                }
+                            }
+                        }
+                    }else{
+                        await this.$authService.confirmPhone(addResult.validation_url, '', false);
+                        isValidConfirmResult = true;
+                    }
+                }
+                
             }
-            // })
-            // .then(r => {
-
-            // })
-        } catch (err) {
-            this.showError(err);
-        } finally {
-            this.loading = false;
-        }
+        //} catch (err) {
+        //    this.showError(err);
+        //} finally {
+        //    this.loading = false;
+        //}
     }
-
+            
+            
     onTextChange(value: string, key: string) {
         this.log('onTextChange', key, value);
         this.updateUserProfile = this.updateUserProfile || {};
@@ -258,6 +285,7 @@ export default class Profile extends PageComponent {
         // }
         this.log(this.updateUserProfile);
     }
+
 
     chooseImage() {
         if (!this.isPro) {
