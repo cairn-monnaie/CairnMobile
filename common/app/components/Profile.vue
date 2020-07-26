@@ -69,6 +69,7 @@
                         <ListItem v-show="myProfile" leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" />
                         <ListItem v-for="phone in userProfile.phoneNumbers" :key="phone.id" leftIcon="mdi-phone" :title="phone.phoneNumber" :overText="$t('phone')" />
                         <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="$t('address')" />
+                        <ListItem v-if="!myProfile && isPro" leftIcon="mdi-bank" :title="userProfile.mainICC ? 'Oui' : 'Non'" :overText="$t('accepts_digital_payment')" />
                     </StackLayout>
                 </ScrollView>
             </PullToRefresh>
