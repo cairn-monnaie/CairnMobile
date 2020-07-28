@@ -38,7 +38,7 @@
                             color="white"
                         >
                             <Span fontSize="16" fontWeight="bold" :text="item.name + '\n'" />
-                            <Span :text="item.description + '\n' + formatAddress(item.address)" />
+                            <Span :text="item.excerpt + '\n' + formatAddress(item.address)" />
                         </Label>
                     </GridLayout>
                 </v-template>

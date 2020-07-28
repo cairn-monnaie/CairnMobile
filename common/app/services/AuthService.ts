@@ -94,6 +94,7 @@ export class User {
     name: string = null;
     creationDate: number = null; // timestamp
     address: Address = null;
+    excerpt: string = null;
     description: string = null;
     image: string = null;
     // identityDocument: {
