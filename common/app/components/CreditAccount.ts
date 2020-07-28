@@ -3,10 +3,11 @@ import PageComponent from '~/components/PageComponent';
 import SettingLabelIcon from '~/components/SettingLabelIcon';
 import { TextField } from 'nativescript-material-textfield';
 import { AWebView, EventNames, LoadEventData } from 'nativescript-webview-plus';
-import { AndroidApplication, android as androidApp, AndroidActivityBackPressedEventData } from '@nativescript/core/application';
+import { AndroidActivityBackPressedEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 import { mdiFontFamily } from '~/variables';
 const amountRegexp = /^\d*([,\.]\d{0,2})?$/;
-
+///https://www.helloasso.com/payment/confirmation?id=ZWVlZjRlMTctNzI0MS00NDY1LWI5YzAtMmU2MGNiMzZlZDQ2
+///https://www.helloasso.com/payment/paymentreceipt?organizationSlug=le-cairn-monnaie-locale-et-citoyenne&formType=DONATION&formSlug=3&orderId=15599331&hash=A029A3982882AB0885B37E37DE5675F01D649AC5
 @Component({
     components: {
         SettingLabelIcon

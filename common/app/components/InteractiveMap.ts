@@ -10,6 +10,9 @@ import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
 import BaseVueComponent from './BaseVueComponent';
 import { layout } from '@nativescript/core/utils/utils';
+import FilterCategories from './FilterCategories';
+
+let categories = null;
 
 @Component({
     components: {
@@ -19,7 +22,6 @@ import { layout } from '@nativescript/core/utils/utils';
     }
 })
 export default class InteractiveMap extends BaseVueComponent {
-    @Prop({ default: 1 }) opacity: number;
     _cartoMap: CartoMap;
     currentBounds: MapBounds;
     selectedItem: User = null;
@@ -28,6 +30,10 @@ export default class InteractiveMap extends BaseVueComponent {
     bottomSheetPercentage = 0;
     shownUsers: User[] = [];
     loading = false;
+    mapCategories = [];
+    mapFilterSlugs: string[] = [];
+
+    @Prop({ default: 1 }) opacity: number;
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
@@ -61,6 +67,13 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     mounted() {
         super.mounted();
+        this.mapCategories = categories;
+        this.mapFilterSlugs = [];
+        if (!this.mapCategories) {
+            this.$authService.categories().then(r => {
+                this.mapCategories = categories = r;
+            });
+        }
     }
     destroyed() {
         super.destroyed();
@@ -123,7 +136,7 @@ export default class InteractiveMap extends BaseVueComponent {
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
-            const user = this.shownUsers.find(u => u.id+'' === (featureData.id as any));
+            const user = this.shownUsers.find(u => u.id + '' === (featureData.id as any));
             if (user === this.selectedItem) {
                 return false;
             } else if (user) {
@@ -136,10 +149,10 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     @throttle(2000)
     refresh(mapBounds: MapBounds) {
-        // console.log('refresh', this._cartoMap.zoom, mapBounds);
+        // console.log('refresh', this._cartoMap.zoom, mapBounds, this.mapFilterSlugs);
         this.loading = true;
         this.$authService
-            .getUsersForMap(mapBounds)
+            .getUsersForMap(mapBounds, this.mapFilterSlugs)
             .then(r => {
                 // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
@@ -171,5 +184,21 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     askUserLocation() {
         return this.mapComp.askUserLocation();
+    }
+
+    selectCategories() {
+        if (this.mapCategories) {
+            this.$showBottomSheet(FilterCategories, {
+                closeCallback: () => {
+                    this.refresh(this.currentBounds);
+                },
+                ignoreTopSafeArea: true,
+                trackingScrollView: 'trackingScrollView',
+                props: {
+                    categories: this.mapCategories,
+                    filterSlugs: this.mapFilterSlugs
+                }
+            });
+        }
     }
 }

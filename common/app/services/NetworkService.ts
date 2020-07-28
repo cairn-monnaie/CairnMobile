@@ -396,7 +396,7 @@ export class NetworkService extends Observable {
             content = await response.content.toStringAsync();
         }
         const isString = typeof content === 'string';
-        //this.log(
+        // this.log(
         //    'handleRequestResponse response',
         //    statusCode,
         //    response.reason,
@@ -404,7 +404,7 @@ export class NetworkService extends Observable {
         //    isString,
         //    typeof content,
         //    content
-        //);
+        // );
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn: {
                 data?: any;
@@ -472,7 +472,8 @@ export class NetworkService extends Observable {
                     message: messageObj ? getMessageFromErrorMessageObject(messageObj) : message
                 });
             }
-            if(content.data){//our API returns content in "data" object field, but not your localization API
+            if (content.data) {
+                //our API returns content in "data" object field, but not your localization API
                 return content.data;
             }
             return content;

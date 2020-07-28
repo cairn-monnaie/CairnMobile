@@ -611,9 +611,10 @@ export default class AuthService extends NetworkService {
             activationCode
         };
 
-        if(! save){//cancel button has been click
-            body.cancel= "";
-        };
+        if (!save) {
+            //cancel button has been click
+            body.cancel = '';
+        }
         return this.request<{ validation_url: string }>({
             apiPath: validationUrl,
             method: 'POST',
@@ -736,6 +737,7 @@ export default class AuthService extends NetworkService {
         offset,
         query,
         mapBounds,
+        categories,
         roles,
         payment_context = true
     }: {
@@ -746,6 +748,7 @@ export default class AuthService extends NetworkService {
         query?: string;
         mapBounds?: MapBounds;
         roles?: string[];
+        categories?: string[];
         payment_context?: boolean;
     }) {
         let boundingBox = {
@@ -777,7 +780,8 @@ export default class AuthService extends NetworkService {
                 bounding_box: boundingBox,
                 name: query || '',
                 roles: roles || ['ROLE_PRO'],
-                payment_context
+                payment_context,
+                categories
             }
         });
         if (!Array.isArray(result)) {
@@ -808,9 +812,7 @@ export default class AuthService extends NetworkService {
             toAccount: user.email || user.mainICC,
             amount,
             executionDate: date,
-            // executionDate: dayjs().format('YYYY-MM-DD'),
             reason
-            // api_secret: sha(date)
         } as any;
         if (!!description) {
             body.description = description;
@@ -827,30 +829,13 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             body: {
                 save: 'true'
-                //confirmationCode: '1111'
-                // api_secret: sha(oprationId)
             }
         });
-        // .then(r => {
-        // we need to refresh accounts for he whole UI to update
         await this.getAccounts();
         return result;
-        // });
     }
-    async getUsersForMap(mapBounds: MapBounds) {
-        // console.log('getUserForMap', mapBounds);
-        return this.getUsers({ mapBounds, payment_context: false });
-        // .then(r =>
-        //     r.filter(u => {
-        //         // console.log('getUserForMap', 'filter', u.address);
-        //         if (!!u.address && !!u.address.latitude) {
-        //             const result = mapBounds.contains({ latitude: u.address.latitude, longitude: u.address.longitude });
-        //             // console.log('getUserForMap', 'contains', result);
-        //             return result;
-        //         }
-        //         return false;
-        //     })
-        // );
+    async getUsersForMap(mapBounds: MapBounds, categories: string[]) {
+        return this.getUsers({ mapBounds, payment_context: false, categories });
     }
     accountHistory: {
         [k: string]: Transaction[];
@@ -908,6 +893,12 @@ export default class AuthService extends NetworkService {
                 recipient: sender,
                 message
             }
+        });
+    }
+    async categories() {
+        return this.request({
+            apiPath: '/categories',
+            method: 'GET'
         });
     }
     async getToken(user: LoginParams) {
