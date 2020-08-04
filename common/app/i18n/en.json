@@ -154,5 +154,7 @@
   "non_sufficient_funds": "insufficient funds",
   "favorites": "favorites",
   "no_favorite": "no favorites",
-  "accepts_digital_payment": "accept digital payment"
+  "accepts_digital_payment": "accept digital payment",
+  "hint_userpicker": "Input a name,email or account number",
+  "unprecise_address": "Unprecise address"
 }
