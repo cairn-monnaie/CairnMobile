@@ -86,7 +86,7 @@ export default class BaseVueComponent extends Vue {
     }
     mounted() {}
     destroyed() {
-        this.log('destroyed');
+        // this.log('destroyed');
     }
 
     navigateTo(component: VueConstructor, options?: NavigationEntryVue, cb?: () => Page) {
