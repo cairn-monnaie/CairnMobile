@@ -609,7 +609,7 @@ export default class AuthService extends NetworkService {
     async confirmPhone(validationUrl: string, activationCode: string, save: boolean) {
         const body = {
             activationCode
-        };
+        } as any;
 
         if (!save) {
             //cancel button has been click
