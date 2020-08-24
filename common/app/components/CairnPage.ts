@@ -61,11 +61,11 @@ export default class CairnPage extends BaseVueComponent {
         super.destroyed();
     }
     mounted() {
+        this.log('mounted');
         if (this.nativeView && this.navigateUrl) {
             this.nativeView['navigateUrl'] = this.navigateUrl;
         }
         const page = this.page;
-        // this.log('mounted', this.nativeView, this.navigateUrl, !!page);
         if (page) {
             page.actionBarHidden = true;
             // if (gVars.isIOS) {

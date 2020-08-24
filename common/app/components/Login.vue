@@ -1,5 +1,5 @@
 <template>
-    <CairnPage @navigatedTo="onLoaded" actionBarHidden :actionBarHeight="logoViewHeight">
+    <CairnPage @navigatedTo="onNavigatedTo" actionBarHidden :actionBarHeight="logoViewHeight">
         <InteractiveMap />
         <StackLayout verticalAlignment="top">
             <Label
@@ -28,7 +28,7 @@
             text="mdi-information-outline"
             @tap="showAbout"
         />
-        <ScrollView v-show="showLogin" :opacity="showLoginAlpha" class="pageContent">
+        <ScrollView v-show="showLoginAlpha > 0" :opacity="showLoginAlpha" class="pageContent">
             <StackLayout>
                 <Label
                     :height="logoViewHeight"

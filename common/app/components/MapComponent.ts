@@ -130,10 +130,10 @@ export default class MapComponent extends BaseVueComponent {
         cartoMap.addLayer(this.rasterLayer);
 
         this.getOrCreateLocalVectorTileLayer();
-        this.ignoreStable = true;
+        // this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, perimeterGeoJSON);
 
-        // console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
+        console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
         // setTimeout(() => {
         // perms
         // .request('storage')
@@ -166,6 +166,7 @@ export default class MapComponent extends BaseVueComponent {
         this.$emit('mapMove', e);
     }
     onMapStable(e) {
+        this.log('onMapStable', this.ignoreStable);
         if (this.ignoreStable) {
             this.ignoreStable = false;
             return;

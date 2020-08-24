@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="hint_userpicker">"pick a user"</string>
   <string name="accepts_digital_payment">"accept digital payment"</string>
   <string name="no_favorite">"no favorites"</string>
   <string name="favorites">"favorites"</string>
@@ -146,6 +147,7 @@
   <string name="add">"add"</string>
   <string name="account_history">"account history"</string>
   <string name="account">"account"</string>
+  <string name="all">"all"</string>
   <string name="maintenance_state">"maintenance_state"</string>
   <string name="fos_user.email.already_used">"fos_user.email.already_used"</string>
   <string name="operation_already_processed">"operation_already_processed"</string>

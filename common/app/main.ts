@@ -11,8 +11,10 @@ import Vue from 'nativescript-vue';
 Vue.prototype.$crashReportService = crashReportService;
 // import * as trace from '@nativescript/core/trace';
 // trace.addCategories(trace.categories.ViewHierarchy);
+// trace.addCategories(trace.categories.VisualTreeEvents);
 // trace.addCategories(trace.categories.Navigation);
 // trace.addCategories(trace.categories.NativeLifecycle);
+// trace.addCategories(trace.categories.Transition);
 // trace.enable();
 
 import { init } from 'nativescript-push';

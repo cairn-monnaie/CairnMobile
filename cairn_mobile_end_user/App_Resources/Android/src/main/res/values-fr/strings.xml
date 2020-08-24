@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="hint_userpicker">"choisir un utilisateur"</string>
+  <string name="all">"toutes"</string>
   <string name="accepts_digital_payment">"accepte le paiement numérique"</string>
   <string name="maintenance_state">"Le serveur est en état de maintenance"</string>
   <string name="fos_user.email.already_used">"Email déjà utilisé"</string>

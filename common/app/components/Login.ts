@@ -41,8 +41,12 @@ export default class Login extends PageComponent {
     mounted() {
         super.mounted();
     }
-    onLoaded(args: NavigatedData) {
-        this.checkForm();
+    onNavigatedTo(args: NavigatedData) {
+        this.log('onNavigatedTo');
+        if (!args.isBackNavigation) {
+            this.checkForm();
+
+        }
         // if (!args.isBackNavigation) {
         //     setTimeout(this.animateLogoView, 300); // delay for now as the first run is "jumping"
         // }
@@ -56,7 +60,7 @@ export default class Login extends PageComponent {
                 .onComplete(resolve)
                 .onUpdate(object => {
                     this.showLoginAlpha = object.opacity;
-                    // Object.assign(view.style, object)
+        // Object.assign(view.style, object)
                 })
                 .start();
         })
@@ -75,6 +79,7 @@ export default class Login extends PageComponent {
         this.navigateTo(About);
     }
     showMap() {
+        console.log('showMap')
         // this.animateLogoViewOut();
         return new Promise(resolve => {
             new TWEEN.Tween({ opacity: this.showLoginAlpha })

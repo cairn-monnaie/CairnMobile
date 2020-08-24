@@ -1,5 +1,5 @@
 <template>
-    <CairnPage :title="$t('map')">
+    <CairnPage id="map" :title="$t('map')">
         <InteractiveMap/>
     </CairnPage>
 </template>

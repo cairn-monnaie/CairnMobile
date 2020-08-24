@@ -30,6 +30,10 @@ export default class MapBottomSheet extends BottomSheetBase {
 
     showProfile(item: User) {
         this.navigateTo(Profile, {
+            transition:{
+                name:'slide', 
+                // duration:2000
+            },
             props: {
                 propUserProfile: item,
                 editable: false

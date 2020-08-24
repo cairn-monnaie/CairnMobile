@@ -66,6 +66,7 @@ export default class InteractiveMap extends BaseVueComponent {
         return this.mapComp.cartoMap;
     }
     mounted() {
+        this.log('mounted');
         super.mounted();
         this.mapCategories = categories;
         this.mapFilterSlugs = [];
@@ -76,18 +77,21 @@ export default class InteractiveMap extends BaseVueComponent {
         }
     }
     destroyed() {
+        this.log('destroyed');
         super.destroyed();
     }
     // map: Mapbox;
     onMapReady(e) {
-        // this.log('onMapReady');
+        this.log('onMapReady');
         const map = (this._cartoMap = e.object as CartoMap);
         const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
+        console.log('onMapReady2');
         map.setFocusPos(pos, 0);
         map.setZoom(zoom, 0);
     }
     onLayoutChange() {
+        this.log('onLayoutChange', !!this._cartoMap, !!this.currentBounds);
         // sometimes onMapStable is not called at first so we need this
         // to make sure the map refreshes
         if (!this.currentBounds && this._cartoMap) {
@@ -114,6 +118,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
 
     onMapStable(e) {
+        this.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
         this.saveSettings();
         const map = e.object as CartoMap;
         const currentBounds = new MapBounds(
@@ -170,6 +175,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     selectItem(item: User) {
         this.selectedItem = item;
+        console.log('setFocusPos3');
         this.cartoMap.setFocusPos(item.address, 200);
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         this.bottomSheetHolder.peek();
