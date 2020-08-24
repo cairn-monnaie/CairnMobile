@@ -25,6 +25,8 @@ import BitmapFactory from 'nativescript-bitmap-factory';
 import { generateBarCode } from 'nativescript-barcodeview';
 import { showSnack } from 'nativescript-material-snackbar';
 import { sprintf } from 'sprintf-js';
+import { formatAddress } from '~/helpers/formatter';
+import { setText } from 'nativescript-clipboard';
 
 const ImageComp = Vue.component('ImageComp', {
     props: ['src'],
@@ -360,5 +362,20 @@ export default class Profile extends PageComponent {
         //     this.image = this.userProfile.image;
         //     this.showingQRCode = !this.showingQRCode;
         // }
+    }
+
+    async copyText(text) {
+        try {
+            await setText(text);
+            showSnack({
+                message: this.$t('copied_clipboard')
+            });
+        } catch (err) {
+            this.showError(err);
+            return;
+        }
+    }
+    async copyTextUserAdress() {
+        await this.copyText(formatAddress(this.userProfile.address));
     }
 }

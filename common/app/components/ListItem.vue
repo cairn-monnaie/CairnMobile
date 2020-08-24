@@ -5,6 +5,7 @@
         :rippleColor="themeColor"
         backgroundColor="white"
         @tap="$emit('tap', $event)"
+        @longPress="$emit('longPress', $event)"
     >
         <Label
             v-show="!!leftIcon"

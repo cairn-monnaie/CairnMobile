@@ -42,6 +42,7 @@
         "nativescript-barcodeview": "3.4.8",
         "nativescript-bitmap-factory": "1.8.1",
         "nativescript-carto": "1.3.1",
+        "nativescript-clipboard": "^1.2.0",
         "nativescript-collectionview": "2.0.36",
         "nativescript-email": "1.6.0",
         "nativescript-extendedinfo": "1.0.11",

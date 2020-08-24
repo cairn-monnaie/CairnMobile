@@ -24,7 +24,7 @@
                 :isUserInteractionEnabled="editing"
             />
             <NSImg row="0" rowSpan="4" margin="20" v-show="!!image" :src="image" @tap="chooseImage" :isUserInteractionEnabled="editing" stretch="aspectFit" noCache/>
-            <Label row="2" rowSpan="2" fontSize="20" fontWeight="500" horizontalAlignment="center" verticalAlignment="center" color="white" :text="userProfile.name" v-show="!image" />
+            <Label row="2" rowSpan="2" fontSize="20" fontWeight="500" horizontalAlignment="center" verticalAlignment="center" color="white" :text="userProfile.name" v-show="!image" @longPress="copyText(userProfile.name)"/>
         </GridLayout>
         <GridLayout columns="*,50,*" rows="*,50,*">
             <PullToRefresh @refresh="refresh" colSpan="3" rowSpan="3">
@@ -65,10 +65,10 @@
                     <StackLayout v-else>
                         <MapComponent v-if="!myProfile && userProfile.address && userProfile.address.latitude" ref="mapComp" @mapReady="onMapReady" rowSpan="4" :zoom="16" width="100%" height="150" />
 
-                        <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" />
+                        <ListItem v-if="userProfile.description" leftIcon="mdi-android-messages" :title="userProfile.description" :overText="$t('description')" @longPress="copyText(userProfile.description)"/>
                         <ListItem v-show="myProfile" leftIcon="mdi-email" :title="userProfile.email" :overText="$t('email')" />
                         <ListItem v-for="phone in userProfile.phoneNumbers" :key="phone.id" leftIcon="mdi-phone" :title="phone.phoneNumber" :overText="$t('phone')" />
-                        <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="$t('address')" />
+                        <ListItem v-if="userProfile.address" leftIcon="mdi-map-marker" :title="userProfile.address | address" :overText="$t('address')" @longPress="copyTextUserAdress()"/>
                         <ListItem v-if="!myProfile && isPro" leftIcon="mdi-bank" :title="userProfile.mainICC ? 'Oui' : 'Non'" :overText="$t('accepts_digital_payment')" />
                     </StackLayout>
                 </ScrollView>
