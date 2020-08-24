@@ -209,5 +209,6 @@
   "accepts_digital_payment": "accepte le paiement numérique(indicatif)",
   "hint_userpicker": "Saisir un nom, email ou n° de compte",
   "unprecise_address": "Adresse imprécise",
-  "all": "toutes"
+  "all": "toutes",
+  "copied_clipboard": "copié dans le presse-papier"
 }
