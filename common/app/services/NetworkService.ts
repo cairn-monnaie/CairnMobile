@@ -399,7 +399,6 @@ export class NetworkService extends Observable {
         }
         if (!content) {
             content = await response.content.toStringAsync();
-            console.error('string data', content)
         }
         const isString = typeof content === 'string';
         // this.log(
@@ -490,7 +489,7 @@ export class NetworkService extends Observable {
             return JSON.parse((content as any) as string);
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
-            return content;
+            return undefined;
         }
         // })
         // .catch(err => {
