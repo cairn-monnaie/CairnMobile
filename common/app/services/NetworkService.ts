@@ -391,9 +391,15 @@ export class NetworkService extends Observable {
             data?: any;
             errors: ReturnMessageFormat[];
             messages: ReturnMessageFormat[];
-        } = await response.content.toJSONAsync();
+        };
+        try {
+            content = await response.content.toJSONAsync();
+        } catch (err) {
+            console.error('error parsing json response', err)
+        }
         if (!content) {
             content = await response.content.toStringAsync();
+            console.error('string data', content)
         }
         const isString = typeof content === 'string';
         // this.log(

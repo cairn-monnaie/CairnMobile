@@ -205,9 +205,9 @@ export default class Login extends PageComponent {
         prompt({
             autoFocus: true,
             title: this.$tc('forgot_password'),
-            message: this.$tc('fill_email'),
+            message: this.$tc('fill_email_or_username'),
             inputType: 'email',
-            defaultText: '',
+            defaultText: this.user.username || '',
             okButtonText: this.$tu('ok'),
             cancelButtonText: this.$tu('cancel')
         }).then(data => {

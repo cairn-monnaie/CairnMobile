@@ -210,5 +210,6 @@
   "hint_userpicker": "Saisir un nom, email ou n° de compte",
   "unprecise_address": "Adresse imprécise",
   "all": "toutes",
-  "copied_clipboard": "copié dans le presse-papier"
+  "copied_clipboard": "copié dans le presse-papier",
+  "fill_email_or_username": "remplir e-mail ou nom d'utilisateur"
 }

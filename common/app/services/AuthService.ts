@@ -1031,9 +1031,9 @@ export default class AuthService extends NetworkService {
         });
     }
 
-    async resetPassword(email) {
+    async resetPassword(emailOrUsername) {
         return this.request({
-            url: `https://test.cairn-monnaie.com/resetting/check-email?username=${email}`,
+            url: `https://test.cairn-monnaie.com/resetting/check-email?username=${emailOrUsername}`,
             method: 'GET'
         });
     }
