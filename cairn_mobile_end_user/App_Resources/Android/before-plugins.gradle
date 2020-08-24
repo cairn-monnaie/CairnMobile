@@ -1,6 +1,8 @@
 ext {
     androidxVersion = "1.1.0"
     androidXAppCompat = "1.2.0"
+    androidXAppCompatVersion = "1.2.0"
+    androidXVersion = "1.2.0"
     androidXMaterial = "1.2.0-alpha02"
     firebaseMessagingVersion = "20.1.0"
     okHttpVersion = "3.12.10"
