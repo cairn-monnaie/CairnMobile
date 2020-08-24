@@ -652,7 +652,7 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                 checkSyntacticErrors: true,
                 measureCompilationTime: true,
                 memoryLimit: 4096,
-                workers: 2
+                // workers: 2
             })
         );
     }
