@@ -1,0 +1,2 @@
+*Bug fixes*
+- possible null map pos?
