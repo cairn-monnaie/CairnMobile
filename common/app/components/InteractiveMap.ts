@@ -77,18 +77,17 @@ export default class InteractiveMap extends BaseVueComponent {
         }
     }
     destroyed() {
-        this.log('destroyed');
         super.destroyed();
     }
     // map: Mapbox;
     onMapReady(e) {
-        this.log('onMapReady');
         const map = (this._cartoMap = e.object as CartoMap);
-        const pos = JSON.parse(appSettings.getString('mapFocusPos', '{"latitude":45.2002,"longitude":5.7222}')) as MapPos;
+        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"latitude":45.2002,"longitude":5.7222}') as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
-        console.log('onMapReady2');
-        map.setFocusPos(pos, 0);
-        map.setZoom(zoom, 0);
+        if (pos) {
+            map.setFocusPos(pos, 0);
+            map.setZoom(zoom, 0);
+        }
     }
     onLayoutChange() {
         this.log('onLayoutChange', !!this._cartoMap, !!this.currentBounds);
