@@ -69,7 +69,7 @@
                                     color="gray"
                                     verticalAlignment="center"
                                 />
-                                <Button variant="flat" class="icon-btn" col="1" verticalAlignment="top" text="mdi-credit-card-plus-outline" :color="accentColor" :rippleColor="accentColor" @tap="creditAccount" :visibility="isPro ? 'visible' : 'hidden'"/>
+                                <Button variant="flat" class="icon-btn" col="1" verticalAlignment="top" text="mdi-credit-card-plus-outline" :color="accentColor" :rippleColor="accentColor" @tap="creditAccount" :visibility="isPro ? 'hidden' : 'visible'"/>
                             </GridLayout>
                         </StackLayout>
                     </v-template>

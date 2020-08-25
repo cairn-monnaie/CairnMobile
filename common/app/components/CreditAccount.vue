@@ -30,7 +30,7 @@
                 </StackLayout>
                 <Image src="https://www.helloasso.com/Areas/HelloAsso/img/helloasso-logo.png" width="20%" paddingTop="10" />
                 <Button width="80%" :isEnabled="canStartTransfer" @tap="goToHelloAsso">
-                    <Span :text="$tu('next')" backgroundColor="transparent"></Span>
+                    <Span :text="$t('next')" backgroundColor="transparent"></Span>
                     <Span :fontFamily="mdiFontFamily" backgroundColor="transparent" text="mdi-chevron-right" />
                 </Button>
             </StackLayout>

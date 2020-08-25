@@ -158,5 +158,7 @@
   "hint_userpicker": "Input a name,email or account number",
   "unprecise_address": "Unprecise address",
   "copied_clipboard": "copied to clipboard",
-  "fill_email_or_username": "fill e-mail or username"
+  "fill_email_or_username": "fill e-mail or username",
+  "credit_account": "credit your account",
+  "next": "next"
 }

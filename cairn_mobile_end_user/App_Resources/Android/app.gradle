@@ -1,9 +1,9 @@
 android { 
-    compileSdkVersion 28
+    compileSdkVersion 29
   defaultConfig {  
     multiDexEnabled true
     minSdkVersion 18
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 52
     versionName "1.0.0"
     ndk {

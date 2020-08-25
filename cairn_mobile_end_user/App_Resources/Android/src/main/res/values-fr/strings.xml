@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="credit_account">"créditer votre compte"</string>
   <string name="fill_email_or_username">"remplir e-mail ou nom d\'utilisateur"</string>
   <string name="copied_clipboard">"copié dans le presse-papier"</string>
   <string name="all">"toutes"</string>

@@ -96,7 +96,6 @@ export default class CreditAccount extends PageComponent {
         this.log(e.eventName, e.navigationType, e.url);
         if (e.url === CREDIT_URL) {
             const profile = this.$authService.userProfile;
-            console.log('setting fields');
             const isPro = this.$authService.isProUser(profile);
             // const isPro = false;
             (e.object as AWebView).executeJavaScript(

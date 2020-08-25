@@ -211,5 +211,7 @@
   "unprecise_address": "Adresse imprécise",
   "all": "toutes",
   "copied_clipboard": "copié dans le presse-papier",
-  "fill_email_or_username": "remplir e-mail ou nom d'utilisateur"
+  "fill_email_or_username": "remplir e-mail ou nom d'utilisateur",
+  "credit_account": "créditer votre compte",
+  "next": "suivant"
 }

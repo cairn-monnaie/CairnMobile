@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="credit_account">"credit your account"</string>
   <string name="fill_email_or_username">"fill e-mail or username"</string>
   <string name="copied_clipboard">"copied to clipboard"</string>
   <string name="unprecise_address">"Unprecise address"</string>
