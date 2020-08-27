@@ -313,7 +313,8 @@ $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Mat
                                     // when these options are enabled
                                     collapse_vars: platform !== 'android',
                                     sequences: platform !== 'android',
-                                    passes: 2
+                                    passes: 2,
+                                    drop_console: production && adhoc !== true
                                 },
                                 keep_fnames: true
                             }
