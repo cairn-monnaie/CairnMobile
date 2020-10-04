@@ -526,7 +526,6 @@ export default class AuthService extends NetworkService {
         body.baseNotifications = body.baseNotifications.sort(function(a, b) {
             return a.id - b.id;
         });
-        body.baseNotifications.forEach(n => delete n.id);
         const result = await this.request<UserSettings>({
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'POST',
