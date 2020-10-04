@@ -2,7 +2,7 @@
 /// <reference path="./node_modules/tns-platform-declarations/android-26.d.ts" />
 /// <reference path="./vue.shim.d.ts" />
 
-// import { SmsListener } from '~/receivers/SMSReceiver';
+// import { SmsListener } from '~/common/receivers/SMSReceiver';
 
 declare module '*.scss';
 

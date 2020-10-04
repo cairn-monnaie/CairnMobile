@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import AuthService from '~/services/AuthService';
+import AuthService from '~/common/services/AuthService';
 // import { ToastDuration, ToastPosition } from 'nativescript-toasty';
 import { Client } from 'nativescript-bugsnag';
-import App from '~/components/App';
-import * as Sentry from 'nativescript-akylas-sentry';
+import App from '~/common/components/App';
+import * as Sentry from '@nativescript-community/sentry';
 
 declare module 'vue/types/vue' {
     // 3. Declare augmentation for Vue

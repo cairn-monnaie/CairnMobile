@@ -1,0 +1,363 @@
+@import './variables';
+@import './animations';
+// @import '~nativescript-vue-fab/style';
+
+.lato {
+    font-family: $lato-fontFamily;
+}
+.mdi {
+    font-family: $mdi-fontFamily;
+}
+.cairn {
+    font-family: $cairn-fontFamily;
+}
+
+htmllabel,
+label {
+    color: $text-color;
+}
+
+// label,
+// htmllabel,
+// button,
+// tabview,
+// tabviewitem,
+// mdbutton {
+//     @extend .lato;
+// }
+
+mdactivityindicator {
+    color: $primary-color;
+}
+
+mdripple {
+    ripple-color: $primary-color;
+}
+// switch[checked='true'] {
+//     // background-color: $accent-color;
+//     color: $accent-color;
+// }
+.cairn-page {
+    background-color: $dark-color;
+    status-bar-style: dark;
+    status-bar-color: $primary-color;
+}
+
+.pageContent {
+    // z-index:1;
+    // padding-top:$actionbar-height;
+    background-color: #f5f7fa;
+}
+
+label,
+htmllabel {
+    // font-family: 'SF UI Text, Roboto';
+    white-space: normal;
+}
+
+button {
+    color: $primary-color;
+    background-color: transparent;
+    // padding: 4;
+    // margin:4;
+    // ripple-color: $primary-color;
+}
+mdbutton {
+    border-radius: 2;
+}
+mdbutton[variant='contained'] {
+    color: white;
+    background-color: $accent-color;
+    ripple-color: $accent-color-dark;
+}
+
+mdtextfield[variant=filled] {
+    background-color: rgba(0, 0, 0, 0.032);
+}
+
+mdtextfield {
+    highlight-color: $accent-color;
+    hint-color: gray;
+    // placeholder-color: $accent-color;
+}
+
+.fab-item-title {
+    background-color: #444;
+    vertical-text-alignment: middle;
+    border-radius: 6;
+    color: white;
+}
+
+.fab-button,
+.fab-item {
+    background-color: $accent-color;
+    ripple-color: $accent-color-dark;
+}
+.fab-icon,
+.fab-item {
+    color: white;
+}
+.fab-backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.cardView {
+    border-radius: 2;
+    elevation: 2;
+    dynamic-elevation-offset: 5;
+    ripple-color: $primary-color;
+    background-color: white;
+}
+.flatCardView {
+    border-radius: 2;
+    elevation: 1;
+    background-color: white;
+}
+
+.themedBack {
+    background-color: $primary-color;
+}
+
+.buttonwhite {
+    background-color: white;
+    color: $accent-color;
+    ripple-color: $accent-color-dark;
+}
+
+.buttonthemed {
+    background-color: $accent-color;
+    color: white;
+    ripple-color: $accent-color-dark;
+}
+
+.floating-btn {
+    @extend .mdi, .buttonwhite;
+    // color: $primary-color;
+    font-size: 24;
+    padding: 0;
+    margin: 0;
+    width: 54;
+    height: 54;
+    border-radius: 27;
+}
+
+// .botom-nav {
+//     tab-active-color: green;
+//     tab-inactive-color: black;
+//     tab-background-color: blue;
+// }
+
+// tabview {
+//     selected-tab-text-color: white;
+//     tab-background-color: $dark-color;
+//     android-selected-tab-highlight-color: $primary-color;
+// }
+
+.actionBar {
+    elevation: 1;
+    background-color: $primary-color;
+}
+
+.actionBarButton {
+    @extend .mdi;
+    width: $actionbar-height;
+    height: $actionbar-height;
+    margin: 0;
+    padding: 0;
+    font-size: 32;
+    border-radius: $actionbar-height/2;
+    color: #ffffff;
+    ripple-color: rgba(255, 255, 255, 0.533);
+}
+
+.actionBarTitle {
+    vertical-alignment: center;
+    font-size: 20;
+    font-weight: bold;
+    color: white;
+}
+
+.actionBarSubtitle {
+    font-size: 13;
+    color: rgba(255, 255, 255, 0.533);
+}
+
+.icon-btn {
+    @extend .mdi;
+    background-color: transparent;
+    ripple-color: white;
+    color: white;
+    width: $navigation-bar-height;
+    height: $navigation-bar-height;
+    border-radius: $navigation-bar-height / 2;
+    font-size: 24;
+    margin: 0;
+    padding: 0;
+}
+.icon-themed-btn {
+    @extend .icon-btn;
+    ripple-color: $accent-color;
+    color: $accent-color;
+}
+
+.big-icon-themed-btn {
+    @extend .icon-themed-btn;
+    width: 70;
+    height: 70;
+    border-radius: 35;
+    font-size: 40;
+}
+.label-icon-btn {
+    @extend .mdi;
+    color: $text-color;
+    font-size: 24;
+    margin: 0;
+    padding: 0 4 0 4;
+}
+.menu {
+    height: 48;
+    background-color: #ffffff;
+    border-radius: 4;
+    margin: 4 9 4 9;
+    ripple-color: $primary-color;
+}
+
+.menuIcon {
+    @extend .mdi;
+    color: $icon-color;
+    text-align: center;
+    font-size: 24;
+}
+.menuIcon[active='true'] {
+    color: $primary-color;
+}
+
+.menuText {
+    color: #000000;
+    paddingleft: 20;
+    font-size: 14;
+}
+
+.menu[active='true'] {
+    font-weight: 500;
+    background-color: $primary-color-semi;
+}
+.menuText[active='true'] {
+    color: $primary-color;
+}
+
+.menuInfos {
+    padding-left: 25;
+    padding-right: 25;
+}
+.menuInfos htmllabel {
+    font-size: 14;
+    horizontal-alignment: left;
+}
+
+.menuButtons {
+    padding-left: 12;
+    padding-right: 12;
+    // margin-bottom: 10;
+}
+
+.menu-btn {
+    @extend .icon-btn;
+    border-radius: 22;
+    ripple-color: $primary-color;
+    color: $primary-color;
+}
+.menuButtons mdbutton {
+    @extend .menu-btn;
+}
+
+.historyIcon {
+    @extend .mdi;
+    // background-color:#eee;
+    text-align: center;
+    margin-left: 10;
+    margin-right: 10;
+    font-size: 30;
+    width: 40;
+    height: 40;
+    // border-radius: 20;
+}
+
+.balance {
+    color: $accent-color;
+    font-size: 30;
+}
+.currency {
+    @extend .cairn;
+    font-size: 30;
+    vertical-align: top;
+}
+
+.listRightIcon {
+    @extend .mdi;
+    color: $accent-color;
+    font-size: 26;
+    font-weight: bold;
+    vertical-alignment: center;
+    text-align: center;
+    padding-bottom: -5;
+}
+
+.bottom-gradient {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.667), #000000);
+}
+
+.listitem {
+    border-bottom-width: 1;
+    border-bottom-color: #efefef;
+    padding: 16;
+    ripple-color: $primary-color;
+    .title-holder {
+        vertical-alignment: center;
+    }
+    .title {
+        font-size: 17;
+        // white-space: normal;
+        // vertical-text-alignment: top;
+        max-lines: 1;
+        line-break: end;
+    }
+    .subtitle {
+        font-size: 14;
+        color: #676767;
+        // vertical-text-alignment: top;
+        max-lines: 2;
+        line-break: end;
+    }
+}
+
+.amount-tf {
+    placeholder-color: white;
+    floating-color: white;
+    stroke-color: white;
+    text-align: right;
+    color: white;
+    font-size: 30;
+    digits: '0123456789,.';
+}
+
+
+.list_section_title {
+    font-size: 22;
+    font-weight: bold;
+    text-align: center;
+    padding:5;
+}
+.list_section_subtitle {
+    font-size: 17;
+    font-weight: bold;
+    text-align: center;
+    padding:5;
+}
+.list_section_subsubtitle {
+    font-size: 15;
+    // font-weight: bold;
+    text-align: center;
+    color:#676767;
+    padding-bottom:5;
+}

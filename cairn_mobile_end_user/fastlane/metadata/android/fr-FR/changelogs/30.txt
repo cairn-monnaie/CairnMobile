@@ -7,7 +7,7 @@
 - *android:* for now class font family not read
 - *android:* multiple bug fixes
 - remove reason, make description more discret
-- switched to nativescript-l
+- switched to @nativescript-community/l
 - filter pros in get users
 - better colors for textfields
 - account history better layout

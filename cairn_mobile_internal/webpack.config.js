@@ -21,13 +21,13 @@ const mergeOptions = require('merge-options');
 // temporary hack to support v-model using ns-vue-template-compiler
 // See https://github.com/nativescript-vue/nativescript-vue/issues/371
 const NsVueTemplateCompiler = require('nativescript-vue-template-compiler');
-NsVueTemplateCompiler.registerElement('MDTextField', () => require('nativescript-material-textfield').TextField, {
+NsVueTemplateCompiler.registerElement('MDTextField', () => require('@nativescript-community/ui-material-textfield').TextField, {
     model: {
         prop: 'text',
         event: 'textChange'
     }
 });
-NsVueTemplateCompiler.registerElement('MDSlider', () => require('nativescript-material-slider').Slider, {
+NsVueTemplateCompiler.registerElement('MDSlider', () => require('@nativescript-community/ui-material-slider').Slider, {
     model: {
         prop: 'value',
         event: 'valueChange'
