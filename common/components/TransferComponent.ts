@@ -8,7 +8,12 @@ import { formatCurrency } from '../helpers/formatter';
 import { AccountInfo, Benificiary, QrCodeTransferData, User } from '../services/AuthService';
 import { NoNetworkError } from '../services/NetworkService';
 import BaseVueComponent from './BaseVueComponent';
+import TransferConfirmation from './TransferConfirmation';
 import UserPicker from './UserPicker';
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const amountRegexp = /^\d*([,\.]\d{0,2})?$/;
 
@@ -44,7 +49,7 @@ export default class TransferComponent extends BaseVueComponent {
     }
 
     get canSendSMS() {
-        return this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0;
+        return  (this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0);
     }
 
     @Watch('reason')
@@ -63,8 +68,7 @@ export default class TransferComponent extends BaseVueComponent {
         } else {
             this.amountError = null;
         }
-        this.canStartTransfer =
-            this.amount > 0 && !!this.account && this.account.balance > 0 && !!this.recipient && !this.reasonError;
+        this.canStartTransfer = this.amount > 0 && !!this.account && (FAKE_ALL ||this.account.balance > 0) && !!this.recipient && !this.reasonError;
     }
     onInputChange(e: PropertyChangeData, value) {
         this.checkForm();
@@ -159,17 +163,14 @@ export default class TransferComponent extends BaseVueComponent {
         if (response === 'success') {
             this.close();
             this.$authService.getAccounts();
-            this.showTransactionDone(this.amount, this.recipient);
+            this.showTransactionDone(this.account, this.recipient, this.amount, this.reason, this.description);
         }
     }
 
     get accountBalanceText() {
         if (this.account) {
             const color = this.account.balance === 0 ? 'red' : this.accentColor;
-            return `<span style="color:${color};">${formatCurrency(
-                this.account.balance,
-                true
-            )}</span><span style="color:${color}; font-family:${this.cairnFontFamily};">cairn-currency</span>`;
+            return `<span style="color:${color};">${formatCurrency(this.account.balance, true)}</span><span style="color:${color}; font-family:${this.cairnFontFamily};">cairn-currency</span>`;
         }
     }
     async submit() {
@@ -184,46 +185,43 @@ export default class TransferComponent extends BaseVueComponent {
             if (!canSubmit) {
                 throw new Error(this.$t('wrong_security'));
             }
-            this.showLoading(this.$t('loading'));
-            const r = await this.$authService.createTransaction(
-                this.account,
-                this.recipient,
-                this.amount,
-                this.reason,
-                this.description
-            );
-            // createTransaction returns a response with 3 fields :
-            // * confirmation_url
-            // * operation object
-            // * secure_validation, which value is either false if no threshold has been reached (amount, number of daily payments), or true otherwise. If a threshold is reached, validation with PIN code is required
-            let code;
-            // if (r.secure_validation) {
-            //     // let isValidSecurity = false;
-            //     // let nbTries = 0;
-            //     // while (!isValidSecurity) {
-            //     //     nbTries++;
-            //     //     if (nbTries > 3) {
-            //     //         throw new Error(this.$t('too_many_attemps'));
-            //     //     } else {
-            //     const resultPConfirm = await prompt({
-            //         // title: localize('stop_session'),
-            //         message: this.$tc('enter_confirmation_code_sms'),
-            //         okButtonText: this.$tc('confirm'),
-            //         cancelButtonText: this.$tc('cancel'),
-            //         textFieldProperties: {
-            //             keyboardType: 'number'
-            //         }
-            //     });
-            //     if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
-            //         code = resultPConfirm.text;
-            //     }
-            //     // }
-            //     // }
-            // }
-            await this.$authService.confirmOperation(r.operation.id, code);
-            this.hideLoading();
+            if (!FAKE_ALL) {
+                this.showLoading(this.$t('loading'));
+                const r = await this.$authService.createTransaction(this.account, this.recipient, this.amount, this.reason, this.description);
+                // createTransaction returns a response with 3 fields :
+                // * confirmation_url
+                // * operation object
+                // * secure_validation, which value is either false if no threshold has been reached (amount, number of daily payments), or true otherwise. If a threshold is reached, validation with PIN code is required
+                let code;
+                // if (r.secure_validation) {
+                //     // let isValidSecurity = false;
+                //     // let nbTries = 0;
+                //     // while (!isValidSecurity) {
+                //     //     nbTries++;
+                //     //     if (nbTries > 3) {
+                //     //         throw new Error(this.$t('too_many_attemps'));
+                //     //     } else {
+                //     const resultPConfirm = await prompt({
+                //         // title: localize('stop_session'),
+                //         message: this.$tc('enter_confirmation_code_sms'),
+                //         okButtonText: this.$tc('confirm'),
+                //         cancelButtonText: this.$tc('cancel'),
+                //         textFieldProperties: {
+                //             keyboardType: 'number'
+                //         }
+                //     });
+                //     if (resultPConfirm && resultPConfirm.text && resultPConfirm.text.length > 0) {
+                //         code = resultPConfirm.text;
+                //     }
+                //     // }
+                //     // }
+                // }
+                await this.$authService.confirmOperation(r.operation.id, code);
+                this.hideLoading();
+            }
+            
+            this.showTransactionDone(this.account, this.recipient, this.amount, this.reason, this.description);
             this.close();
-            this.showTransactionDone(this.amount, this.recipient);
             new Vibrate().vibrate(500);
         } catch (err) {
             this.showError(err);
@@ -231,10 +229,21 @@ export default class TransferComponent extends BaseVueComponent {
             this.hideLoading();
         }
     }
-    showTransactionDone(amount, recipient) {
-        showSnack({
-            message: this.$t('transaction_done', amount, recipient)
-        });
+    async showTransactionDone(account: AccountInfo, recipient: User, amount: number, reason: string, description: string) {
+        await timeout(700);
+        this.$showModal(TransferConfirmation, {props:{
+            account,
+            recipient,
+            amount,
+            reason, description
+        }, fullscreen: false,
+        animated:false,
+        ios: global.isIOS?{
+          presentationStyle: UIModalPresentationStyle.OverFullScreen
+        }:undefined})
+        // showSnack({
+        //     message: this.$t('transaction_done', amount, recipient)
+        // });
     }
     close() {
         this.$emit('close');

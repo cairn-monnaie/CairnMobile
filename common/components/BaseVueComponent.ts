@@ -1,10 +1,6 @@
 import { ActivityIndicator } from '@nativescript-community/ui-material-activityindicator';
 import { AlertDialog } from '@nativescript-community/ui-material-dialogs';
-import { View } from '@nativescript/core/ui/core/view';
-import { Frame } from '@nativescript/core/ui/frame';
-import { Label } from '@nativescript/core/ui/label';
-import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
-import { Page } from '@nativescript/core/ui/page';
+import { Frame, Label, Page, StackLayout, View } from '@nativescript/core';
 import { openUrl } from '@nativescript/core/utils/utils';
 import { bind } from 'helpful-decorators';
 // import InAppBrowser from 'nativescript-inappbrowser';
@@ -36,9 +32,9 @@ export default class BaseVueComponent extends Vue {
     public cairnFontFamily = cairnFontFamily;
     needsRoundedWatchesHandle = false;
     debug = false;
-    getRef(key: string) {
+    getRef<T = View>(key: string) {
         if (this.$refs[key]) {
-            return this.$refs[key].nativeView as View;
+            return (this.$refs[key] as NativeScriptVue<T>).nativeView;
         }
     }
     noop() {}

@@ -160,5 +160,6 @@
   "copied_clipboard": "copied to clipboard",
   "fill_email_or_username": "fill e-mail or username",
   "credit_account": "credit your account",
-  "next": "next"
+  "next": "next",
+  "transaction_successful": "you successfuly transfered %1$s to %2$s"
 }

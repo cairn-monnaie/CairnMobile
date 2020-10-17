@@ -13,7 +13,6 @@
                 :backgroundColor="themeColor"
             />
             <Button
-                v-show="!showLogin"
                 verticalAlignment="top"
                 :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize"
                 @tap="hideMap"
@@ -28,7 +27,7 @@
             text="mdi-information-outline"
             @tap="showAbout"
         />
-        <ScrollView v-show="showLoginAlpha > 0" :opacity="showLoginAlpha" class="pageContent">
+        <ScrollView ref="scrollView" opacity="0" class="pageContent">
             <StackLayout>
                 <Label
                     :height="logoViewHeight"

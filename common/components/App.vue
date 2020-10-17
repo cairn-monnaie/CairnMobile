@@ -1,11 +1,11 @@
 <template>
     <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" :statusBarColor="themeColor" ios:barStyle="light" :navigationBarColor="themeColor" @loaded="onLoaded">
-        <MultiDrawer ref="drawer" :options="drawerOptions">
-            <GridLayout slot="left" rows="auto,*,auto" height="100%" backgroundColor="white">
+        <Drawer ref="drawer" :options="drawerOptions">
+            <GridLayout ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
                     <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
                     <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
-                    <NSImg :src="userProfile.image" v-show="!!userProfile.image" noCache/>
+                    <NSImg :src="userProfile.image" v-show="!!userProfile.image" noCache />
                     <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />
                 </GridLayout>
@@ -18,19 +18,19 @@
                     </StackLayout>
                 </ScrollView>
                 <GridLayout columns="*,auto" row="2" width="100%" class="menuInfos menuButtons">
-                    <Label :text="'App version: ' + (appVersion || '')" padding="10 0 10 0" verticalTextAlignment="center"/>
+                    <Label :text="'App version: ' + (appVersion || '')" padding="10 0 10 0" verticalTextAlignment="center" />
                     <!-- <Button variant="flat" text="mdi-email" @tap="onTap('sendFeedback')" /> -->
                     <Button col="1" variant="flat" v-if="$crashReportService.sentryEnabled" text="mdi-bug" @tap="onTap('sendBugReport')" />
                 </GridLayout>
             </GridLayout>
             <!-- <GridLayout> -->
-            <Frame ref="innerFrame" id="innerFrame">
+            <Frame ~mainContent ref="innerFrame" id="innerFrame">
                 <Home v-if="loggedInOnStart" />
                 <Login v-else />
             </Frame>
             <!-- <Label :text="$t('no_network_desc')"  verticalAlignment="bottom" textAlignment="center" color="white" backgroundColor="red" padding="10"/> -->
             <!-- </GridLayout> -->
-        </MultiDrawer>
+        </Drawer>
     </Page>
 </template>
 

@@ -34,7 +34,7 @@ export default class PasscodeWindow extends PageComponent {
         } else {
             this.state = State.PasswordQuery;
         }
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             androidApp.on(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
         }
         this.title = this.creation ? this.$t('password_creation') : this.$t('enter_password');
@@ -42,7 +42,7 @@ export default class PasscodeWindow extends PageComponent {
     }
     destroyed() {
         super.destroyed();
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             androidApp.off(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
         }
     }

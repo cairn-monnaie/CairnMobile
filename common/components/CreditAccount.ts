@@ -37,14 +37,14 @@ export default class CreditAccount extends PageComponent {
     }
     mounted() {
         super.mounted();
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             androidApp.on(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
         }
     }
 
     destroyed() {
         super.destroyed();
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             androidApp.off(AndroidApplication.activityBackPressedEvent, this.onAndroidBackButton);
         }
     }
@@ -54,7 +54,7 @@ export default class CreditAccount extends PageComponent {
     onAmountTFLoaded(e) {
         const textField = e.object as TextField;
 
-        if (gVars.isIOS) {
+        if (global.isIOS) {
             textField.nativeTextViewProtected.keyboardType = 8;
         }
         textField.requestFocus();

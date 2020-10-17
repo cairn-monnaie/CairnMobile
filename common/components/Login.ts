@@ -20,9 +20,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: getString('last.login', PRODUCTION ? '' : 'claire_dode'),
+        username: getString('last.login', PRODUCTION ? '' : 'mguillon'),
         email: '',
-        password: PRODUCTION ? '' : '@@bbccdd',
+        password: PRODUCTION ? '' : ':;3q#3;A55h52/6Up56!',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
@@ -41,7 +41,6 @@ export default class Login extends PageComponent {
         super.mounted();
     }
     onNavigatedTo(args: NavigatedData) {
-        this.log('onNavigatedTo');
         if (!args.isBackNavigation) {
             this.checkForm();
 
@@ -53,16 +52,21 @@ export default class Login extends PageComponent {
     hideMap() {
         this.showLogin = true;
         // this.animateLogoView();
-        return new Promise(resolve => {
-            new TWEEN.Tween({ opacity: this.showLoginAlpha })
-                .to({ opacity: 1 }, 300)
-                .onComplete(resolve)
-                .onUpdate(object => {
-                    this.showLoginAlpha = object.opacity;
-        // Object.assign(view.style, object)
-                })
-                .start(0);
-        })
+        // return new Promise(resolve => {
+            this.getRef('scrollView').animate({
+                opacity:1,
+                duration:300
+            })
+        //     new TWEEN.Tween({ opacity: this.showLoginAlpha })
+        //         .to({ opacity: 1 }, 300)
+        //         .onComplete(resolve)
+        //         .onUpdate(object => {
+        //             this.showLoginAlpha = object.opacity;
+        //             // console.log('showLoginAlpha', object.opacity);
+        //             // Object.assign(view.style, object)
+        //         })
+        //         .start(0);
+        // })
             .then(() => {
                 if (this.user && this.user.username) {
                     if (this.user && this.user.username && this.user.username.length > 0 && this.user.password.length === 0) {
@@ -78,17 +82,20 @@ export default class Login extends PageComponent {
         this.navigateTo(About);
     }
     showMap() {
-        console.log('showMap')
         // this.animateLogoViewOut();
-        return new Promise(resolve => {
-            new TWEEN.Tween({ opacity: this.showLoginAlpha })
-                .to({ opacity: 0 }, 300)
-                .onComplete(resolve)
-                .onUpdate(object => {
-                    this.showLoginAlpha = object.opacity;
-                })
-                .start(0);
+        this.getRef('scrollView').animate({
+            opacity:0,
+            duration:300
         })
+        // return new Promise(resolve => {
+        //     new TWEEN.Tween({ opacity: this.showLoginAlpha })
+        //         .to({ opacity: 0 }, 300)
+        //         .onComplete(resolve)
+        //         .onUpdate(object => {
+        //             this.showLoginAlpha = object.opacity;
+        //         })
+        //         .start(0);
+        // })
             .then(() => (this.showLogin = false))
             .catch(this.showError);
     }

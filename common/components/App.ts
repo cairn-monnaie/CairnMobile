@@ -1,10 +1,11 @@
+import { AppURL, handleOpenURL } from '@nativescript-community/appurl';
 import * as EInfo from '@nativescript-community/extendedinfo';
 import * as perms from '@nativescript-community/perms';
 import { Message, registerForPushNotifications } from '@nativescript-community/push';
 import { confirm, login } from '@nativescript-community/ui-material-dialogs';
 import { showSnack } from '@nativescript-community/ui-material-snackbar';
 import { TextField } from '@nativescript-community/ui-material-textfield';
-import { Frame, View } from '@nativescript/core';
+import { CSSUtils, Device, Frame, GridLayout, Observable, Page, Screen, StackLayout, View } from '@nativescript/core';
 import {
     android as androidApp, AndroidActivityResultEventData,
     AndroidApplication,
@@ -18,15 +19,9 @@ import {
     resumeEvent,
     suspendEvent
 } from '@nativescript/core/application';
-import { CSSUtils } from '@nativescript/core/css/system-classes';
-import { Observable } from '@nativescript/core/data/observable';
-import { Device, Screen } from '@nativescript/core/platform';
-import { GridLayout } from '@nativescript/core/ui/layouts/grid-layout';
-import { StackLayout } from '@nativescript/core/ui/layouts/stack-layout';
-import { Page } from '@nativescript/core/ui/page';
 import { ad } from '@nativescript/core/utils/utils';
-import { AppURL, handleOpenURL } from '@nativescript-community/appurl';
 import { compose } from '@nativescript/email';
+import {Drawer} from '@nativescript-community/ui-drawer';
 import { Vibrate } from 'nativescript-vibrate';
 import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
@@ -45,7 +40,6 @@ import Floating from './Floating';
 import Home from './Home';
 import Login from './Login';
 import Map from './Map';
-import MultiDrawer from './MultiDrawer';
 import Profile from './Profile';
 import Settings from './Settings';
 import TransferWindow from './TransferWindow';
@@ -56,21 +50,21 @@ export const on = observable.on.bind(observable);
 export const off = observable.off.bind(observable);
 
 
-let drawerInstance: MultiDrawer;
+let drawerInstance: Drawer;
 export function getDrawerInstance() {
     return drawerInstance;
 }
-export function setDrawerInstance(instance: MultiDrawer) {
+export function setDrawerInstance(instance: Drawer) {
     drawerInstance = instance;
 }
 
 function base64Encode(value) {
-    if (gVars.isIOS) {
+    if (global.isIOS) {
         const text = NSString.stringWithString(value);
         const data = text.dataUsingEncoding(NSUTF8StringEncoding);
         return data.base64EncodedStringWithOptions(0);
     }
-    if (gVars.isAndroid) {
+    if (global.isAndroid) {
         const text = new java.lang.String(value);
         const data = text.getBytes('UTF-8');
         return android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
@@ -80,7 +74,7 @@ export interface AppRefs extends BaseVueComponentRefs {
     [key: string]: any;
     innerFrame: NativeScriptVue<Frame>;
     menu: NativeScriptVue<StackLayout>;
-    drawer: MultiDrawer;
+    drawer: Drawer;
 }
 
 export enum ComponentIds {
@@ -106,7 +100,6 @@ const mailRegexp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}
         Home,
         Login,
         Profile,
-        MultiDrawer,
         AppFrame
     }
 })
@@ -189,7 +182,7 @@ export default class App extends BaseVueComponent {
     public appVersion: string;
     public userProfile: UserProfile = null;
     get drawer() {
-        return this.$refs.drawer && this.$refs.drawer;
+        return this.getRef<Drawer>('drawer');
     }
     get innerFrame() {
         return this.$refs.innerFrame && this.$refs.innerFrame.nativeView;
@@ -259,7 +252,7 @@ export default class App extends BaseVueComponent {
                 showNotificationsWhenInForeground: true
             });
             console.log('Registered for push', result);
-            if (gVars.isAndroid) {
+            if (global.isAndroid) {
                 if (android.os.Build.VERSION.SDK_INT >= 26) {
                     const color = android.graphics.Color.parseColor(primaryColor);
                     const context = androidApp.context;
@@ -314,7 +307,7 @@ export default class App extends BaseVueComponent {
         authService.off(LoggedinEvent, this.onLoggedIn, this);
         authService.off(LoggedoutEvent, this.onLoggedOut, this);
 
-        if (gVars.isAndroid && gVars.internalApp) {
+        if (global.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.akylas.cairnmobile.SMS_RECEIVED');
             if (this.mMessageReceiver) {
                 androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(
@@ -339,7 +332,7 @@ export default class App extends BaseVueComponent {
         this.innerFrame.on(Page.navigatingToEvent, this.onPageNavigation, this);
 
         // this.networkConnected = this.$authService.connected;
-        if (gVars.isAndroid && gVars.internalApp) {
+        if (global.isAndroid && gVars.internalApp) {
             perms
                 .request('receiveSms')
                 .then(() => {
@@ -360,7 +353,7 @@ export default class App extends BaseVueComponent {
         // this.page.actionBarHidden = true;
         setDrawerInstance(this.drawer);
 
-        // if (gVars.isIOS && app.ios.window.safeAreaInsets) {
+        // if (global.isIOS && app.ios.window.safeAreaInsets) {
         //     const bottomSafeArea: number = app.ios.window.safeAreaInsets.bottom;
         //     if (bottomSafeArea > 0) {
         //         app.addCss(`
@@ -404,7 +397,7 @@ export default class App extends BaseVueComponent {
             return;
         }
         this.appPaused = false;
-        // if (gVars.isAndroid) {
+        // if (global.isAndroid) {
         //     androidApp.foregroundActivity.paused = false;
         // }
         if (this.$securityService.autoLockEnabled) {
@@ -424,7 +417,7 @@ export default class App extends BaseVueComponent {
             return;
         }
         this.appPaused = true;
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             const intent = androidApp.foregroundActivity.getIntent();
             console.log('android app paused', intent && intent.getData() && intent.getData().toString());
             // androidApp.foregroundActivity.paused = true;
@@ -713,7 +706,7 @@ export default class App extends BaseVueComponent {
         });
     }
     async showOverlayComponent(data) {
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             const activity = this.nativeView._context;
             if (!android.provider.Settings.canDrawOverlays(activity)) {
                 await this.requestPermission(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -767,7 +760,7 @@ export default class App extends BaseVueComponent {
     }
 
     requestPermission(permission) {
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             const activity = androidApp.foregroundActivity || androidApp.startActivity;
             return new Promise((resolve, reject) => {
                 if (android.provider.Settings.canDrawOverlays(activity)) {
@@ -790,7 +783,7 @@ export default class App extends BaseVueComponent {
     }
 
     isVisisble() {
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             const activity = androidApp.startActivity;
             return (
                 activity &&
@@ -816,7 +809,7 @@ export default class App extends BaseVueComponent {
                     return;
                 }
                 const data = parsed.data;
-                if (gVars.isAndroid) {
+                if (global.isAndroid) {
                     const visible = this.isVisisble();
                     console.log('android transfer data', data, visible);
                     if (!visible) {
@@ -856,7 +849,7 @@ export default class App extends BaseVueComponent {
         this.log('Got the following appURL', appURL, args);
         // if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
 
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             const activity = androidApp.startActivity;
             const visible =
                 activity &&

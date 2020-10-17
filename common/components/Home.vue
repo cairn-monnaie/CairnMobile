@@ -1,5 +1,6 @@
 <template>
-    <CairnPage id="home"
+    <CairnPage
+        id="home"
         @navigatedTo="onNavigatedTo"
         showMenuIcon
         @loaded="onLoaded"
@@ -11,32 +12,12 @@
         @actionTap="openTransferWindow"
     >
         <GridLayout rows="auto,auto,*">
-            <Label
-                verticalTextAlignment="top"
-                class="list_section_subtitle"
-                color="white"
-                :text="$t('discover_your_pros')"
-                :backgroundColor="themeColor"
-            />
-            <Pager row="1" :items="users" height="30%" :backgroundColor="themeColor" showIndicator>
+            <Label verticalTextAlignment="top" class="list_section_subtitle" color="white" :text="$t('discover_your_pros')" :backgroundColor="themeColor" />
+            <Pager row="1" :items="users" height="30%" :backgroundColor="themeColor" showIndicator indicator="worm">
                 <v-template>
                     <GridLayout rows="*" columns="*" @tap="showProfile(item)">
-                        <!-- <MapComponent v-show="item.address && item.address.latitude" rowSpan="4" opacity="0.5" /> -->
-                        <NSImg
-                            stretch="aspectFit"
-                            :src="item.image || DEFAULT_IMAGE_URL"
-                            width="100%"
-                            height="100%"
-                            backgroundColor="#E86A45"
-                        />
-                        <Label
-                            textAlignment="left"
-                            verticalAlignment="bottom"
-                            class="bottom-gradient"
-                            padding="10 10 30 10"
-                            fontSize="14"
-                            color="white"
-                        >
+                        <NSImg stretch="aspectFit" :src="item.image || DEFAULT_IMAGE_URL" width="100%" height="100%" backgroundColor="#E86A45" />
+                        <Label textAlignment="left" verticalAlignment="bottom" class="bottom-gradient" padding="10 10 30 10" fontSize="14" color="white">
                             <Span fontSize="16" fontWeight="bold" :text="item.name + '\n'" />
                             <Span :text="item.excerpt + '\n' + formatAddress(item.address)" />
                         </Label>
@@ -47,29 +28,24 @@
                 <CollectionView :items="accounts" rowHeight="180">
                     <v-template>
                         <StackLayout>
-                            <GridLayout
-                                class="cardView"
-                                margin="20"
-                                padding="10"
-                                columns="*, auto"
-                                rows="auto, *"
-                                @tap="onItemTap(item)"
-                            >
+                            <GridLayout class="cardView" margin="20" padding="10" columns="*, auto" rows="auto, *" @tap="onItemTap(item)">
                                 <Label row="0" :text="item.name | capitalize" fontWeight="bold" fontSize="18" />
-                                <Label row="1" class="balance" paddingTop="20" :color="item.balance === 0 ? 'red':accentColor">
+                                <Label row="1" class="balance" paddingTop="20" :color="item.balance === 0 ? 'red' : accentColor">
                                     <Span :text="item.balance | currency(true)" />
                                     <Span :fontFamily="cairnFontFamily" text="cairn-currency" />
                                 </Label>
-                                <Label
+                                <Label col="1" rowSpan="2" class="mdi" text="mdi-chevron-right" fontSize="30" color="gray" verticalAlignment="center" />
+                                <Button
+                                    variant="text"
+                                    class="icon-btn"
                                     col="1"
-                                    rowSpan="2"
-                                    class="mdi"
-                                    text="mdi-chevron-right"
-                                    fontSize="30"
-                                    color="gray"
-                                    verticalAlignment="center"
+                                    verticalAlignment="top"
+                                    text="mdi-credit-card-plus-outline"
+                                    :color="accentColor"
+                                    :rippleColor="accentColor"
+                                    @tap="creditAccount"
+                                    :visibility="isPro ? 'hidden' : 'visible'"
                                 />
-                                <Button variant="flat" class="icon-btn" col="1" verticalAlignment="top" text="mdi-credit-card-plus-outline" :color="accentColor" :rippleColor="accentColor" @tap="creditAccount" :visibility="isPro ? 'hidden' : 'visible'"/>
                             </GridLayout>
                         </StackLayout>
                     </v-template>
@@ -81,7 +57,7 @@
             </Fab> -->
         </GridLayout>
         <StackLayout slot="bottomActionBarRightButtons" verticalAlignment="center" orientation="horizontal">
-            <Button variant="flat" class="icon-btn" text="mdi-qrcode-scan" @tap="scanQRCode" />
+            <Button variant="text" class="icon-btn" text="mdi-qrcode-scan" @tap="scanQRCode" />
         </StackLayout>
     </CairnPage>
 </template>

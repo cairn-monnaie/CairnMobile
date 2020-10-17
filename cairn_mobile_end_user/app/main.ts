@@ -5,7 +5,6 @@ crashReportService.start();
 import Vue from 'nativescript-vue';
 Vue.prototype.$crashReportService = crashReportService;
 
-
 // import * as trace from '@nativescript/core/trace';
 // trace.addCategories(trace.categories.ViewHierarchy);
 // trace.addCategories(trace.categories.VisualTreeEvents);
@@ -25,7 +24,6 @@ Vue.use(MixinsPlugin);
 import ViewsPlugin from '~/common/vue.views';
 Vue.use(ViewsPlugin);
 
-
 import FiltersPlugin from '~/common/vue.filters';
 Vue.use(FiltersPlugin);
 
@@ -39,7 +37,6 @@ function throwVueError(err) {
     crashReportService.showError(err);
 }
 
-
 Vue.config.errorHandler = (e, vm, info) => {
     if (e) {
         console.log('[Vue]', `[${info}]`, e);
@@ -52,8 +49,8 @@ Vue.config.warnHandler = function(msg, vm, trace) {
 };
 
 import { accentColor, primaryColor } from '~/common/variables';
-import {  themer } from '@nativescript-community/ui-material-core';
-if (gVars.isIOS) {
+import { themer } from '@nativescript-community/ui-material-core';
+if (global.isIOS) {
     themer.setPrimaryColor(accentColor);
     themer.setAccentColor(primaryColor);
 }

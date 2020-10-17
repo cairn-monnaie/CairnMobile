@@ -26,7 +26,7 @@ export default class BarCodeBottomSheet extends BaseVueComponent {
         //         name: splitedString[2]
         //     });
         // } else {
-        //     if (gVars.isIOS) {
+        //     if (global.isIOS) {
         //         showSnack({
         //             view: this.$refs.cameraView.nativeView,
         //             message: this.$t('wrong_scancode')

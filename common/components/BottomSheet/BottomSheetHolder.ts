@@ -1,13 +1,13 @@
 import { GestureHandlerStateEvent, GestureHandlerTouchEvent, GestureState, GestureStateEventData, GestureTouchEventData, HandlerType, Manager, PanGestureHandler } from '@nativescript-community/gesturehandler';
-import { View } from '@nativescript/core/ui/core/view';
+import { View } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';
 import { Component, Prop } from 'vue-property-decorator';
 import BaseVueComponent from '../BaseVueComponent';
 import BottomSheet, { NATIVE_GESTURE_TAG } from './BottomSheetBase';
 import { TWEEN } from '@nativescript-community/tween';
-import { navigationBarHeight } from '~/common/variables';
+import { navigationBarHeight, statusBarHeight } from '~/common/variables';
 
-const OPEN_DURATION = 100;
+const OPEN_DURATION = 200;
 const CLOSE_DURATION = 200;
 
 export const PAN_GESTURE_TAG = 1;
@@ -57,8 +57,8 @@ export default class BottomSheetHolder extends BaseVueComponent {
     mCurrentViewHeight = 0;
     set currentViewHeight(value) {
         value = Math.round(value);
+        // console.log('currentViewHeight', this.translationMaxOffset, this.mCurrentViewHeight, value, this.bottomDecale);
         if (this.bottomSheet) {
-            // console.log('currentViewHeight', this.translationMaxOffset, this.mCurrentViewHeight, value);
             this.bottomSheet.scrollEnabled = this.mCurrentViewHeight === value;
         }
         this.mCurrentViewHeight = value;
@@ -81,10 +81,10 @@ export default class BottomSheetHolder extends BaseVueComponent {
         default: () => [50]
     })
     peekerSteps;
-    // @Prop({
-    //     default: 0
-    // })
-    bottomDecale = 0;
+    @Prop({
+        default: statusBarHeight
+    })
+    bottomDecale:number;
     // @Prop()
     // shouldPan: Function;
     @Prop({
@@ -120,7 +120,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
             shouldCancelWhenOutside: false,
             activeOffsetY: 5,
             failOffsetY: -5,
-            simultaneousHandlers: gVars.isIOS ? [NATIVE_GESTURE_TAG] : undefined
+            simultaneousHandlers: global.isIOS ? [NATIVE_GESTURE_TAG] : undefined
         });
         gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
         gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
@@ -147,9 +147,9 @@ export default class BottomSheetHolder extends BaseVueComponent {
     }
     onLayoutChange() {
         const viewHeight = Math.round(layout.toDeviceIndependentPixels(this.nativeView.getMeasuredHeight()));
-        if (gVars.isIOS) {
-            this.bottomDecale = navigationBarHeight;
-        }
+        // if (global.isIOS) {
+        //     this.bottomDecale = navigationBarHeight;
+        // }
         // this.log('onLayoutChange', viewHeight, this.viewHeight, this.currentViewHeight, this.translationMaxOffset, this.bottomDecale);
         if (this.mCurrentViewHeight === 0) {
             this.viewHeight = viewHeight + this.bottomDecale ;
@@ -238,24 +238,31 @@ export default class BottomSheetHolder extends BaseVueComponent {
     scrollSheetToPosition(position, duration = OPEN_DURATION) {
         const viewTop = this.mCurrentViewHeight - this.viewHeight;
 
-        if (position > 0) {
-            position += this.bottomDecale;
-        }
-
+        // if (position > 0) {
+        //     position += this.bottomDecale;
+        // }
+        // console.log('scrollSheetToPosition', position)
         this.currentStep = this.peekerSteps.indexOf(position);
         // this.log('scrollSheetToPosition', position, this.currentViewHeight, this.viewHeight);
+        // this.getRef('scrollingView').animate( {
+        //     translate:{
+        //         x:0,
+        //         y: -position + this.viewHeight
+        //     },
+        //     duration
+            
+        // })
         return new Promise(resolve => {
-            // this.log('scrollSheetToPosition2', position, viewTop);
             new TWEEN.Tween({ value: viewTop })
                 .to({ value: -position }, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(obj => {
                     this.currentViewHeight = this.viewHeight + obj.value;
-                    // this.log('onUpdate', this.viewHeight, obj.value);
+                    // this.log('onUpdate', this.currentViewHeight, this.viewHeight, obj.value);
                 })
                 .onComplete(resolve)
                 .onStop(resolve)
-                .start();
+                .start(0);
             if (position !== 0) {
                 this.opened = true;
                 this.$emit('open');
@@ -283,6 +290,6 @@ export default class BottomSheetHolder extends BaseVueComponent {
         if (!this.opened) {
             return Promise.resolve();
         }
-        this.scrollSheetToPosition(0, CLOSE_DURATION);
+        return this.scrollSheetToPosition(0, CLOSE_DURATION);
     }
 }

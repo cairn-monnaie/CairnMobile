@@ -7,12 +7,14 @@ installBottomSheets();
 import { install as installGestures } from '@nativescript-community/gesturehandler';
 installGestures();
 import { Label as HTMLLabel, enableIOSDTCoreText } from '@nativescript-community/ui-label'; // require first to get Font res loading override
+// enableIOSDTCoreText();
 
 import ActivityIndicatorPlugin from '@nativescript-community/ui-material-activityindicator/vue';
 import BottomSheetPlugin from '@nativescript-community/ui-material-bottomsheet/vue';
 import CartoPlugin from '@nativescript-community/ui-carto/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import ImagePlugin from '@nativescript-community/ui-image/vue';
+import DrawerPlugin from '@nativescript-community/ui-drawer/vue';
 import CActionBar from '~/common/components/CActionBar';
 import ListItem from '~/common/components/ListItem';
 import EditableListItem from '~/common/components/EditableListItem';
@@ -30,6 +32,7 @@ const Plugin = {
         Vue.use(BottomSheetPlugin);
         Vue.use(CartoPlugin);
         Vue.use(CollectionViewPlugin);
+        Vue.use(DrawerPlugin);
         // Vue.use(CanvasLabelPlugin)
         Vue.use(Pager);
 
@@ -47,7 +50,6 @@ const Plugin = {
             }
         });
         Vue.registerElement('Label', () => HTMLLabel);
-        enableIOSDTCoreText();
         Vue.registerElement('PullToRefresh', () => require('@akylas/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('@nativescript-community/ui-barcodeview').BarcodeView);
         Vue.registerElement('AWebView', () => require('@nativescript-community/ui-webview').AWebView);

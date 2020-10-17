@@ -1,17 +1,8 @@
 <template>
     <Gridlayout opacity="0" scaleX="0.5" scaleY="0.5">
-        <StackLayout
-            @loaded="onFloatingLoaded"
-            class="cardView"
-            rippleColor="transparent"
-            horizontalAlignment="center"
-            verticalAlignment="center"
-            marginLeft="20"
-            marginRight="20"
-            borderRadius="10"
-        >
+        <StackLayout @loaded="onFloatingLoaded" class="cardView" rippleColor="transparent" horizontalAlignment="center" verticalAlignment="center" marginLeft="20" marginRight="20" borderRadius="10">
             <GridLayout :backgroundColor="themeColor" colSpan="3" orientation="horizontal" padding="10 20 5 0" columns="auto,*,auto" rows="auto" borderTopLeftRadius="10" borderTopRightRadius="10">
-                <Button verticalAlignment="center" rippleColor="white" variant="flat" class="icon-btn" text="mdi-arrow-left" @tap="close" />
+                <Button verticalAlignment="center" rippleColor="white" variant="text" class="icon-btn" text="mdi-arrow-left" @tap="close" />
                 <TextField
                     col="1"
                     class="amount-tf"

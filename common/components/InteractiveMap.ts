@@ -65,7 +65,6 @@ export default class InteractiveMap extends BaseVueComponent {
         return this.mapComp.cartoMap;
     }
     mounted() {
-        this.log('mounted');
         super.mounted();
         this.mapCategories = categories;
         this.mapFilterSlugs = [];
@@ -89,17 +88,13 @@ export default class InteractiveMap extends BaseVueComponent {
         }
     }
     onLayoutChange() {
-        this.log('onLayoutChange', !!this._cartoMap, !!this.currentBounds);
         // sometimes onMapStable is not called at first so we need this
         // to make sure the map refreshes
         if (!this.currentBounds && this._cartoMap) {
             // we need to delay a bit or the map wont have its size
             setTimeout(() => {
                 const map = this._cartoMap;
-                this.currentBounds = new MapBounds(
-                    map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }),
-                    map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() })
-                );
+                this.currentBounds = new MapBounds(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
                 this.refresh(this.currentBounds);
             }, 10);
         }
@@ -119,10 +114,7 @@ export default class InteractiveMap extends BaseVueComponent {
         // this.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
         this.saveSettings();
         const map = e.object as CartoMap;
-        const currentBounds = new MapBounds(
-            map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }),
-            map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() })
-        );
+        const currentBounds = new MapBounds(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
         // console.log('onMapStable', currentBounds);
         if (!this.currentBounds || !currentBounds.equals(this.currentBounds)) {
             this.currentBounds = currentBounds;
@@ -131,7 +123,6 @@ export default class InteractiveMap extends BaseVueComponent {
     }
 
     onElementClick(...args) {
-        this.log('onElementClick', args);
     }
 
     onVectorTileClicked(data: VectorTileEventData) {
@@ -173,17 +164,16 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     selectItem(item: User) {
         this.selectedItem = item;
-        console.log('setFocusPos3');
         this.cartoMap.setFocusPos(item.address, 200);
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         this.bottomSheetHolder.peek();
     }
-    unselectItem() {
+    async unselectItem() {
         if (!!this.selectedItem) {
-            this.selectedItem = null;
             this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', '');
 
-            this.bottomSheetHolder.close();
+            await this.bottomSheetHolder.close();
+            this.selectedItem = null;
         }
     }
     askUserLocation() {

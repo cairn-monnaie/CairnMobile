@@ -351,7 +351,7 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
                 }
                 let imageData: any;
                 if (image) {
-                    if (gVars.isIOS) {
+                    if (global.isIOS) {
                         imageData = UIImagePNGRepresentation(image);
                     } else {
                         // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
@@ -372,7 +372,7 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
             });
         } else {
             let imageData: any;
-            if (gVars.isIOS) {
+            if (global.isIOS) {
                 imageData = UIImagePNGRepresentation(asset.ios);
             } else {
                 // can be one of these overloads https://square.github.io/okhttp/3.x/okhttp/okhttp3/RequestBody.html
@@ -719,7 +719,6 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/beneficiaries',
             method: 'GET'
         });
-        console.log('beneficiaries', result);
         this.beneficiaries = result = result
             .filter(b => !!b.user)
             .map(b => {
@@ -738,7 +737,7 @@ export default class AuthService extends NetworkService {
         mapBounds,
         categories,
         roles,
-        payment_context = true
+        payment_context = false
     }: {
         sortKey?: string;
         sortOrder?: string;

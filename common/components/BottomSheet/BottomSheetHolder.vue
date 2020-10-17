@@ -1,7 +1,7 @@
 <template>
     <AbsoluteLayout @layoutChanged="onLayoutChange" isPassThroughParentEnabled>
         <!-- <AbsoluteLayout isPassThroughParentEnabled> -->
-        <StackLayout ref="scrollingView" width="100%" :marginTop="currentViewHeight" :height="translationMaxOffset" backgroundColor="#ffffff">
+        <StackLayout ref="scrollingView" width="100%" :translateY="mCurrentViewHeight" :height="translationMaxOffset" backgroundColor="#ffffff">
             <slot name="bottomSheet" />
         </StackLayout>
         <!-- </AbsoluteLayout> -->

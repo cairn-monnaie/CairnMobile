@@ -1,12 +1,9 @@
-import BaseVueComponent from '../BaseVueComponent';
-import { Component, Inject, Prop, Watch } from 'vue-property-decorator';
-// import { GestureHandlerStateEvent, GestureHandlerTouchEvent, GestureStateEventData, GestureTouchEventData, Manager } from '@nativescript-community/gesturehandler';
-import BottomSheetHolder, { PAN_GESTURE_TAG } from './BottomSheetHolder';
-import Vue from 'nativescript-vue';
-import { GestureHandlerStateEvent, GestureHandlerTouchEvent, GestureState, GestureStateEventData, GestureTouchEventData, HandlerType, Manager, PanGestureHandler } from '@nativescript-community/gesturehandler';
-import { View } from '@nativescript/core/ui/page';
+import { HandlerType, Manager, PanGestureHandler } from '@nativescript-community/gesturehandler';
 import { CollectionView } from '@nativescript-community/ui-collectionview';
-// import { RadCartesianChart } from 'nativescript-ui-chart';
+import Vue from 'nativescript-vue';
+import { Component } from 'vue-property-decorator';
+import BaseVueComponent from '../BaseVueComponent';
+import BottomSheetHolder, { PAN_GESTURE_TAG } from './BottomSheetHolder';
 export const NATIVE_GESTURE_TAG = 4;
 
 @Component({})
@@ -57,7 +54,7 @@ export default class BottomSheetBase extends BaseVueComponent {
             this.holder = parent;
             parent.setBottomSheet(this);
         }
-        if (gVars.isIOS && listView && !!this.holder) {
+        if (global.isIOS && listView && !!this.holder) {
             const manager = Manager.getInstance();
             const gestureHandler = manager.createGestureHandler(HandlerType.NATIVE_VIEW, NATIVE_GESTURE_TAG, {
                 disallowInterruption: true,

@@ -11,7 +11,7 @@ export default class AddressPicker extends PageComponent {
         // this.beneficiaries = this.$authService.beneficiaries;
     }
     get menuIcon() {
-        return gVars.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
+        return global.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
     }
     destroyed() {
         super.destroyed();

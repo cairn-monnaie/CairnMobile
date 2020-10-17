@@ -1,5 +1,4 @@
-import { Frame, NavigationEntry } from '@nativescript/core/ui/frame';
-import { Page } from '@nativescript/core/ui/page';
+import { Frame, NavigationEntry, Page } from '@nativescript/core';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
@@ -23,9 +22,6 @@ export default class PageComponent extends BaseVueComponent {
         }
     }
 
-    // get page() {
-    //     return
-    // }
     page: CairnPage;
     mounted() {
         super.mounted();

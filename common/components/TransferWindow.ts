@@ -47,7 +47,7 @@ export default class TransferWindow extends PageComponent {
         } else {
             this.getTransferComponent().setTextFieldValue(amount + '', textField);
         }
-        if (gVars.isIOS) {
+        if (global.isIOS) {
             textField.nativeTextViewProtected.keyboardType = 8;
         }
     }

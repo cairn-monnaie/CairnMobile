@@ -1,0 +1,8 @@
+{
+    "v-template": {
+        "attributes": [
+            "items"
+        ],
+        "description": "Template component for Nativescript-Vue"
+    }
+}

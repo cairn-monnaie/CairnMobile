@@ -22,7 +22,7 @@ export default class UserPicker extends PageComponent {
         }
     }
     get menuIcon() {
-        return gVars.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
+        return global.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
     }
     destroyed() {
         super.destroyed();
@@ -43,7 +43,6 @@ export default class UserPicker extends PageComponent {
     }
     hasFocus = false;
     onFocus(e) {
-        this.log('onFocus');
         this.hasFocus = true;
         // if (this.currentSearchText && this.searchResultsCount === 0) {
         //     this.instantSearch(this.currentSearchText);
@@ -51,7 +50,6 @@ export default class UserPicker extends PageComponent {
     }
     searchAsTypeTimer;
     onBlur(e) {
-        this.log('onBlur');
         this.hasFocus = false;
     }
     searchUsers(query: string) {

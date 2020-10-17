@@ -23,7 +23,7 @@ export default class CrashReportService extends Observable {
                 dsn: SENTRY_DSN,
                 appPrefix: SENTRY_PREFIX,
                 release: `${versionName}`,
-                dist: `${buildNumber}.${gVars.isAndroid ? 'android' : 'ios'}`
+                dist: `${buildNumber}.${global.isAndroid ? 'android' : 'ios'}`
             });
             Sentry.setTag('locale', Device.language);
             // });

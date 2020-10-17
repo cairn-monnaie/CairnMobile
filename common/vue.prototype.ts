@@ -32,7 +32,7 @@ const Plugin = {
         application.on(application.exitEvent, args => {
             imageModule.shutDown();
         });
-        // if (gVars.isAndroid) {
+        // if (global.isAndroid) {
         //     application.on(application.launchEvent, () => {
         //         // bgService.start();
         //         // networkService.start();
@@ -49,8 +49,8 @@ const Plugin = {
             return appComponent;
         };
 
-        Vue.prototype.$isAndroid = gVars.isAndroid;
-        Vue.prototype.$isIOS = gVars.isIOS;
+        Vue.prototype.$isAndroid = global.isAndroid;
+        Vue.prototype.$isIOS = global.isIOS;
         // const filters = (Vue.prototype.$filters = Vue['options'].filters);
         Vue.prototype.$t = $t;
 
@@ -79,7 +79,7 @@ const Plugin = {
             //     id: 'test'
             // }));
             let result;
-            if (gVars.isIOS && isSimulator()) {
+            if (global.isIOS && isSimulator()) {
                 result = sprintf(CAIRN_FULL_QRCODE_FORMAT, {
                     ICC: '622593501',
                     name: 'La Bonne Pioche',
@@ -93,7 +93,7 @@ const Plugin = {
             // console.log('scanQRCode result', result);
             if (result) {
                 if (!manualHandle) {
-                    if (gVars.isAndroid) {
+                    if (global.isAndroid) {
                         // ios does not seem to allow to call openURL with our own scheme
                         openUrl(result);
                     } else {

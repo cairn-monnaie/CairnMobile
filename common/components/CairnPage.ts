@@ -54,20 +54,19 @@ export default class CairnPage extends BaseVueComponent {
     public loading = false;
 
     get page() {
-        return this.getRef('page') as Page;
+        return this.getRef<Page>('page');
     }
     destroyed() {
         super.destroyed();
     }
     mounted() {
-        this.log('mounted');
         if (this.nativeView && this.navigateUrl) {
             this.nativeView['navigateUrl'] = this.navigateUrl;
         }
         const page = this.page;
         if (page) {
             page.actionBarHidden = true;
-            // if (gVars.isIOS) {
+            // if (global.isIOS) {
             page.backgroundSpanUnderStatusBar = true;
             //     page.statusBarStyle = 'light';
             //     page.eachChildView(view => {

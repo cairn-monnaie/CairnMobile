@@ -90,14 +90,14 @@ export class GeoHandler extends Observable {
             geolocation = new GPS();
             geolocation.debug = DEV_LOG;
         }
-        if (gVars.isAndroid) {
+        if (global.isAndroid) {
             if (androidApp.nativeApp) {
                 this.appOnLaunch();
             } else {
                 applicationOn(launchEvent, this.appOnLaunch, this);
             }
         }
-        if (gVars.isIOS) {
+        if (global.isIOS) {
             // if (androidApp.nativeApp) {
             // this.appOnLaunch();
             // } else {

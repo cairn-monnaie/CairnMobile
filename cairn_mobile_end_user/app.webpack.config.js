@@ -23,7 +23,7 @@ const webpack = require('webpack');
 const { readFileSync } = require('fs');
 const { dirname, join, relative, resolve, sep } = require('path');
 const nsWebpack = require('@nativescript/webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -52,6 +52,7 @@ module.exports = (env, params = {}) => {
         uglify, // --env.uglify
         noconsole, // --env.noconsole
         devlog, // --env.devlog
+        fakeall, // --env.fakeall
         adhoc // --env.adhoc
     } = env;
 
@@ -111,8 +112,8 @@ module.exports = (env, params = {}) => {
         process: 'global.process',
         'global.TNS_WEBPACK': 'true',
         'gVars.platform': `"${platform}"`,
-        'gVars.isIOS': isIOS,
-        'gVars.isAndroid': isAndroid,
+        'global.isIOS': isIOS,
+        'global.isAndroid': isAndroid,
         'gVars.internalApp': false,
         TNS_ENV: JSON.stringify(mode),
         'gVars.sentry': !!sentry,
@@ -140,6 +141,7 @@ module.exports = (env, params = {}) => {
                 : `market://details?id=${package.nativescript.id}`
         }"`,
         LOG_LEVEL: devlog ? '"full"' : '""',
+        FAKE_ALL: fakeall,
         TEST_LOGS: adhoc || !production,
         WITH_PUSH_NOTIFICATIONS: 'true'
     };
@@ -210,35 +212,30 @@ module.exports = (env, params = {}) => {
     });
 
     // we remove default rules
-    config.plugins = config.plugins.filter(p => ['DefinePlugin', 'CleanWebpackPlugin', 'CopyWebpackPlugin'].indexOf(p.constructor.name) === -1);
-
-    const copyPatterns = [
-        { from: 'fonts/!(ios|android)/**/*', to: 'fonts', flatten: true, noErrorOnMissing: true },
-        { from: 'fonts/*', to: 'fonts', flatten: true, noErrorOnMissing: true },
-        { from: `fonts/${platform}/**/*`, to: 'fonts', flatten: true, noErrorOnMissing: true },
-        {
-            from: '**/*.+(jpg|png)',
-            globOptions: {
-                ignore: [`${relative(appPath, appResourcesFullPath)}/**`]
-            },
-            noErrorOnMissing: true
-        },
-        { from: 'assets/**/*', noErrorOnMissing: true },
-        {
-            from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
-            to: 'fonts',
-            noErrorOnMissing: true
-        }
-    ];
-    // if (!production) {
-    //     copyPatterns.push({ from: '../testassets/**/*', to: 'assets', flatten: true });
-    // }
+    // we remove default rules
+    config.plugins = config.plugins.filter(p => ['DefinePlugin', 'CleanWebpackPlugin', 'CopyPlugin'].indexOf(p.constructor.name) === -1);
     // we add our rules
+    const copyIgnore = { ignore: [`**/${relative(appPath, appResourcesFullPath)}/**`] };
     config.plugins.unshift(
-        new CopyWebpackPlugin({
-            patterns: copyPatterns
-        })
+        new CopyPlugin(
+            [
+                { from: 'fonts/!(ios|android)/**/*', to: 'fonts', flatten: true, dot: false },
+                { from: 'fonts/*', to: 'fonts', flatten: true, dot: false },
+                { from: `fonts/${platform}/**/*`, to: 'fonts', flatten: true, dot: false },
+                { from: '**/*.jpg', dot: false },
+                { from: '**/*.png', dot: false },
+                { from: 'assets/**/*', dot: false },
+                {
+                    from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
+                    to: 'fonts',
+                    noErrorOnMissing: true,
+                    globOptions: { dot: false, ...copyIgnore }
+                }
+            ],
+            copyIgnore
+        )
     );
+
     config.plugins.unshift(
         new CleanWebpackPlugin({
             dangerouslyAllowCleanPatternsOutsideProject: true,

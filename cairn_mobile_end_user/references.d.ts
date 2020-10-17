@@ -8,8 +8,6 @@ declare module '*.scss';
 
 declare const gVars: {
     sentry: boolean;
-    isIOS: boolean;
-    isAndroid: boolean;
     internalApp: boolean;
     platform: 'ios' | 'android';
 };
@@ -38,6 +36,7 @@ declare const CAIRN_TRANSFER_QRCODE_PARAMS: string;
 declare const CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: string;
 declare const CAIRN_FULL_QRCODE_FORMAT: string;
 declare const WITH_PUSH_NOTIFICATIONS: boolean;
+declare const FAKE_ALL: boolean;
 
 declare namespace com {
     export namespace akylas {
@@ -50,9 +49,7 @@ declare namespace com {
                 onStringResponse(responseString, statusCode, headers);
                 onFailure(call, error);
             }
-            class FloatingActivity extends androidx.appcompat.app.AppCompatActivity{
-
-            }
+            class FloatingActivity extends androidx.appcompat.app.AppCompatActivity {}
         }
     }
 }

@@ -6,7 +6,7 @@ import { User } from '../services/AuthService';
 import BottomSheetBase from './BottomSheet/BottomSheetBase';
 
 function getViewTop(view: View) {
-    if (gVars.isAndroid) {
+    if (global.isAndroid) {
         return (view.nativeView as android.view.View).getTop();
     } else {
         return (view.nativeView as UIView).frame.origin.y;

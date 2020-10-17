@@ -1,15 +1,19 @@
 module.exports = {
+    extends: ['plugin:prettier/recommended', 'plugin:vue/essential'],
     env: {
         browser: true
     },
-    parser: '@typescript-eslint/parser',
+    parser: 'vue-eslint-parser',
     parserOptions: {
+        parser: '@typescript-eslint/parser',
         createDefaultProgram: true,
         project: 'tsconfig.json',
         sourceType: 'module'
     },
     plugins: ['@typescript-eslint'],
     rules: {
+        'prettier/prettier': 'warn',
+        'vue/custom-event-name-casing': 'off',
         '@typescript-eslint/adjacent-overload-signatures': 'error',
         '@typescript-eslint/array-type': 'error',
         '@typescript-eslint/await-thenable': 'error',
@@ -33,7 +37,7 @@ module.exports = {
                 FunctionExpression: {
                     parameters: 'first'
                 },
-                SwitchCase:1
+                SwitchCase: 1
             }
         ],
         '@typescript-eslint/interface-name-prefix': 'off',
