@@ -53,9 +53,13 @@ import { themer } from '@nativescript-community/ui-material-core';
 if (global.isIOS) {
     themer.setPrimaryColor(accentColor);
     themer.setAccentColor(primaryColor);
+    Application.on(Application.launchEvent, () => {
+        (Application.ios.window as UIWindow).overrideUserInterfaceStyle = UIUserInterfaceStyle.Light;
+    });
 }
 
 import App from '~/common/components/App';
+import { Application } from '@akylas/nativescript';
 new Vue({
     render: h => h(App)
 }).$start();
