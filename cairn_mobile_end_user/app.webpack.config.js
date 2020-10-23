@@ -100,6 +100,7 @@ module.exports = (env, params = {}) => {
     });
 
     const package = require('./package.json');
+    const nsconfig = require('./nativescript.config.js');
     const isIOS = platform === 'ios';
     const isAndroid = platform === 'android';
     const APP_STORE_ID = process.env.IOS_APP_ID;
@@ -134,11 +135,11 @@ module.exports = (env, params = {}) => {
         CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: `"${CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM}"`,
         CAIRN_FULL_QRCODE_FORMAT: `"${`${CUSTOM_URL_SCHEME}://${CAIRN_TRANSFER_QRCODE}/${CAIRN_TRANSFER_QRCODE_PARAMS}`}"`,
         CREDIT_URL: '"https://www.helloasso.com/associations/le-cairn-monnaie-locale-et-citoyenne/formulaires/3"',
-        STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${package.nativescript.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
+        STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${nsconfig.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
         STORE_REVIEW_LINK: `"${
             isIOS
                 ? ` itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=${APP_STORE_ID}&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software`
-                : `market://details?id=${package.nativescript.id}`
+                : `market://details?id=${nsconfig.id}`
         }"`,
         LOG_LEVEL: devlog ? '"full"' : '""',
         FAKE_ALL: fakeall,
