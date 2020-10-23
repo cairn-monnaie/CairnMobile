@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="transaction_successful">"you successfuly transfered %1$s to %2$s"</string>
   <string name="next">"next"</string>
   <string name="credit_account">"credit your account"</string>
   <string name="fill_email_or_username">"fill e-mail or username"</string>
@@ -80,8 +81,8 @@
   <string name="zipcode">"postal code"</string>
   <string name="wrong_scancode">"the scanning code is not an eCairn code"</string>
   <string name="wrong_confirmation_code">"wrong confirmation code"</string>
-  <string name="username_required">"username required"</string>
-  <string name="username">"username"</string>
+  <string name="username_required">"username/email required"</string>
+  <string name="username">"username/email"</string>
   <string name="transfer">"transfer money"</string>
   <string name="transaction_done">"the transaction was successfully completed"</string>
   <string name="street">"street"</string>

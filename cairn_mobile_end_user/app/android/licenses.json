@@ -1,9 +1,23 @@
 {
     "dependencies": [
         {
+            "moduleName": "com.android:signflinger",
+            "moduleUrl": "https://developer.android.com/studio",
+            "moduleVersion": "3.6.4",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "com.android:zipflinger",
+            "moduleUrl": "https://developer.android.com/studio",
+            "moduleVersion": "3.6.4",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
             "moduleName": "com.carto:carto-mobile-sdk",
             "moduleUrl": "https://github.com/CartoDB/mobile-sdk",
-            "moduleVersion": "4.3.0-rc.3",
+            "moduleVersion": "4.3.1",
             "moduleLicense": "The 3-Clause BSD License",
             "moduleLicenseUrl": "https://opensource.org/licenses/BSD-3-Clause"
         },
@@ -17,133 +31,133 @@
         {
             "moduleName": "com.facebook.fresco:animated-base",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:animated-drawable",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:animated-gif",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:drawee",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:fbcore",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:fresco",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:imagepipeline",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:imagepipeline-base",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:imagepipeline-native",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
+            "moduleLicense": "MIT License",
+            "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
+        },
+        {
+            "moduleName": "com.facebook.fresco:imagepipeline-okhttp3",
+            "moduleUrl": "https://github.com/facebook/fresco",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:memory-type-ashmem",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:memory-type-java",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:memory-type-native",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
+            "moduleLicense": "MIT License",
+            "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
+        },
+        {
+            "moduleName": "com.facebook.fresco:middleware",
+            "moduleUrl": "https://github.com/facebook/fresco",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:nativeimagefilters",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:nativeimagetranscoder",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
-            "moduleLicense": "MIT License",
-            "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
-        },
-        {
-            "moduleName": "com.facebook.fresco:soloader",
-            "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.fresco:ui-common",
             "moduleUrl": "https://github.com/facebook/fresco",
-            "moduleVersion": "2.1.0",
+            "moduleVersion": "2.3.0",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "com.facebook.soloader:annotation",
             "moduleUrl": "https://github.com/facebook/soloader",
-            "moduleVersion": "0.8.0",
+            "moduleVersion": "0.9.0",
             "moduleLicense": "Apache-2",
             "moduleLicenseUrl": "https://github.com/facebook/soloader/blob/master/LICENSE"
         },
         {
             "moduleName": "com.facebook.soloader:nativeloader",
             "moduleUrl": "https://github.com/facebook/soloader",
-            "moduleVersion": "0.8.0",
-            "moduleLicense": "Apache-2",
-            "moduleLicenseUrl": "https://github.com/facebook/soloader/blob/master/LICENSE"
-        },
-        {
-            "moduleName": "com.facebook.soloader:soloader",
-            "moduleUrl": "https://github.com/facebook/soloader",
-            "moduleVersion": "0.8.0",
+            "moduleVersion": "0.9.0",
             "moduleLicense": "Apache-2",
             "moduleLicenseUrl": "https://github.com/facebook/soloader/blob/master/LICENSE"
         },
@@ -304,7 +318,7 @@
         {
             "moduleName": "com.google.guava:guava",
             "moduleUrl": "https://github.com/google/guava/",
-            "moduleVersion": "27.0.1-jre",
+            "moduleVersion": "27.1-jre",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
@@ -413,14 +427,14 @@
         {
             "moduleName": "com.sun.istack:istack-commons-runtime",
             "moduleUrl": "http://www.oracle.com/",
-            "moduleVersion": "2.21",
+            "moduleVersion": "3.0.7",
             "moduleLicense": "GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception",
             "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
         },
         {
             "moduleName": "com.sun.xml.fastinfoset:FastInfoset",
             "moduleUrl": "http://www.oracle.com",
-            "moduleVersion": "1.2.13",
+            "moduleVersion": "1.2.15",
             "moduleLicense": "Apache License, Version 2.0",
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
@@ -441,28 +455,28 @@
         {
             "moduleName": "io.sentry:sentry-android",
             "moduleUrl": "https://github.com/getsentry/sentry-android",
-            "moduleVersion": "2.1.0-alpha.1",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "io.sentry:sentry-android-core",
             "moduleUrl": "https://github.com/getsentry/sentry-android",
-            "moduleVersion": "2.1.0-alpha.1",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "io.sentry:sentry-android-ndk",
             "moduleUrl": "https://github.com/getsentry/sentry-android",
-            "moduleVersion": "2.1.0-alpha.1",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
             "moduleName": "io.sentry:sentry-core",
             "moduleUrl": "https://github.com/getsentry/sentry-android",
-            "moduleVersion": "2.1.0-alpha.1",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "MIT License",
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
@@ -474,6 +488,13 @@
             "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         {
+            "moduleName": "javax.activation:javax.activation-api",
+            "moduleUrl": "http://www.oracle.com",
+            "moduleVersion": "1.2.0",
+            "moduleLicense": "COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0",
+            "moduleLicenseUrl": "https://oss.oracle.com/licenses/CDDL"
+        },
+        {
             "moduleName": "javax.inject:javax.inject",
             "moduleUrl": "http://code.google.com/p/atinject/",
             "moduleVersion": "1",
@@ -483,7 +504,7 @@
         {
             "moduleName": "javax.xml.bind:jaxb-api",
             "moduleUrl": "http://www.oracle.com/",
-            "moduleVersion": "2.2.12-b140109.1041",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception",
             "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
         },
@@ -563,20 +584,21 @@
             "moduleLicenseUrl": "https://opensource.org/licenses/MIT"
         },
         {
-            "moduleName": "org.glassfish.jaxb:jaxb-core",
-            "moduleVersion": "2.2.11",
+            "moduleName": "org.conscrypt:conscrypt-android",
+            "moduleUrl": "https://conscrypt.org/",
+            "moduleVersion": "2.4.0",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "org.glassfish.jaxb:jaxb-runtime",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "CDDL+GPL License",
             "moduleLicenseUrl": "http://glassfish.java.net/public/CDDL+GPL_1_1.html"
         },
         {
-            "moduleName": "org.glassfish.jaxb:jaxb-runtime",
-            "moduleVersion": "2.2.11",
-            "moduleLicense": "COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0",
-            "moduleLicenseUrl": "https://oss.oracle.com/licenses/CDDL"
-        },
-        {
             "moduleName": "org.glassfish.jaxb:txw2",
-            "moduleVersion": "2.2.11",
+            "moduleVersion": "2.3.1",
             "moduleLicense": "CDDL+GPL License",
             "moduleLicenseUrl": "http://glassfish.java.net/public/CDDL+GPL_1_1.html"
         },
@@ -594,42 +616,42 @@
         {
             "moduleName": "org.jvnet.staxex:stax-ex",
             "moduleUrl": "http://stax-ex.java.net/",
-            "moduleVersion": "1.7.7",
+            "moduleVersion": "1.8",
             "moduleLicense": "Dual license consisting of the CDDL v1.1 and GPL v2",
             "moduleLicenseUrl": "https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html"
         },
         {
             "moduleName": "org.ow2.asm:asm",
-            "moduleUrl": "http://asm.objectweb.org",
-            "moduleVersion": "6.0",
+            "moduleUrl": "http://asm.ow2.org/",
+            "moduleVersion": "7.0",
             "moduleLicense": "BSD Zero Clause License",
             "moduleLicenseUrl": "https://opensource.org/licenses/0BSD"
         },
         {
             "moduleName": "org.ow2.asm:asm-analysis",
-            "moduleUrl": "http://asm.objectweb.org",
-            "moduleVersion": "6.0",
+            "moduleUrl": "http://asm.ow2.org/",
+            "moduleVersion": "7.0",
             "moduleLicense": "BSD Zero Clause License",
             "moduleLicenseUrl": "https://opensource.org/licenses/0BSD"
         },
         {
             "moduleName": "org.ow2.asm:asm-commons",
-            "moduleUrl": "http://asm.objectweb.org",
-            "moduleVersion": "6.0",
+            "moduleUrl": "http://asm.ow2.org/",
+            "moduleVersion": "7.0",
             "moduleLicense": "BSD Zero Clause License",
             "moduleLicenseUrl": "https://opensource.org/licenses/0BSD"
         },
         {
             "moduleName": "org.ow2.asm:asm-tree",
-            "moduleUrl": "http://asm.objectweb.org",
-            "moduleVersion": "6.0",
+            "moduleUrl": "http://asm.ow2.org/",
+            "moduleVersion": "7.0",
             "moduleLicense": "BSD Zero Clause License",
             "moduleLicenseUrl": "https://opensource.org/licenses/0BSD"
         },
         {
             "moduleName": "org.ow2.asm:asm-util",
-            "moduleUrl": "http://asm.objectweb.org",
-            "moduleVersion": "6.0",
+            "moduleUrl": "http://asm.ow2.org/",
+            "moduleVersion": "7.0",
             "moduleLicense": "BSD Zero Clause License",
             "moduleLicenseUrl": "https://opensource.org/licenses/0BSD"
         }

@@ -194,15 +194,16 @@
   <string name="fill_email">"remplir e-mail"</string>
   <string name="passwords_dont_match">"les mots de passe ne correspondent pas"</string>
   <string name="password_missing">"mot de passe manquant"</string>
-  <string name="username_required">"nom d\'utilisateur requis"</string>
+  <string name="username_required">"nom d\'utilisateur/email requis"</string>
   <string name="no_account">"pas de compte?"</string>
   <string name="register">"s\'enregister"</string>
   <string name="login">"connexion"</string>
   <string name="forgot_password">"mot de passe oublié"</string>
   <string name="confirm_password">"confirmer le mot de passe"</string>
   <string name="password">"mot de passe"</string>
-  <string name="username">"utilisateur"</string>
+  <string name="username">"Nom d\'utilisateur/Email"</string>
   <string name="home">"accueil"</string>
   <string name="app_name">"eCairn"</string>
   <string name="title_activity_kimera">"eCairn"</string>
+  <string name="transaction_successful">"you successfuly transfered %1$s to %2$s"</string>
 </resources>

@@ -64,7 +64,7 @@ module.exports = (env, params = {}) => {
     const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
 
     if (platform === 'android') {
-        env.appComponents = [resolve(projectRoot, 'app/services/android/BgService.ts'), resolve(projectRoot, 'app/services/android/BgServiceBinder.ts')];
+        // env.appComponents = [resolve(projectRoot, 'app/common/services/android/BgService.ts'), resolve(projectRoot, 'app/common/services/android/BgServiceBinder.ts')];
     }
     const config = webpackConfig(env, params);
     const coreModulesPackageName = '@akylas/nativescript';
