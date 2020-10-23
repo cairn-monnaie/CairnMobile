@@ -1,6 +1,6 @@
 import * as connectivity from '@nativescript/core/connectivity';
 import { EventData, Observable } from '@nativescript/core/data/observable';
-import { clog } from '../utils/logging';
+import { clog, DEV_LOG } from '../utils/logging';
 import { $t } from '../helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
@@ -371,7 +371,9 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
-        // console.log('request ', requestParams);
+        if (DEV_LOG) {
+            console.log('request ', requestParams);
+        }
 
         // log for VSCode http plugin
         // console.log(requestParams.method, requestParams.url);
@@ -401,6 +403,17 @@ export class NetworkService extends Observable {
             content = await response.content.toStringAsync();
         }
         const isString = typeof content === 'string';
+        if (DEV_LOG) {
+            console.log(
+                   'handleRequestResponse response',
+                   statusCode,
+                   response.reason,
+                   response.headers,
+                   isString,
+                   typeof content,
+                   content
+                )
+        }
         // this.log(
         //    'handleRequestResponse response',
         //    statusCode,
