@@ -1,0 +1,6 @@
+*Bug fixes*
+- *android:* better handle of logs in prod. Now we see them in adhoc build
+- ios dark mmode fix
+- webpack build fix
+- login view fix on android
+- drawer fix
