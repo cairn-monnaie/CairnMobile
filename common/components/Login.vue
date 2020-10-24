@@ -12,22 +12,10 @@
                 verticalTextAlignment="center"
                 :backgroundColor="themeColor"
             />
-            <Button
-                verticalAlignment="top"
-                :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize"
-                @tap="hideMap"
-            />
+            <Button verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
         </StackLayout>
-        <Button
-            verticalAlignment="top"
-            horizontalAlignment="right"
-            rippleColor="white"
-            variant="flat"
-            class="icon-btn"
-            text="mdi-information-outline"
-            @tap="showAbout"
-        />
-        <ScrollView ref="scrollView" opacity="0" class="pageContent">
+        <Button verticalAlignment="top" horizontalAlignment="right" rippleColor="white" variant="flat" class="icon-btn" text="mdi-information-outline" @tap="showAbout" />
+        <ScrollView ref="scrollView" opacity="0" v-show="showLogin" class="pageContent">
             <StackLayout>
                 <Label
                     :height="logoViewHeight"
@@ -79,19 +67,9 @@
                         :error="passwordError"
                     />
 
-                    <Button
-                        v-show="!loading"
-                        :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize"
-                        @tap="submit"
-                        :isEnabled="canLoginOrRegister"
-                    />
+                    <Button v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
                     <Button v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
-                    <Label
-                        v-show="isLoggingIn"
-                        :text="$t('forgot_password') | capitalize"
-                        class="login-label"
-                        @tap="forgotPassword"
-                    />
+                    <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 
                 <Label visibility="hidden" class="login-label sign-up-label" @tap="toggleForm()">
