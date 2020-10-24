@@ -107,50 +107,7 @@ export default class App extends BaseVueComponent {
     $refs: AppRefs;
     mMessageReceiver: android.content.BroadcastReceiver;
     networkConnected = true;
-    // drawerOptions: OptionsType = {
-    //     // top: {
-    //     //     height: '100%',
-    //     //     animation: {
-    //     //         openDuration: 150,
-    //     //         closeDuration: 150
-    //     //     },
-    //     //     swipeOpenTriggerHeight: 30,
-    //     //     swipeOpenTriggerMinDrag: 20,
-    //     //     swipeCloseTriggerMinDrag: 30
-    //     // }
-    //     left: {
-    //         swipeOpenTriggerWidth: 5
-    //     }
-    // };
-
-    get drawerOptions() {
-        if (this.currentlyLoggedIn) {
-            return {
-                enabled: true,
-                // debug:true,
-                // top: {
-                //     height: '100%',
-                //     animation: {
-                //         openDuration: 150,
-                //         closeDuration: 150
-                //     },
-                //     swipeOpenTriggerHeight: 30,
-                //     swipeOpenTriggerMinDrag: 20,
-                //     swipeCloseTriggerMinDrag: 30
-                // }
-                left: {
-                    swipeOpenTriggerWidth: 5
-                }
-            };
-        } else {
-            return {
-                left: {
-                    enabled: false,
-                    swipeOpenTriggerWidth: 0
-                }
-            };
-        }
-    }
+    
     protected routes: { [k: string]: { component: typeof Vue } } = {
         [ComponentIds.Situation]: {
             component: Home
