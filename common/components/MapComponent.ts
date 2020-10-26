@@ -221,14 +221,14 @@ export default class MapComponent extends BaseVueComponent {
                 liveReload: TNS_ENV !== 'production',
                 dirPath: '~/assets/styles/cairn'
             });
-            const layer = (this.localVectorTileLayer = new VectorTileLayer({
+            const layer = ( new VectorTileLayer({
                 preloading: true,
                 dataSource: this.localVectorTileDataSource,
                 decoder
             }));
-
             layer.setVectorTileEventListener(this);
             // always add it at 1 to respect local order
+            this.localVectorTileLayer = layer;
             this._cartoMap.addLayer(layer);
         }
         return this.localVectorTileLayer;
@@ -245,6 +245,9 @@ export default class MapComponent extends BaseVueComponent {
         return this._localVectorTileDataSource;
     }
     addGeoJSONPoints(points: any[]) {
+        if (!this._cartoMap) {
+            return;
+        }
         const geojson = GeoJSON.parse(points, {
             Point: ['address.latitude', 'address.longitude'],
             include: ['name', 'id']
