@@ -2,7 +2,7 @@ import { openUrl } from '@nativescript/core/utils/utils';
 import { Component } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 
-const licences = require(`~/${gVars.platform}/licenses.json`);
+const licences = require(`~/licenses.json`);
 
 @Component
 export default class ThirdPartySoftwareBottomSheet extends BaseVueComponent {
