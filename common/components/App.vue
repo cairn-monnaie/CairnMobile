@@ -1,7 +1,7 @@
 <template>
     <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" :statusBarColor="themeColor" ios:barStyle="light" :navigationBarColor="themeColor" @loaded="onLoaded">
-        <Drawer ref="drawer" :gestureEnabled="currentlyLoggedIn">
-            <GridLayout ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
+        <Drawer ref="drawer" :gestureEnabled="currentlyLoggedIn" leftDrawerMode="slide">
+            <GridLayout id="leftDrawer" ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
                     <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
                     <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
