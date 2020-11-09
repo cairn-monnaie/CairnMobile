@@ -9,5 +9,6 @@ module.exports = {
         v8Flags: '--expose_gc',
         codeCache: true,
         forceLog: true
-    }
+    },
+    cssParser: 'rework',
 };

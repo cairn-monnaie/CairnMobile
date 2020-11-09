@@ -1,4 +1,4 @@
-const XRegExp = require('xregexp');
+import  XRegExp  from 'xregexp';
 const QR_CODE_TRANSFER_REGEXP_STR =
     CAIRN_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
     '(?:' +

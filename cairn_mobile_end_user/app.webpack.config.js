@@ -20,22 +20,27 @@ NsVueTemplateCompiler.registerElement('Pager', () => require('@nativescript-comm
 const webpackConfig = require('./webpack.config.js');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
-const { readFileSync } = require('fs');
+const { readFileSync , readdirSync} = require('fs');
 const { dirname, join, relative, resolve, sep } = require('path');
 const nsWebpack = require('@nativescript/webpack');
-const CopyPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, params = {}) => {
     if (env.adhoc) {
-        Object.assign(env, {
-            production: true,
-            // sentry: true,
-            sourceMap: true,
-            uglify: true
-        });
+        env = Object.assign(
+            {},
+            {
+                production: true,
+                sentry: true,
+                uploadSentry: true,
+                sourceMap: true,
+                uglify: true
+            },
+            env
+        );
     }
     const nconfig = require('./nativescript.config');
     const {
@@ -47,7 +52,7 @@ module.exports = (env, params = {}) => {
         hiddenSourceMap, // --env.hiddenSourceMap
         inlineSourceMap, // --env.inlineSourceMap
         sentry, // --env.sentry
-        uploadSentry = true,
+        uploadSentry,
         verbose, // --env.verbose
         uglify, // --env.uglify
         noconsole, // --env.noconsole
@@ -69,38 +74,16 @@ module.exports = (env, params = {}) => {
     const config = webpackConfig(env, params);
     const coreModulesPackageName = '@akylas/nativescript';
     config.resolve.modules = [resolve(__dirname, `node_modules/${coreModulesPackageName}`), resolve(__dirname, 'node_modules'), `node_modules/${coreModulesPackageName}`, 'node_modules'];
+    const locales = readdirSync(join(projectRoot, appPath, 'i18n'))
+        .filter(s => s.endsWith('.json'))
+        .map(s => s.replace('.json', ''));
+    console.log('locales', locales);
     Object.assign(config.resolve.alias, {
         '@nativescript/core': `${coreModulesPackageName}`,
-        'tns-core-modules': `${coreModulesPackageName}`,
-        '../driver/oracle/OracleDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './oracle/OracleDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/cockroachdb/CockroachDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './cockroachdb/CockroachDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './cordova/CordovaDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './react-native/ReactNativeDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/react-native/ReactNativeDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './nativescript/NativescriptDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/nativescript/NativescriptDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './mysql/MysqlDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/mysql/MysqlDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './postgres/PostgresDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/postgres/PostgresDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './expo/ExpoDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './aurora-data-api/AuroraDataApiDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/aurora-data-api/AuroraDataApiDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './sqlite/SqliteDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/sqljs/SqljsDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './sqljs/SqljsDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/sqlserver/SqlServerDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './sqlserver/SqlServerDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './mongodb/MongoDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/mongodb/MongoDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        './cordova/CordovaDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver',
-        '../driver/cordova/CordovaDriver': '@akylas/nativescript-sqlite/typeorm/NativescriptDriver'
+        'tns-core-modules': `${coreModulesPackageName}`
     });
 
     const package = require('./package.json');
-    const nsconfig = require('./nativescript.config.js');
     const isIOS = platform === 'ios';
     const isAndroid = platform === 'android';
     const APP_STORE_ID = process.env.IOS_APP_ID;
@@ -135,11 +118,11 @@ module.exports = (env, params = {}) => {
         CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM: `"${CAIRN_TRANSFER_QRCODE_AMOUNT_PARAM}"`,
         CAIRN_FULL_QRCODE_FORMAT: `"${`${CUSTOM_URL_SCHEME}://${CAIRN_TRANSFER_QRCODE}/${CAIRN_TRANSFER_QRCODE_PARAMS}`}"`,
         CREDIT_URL: '"https://www.helloasso.com/associations/le-cairn-monnaie-locale-et-citoyenne/formulaires/3"',
-        STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${nsconfig.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
+        STORE_LINK: `"${isAndroid ? `https://play.google.com/store/apps/details?id=${nconfig.id}` : `https://itunes.apple.com/app/id${APP_STORE_ID}`}"`,
         STORE_REVIEW_LINK: `"${
             isIOS
                 ? ` itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=${APP_STORE_ID}&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software`
-                : `market://details?id=${nsconfig.id}`
+                : `market://details?id=${nconfig.id}`
         }"`,
         LOG_LEVEL: devlog ? '"full"' : '""',
         FAKE_ALL: fakeall,
@@ -217,25 +200,20 @@ module.exports = (env, params = {}) => {
     config.plugins = config.plugins.filter(p => ['DefinePlugin', 'CleanWebpackPlugin', 'CopyPlugin'].indexOf(p.constructor.name) === -1);
     // we add our rules
     const copyIgnore = { ignore: [`**/${relative(appPath, appResourcesFullPath)}/**`] };
-    config.plugins.unshift(
-        new CopyPlugin(
-            [
-                { from: 'fonts/!(ios|android)/**/*', to: 'fonts', flatten: true, dot: false },
-                { from: 'fonts/*', to: 'fonts', flatten: true, dot: false },
-                { from: `fonts/${platform}/**/*`, to: 'fonts', flatten: true, dot: false },
-                { from: '**/*.jpg', dot: false },
-                { from: '**/*.png', dot: false },
-                { from: 'assets/**/*', dot: false },
-                {
-                    from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
-                    to: 'fonts',
-                    noErrorOnMissing: true,
-                    globOptions: { dot: false, ...copyIgnore }
-                }
-            ],
-            copyIgnore
-        )
-    );
+    const copyPatterns = [
+        { from: 'fonts/!(ios|android)/**/*', to: 'fonts', flatten: true, dot: false },
+        { from: 'fonts/*', to: 'fonts', flatten: true, dot: false },
+        { from: `fonts/${platform}/**/*`, to: 'fonts', flatten: true, dot: false },
+        { from: '**/*.jpg', dot: false },
+        { from: '**/*.png', dot: false },
+        { from: 'assets/**/*', dot: false },
+        {
+            from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
+            to: 'fonts',
+            dot: false,
+        },
+    ];
+    config.plugins.unshift(new CopyWebpackPlugin(copyPatterns, copyIgnore));
 
     config.plugins.unshift(
         new CleanWebpackPlugin({
@@ -254,7 +232,7 @@ module.exports = (env, params = {}) => {
     );
 
     config.devtool = inlineSourceMap ? 'inline-cheap-source-map' : false;
-    if (hiddenSourceMap || sourceMap) {
+    if (!inlineSourceMap && (hiddenSourceMap || sourceMap)) {
         if (!!sentry && !!uploadSentry) {
             config.plugins.push(
                 new webpack.SourceMapDevToolPlugin({
@@ -286,11 +264,15 @@ module.exports = (env, params = {}) => {
         } else {
             config.plugins.push(
                 new webpack.SourceMapDevToolPlugin({
-                    noSources: true
+                    filename: '[name].js.map'
                 })
             );
         }
     }
+    config.plugins.push(new webpack.ContextReplacementPlugin(/dayjs[\/\\]locale$/, new RegExp(`(${locales.join('|')})$`)));
+    // if (nconfig.cssParser !== 'css-tree') {
+    //     config.plugins.push(new webpack.IgnorePlugin(/css-tree$/));
+    // }
     if (!!production) {
         config.plugins.push(
             new ForkTsCheckerWebpackPlugin({
