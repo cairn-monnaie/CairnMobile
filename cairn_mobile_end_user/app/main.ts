@@ -43,7 +43,7 @@ Vue.config.errorHandler = (e, vm, info) => {
 };
 
 Vue.config.warnHandler = function(msg, vm, trace) {
-    cwarn(msg, trace);
+    console.warn(msg, trace);
 };
 
 import { accentColor, primaryColor } from '~/common/variables';
