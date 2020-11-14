@@ -94,6 +94,7 @@ module.exports = (env, params = {}) => {
     const defines = {
         PRODUCTION: !!production,
         process: 'global.process',
+        NO_CONSOLE: noconsole,
         'global.TNS_WEBPACK': 'true',
         'gVars.platform': `"${platform}"`,
         'global.isIOS': isIOS,

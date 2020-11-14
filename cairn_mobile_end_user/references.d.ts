@@ -1,5 +1,6 @@
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-android/lib/android-28.d.ts" />
+/// <reference path="./node_modules/@nativescript/core/global-types.d.ts" />
 /// <reference path="./vue.shim.d.ts" />
 
 // import { SmsListener } from '~/common/receivers/SMSReceiver';
@@ -15,6 +16,7 @@ declare const gVars: {
 declare const TNS_ENV: string;
 declare const LOG_LEVEL: string;
 declare const SENTRY_DSN: string;
+declare const NO_CONSOLE: boolean;
 declare const TEST_LOGS: boolean;
 declare const PRODUCTION: boolean;
 declare const SENTRY_PREFIX: string;
