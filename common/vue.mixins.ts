@@ -1,4 +1,3 @@
-import { clog } from '~/common/utils/logging';
 import { BackstackEntry, Frame as NSFrame } from '@nativescript/core/ui/frame';
 import { Page } from '@nativescript/core/ui/page';
 import { navigateUrlProperty } from './components/App';

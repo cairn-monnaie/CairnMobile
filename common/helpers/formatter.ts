@@ -32,7 +32,7 @@ dayjs.extend(calendar);
 // }
 
 export function convertTime(date, formatStr: string) {
-    // clog('convertTime', date, formatStr);
+    // console.log('convertTime', date, formatStr);
     return dayjs(date).format(formatStr);
 }
 
@@ -44,7 +44,7 @@ export function convertDuration(date, formatStr: string) {
     const test = new Date(date);
     test.setTime(test.getTime() + test.getTimezoneOffset() * 60 * 1000);
     const result = dayjs(test).format(formatStr);
-    // clog('convertDuration', date, formatStr, test, result);
+    // console.log('convertDuration', date, formatStr, test, result);
     return result;
 }
 
@@ -52,7 +52,7 @@ export function convertDuration(date, formatStr: string) {
 //     if (value === undefined || value === null) {
 //         return ['', ''];
 //     }
-//     // clog('convertValueToUnit', value, unit, otherParam);
+//     // console.log('convertValueToUnit', value, unit, otherParam);
 //     switch (unit) {
 //         case UNITS.Duration:
 //             return [convertDuration(value, 'HH:mm:ss'), ''];

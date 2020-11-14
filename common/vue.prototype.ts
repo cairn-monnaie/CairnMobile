@@ -5,7 +5,6 @@ import { Device, Screen } from '@nativescript/core/platform';
 import App from '~/common/components/App';
 import { getAuthInstance } from '~/common/services/AuthService';
 import SecurityService from '~/common/services/SecurityService';
-import { clog } from './utils/logging';
 import { screenHeightDips, screenWidthDips } from './variables';
 import { alert } from '@nativescript-community/ui-material-dialogs';
 import { isSimulator } from '@nativescript-community/extendedinfo';
@@ -106,18 +105,23 @@ const Plugin = {
         };
 
         /* DEV-START */
-        clog('model', Device.model);
-        clog('os', Device.os);
-        clog('osVersion', Device.osVersion);
-        clog('manufacturer', Device.manufacturer);
-        clog('deviceType', Device.deviceType);
-        clog('widthPixels', Screen.mainScreen.widthPixels);
-        clog('heightPixels', Screen.mainScreen.heightPixels);
-        clog('widthDIPs', screenWidthDips);
-        clog('heightDIPs', screenHeightDips);
-        clog('scale', Screen.mainScreen.scale);
-        clog('ratio', Screen.mainScreen.heightDIPs / screenWidthDips);
+        console.log('model', Device.model);
+        console.log('os', Device.os);
+        console.log('osVersion', Device.osVersion);
+        console.log('manufacturer', Device.manufacturer);
+        console.log('deviceType', Device.deviceType);
+        console.log('widthPixels', Screen.mainScreen.widthPixels);
+        console.log('heightPixels', Screen.mainScreen.heightPixels);
+        console.log('widthDIPs', screenWidthDips);
+        console.log('heightDIPs', screenHeightDips);
+        console.log('scale', Screen.mainScreen.scale);
+        console.log('ratio', Screen.mainScreen.heightDIPs / screenWidthDips);
         /* DEV-END */
+    }
+};
+
+export default Plugin;
+END */
     }
 };
 

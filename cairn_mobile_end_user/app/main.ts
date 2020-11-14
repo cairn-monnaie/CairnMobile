@@ -16,8 +16,6 @@ Vue.prototype.$crashReportService = crashReportService;
 import { init } from '@nativescript-community/push';
 init();
 
-import { cwarn } from '~/common/utils/logging';
-
 import MixinsPlugin from '~/common/vue.mixins';
 Vue.use(MixinsPlugin);
 

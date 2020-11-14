@@ -4,7 +4,7 @@ import { ApplicationEventData, android as androidApp, off as applicationOff, on 
 import { Accuracy } from '@nativescript/core/ui/enums/enums';
 import { confirm } from '@nativescript-community/ui-material-dialogs';
 import { $t } from '../helpers/locale';
-import { DEV_LOG, clog } from '../utils/logging';
+import { DEV_LOG } from '../utils/logging';
 
 import { GPS, GenericGeoLocation, Options as GeolocationOptions, setMockEnabled } from '@nativescript-community/gps';
 import { DefaultLatLonKeys } from '@nativescript-community/ui-carto/core';
@@ -125,7 +125,7 @@ export class GeoHandler extends Observable {
         geolocation.on(GPS.gps_status_event, this.onGPSStateChange, this);
     }
     log(...args) {
-        clog('[GeoHandler]', ...args);
+        console.log('[GeoHandler]', ...args);
     }
     onAppResume(args: ApplicationEventData) {
         if (args.ios) {
@@ -253,13 +253,13 @@ export class GeoHandler extends Observable {
         //             geolocation.enableLocationRequest().then(
         //                 function() {},
         //                 function(e) {
-        //                     clog('Error: ' + (e.message || e));
+        //                     console.log('Error: ' + (e.message || e));
         //                 }
         //             );
         //         }
         //     },
         //     function(e) {
-        //         clog('Error: ' + (e.message || e));
+        //         console.log('Error: ' + (e.message || e));
         //     }
         // );
     }
@@ -365,7 +365,7 @@ export class GeoHandler extends Observable {
         this.currentSession.lastLoc = loc;
         const { android, ios, ...dataToStore } = loc;
         this.currentSession.locs.push(dataToStore);
-        // clog('notifying session update', JSON.stringify(this.currentSession.lastLoc));
+        // console.log('notifying session update', JSON.stringify(this.currentSession.lastLoc));
         this.notify({
             eventName: SessionUpdatedEvent,
             object: this,
@@ -376,7 +376,7 @@ export class GeoHandler extends Observable {
         }
     }
     onNewLoc = (err, loc: GeoLocation) => {
-        // clog(
+        // console.log(
         //     'onNewLoc test',
         //     `${loc.speed && loc.speed.toFixed(1)}, loc:${loc.latitude.toFixed(2)},${loc.longitude.toFixed(2)}, ${loc.timestamp.toLocaleTimeString()}, ${loc.horizontalAccuracy}, ${
         //         loc.verticalAccuracy
@@ -416,7 +416,7 @@ export class GeoHandler extends Observable {
                 // we only look for positive altitude gain
                 // we ignore little variations as it might induce wrong readings
                 if (deltaAlt > 0) {
-                    // clog('new loc based on altitude', deltaAlt, newAlt);
+                    // console.log('new loc based on altitude', deltaAlt, newAlt);
                     // filter not to constantly increase
                     this.currentSession.altitudeGain = Math.round(this.currentSession.altitudeGain + deltaAlt);
                     this.lastAlt = newAlt;
@@ -472,7 +472,7 @@ export class GeoHandler extends Observable {
                 }
                 if (newAvg !== this.currentSession.averageSpeed) {
                     this.currentSession.averageSpeed = newAvg;
-                    // clog('new loc based on avg', newAvg);
+                    // console.log('new loc based on avg', newAvg);
                     // shouldNotif = true;
                 }
             }
