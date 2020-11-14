@@ -121,8 +121,4 @@ const Plugin = {
 };
 
 export default Plugin;
-END */
-    }
-};
 
-export default Plugin;
