@@ -54,7 +54,7 @@
         "@nativescript/imagepicker": "1.0.0",
         "@nativescript/iqkeyboardmanager": "2.0.0",
         "@nativescript/secure-storage": "3.0.0",
-        "crypto-js": "4.0.0",
+        "crypto-js": "4.2.0",
         "dayjs": "1.9.6",
         "duration": "0.2.2",
         "geojson": "0.5.0",
